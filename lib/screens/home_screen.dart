@@ -146,12 +146,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
         ),
         const Gap(12),
-        Expanded(child: Text(
-          state.devices.isEmpty
-            ? 'Ищем телевизоры в сети…'
-            : 'Продолжаем поиск…',
-          style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w500),
-        )),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            state.devices.isEmpty
+              ? 'Ищем телевизоры в сети…'
+              : 'Продолжаем поиск…',
+            style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w500),
+          ),
+          const Gap(4),
+          Text(
+            'Если на телевизоре появится запрос отладки — отметьте «Всегда разрешать» и нажмите «Разрешить».',
+            style: TextStyle(color: AppColors.fgMid, fontSize: 12, height: 1.4),
+          ),
+        ])),
         if (state.devices.isNotEmpty)
           Text('${state.devices.length} найдено',
             style: TextStyle(color: AppColors.accent, fontSize: 12)),

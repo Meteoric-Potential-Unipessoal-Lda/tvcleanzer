@@ -11,26 +11,20 @@ dependencies:
   # Network
   network_info_plus: ^5.0.3      # get local Wi-Fi IP / subnet
   # ADB crypto
-  pointy_castle: ^3.7.3          # RSA-2048 keygen + SHA-1/RSA signing
+  pointycastle: ^3.9.1           # RSA-2048 key generation
   # State management
   flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
   # UI
   google_fonts: ^6.2.1
   flutter_animate: ^4.5.0
   gap: ^3.0.1
   # Storage (RSA key pair + preferences)
   shared_preferences: ^2.2.3
-  # Misc
-  permission_handler: ^11.3.1
-  package_info_plus: ^8.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  build_runner: ^2.4.9
-  riverpod_generator: ^2.4.0
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.4.0
 

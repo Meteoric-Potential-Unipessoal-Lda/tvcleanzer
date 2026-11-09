@@ -20,12 +20,12 @@ void main() {
   ]);
 
   runApp(
-    const ProviderScope(child: TvClearApp()),
+    const ProviderScope(child: TvCleanzerApp()),
   );
 }
 
-class TvClearApp extends StatelessWidget {
-  const TvClearApp({super.key});
+class TvCleanzerApp extends StatelessWidget {
+  const TvCleanzerApp({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -17,7 +17,8 @@ class TvDiscovery {
   static const int _adbPort      = 5555;
   static const int _concurrency  = 32;  // parallel port-check sockets
   static const Duration _portTimeout = Duration(milliseconds: 500);
-  static const Duration _adbTimeout  = Duration(seconds: 12);
+  // Long enough for the user to tap "Allow" on the TV on first connect.
+  static const Duration _adbTimeout  = Duration(seconds: 75);
 
   final AdbPackageManager _adb;
   TvDiscovery(this._adb);

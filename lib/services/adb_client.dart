@@ -1,39 +1,49 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:pointy_castle/export.dart';
+import 'package:pointycastle/export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// ─── ADB Protocol Constants ───────────────────────────────────────────────────
+// ─── ADB protocol constants ───────────────────────────────────────────────────
 
-const int _CNXN = 0x4E584E43;
-const int _AUTH = 0x48545541;
-const int _OPEN = 0x4E45504F;
-const int _OKAY = 0x59414B4F;
-const int _CLSE = 0x45534C43;
-const int _WRTE = 0x45545257;
+const int _cmdCnxn = 0x4E584E43;
+const int _cmdAuth = 0x48545541;
+const int _cmdOpen = 0x4E45504F;
+const int _cmdOkay = 0x59414B4F;
+const int _cmdClse = 0x45534C43;
+const int _cmdWrte = 0x45545257;
 
-const int _AUTH_TOKEN     = 1;
-const int _AUTH_SIGNATURE = 2;
-const int _AUTH_RSAPUBKEY = 3;
+const int _authToken = 1;
+const int _authSignature = 2;
+const int _authRsaPublicKey = 3;
 
-const int _ADB_VERSION = 0x01000000;
-const int _MAX_PAYLOAD  = 1 << 20; // 1 MB
+const int _adbVersion = 0x01000000; // legacy version → checksums are sent
+const int _maxPayload = 1 << 20; // 1 MB
+
+/// DER prefix of a SHA-1 DigestInfo (PKCS#1 v1.5).
+const List<int> _sha1DigestInfo = [
+  0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2b, 0x0e,
+  0x03, 0x02, 0x1a, 0x05, 0x00, 0x04, 0x14,
+];
 
 // ─── Exceptions ───────────────────────────────────────────────────────────────
 
 class AdbException implements Exception {
   final String message;
   AdbException(this.message);
-  @override String toString() => 'AdbException: $message';
+  @override
+  String toString() => 'AdbException: $message';
 }
 
 class AdbAuthException extends AdbException {
   AdbAuthException(super.message);
-  @override String toString() => 'AdbAuthException: $message';
+  @override
+  String toString() => 'AdbAuthException: $message';
 }
 
 // ─── Message ──────────────────────────────────────────────────────────────────
@@ -44,292 +54,334 @@ class _Msg {
   _Msg(this.cmd, this.arg0, this.arg1, [Uint8List? data])
       : data = data ?? Uint8List(0);
 
-  static int _sum(Uint8List buf) {
-    int s = 0;
-    for (final b in buf) s = (s + b) & 0xFFFFFFFF;
-    return s;
-  }
-
   Uint8List encode() {
-    final hdr = ByteData(24);
-    hdr.setUint32(0,  cmd,          Endian.little);
-    hdr.setUint32(4,  arg0,         Endian.little);
-    hdr.setUint32(8,  arg1,         Endian.little);
-    hdr.setUint32(12, data.length,  Endian.little);
-    hdr.setUint32(16, _sum(data),   Endian.little);
+    var sum = 0;
+    for (final b in data) {
+      sum = (sum + b) & 0xFFFFFFFF;
+    }
+    final out = Uint8List(24 + data.length);
+    final hdr = ByteData.view(out.buffer, 0, 24);
+    hdr.setUint32(0, cmd, Endian.little);
+    hdr.setUint32(4, arg0, Endian.little);
+    hdr.setUint32(8, arg1, Endian.little);
+    hdr.setUint32(12, data.length, Endian.little);
+    hdr.setUint32(16, sum, Endian.little);
     hdr.setUint32(20, cmd ^ 0xFFFFFFFF, Endian.little);
-    if (data.isEmpty) return hdr.buffer.asUint8List();
-    return Uint8List(24 + data.length)
-      ..setAll(0, hdr.buffer.asUint8List())
-      ..setAll(24, data);
+    out.setAll(24, data);
+    return out;
   }
 }
 
-// ─── ADB Client ───────────────────────────────────────────────────────────────
+class _Keys {
+  final BigInt n, e, d;
+  _Keys(this.n, this.e, this.d);
+}
 
-/// Implements the ADB wire protocol over TCP port 5555.
+Uint8List _cString(String s) => Uint8List.fromList(utf8.encode('$s\x00'));
+
+// ─── ADB client ───────────────────────────────────────────────────────────────
+
+/// Minimal ADB client over TCP (port 5555, "ADB over network").
 ///
-/// Usage:
-///   final client = AdbClient(host: '192.168.1.100');
-///   final props = await client.connect();      // RSA auth, returns device props
-///   final out   = await client.shell('pm list packages');
-///   client.close();
+///   final adb = AdbClient(host: '192.168.1.100');
+///   await adb.connect();              // RSA auth; TV may ask "Allow debugging?"
+///   final out = await adb.shell('pm list packages');
+///   adb.close();
+///
+/// Incoming messages go into a single queue that is read in order, so nothing
+/// is lost when several messages arrive in one TCP chunk.
 class AdbClient {
   final String host;
   final int port;
 
-  Socket? _sock;
-  final List<int> _buf = [];
-  final StreamController<_Msg> _msgCtrl = StreamController<_Msg>.broadcast();
-  StreamSubscription? _sockSub;
-  int _nextLocalId = 1;
-
   AdbClient({required this.host, this.port = 5555});
 
-  // ── Public API ───────────────────────────────────────────────────────────────
+  Socket? _sock;
+  StreamSubscription<Uint8List>? _sockSub;
+  final List<int> _buf = [];
+  final Queue<_Msg> _inbox = Queue<_Msg>();
+  Completer<void>? _waiter;
+  Object? _sockError;
+  bool _sockClosed = false;
+  int _nextLocalId = 1;
 
-  /// Connect and authenticate. Returns device properties from CNXN response.
-  /// On first connection with a new key, the TV shows "Allow ADB?" — the method
-  /// waits up to [pairingTimeout] for the user to approve on the TV screen.
+  // ── Public API ──────────────────────────────────────────────────────────────
+
+  /// Connects and authenticates; returns the device banner properties.
+  /// The first time this phone connects, the TV shows an "Allow debugging?"
+  /// dialog; we wait up to [pairingTimeout] for the user to accept it.
   Future<Map<String, String>> connect({
-    Duration timeout        = const Duration(seconds: 10),
+    Duration timeout = const Duration(seconds: 10),
     Duration pairingTimeout = const Duration(seconds: 60),
   }) async {
+    final keys = await _keys();
+
     _sock = await Socket.connect(host, port, timeout: timeout);
     _sock!.setOption(SocketOption.tcpNoDelay, true);
     _sockSub = _sock!.listen(
-      (data) {
-        _buf.addAll(data);
-        _assembleMessages();
+      _onData,
+      onError: (Object e) {
+        _sockError = e;
+        _wake();
       },
-      onError: (e) => _msgCtrl.addError(e),
-      onDone: () => _msgCtrl.close(),
+      onDone: () {
+        _sockClosed = true;
+        _wake();
+      },
+      cancelOnError: true,
     );
 
-    final keys = await _loadOrGenerateKeys();
+    _send(_Msg(_cmdCnxn, _adbVersion, _maxPayload, _cString('host::')));
 
-    // ── 1. Send CNXN ─────────────────────────────────────────────────────────
-    _send(_Msg(_CNXN, _ADB_VERSION, _MAX_PAYLOAD,
-        Uint8List.fromList(utf8.encode('host::ro.product.name=TVCleanzer\x00'))));
-
-    // ── 2. Receive AUTH TOKEN ─────────────────────────────────────────────────
-    final auth1 = await _next().timeout(timeout,
-        onTimeout: () => throw AdbException('TV did not respond. '
-            'Make sure ADB over network is enabled in Developer Options.'));
-    if (auth1.cmd != _AUTH || auth1.arg0 != _AUTH_TOKEN) {
-      throw AdbAuthException('Expected AUTH TOKEN, got 0x${auth1.cmd.toRadixString(16)}');
+    var msg = await _read(timeout,
+        'TV did not respond. Make sure network debugging is enabled.');
+    if (msg.cmd == _cmdCnxn) return _parseCnxn(msg); // auth disabled on TV
+    if (msg.cmd != _cmdAuth || msg.arg0 != _authToken) {
+      throw AdbAuthException(
+          'Expected AUTH token, got 0x${msg.cmd.toRadixString(16)}');
     }
 
-    // ── 3. Sign the token ────────────────────────────────────────────────────
-    final signer = Signer('SHA-1/RSA')
-      ..init(true, PrivateKeyParameter<RSAPrivateKey>(keys.priv));
-    final sig = (signer.generateSignature(auth1.data) as RSASignature).bytes;
-    _send(_Msg(_AUTH, _AUTH_SIGNATURE, 0, Uint8List.fromList(sig)));
+    // Known key → TV answers CNXN. Unknown key → TV sends a new token.
+    _send(_Msg(_cmdAuth, _authSignature, 0, _sign(msg.data, keys)));
+    msg = await _read(timeout, 'No auth response from TV.');
+    if (msg.cmd == _cmdCnxn) return _parseCnxn(msg);
 
-    // ── 4. Response: CNXN (known key) or AUTH TOKEN (unknown key) ────────────
-    final resp = await _next().timeout(timeout,
-        onTimeout: () => throw AdbAuthException('No auth response from TV.'));
-
-    if (resp.cmd == _CNXN) {
-      return _parseCnxn(resp); // Key already trusted → connected
+    if (msg.cmd == _cmdAuth && msg.arg0 == _authToken) {
+      _send(_Msg(_cmdAuth, _authRsaPublicKey, 0, _androidPublicKey(keys)));
+      msg = await _read(pairingTimeout,
+          'Timed out waiting for approval on the TV. Tap "Allow" and try again.');
+      if (msg.cmd == _cmdCnxn) return _parseCnxn(msg);
+      throw AdbAuthException('TV rejected the connection.');
     }
 
-    if (resp.cmd == _AUTH && resp.arg0 == _AUTH_TOKEN) {
-      // Unknown key → send public key; TV will show "Allow ADB?" dialog
-      final pubKey = _buildAndroidPublicKey(keys.pub);
-      _send(_Msg(_AUTH, _AUTH_RSAPUBKEY, 0, pubKey));
-
-      final accepted = await _next().timeout(pairingTimeout,
-          onTimeout: () => throw AdbAuthException(
-              'Timed out waiting for TV approval. '
-              'Please tap "Allow" on the TV screen and try again.'));
-      if (accepted.cmd != _CNXN) {
-        throw AdbAuthException('TV rejected ADB connection.');
-      }
-      return _parseCnxn(accepted);
-    }
-
-    throw AdbAuthException('Unexpected ADB auth response: 0x${resp.cmd.toRadixString(16)}');
+    throw AdbAuthException(
+        'Unexpected auth response: 0x${msg.cmd.toRadixString(16)}');
   }
 
-  /// Run a shell command and return its full stdout output.
-  Future<String> shell(String command, {Duration timeout = const Duration(seconds: 30)}) async {
-    final localId  = _nextLocalId++;
-    _send(_Msg(_OPEN, localId, 0,
-        Uint8List.fromList(utf8.encode('shell:$command\x00'))));
+  /// Runs [command] via the `shell:` service and returns its full output.
+  /// [timeout] is an inactivity timeout between messages.
+  Future<String> shell(String command,
+      {Duration timeout = const Duration(seconds: 30)}) async {
+    final localId = _nextLocalId++;
+    _send(_Msg(_cmdOpen, localId, 0, _cString('shell:$command')));
 
-    // Wait for OKAY (TV assigns its remote ID to this channel)
-    final okay = await _stream
-        .firstWhere((m) => m.cmd == _OKAY && m.arg1 == localId)
-        .timeout(timeout, onTimeout: () => throw AdbException('OPEN timed out for: $command'));
-    final remoteId = okay.arg0;
-
-    final output = StringBuffer();
-    await for (final msg in _stream.timeout(timeout,
-        onTimeout: (s) => s.addError(AdbException('shell read timed out')))) {
-      if (msg.cmd == _WRTE && msg.arg1 == localId) {
-        output.write(utf8.decode(msg.data, allowMalformed: true));
-        _send(_Msg(_OKAY, localId, remoteId));
-      } else if (msg.cmd == _CLSE && msg.arg1 == localId) {
-        _send(_Msg(_CLSE, localId, remoteId));
-        break;
+    int? remoteId;
+    final out = BytesBuilder(copy: false);
+    while (true) {
+      final m = await _read(timeout, 'Shell command timed out: $command');
+      if (m.arg1 != localId) continue; // belongs to another stream
+      switch (m.cmd) {
+        case _cmdOkay:
+          remoteId ??= m.arg0;
+        case _cmdWrte:
+          remoteId ??= m.arg0;
+          out.add(m.data);
+          _send(_Msg(_cmdOkay, localId, remoteId));
+        case _cmdClse:
+          if (remoteId == null) {
+            throw AdbException('TV refused the command: $command');
+          }
+          return utf8.decode(out.takeBytes(), allowMalformed: true);
       }
     }
-    return output.toString();
   }
 
   void close() {
     _sockSub?.cancel();
     _sock?.destroy();
     _sock = null;
-    if (!_msgCtrl.isClosed) _msgCtrl.close();
+    _sockClosed = true;
+    _wake();
   }
 
-  // ── Socket / message plumbing ─────────────────────────────────────────────
+  // ── Socket plumbing ─────────────────────────────────────────────────────────
 
-  void _send(_Msg msg) {
-    _sock?.add(msg.encode());
+  void _send(_Msg msg) => _sock?.add(msg.encode());
+
+  void _onData(Uint8List chunk) {
+    _buf.addAll(chunk);
+    while (_buf.length >= 24) {
+      final hdr = ByteData.sublistView(Uint8List.fromList(_buf.sublist(0, 24)));
+      final cmd = hdr.getUint32(0, Endian.little);
+      final magic = hdr.getUint32(20, Endian.little);
+      final len = hdr.getUint32(12, Endian.little);
+      if (magic != (cmd ^ 0xFFFFFFFF) || len > _maxPayload) {
+        _sockError = AdbException('Corrupted ADB stream');
+        _wake();
+        close();
+        return;
+      }
+      if (_buf.length < 24 + len) break;
+      final data = Uint8List.fromList(_buf.sublist(24, 24 + len));
+      _buf.removeRange(0, 24 + len);
+      _inbox.add(_Msg(cmd, hdr.getUint32(4, Endian.little),
+          hdr.getUint32(8, Endian.little), data));
+    }
+    _wake();
   }
 
-  void _assembleMessages() {
+  void _wake() {
+    final w = _waiter;
+    if (w != null && !w.isCompleted) w.complete();
+  }
+
+  Future<_Msg> _read(Duration timeout, String timeoutMessage) async {
+    final deadline = DateTime.now().add(timeout);
     while (true) {
-      if (_buf.length < 24) break;
-      // Peek at data_len without consuming
-      final hdr     = ByteData.view(Uint8List.fromList(_buf.sublist(0, 24)).buffer);
-      final dataLen = hdr.getUint32(12, Endian.little);
-      if (_buf.length < 24 + dataLen) break;
-
-      final cmd  = hdr.getUint32(0,  Endian.little);
-      final arg0 = hdr.getUint32(4,  Endian.little);
-      final arg1 = hdr.getUint32(8,  Endian.little);
-      _buf.removeRange(0, 24);
-      final data = Uint8List.fromList(_buf.sublist(0, dataLen));
-      if (dataLen > 0) _buf.removeRange(0, dataLen);
-
-      if (!_msgCtrl.isClosed) _msgCtrl.add(_Msg(cmd, arg0, arg1, data));
+      if (_inbox.isNotEmpty) return _inbox.removeFirst();
+      if (_sockError != null) throw AdbException('Connection error: $_sockError');
+      if (_sockClosed) throw AdbException('TV closed the connection.');
+      final left = deadline.difference(DateTime.now());
+      if (left <= Duration.zero) throw AdbException(timeoutMessage);
+      final w = _waiter = Completer<void>();
+      try {
+        await w.future.timeout(left);
+      } on TimeoutException {
+        throw AdbException(timeoutMessage);
+      } finally {
+        _waiter = null;
+      }
     }
   }
 
-  Stream<_Msg> get _stream => _msgCtrl.stream;
-
-  Future<_Msg> _next() => _stream.first;
-
   Map<String, String> _parseCnxn(_Msg msg) {
-    final raw = utf8.decode(msg.data, allowMalformed: true).replaceAll('\x00', '');
-    final props = <String, String>{};
-    // Format: "device::key=val;key=val;..."
+    // Banner: "device::ro.product.name=…;ro.product.model=…;features=…"
+    final raw =
+        utf8.decode(msg.data, allowMalformed: true).replaceAll('\x00', '');
     final body = raw.contains('::') ? raw.split('::').last : raw;
+    final props = <String, String>{};
     for (final part in body.split(';')) {
       final eq = part.indexOf('=');
-      if (eq > 0) props[part.substring(0, eq).trim()] = part.substring(eq + 1).trim();
+      if (eq > 0) {
+        props[part.substring(0, eq).trim()] = part.substring(eq + 1).trim();
+      }
     }
     return props;
   }
 
-  // ── RSA Key Management ────────────────────────────────────────────────────
+  // ── Signing ─────────────────────────────────────────────────────────────────
+  //
+  // adbd verifies with RSA_verify(NID_sha1, token, …): the 20-byte token is
+  // used AS the digest, it must not be hashed again. So we build the
+  // PKCS#1 v1.5 block by hand: 00 01 FF…FF 00 DigestInfo(SHA-1) token.
 
-  static const _kN  = 'adb_rsa_n';
-  static const _kE  = 'adb_rsa_e';
-  static const _kD  = 'adb_rsa_d';
-  static const _kP  = 'adb_rsa_p';
-  static const _kQ  = 'adb_rsa_q';
-
-  Future<({RSAPrivateKey priv, RSAPublicKey pub})> _loadOrGenerateKeys() async {
-    final sp = await SharedPreferences.getInstance();
-    final nS = sp.getString(_kN);
-    if (nS != null) {
-      final n = BigInt.parse(nS,            radix: 36);
-      final e = BigInt.parse(sp.getString(_kE)!, radix: 36);
-      final d = BigInt.parse(sp.getString(_kD)!, radix: 36);
-      final p = BigInt.parse(sp.getString(_kP)!, radix: 36);
-      final q = BigInt.parse(sp.getString(_kQ)!, radix: 36);
-      return (priv: RSAPrivateKey(n, d, p, q), pub: RSAPublicKey(n, e));
+  static Uint8List _sign(Uint8List token, _Keys k) {
+    const len = 256; // 2048-bit key
+    final t = [..._sha1DigestInfo, ...token];
+    final em = Uint8List(len);
+    em[1] = 0x01;
+    final sep = len - t.length - 1;
+    for (var i = 2; i < sep; i++) {
+      em[i] = 0xFF;
     }
+    em.setAll(sep + 1, t);
+    return _toBytes(_fromBytes(em).modPow(k.d, k.n), len);
+  }
 
-    // Generate new 2048-bit RSA key pair
-    final rng = SecureRandom('Fortuna')
-      ..seed(KeyParameter(Uint8List.fromList(
-          List.generate(32, (_) => Random.secure().nextInt(256)))));
+  static BigInt _fromBytes(List<int> bytes) {
+    var r = BigInt.zero;
+    for (final b in bytes) {
+      r = (r << 8) | BigInt.from(b);
+    }
+    return r;
+  }
 
+  static Uint8List _toBytes(BigInt v, int len) {
+    final out = Uint8List(len);
+    final mask = BigInt.from(0xFF);
+    for (var i = len - 1; i >= 0; i--) {
+      out[i] = (v & mask).toInt();
+      v >>= 8;
+    }
+    return out;
+  }
+
+  // ── Keys ────────────────────────────────────────────────────────────────────
+  //
+  // One RSA-2048 key per phone install, kept in SharedPreferences. The TV
+  // remembers it after "Always allow", so later connections need no dialog.
+
+  static const _kN = 'adb_rsa_n';
+  static const _kE = 'adb_rsa_e';
+  static const _kD = 'adb_rsa_d';
+
+  static Future<_Keys>? _keysFuture;
+
+  static Future<_Keys> _keys() =>
+      _keysFuture ??= _loadOrGenerateKeys().catchError((Object e) {
+        _keysFuture = null;
+        throw e;
+      });
+
+  static Future<_Keys> _loadOrGenerateKeys() async {
+    final sp = await SharedPreferences.getInstance();
+    final n = sp.getString(_kN), e = sp.getString(_kE), d = sp.getString(_kD);
+    if (n != null && e != null && d != null) {
+      return _Keys(BigInt.parse(n, radix: 36), BigInt.parse(e, radix: 36),
+          BigInt.parse(d, radix: 36));
+    }
+    // Key generation takes a few seconds in pure Dart — keep it off the UI thread.
+    final parts = await Isolate.run(_generateKeyPair);
+    await sp.setString(_kN, parts[0].toRadixString(36));
+    await sp.setString(_kE, parts[1].toRadixString(36));
+    await sp.setString(_kD, parts[2].toRadixString(36));
+    return _Keys(parts[0], parts[1], parts[2]);
+  }
+
+  static List<BigInt> _generateKeyPair() {
+    final seed = Random.secure();
+    final rng = FortunaRandom()
+      ..seed(KeyParameter(
+          Uint8List.fromList(List.generate(32, (_) => seed.nextInt(256)))));
     final gen = RSAKeyGenerator()
       ..init(ParametersWithRandom(
           RSAKeyGeneratorParameters(BigInt.from(65537), 2048, 64), rng));
-
     final pair = gen.generateKeyPair();
-    final pub  = pair.publicKey  as RSAPublicKey;
     final priv = pair.privateKey as RSAPrivateKey;
-
-    await sp.setString(_kN, priv.n!.toRadixString(36));
-    await sp.setString(_kE, pub.exponent!.toRadixString(36));
-    await sp.setString(_kD, priv.d!.toRadixString(36));
-    await sp.setString(_kP, priv.p!.toRadixString(36));
-    await sp.setString(_kQ, priv.q!.toRadixString(36));
-
-    return (priv: priv, pub: pub);
+    return [priv.modulus!, BigInt.from(65537), priv.privateExponent!];
   }
 
-  // ── Android ADB Public Key Format ─────────────────────────────────────────
+  // ── Android public key format ───────────────────────────────────────────────
   //
-  // Encodes RSAPublicKey as the AOSP RSAPublicKey C struct:
-  //   int      len;       // number of uint32_t in n[] = 64 for 2048-bit key
-  //   uint32_t n0inv;     // -n[0]^-1 mod 2^32  (Montgomery parameter)
-  //   uint32_t n[64];     // modulus, little-endian 32-bit words
-  //   uint32_t rr[64];    // R^2 mod n, R=2^2048, little-endian words
-  //   int      exponent;  // 65537
-  //
-  // Then base64-encoded + " user@host\0" suffix.
+  // AOSP RSAPublicKey struct, little-endian:
+  //   uint32 len (=64 words) | uint32 n0inv | uint32 n[64] | uint32 rr[64] | uint32 e
+  // base64-encoded, followed by " user@host" and a NUL.
 
-  Uint8List _buildAndroidPublicKey(RSAPublicKey pub) {
-    const int W = 64; // words for 2048-bit key
+  static Uint8List _androidPublicKey(_Keys k) {
+    const words = 64;
+    final mask = BigInt.from(0xFFFFFFFF);
+    final rr = (BigInt.one << 4096) % k.n; // R^2 mod n, R = 2^2048
 
-    final n = pub.n!;
-    final e = pub.exponent!.toInt();
-
-    // Extract n as W little-endian 32-bit words
-    final nW = List<int>.filled(W, 0);
-    var tmp = n;
-    for (int i = 0; i < W; i++) {
-      nW[i] = (tmp & BigInt.parse('0xFFFFFFFF')).toInt();
-      tmp >>= 32;
+    final bd = ByteData(4 + 4 + words * 4 * 2 + 4);
+    var off = 0;
+    void put(int v) {
+      bd.setUint32(off, v, Endian.little);
+      off += 4;
     }
 
-    // n0inv = -n[0]^-1 mod 2^32  (Newton's method, 5 iterations)
-    final n0inv = _n0inv(nW[0]);
-
-    // rr = (2^2048)^2 mod n = 2^4096 mod n
-    final R  = BigInt.one << 2048;
-    final rr = (R * R) % n;
-    final rrW = List<int>.filled(W, 0);
-    var tmp2 = rr;
-    for (int i = 0; i < W; i++) {
-      rrW[i] = (tmp2 & BigInt.parse('0xFFFFFFFF')).toInt();
-      tmp2 >>= 32;
+    put(words);
+    put(_n0inv((k.n & mask).toInt()));
+    var t = k.n;
+    for (var i = 0; i < words; i++, t >>= 32) {
+      put((t & mask).toInt());
     }
+    t = rr;
+    for (var i = 0; i < words; i++, t >>= 32) {
+      put((t & mask).toInt());
+    }
+    put(k.e.toInt());
 
-    // Assemble struct (4 + 4 + W*4 + W*4 + 4 = 524 bytes for 2048-bit)
-    final bd = ByteData(4 + 4 + W * 4 + W * 4 + 4);
-    int off = 0;
-    bd.setInt32 (off, W,     Endian.little); off += 4; // len
-    bd.setUint32(off, n0inv, Endian.little); off += 4; // n0inv
-    for (final w in nW)  { bd.setUint32(off, w, Endian.little); off += 4; }
-    for (final w in rrW) { bd.setUint32(off, w, Endian.little); off += 4; }
-    bd.setInt32 (off, e,     Endian.little);            // exponent
-
-    final b64  = base64.encode(bd.buffer.asUint8List());
-    final full = '$b64 TVCleanzer@phone\x00';
-    return Uint8List.fromList(utf8.encode(full));
+    return _cString('${base64.encode(bd.buffer.asUint8List())} TVCleanzer@phone');
   }
 
-  /// -n0^-1 mod 2^32  using 5 Newton iterations (BigInt to avoid overflow).
-  int _n0inv(int n0) {
-    final N = BigInt.from(n0);
-    final M = BigInt.from(1) << 32; // 2^32
-    BigInt x = BigInt.one;
-    for (int i = 0; i < 5; i++) {
-      x = (x * (BigInt.two - N * x)) % M;
-      if (x.isNegative) x += M;
+  /// -n0^-1 mod 2^32 (Newton iteration, 5 rounds = 32 bits).
+  static int _n0inv(int n0) {
+    final n = BigInt.from(n0);
+    final m = BigInt.one << 32;
+    var x = BigInt.one;
+    for (var i = 0; i < 5; i++) {
+      x = (x * (BigInt.two - n * x)) % m;
     }
-    final neg = (M - x) % M;
-    return neg.toInt();
+    return ((m - x) % m).toInt();
   }
 }
