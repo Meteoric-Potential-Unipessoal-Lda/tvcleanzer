@@ -78,6 +78,17 @@ public class SettingsActivity extends Activity {
             prefs.setHidden(new HashSet<String>());
             Toast.makeText(this, "Все приложения снова на главном экране", Toast.LENGTH_SHORT).show();
         });
+        addRow(skin, "Детский режим", prefs.kids() ? "Включён" : (prefs.hasPin() ? "Выключен" : "Настроить"),
+                this::kidsMode);
+        if (prefs.hasPin()) addRow(skin, "PIN детского режима", "Сменить", this::changePin);
+        boolean hasWall = Wallpaper.file(this).exists();
+        addRow(skin, "Обои", hasWall ? "Своё фото · убрать" : "Ставятся с телефона", () -> {
+            if (!Wallpaper.file(this).exists()) return;
+            //noinspection ResultOfMethodCallIgnored
+            Wallpaper.file(this).delete();
+            prefs.bumpWallpaper();
+            Toast.makeText(this, "Обои убраны", Toast.LENGTH_SHORT).show();
+        });
         addRow(skin, "Избранное", "Сбросить", () -> {
             prefs.resetFavorites();
             Toast.makeText(this, "Избранное сброшено", Toast.LENGTH_SHORT).show();
@@ -89,6 +100,71 @@ public class SettingsActivity extends Activity {
 
         View v = list.getChildAt(Math.min(focusIndex, list.getChildCount() - 1));
         if (v != null) v.requestFocus();
+    }
+
+    // ── Kids mode ─────────────────────────────────────────────────────────
+
+    private void kidsMode() {
+        if (prefs.kids()) {
+            Pin.ask(this, "PIN, чтобы выключить детский режим", pin -> {
+                if (prefs.checkPin(pin)) { prefs.setKids(false); build(); }
+                else Toast.makeText(this, "Неверный PIN", Toast.LENGTH_SHORT).show();
+            });
+        } else if (!prefs.hasPin()) {
+            Pin.ask(this, "Придумайте PIN (4–8 цифр)", pin -> {
+                if (!Pin.valid(pin)) {
+                    Toast.makeText(this, "Нужно от 4 до 8 цифр", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                prefs.setPin(pin);
+                chooseKidsApps();
+            });
+        } else {
+            Pin.ask(this, "Введите PIN", pin -> {
+                if (prefs.checkPin(pin)) chooseKidsApps();
+                else Toast.makeText(this, "Неверный PIN", Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+
+    private void chooseKidsApps() {
+        final java.util.List<AppEntry> all = AppEntry.loadAll(this);
+        final java.util.Set<String> chosen = prefs.kidsApps();
+        String[] names = new String[all.size()];
+        boolean[] checked = new boolean[all.size()];
+        for (int i = 0; i < all.size(); i++) {
+            names[i] = all.get(i).label;
+            checked[i] = chosen.contains(all.get(i).pkg);
+        }
+        new android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                .setTitle("Что можно детям")
+                .setMultiChoiceItems(names, checked, (d, which, on) -> {
+                    if (on) chosen.add(all.get(which).pkg); else chosen.remove(all.get(which).pkg);
+                })
+                .setPositiveButton("Включить детский режим", (d, w) -> {
+                    prefs.setKidsApps(chosen);
+                    prefs.setKids(true);
+                    finish(); // straight to the kids home screen
+                })
+                .setNegativeButton("Отмена", null)
+                .show();
+    }
+
+    private void changePin() {
+        Pin.ask(this, "Текущий PIN", old -> {
+            if (!prefs.checkPin(old)) {
+                Toast.makeText(this, "Неверный PIN", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Pin.ask(this, "Новый PIN (4–8 цифр)", pin -> {
+                if (Pin.valid(pin)) {
+                    prefs.setPin(pin);
+                    Toast.makeText(this, "PIN изменён", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Нужно от 4 до 8 цифр", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
     }
 
     private String version() {

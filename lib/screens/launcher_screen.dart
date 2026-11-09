@@ -12,6 +12,7 @@ import '../services/app_log.dart';
 import '../state/current_tv.dart';
 import '../state/launcher_skin_state.dart';
 import '../theme/app_theme.dart';
+import 'launcher_edit_screen.dart';
 
 const _knownLaunchers = {
   'com.google.android.tvlauncher': 'Стандартный Android TV',
@@ -287,6 +288,21 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: FilledButton.icon(
+                              icon: const Icon(Icons.tune_rounded),
+                              label: const Text('Настроить: избранное, детям, обои'),
+                              onPressed: tv == null ? null : () => Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) => LauncherEditScreen(tv: tv))),
+                            ),
+                          ),
+                          const Gap(10),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.fg,
+                                side: const BorderSide(color: AppColors.cardBd),
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                              ),
                               icon: const Icon(Icons.system_update_alt_rounded),
                               label: const Text('Обновить лаунчер на ТВ'),
                               onPressed: tv == null ? null : _install,

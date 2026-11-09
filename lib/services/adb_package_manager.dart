@@ -405,7 +405,15 @@ class AdbPackageManager {
       }
 
       onStep?.call('Делаем главным экраном…');
-      await adb.shell('cmd package set-home-activity $launcherHome');
+      // Android 10+: the HOME role; older: preferred home activity.
+      if (sdk >= 29) {
+        final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
+        if (r.toLowerCase().contains('exception')) {
+          await adb.shell('cmd package set-home-activity $launcherHome');
+        }
+      } else {
+        await adb.shell('cmd package set-home-activity $launcherHome');
+      }
       // Firmwares that force their own launcher on Home: our accessibility
       // service catches the Home key. Re-adding it rebinds after an update.
       await _setHomeKeyService(adb, enabled: false);
@@ -436,6 +444,99 @@ class AdbPackageManager {
       await _setHomeKeyService(adb, enabled: false);
       await adb.shell('pm uninstall $launcherPkg');
       await adb.shell('input keyevent 3');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Apps, favourites, hidden and kids lists from the installed launcher.
+  Future<LauncherState> launcherState(TvDevice device) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      final out = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/apps');
+      final set = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/settings');
+      final re = RegExp(r'pkg=([^,]+), fav=(-?\d+), hidden=(\d+), kids=(\d+), label=(.*)$');
+      final apps = <LauncherApp>[];
+      for (final line in out.split('\n')) {
+        final m = re.firstMatch(line.trim());
+        if (m == null) continue;
+        apps.add(LauncherApp(
+          pkg: m.group(1)!,
+          label: m.group(5)!.trim(),
+          fav: int.parse(m.group(2)!),
+          hidden: m.group(3) == '1',
+          kids: m.group(4) == '1',
+        ));
+      }
+      if (apps.isEmpty) {
+        throw AdbException('Лаунчер не ответил. Обновите его на ТВ кнопкой «Обновить лаунчер».');
+      }
+      final kv = <String, String>{};
+      for (final m in RegExp(r'key=(\w+), value=(\S+)').allMatches(set)) {
+        kv[m.group(1)!] = m.group(2)!;
+      }
+      return LauncherState(
+        apps: apps,
+        kids: kv['kids'] == '1',
+        hasPin: kv['pin'] == '1',
+        hasWallpaper: kv['wallpaper'] == '1',
+      );
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Sends any subset of launcher settings in one broadcast.
+  Future<void> applyLauncher(TvDevice device, {
+    List<String>? favorites,
+    Set<String>? hidden,
+    Set<String>? kidsApps,
+    bool? kids,
+    String? pin,
+  }) async {
+    String list(Iterable<String> v) {
+      final ok = v.where((p) => RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(p)).toList();
+      return ok.isEmpty ? '""' : ok.join(',');
+    }
+    final b = StringBuffer('am broadcast -n $launcherPkg/.ConfigReceiver -a com.tvcleanzer.launcher.APPLY');
+    if (favorites != null) b.write(' --esa favorites ${list(favorites)}');
+    if (hidden != null) b.write(' --esa hidden ${list(hidden)}');
+    if (kidsApps != null) b.write(' --esa kidsApps ${list(kidsApps)}');
+    if (pin != null && RegExp(r'^\d{4,8}$').hasMatch(pin)) b.write(' --es pin $pin');
+    if (kids != null) b.write(' --ez kids $kids');
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      await adb.shell(b.toString());
+    } finally {
+      adb.close();
+    }
+  }
+
+  static const _launcherFiles = '/sdcard/Android/data/$launcherPkg/files';
+
+  /// Uploads a JPEG as the launcher background.
+  Future<void> setWallpaper(TvDevice device, Uint8List jpeg) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      await adb.execWithInput(
+          "sh -c 'mkdir -p $_launcherFiles && cat > $_launcherFiles/wallpaper.jpg'", jpeg,
+          timeout: const Duration(seconds: 90));
+      await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
+          '-a com.tvcleanzer.launcher.APPLY --es wallpaper set');
+    } finally {
+      adb.close();
+    }
+  }
+
+  Future<void> removeWallpaper(TvDevice device) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
+          '-a com.tvcleanzer.launcher.APPLY --es wallpaper none');
     } finally {
       adb.close();
     }

@@ -8,7 +8,11 @@
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
 		<string>TVCleanzer</string>
-		<key>NSLocalNetworkUsageDescription</key>
+		<key>NSPhotoLibraryUsageDescription</key>
+	<string>Выберите фото, чтобы поставить его фоном лаунчера на телевизоре.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Можно сфотографировать картинку для фона лаунчера на телевизоре.</string>
+	<key>NSLocalNetworkUsageDescription</key>
 		<string>TVCleanzer ищет телевизор в вашей Wi-Fi сети и подключается к нему, чтобы убрать ненужные приложения.</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>

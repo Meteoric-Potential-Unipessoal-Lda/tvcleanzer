@@ -170,3 +170,23 @@ class BoostResult {
 
   int get ramGainMb => ramAfterMb > ramBeforeMb ? ramAfterMb - ramBeforeMb : 0;
 }
+
+/// An app as the TVCleanzer Launcher sees it.
+class LauncherApp {
+  final String pkg;
+  final String label;
+  final int fav;       // position in favourites, -1 if not a favourite
+  final bool hidden;
+  final bool kids;     // allowed in kids mode
+  const LauncherApp({required this.pkg, required this.label, required this.fav,
+      required this.hidden, required this.kids});
+}
+
+class LauncherState {
+  final List<LauncherApp> apps;
+  final bool kids;
+  final bool hasPin;
+  final bool hasWallpaper;
+  const LauncherState({required this.apps, required this.kids,
+      required this.hasPin, required this.hasWallpaper});
+}

@@ -56,6 +56,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private List<AppEntry> apps = new ArrayList<>();
     private List<AppEntry> favorites = new ArrayList<>();
     private final Set<String> homeApps = new java.util.HashSet<>();
+    private List<Inputs.Item> inputs = new ArrayList<>();
+    private android.graphics.Bitmap wallBitmap;
+    private long wallRev = -1;
 
     private FrameLayout root;
     private ScrollView scroll;
@@ -132,6 +135,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent e) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if (prefs.kids()) return true;
             View f = getCurrentFocus();
             if (f instanceof AppTile) { showOptions((AppTile) f); return true; }
         }
@@ -143,6 +147,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private void reloadApps() {
         io.execute(() -> {
             final List<AppEntry> list = AppEntry.loadAll(this);
+            final List<Inputs.Item> ins = Inputs.load(this);
             final Set<String> homes = new java.util.HashSet<>();
             try {
                 for (android.content.pm.ResolveInfo ri : pm.queryIntentActivities(
@@ -152,6 +157,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             } catch (Throwable ignored) {}
             main.post(() -> {
                 apps = list;
+                inputs = ins;
                 homeApps.clear();
                 homeApps.addAll(homes);
                 build();
@@ -198,7 +204,19 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final Skin skin = prefs.skin();
         final boolean labelsAlways = prefs.labelsAlways();
         final Set<String> hidden = prefs.hidden();
-        favorites = resolveFavorites(hidden);
+        final boolean kids = prefs.kids();
+        favorites = kids ? new ArrayList<AppEntry>() : resolveFavorites(hidden);
+        final int cols = kids ? 4 : GRID_COLUMNS;
+
+        // Own photo as background: decode off the UI thread, then redraw.
+        long rev = prefs.wallpaperRev();
+        if (rev != wallRev) {
+            wallRev = rev;
+            io.execute(() -> {
+                final android.graphics.Bitmap b = Wallpaper.load(this);
+                main.post(() -> { wallBitmap = b; build(); });
+            });
+        }
 
         int screenW = getResources().getDisplayMetrics().widthPixels;
         int padH = Math.round(screenW * 0.05f);          // TV overscan-safe margin
@@ -207,20 +225,32 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         int contentW = screenW - 2 * padH;
         int favW = (contentW - 2 * Ui.dp(this, 22) - gap * (FAV_VISIBLE - 1)) / FAV_VISIBLE;
         int favH = favW * 9 / 16;
-        int tileW = (contentW - gap * (GRID_COLUMNS - 1)) / GRID_COLUMNS;
+        int tileW = (contentW - gap * (cols - 1)) / cols;
         int tileH = tileW * 9 / 16;
 
         root.removeAllViews();
         root.setBackground(Ui.background(skin));
 
-        // Accent glow in the top-right corner
-        View glow = new View(this);
-        int gs = Math.round(screenW * 0.7f);
-        glow.setBackground(Ui.glow(skin.accent, gs / 2f));
-        FrameLayout.LayoutParams glp = new FrameLayout.LayoutParams(gs, gs, Gravity.TOP | Gravity.END);
-        glp.topMargin = -gs / 2;
-        glp.rightMargin = -gs / 3;
-        root.addView(glow, glp);
+        if (wallBitmap != null) {
+            android.widget.ImageView wp = new android.widget.ImageView(this);
+            wp.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            wp.setImageBitmap(wallBitmap);
+            root.addView(wp, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            View dim = new View(this);
+            dim.setBackgroundColor(0x66000000); // keeps text readable on any photo
+            root.addView(dim, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        } else {
+            // Accent glow in the top-right corner
+            View glow = new View(this);
+            int gs = Math.round(screenW * 0.7f);
+            glow.setBackground(Ui.glow(skin.accent, gs / 2f));
+            FrameLayout.LayoutParams glp = new FrameLayout.LayoutParams(gs, gs, Gravity.TOP | Gravity.END);
+            glp.topMargin = -gs / 2;
+            glp.rightMargin = -gs / 3;
+            root.addView(glow, glp);
+        }
         View vig = new View(this);
         vig.setBackground(Ui.vignette());
         root.addView(vig, new FrameLayout.LayoutParams(
@@ -239,7 +269,31 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         page.setPadding(padH, padV, padH, padV * 3);
         scroll.addView(page);
 
-        page.addView(topBar(skin));
+        page.addView(kids ? kidsBar() : topBar(skin));
+
+        if (!kids && !inputs.isEmpty()) {
+            page.addView(sectionTitle("Источники", Ui.dp(this, 26)));
+            HorizontalScrollView ins = new HorizontalScrollView(this);
+            ins.setHorizontalScrollBarEnabled(false);
+            ins.setClipChildren(false);
+            ins.setClipToPadding(false);
+            ins.setPadding(Ui.dp(this, 4), Ui.dp(this, 10), Ui.dp(this, 4), Ui.dp(this, 4));
+            LinearLayout irow = row();
+            for (int i = 0; i < inputs.size(); i++) {
+                final Inputs.Item it = inputs.get(i);
+                Pill pill = new Pill(this, it.label);
+                pill.setOnClickListener(v -> {
+                    try { startActivity(Inputs.intent(it)); }
+                    catch (Exception e) { Toast.makeText(this, "Не удалось открыть " + it.label, Toast.LENGTH_SHORT).show(); }
+                });
+                LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (i > 0) ip.leftMargin = Ui.dp(this, 12);
+                irow.addView(pill, ip);
+            }
+            ins.addView(irow);
+            page.addView(ins);
+        }
 
         List<AppTile> tiles = new ArrayList<>();
         if (!favorites.isEmpty()) {
@@ -272,20 +326,32 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
 
         List<AppEntry> rest = new ArrayList<>();
-        for (AppEntry a : apps) if (!favorites.contains(a) && !hidden.contains(a.pkg)) rest.add(a);
+        Set<String> allowed = prefs.kidsApps();
+        for (AppEntry a : apps) {
+            if (kids ? allowed.contains(a.pkg) : (!favorites.contains(a) && !hidden.contains(a.pkg))) rest.add(a);
+        }
+        if (kids && rest.isEmpty() && !apps.isEmpty()) {
+            TextView none = Ui.text(this, 18, 0x99FFFFFF, "sans-serif");
+            none.setSingleLine(false);
+            none.setText("Для детского режима ещё не выбраны приложения. Выйдите по PIN и выберите их в настройках.");
+            LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            nlp.topMargin = Ui.dp(this, 40);
+            page.addView(none, nlp);
+        }
         if (!rest.isEmpty()) {
-            page.addView(sectionTitle("Приложения", Ui.dp(this, 26)));
+            page.addView(sectionTitle(kids ? "Можно смотреть" : "Приложения", Ui.dp(this, 26)));
             LinearLayout row = null;
             for (int i = 0; i < rest.size(); i++) {
-                if (i % GRID_COLUMNS == 0) {
+                if (i % cols == 0) {
                     row = row();
                     row.setPadding(0, Ui.dp(this, 12), 0, Ui.dp(this, 4));
                     page.addView(row);
                 }
-                AppTile t = tile(rest.get(i), tileW, tileH, skin, labelsAlways, 13, 1.12f);
+                AppTile t = tile(rest.get(i), tileW, tileH, skin, kids || labelsAlways, kids ? 16 : 13, kids ? 1.08f : 1.12f);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (i % GRID_COLUMNS > 0) lp.leftMargin = gap;
+                if (i % cols > 0) lp.leftMargin = gap;
                 row.addView(t, lp);
                 tiles.add(t);
             }
@@ -377,6 +443,35 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         return bar;
     }
 
+    private View kidsBar() {
+        LinearLayout bar = new LinearLayout(this);
+        bar.setOrientation(LinearLayout.HORIZONTAL);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        LinearLayout left = new LinearLayout(this);
+        left.setOrientation(LinearLayout.VERTICAL);
+        TextView t = Ui.text(this, 15, prefs.skin().accent, "sans-serif-medium");
+        t.setText("ДЕТСКИЙ РЕЖИМ");
+        t.setLetterSpacing(0.16f);
+        left.addView(t);
+        TextClock clock = new TextClock(this);
+        String fmt = prefs.clock24() ? "HH:mm" : "h:mm";
+        clock.setFormat24Hour(fmt);
+        clock.setFormat12Hour(fmt);
+        clock.setTextSize(64);
+        clock.setTextColor(0xFFFFFFFF);
+        clock.setTypeface(android.graphics.Typeface.create("sans-serif-thin", android.graphics.Typeface.NORMAL));
+        left.addView(clock);
+        bar.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        Pill exit = new Pill(this, "Выйти");
+        exit.setOnClickListener(v -> Pin.ask(this, "PIN, чтобы выйти из детского режима", pin -> {
+            if (prefs.checkPin(pin)) prefs.setKids(false);
+            else Toast.makeText(this, "Неверный PIN", Toast.LENGTH_SHORT).show();
+        }));
+        bar.addView(exit);
+        return bar;
+    }
+
     @SuppressWarnings("deprecation")
     private String networkLabel() {
         try {
@@ -430,7 +525,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private AppTile tile(AppEntry a, int w, int h, Skin skin, boolean labelsAlways, float sp, float scale) {
         AppTile t = new AppTile(this, a, w, h, skin, labelsAlways, sp, scale);
         t.setOnClickListener(v -> launch(a));
-        t.setOnLongClickListener(v -> { showOptions(t); return true; });
+        t.setOnLongClickListener(v -> {
+            if (!prefs.kids()) showOptions(t);
+            return true;
+        });
         return t;
     }
 

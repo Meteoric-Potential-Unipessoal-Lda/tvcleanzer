@@ -16,6 +16,8 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_animate: ^4.5.0
   gap: ^3.0.1
+  # Launcher wallpaper from the phone's photos
+  image_picker: ^1.1.2
   # Storage (RSA key pair + preferences)
   shared_preferences: ^2.2.3
 

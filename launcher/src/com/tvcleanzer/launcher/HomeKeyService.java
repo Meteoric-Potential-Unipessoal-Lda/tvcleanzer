@@ -51,7 +51,10 @@ public class HomeKeyService extends AccessibilityService {
 
     @Override
     protected boolean onKeyEvent(KeyEvent e) {
-        if (e.getKeyCode() != KeyEvent.KEYCODE_HOME) return false;
+        int code = e.getKeyCode();
+        // 191 = the "Mi" button on Xiaomi remotes (elsewhere it is a gamepad key)
+        boolean miKey = code == 191 && android.os.Build.MANUFACTURER.toLowerCase().contains("xiaomi");
+        if (code != KeyEvent.KEYCODE_HOME && !miKey) return false;
         if (e.getAction() == KeyEvent.ACTION_UP) {
             allowedStockPkg = null;
             openHome();

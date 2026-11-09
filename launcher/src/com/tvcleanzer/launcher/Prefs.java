@@ -14,7 +14,8 @@ import java.util.Set;
 final class Prefs {
     static final String FILE = "launcher";
     static final String SKIN = "skin", CLOCK24 = "clock24", LABELS = "labels",
-            FAVORITES = "favorites", HIDDEN = "hidden";
+            FAVORITES = "favorites", HIDDEN = "hidden",
+            WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash";
 
     final SharedPreferences sp;
 
@@ -39,6 +40,30 @@ final class Prefs {
         sp.edit().putString(FAVORITES, TextUtils.join(",", keys)).apply();
     }
     void resetFavorites()    { sp.edit().remove(FAVORITES).apply(); }
+
+    long wallpaperRev()      { return sp.getLong(WALL_REV, 0); }
+    void bumpWallpaper()     { sp.edit().putLong(WALL_REV, System.currentTimeMillis()).apply(); }
+
+    boolean kids()           { return sp.getBoolean(KIDS, false); }
+    void setKids(boolean v)  { sp.edit().putBoolean(KIDS, v).apply(); }
+    Set<String> kidsApps()   { return new HashSet<>(sp.getStringSet(KIDS_APPS, new HashSet<String>())); }
+    void setKidsApps(Set<String> keys) { sp.edit().putStringSet(KIDS_APPS, new HashSet<>(keys)).apply(); }
+
+    boolean hasPin()         { return sp.contains(PIN); }
+    void setPin(String pin)  { sp.edit().putString(PIN, hash(pin)).apply(); }
+    boolean checkPin(String pin) { return hasPin() && hash(pin).equals(sp.getString(PIN, "")); }
+
+    private static String hash(String pin) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] h = md.digest(("tvcleanzer:" + pin).getBytes("UTF-8"));
+            StringBuilder b = new StringBuilder();
+            for (byte x : h) b.append(String.format("%02x", x));
+            return b.toString();
+        } catch (Exception e) {
+            return pin;
+        }
+    }
 
     Set<String> hidden()     { return new HashSet<>(sp.getStringSet(HIDDEN, new HashSet<String>())); }
     void setHidden(Set<String> keys) { sp.edit().putStringSet(HIDDEN, new HashSet<>(keys)).apply(); }
