@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
+import '../services/app_log.dart';
+import '../state/history.dart';
 import '../theme/app_theme.dart';
 import '../widgets/package_tile.dart';
 import 'clean_screen.dart';
 
 // ─── Providers ───────────────────────────────────────────────────────────────
 
-final scanProvider = StateNotifierProvider.family<ScanNotifier, ScanState, TvDevice>(
+final scanProvider = StateNotifierProvider.autoDispose.family<ScanNotifier, ScanState, TvDevice>(
   (ref, device) => ScanNotifier(device, ref.read(adbServiceProvider)),
 );
 
@@ -36,6 +39,7 @@ class ScanNotifier extends StateNotifier<ScanState> {
       if (!mounted) return;
       state = ScanState(phase: ScanPhase.done, result: result);
     } catch (e) {
+      AppLog.error('scan ${_device.ipAddress}', e);
       if (!mounted) return;
       state = ScanState(phase: ScanPhase.error, error: _friendlyError(e));
     }
@@ -46,7 +50,7 @@ class ScanNotifier extends StateNotifier<ScanState> {
     if (s.contains('SocketException') || s.contains('connection')) {
       return 'Нет связи с телевизором. Убедитесь, что телефон и телевизор в одной Wi-Fi сети.';
     }
-    if (s.contains('timeout') || s.contains('Timeout')) {
+    if (s.contains('timeout') || s.contains('Timeout') || s.contains('timed out')) {
       return 'Телевизор не отвечает. Проверьте, что на телевизоре включена отладка по сети, и попробуйте снова.';
     }
     return 'Ошибка: $s';
@@ -63,6 +67,10 @@ class ScanScreen extends ConsumerStatefulWidget {
 }
 
 class _ScanScreenState extends ConsumerState<ScanScreen> {
+  Set<String>? _selected;   // packages ticked for cleaning
+  ScanResult? _seen;        // result the selection was made for
+  bool _boosting = false;
+
   @override
   void initState() {
     super.initState();
@@ -93,99 +101,207 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     child: Column(mainAxisSize: MainAxisSize.min, children: [
       const SizedBox(
         width: 72, height: 72,
-        child: CircularProgressIndicator(
-          strokeWidth: 3, color: AppColors.accent,
-        ),
+        child: CircularProgressIndicator(strokeWidth: 3, color: AppColors.accent),
       ),
       const Gap(24),
       Text('Анализируем телевизор…',
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      const Text('Это займёт несколько секунд',
+      const Text('Сверяем с 463 проверенными списками',
         style: TextStyle(color: AppColors.fgMuted)),
     ]).animate().fadeIn(duration: 400.ms),
   );
 
+  void _toggle(String pkg) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      final s = _selected!;
+      s.contains(pkg) ? s.remove(pkg) : s.add(pkg);
+    });
+  }
+
   Widget _buildResults(ScanResult result) {
-    final toRemove = result.toRemove;
-    final toKeep   = result.packages
+    if (!identical(_seen, result)) {
+      _seen = result;
+      _selected = result.toRemove.map((p) => p.packageName).toSet();
+    }
+    final selected = _selected!;
+    final toRemove  = result.toRemove;
+    final toCaution = result.toCaution;
+    final toKeep    = result.packages
         .where((p) => p.verdict == PackageVerdict.keep || p.verdict == PackageVerdict.system)
         .toList();
+    final chosen = result.packages.where((p) => selected.contains(p.packageName)).toList();
+    final chosenMb = chosen.fold(0, (s, p) => s + p.sizeMb);
 
     return Column(children: [
-      // Summary banner
-      Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: AppColors.accentDim,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.accent.withValues(alpha: .25)),
-        ),
-        child: Row(children: [
-          const Text('🧹', style: TextStyle(fontSize: 32)),
-          const Gap(14),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${toRemove.length} приложений можно убрать',
-              style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
-            Text('Освободится около ${result.totalSaveMb} МБ',
-              style: const TextStyle(color: AppColors.fgMid, fontSize: 13)),
-          ])),
-        ]),
-      ).animate().fadeIn(duration: 300.ms).slideY(begin: .15, end: 0),
-
-      // Package list
-      Expanded(child: ListView(padding: const EdgeInsets.symmetric(horizontal: 16), children: [
+      Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), children: [
+        _summary(toRemove.length, toCaution.length),
+        const Gap(12),
+        _boostCard(),
+        const Gap(20),
         if (toRemove.isNotEmpty) ...[
-          _sectionHeader('Безопасно убрать', AppColors.danger),
+          _sectionHeader('Рекомендуем убрать', AppColors.danger, '${toRemove.length}'),
           const Gap(8),
           ...toRemove.asMap().entries.map((e) =>
-            PackageTile(pkg: e.value)
-              .animate(delay: (e.key * 50).ms)
-              .fadeIn(duration: 250.ms)
-              .slideX(begin: .05, end: 0, duration: 250.ms),
+            PackageTile(
+              pkg: e.value,
+              selected: selected.contains(e.value.packageName),
+              onTap: () => _toggle(e.value.packageName),
+            ).animate(delay: (e.key.clamp(0, 12) * 40).ms)
+              .fadeIn(duration: 220.ms)
+              .slideX(begin: .05, end: 0, duration: 220.ms),
           ),
           const Gap(16),
         ],
-        if (toKeep.isNotEmpty) ...[
-          _sectionHeader('Оставить', AppColors.ok),
+        if (toCaution.isNotEmpty) ...[
+          _sectionHeader('На ваше усмотрение', AppColors.warn, '${toCaution.length}'),
+          const Gap(4),
+          const Text('Функции и приложения: голос, трансляция, сервисы видео. '
+              'Отметьте, только если точно не пользуетесь.',
+              style: TextStyle(fontSize: 12, color: AppColors.fgMuted, height: 1.4)),
           const Gap(8),
-          ...toKeep.map((p) => PackageTile(pkg: p, dimmed: true)),
+          ...toCaution.map((p) => PackageTile(
+                pkg: p,
+                selected: selected.contains(p.packageName),
+                onTap: () => _toggle(p.packageName),
+              )),
           const Gap(16),
         ],
-        if (toRemove.isEmpty && toKeep.isEmpty)
-          _buildNothingFound(),
+        if (toKeep.isNotEmpty)
+          Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              iconColor: AppColors.fgMid,
+              collapsedIconColor: AppColors.fgMuted,
+              title: _sectionHeader('Не трогаем', AppColors.ok, '${toKeep.length}'),
+              subtitle: const Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Text('Система, входы HDMI, пульт, главный экран и ваши приложения',
+                    style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+              ),
+              children: [for (final p in toKeep.take(200)) PackageTile(pkg: p, dimmed: true)],
+            ),
+          ),
+        if (toRemove.isEmpty && toCaution.isEmpty) _buildNothingFound(),
       ])),
 
-      // CTA
-      if (toRemove.isNotEmpty)
+      if (chosen.isNotEmpty)
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: SizedBox(width: double.infinity, child: FilledButton.icon(
               icon: const Icon(Icons.cleaning_services_rounded),
-              label: Text('Очистить · освободить ${result.totalSaveMb} МБ'),
+              label: Text(chosenMb > 0
+                  ? 'Убрать ${chosen.length} · освободить ~$chosenMb МБ'
+                  : 'Убрать ${chosen.length}'),
               style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
               onPressed: () => Navigator.push(context,
                 MaterialPageRoute(builder: (_) => CleanScreen(
                   device: widget.device,
-                  packages: toRemove,
+                  packages: chosen,
                 ))),
             )),
           ),
-        ),
+        ).animate().fadeIn(duration: 200.ms).slideY(begin: .3, end: 0),
     ]);
   }
 
+  Widget _summary(int remove, int caution) => Container(
+    padding: const EdgeInsets.all(18),
+    decoration: BoxDecoration(
+      color: AppColors.accentDim,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.accent.withValues(alpha: .25)),
+    ),
+    child: Row(children: [
+      const Text('🧹', style: TextStyle(fontSize: 32)),
+      const Gap(14),
+      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(remove > 0 ? '$remove лишних приложений' : 'Явного мусора нет',
+          style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
+        const Gap(2),
+        Text(caution > 0 ? 'Ещё $caution — на ваше усмотрение' : 'Всё скрытое можно вернуть из «Истории»',
+          style: const TextStyle(color: AppColors.fgMid, fontSize: 13)),
+      ])),
+    ]),
+  ).animate().fadeIn(duration: 300.ms).slideY(begin: .15, end: 0);
+
+  Widget _boostCard() => Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [Color(0x332E2A5C), Color(0x1A00CFA8)],
+        begin: Alignment.topLeft, end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.cardBd),
+    ),
+    child: Row(children: [
+      Container(
+        width: 44, height: 44,
+        decoration: BoxDecoration(
+          color: const Color(0x33A78BFA),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(Icons.bolt_rounded, color: Color(0xFFC4B5FD)),
+      ),
+      const Gap(12),
+      const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text('Ускорить телевизор',
+            style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.fg, fontSize: 15)),
+        SizedBox(height: 2),
+        Text('Быстрее анимации, свободнее память, чище кэш. С замером до и после.',
+            style: TextStyle(fontSize: 12, color: AppColors.fgMid, height: 1.35)),
+      ])),
+      const Gap(8),
+      _boosting
+          ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))
+          : FilledButton(
+              onPressed: _boost,
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFA78BFA),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              ),
+              child: const Text('Пуск'),
+            ),
+    ]),
+  ).animate().fadeIn(delay: 100.ms, duration: 300.ms);
+
+  Future<void> _boost() async {
+    setState(() => _boosting = true);
+    try {
+      final r = await ref.read(adbServiceProvider).boost(widget.device);
+      await ref.read(historyProvider.notifier).addBoost(widget.device, r);
+      if (!mounted) return;
+      setState(() => _boosting = false);
+      HapticFeedback.mediumImpact();
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: AppColors.bgCard,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+        builder: (_) => _BoostSheet(result: r),
+      );
+    } catch (e) {
+      AppLog.error('boost ${widget.device.ipAddress}', e);
+      if (!mounted) return;
+      setState(() => _boosting = false);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Не получилось: телевизор не отвечает.')));
+    }
+  }
+
   Widget _buildNothingFound() => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 48),
+    padding: const EdgeInsets.symmetric(vertical: 32),
     child: Column(children: [
       const Text('✅', style: TextStyle(fontSize: 48)),
       const Gap(16),
       Text('Телевизор чистый!',
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      const Text('Мусорных приложений не обнаружено.',
+      const Text('Мусорных приложений не обнаружено. Попробуйте «Ускорить».',
         textAlign: TextAlign.center,
         style: TextStyle(color: AppColors.fgMid)),
     ]),
@@ -212,13 +328,90 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     ),
   );
 
-  Widget _sectionHeader(String label, Color color) => Row(children: [
+  Widget _sectionHeader(String label, Color color, String count) => Row(children: [
     Container(width: 3, height: 14, decoration: BoxDecoration(
       color: color, borderRadius: BorderRadius.circular(2),
     )),
     const Gap(8),
     Text(label.toUpperCase(), style: const TextStyle(
-      fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: .08, color: AppColors.fgMuted,
+      fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: .8, color: AppColors.fgMuted,
     )),
+    const Gap(6),
+    Text(count, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: color)),
   ]);
+}
+
+/// Before/after numbers with a counting animation.
+class _BoostSheet extends StatelessWidget {
+  final BoostResult result;
+  const _BoostSheet({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    final r = result;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Container(width: 40, height: 4, decoration: BoxDecoration(
+              color: AppColors.cardBd, borderRadius: BorderRadius.circular(2))),
+          const Gap(20),
+          const Icon(Icons.bolt_rounded, color: Color(0xFFC4B5FD), size: 44)
+              .animate().scale(begin: const Offset(.5, .5), duration: 500.ms, curve: Curves.elasticOut),
+          const Gap(10),
+          Text('Телевизор ускорен',
+              style: GoogleFonts.syne(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.fg)),
+          const Gap(20),
+          Row(children: [
+            _metric('Было', r.ramBeforeMb, AppColors.fgMid),
+            const Icon(Icons.arrow_forward_rounded, color: AppColors.fgMuted),
+            _metric('Стало', r.ramAfterMb, AppColors.accent, animate: true),
+          ]),
+          const Gap(6),
+          Text(r.ramTotalMb > 0
+              ? 'свободной памяти из ${r.ramTotalMb} МБ'
+              : 'свободной памяти',
+              style: const TextStyle(color: AppColors.fgMuted, fontSize: 12)),
+          const Gap(18),
+          Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
+            if (r.ramGainMb > 0) _chip('+${r.ramGainMb} МБ памяти', AppColors.accent),
+            if (r.cacheFreedMb > 0) _chip('−${r.cacheFreedMb} МБ кэша', const Color(0xFFC4B5FD)),
+            if (r.oldSettings.isNotEmpty) _chip('анимации ×2 быстрее', AppColors.warn),
+          ]),
+          const Gap(14),
+          const Text('Анимации можно вернуть во вкладке «История».',
+              style: TextStyle(color: AppColors.fgMuted, fontSize: 12)),
+          const Gap(16),
+          SizedBox(width: double.infinity, child: FilledButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Отлично'),
+          )),
+        ]),
+      ),
+    );
+  }
+
+  Widget _metric(String label, int mb, Color color, {bool animate = false}) => Expanded(
+    child: Column(children: [
+      Text(label, style: const TextStyle(color: AppColors.fgMuted, fontSize: 12)),
+      const Gap(4),
+      TweenAnimationBuilder<int>(
+        tween: IntTween(begin: animate ? (mb * .6).round() : mb, end: mb),
+        duration: const Duration(milliseconds: 1100),
+        curve: Curves.easeOutCubic,
+        builder: (_, v, __) => Text('$v МБ',
+            style: GoogleFonts.syne(fontSize: 26, fontWeight: FontWeight.w800, color: color)),
+      ),
+    ]),
+  );
+
+  Widget _chip(String text, Color color) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: .12),
+      borderRadius: BorderRadius.circular(50),
+      border: Border.all(color: color.withValues(alpha: .3)),
+    ),
+    child: Text(text, style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 13)),
+  );
 }

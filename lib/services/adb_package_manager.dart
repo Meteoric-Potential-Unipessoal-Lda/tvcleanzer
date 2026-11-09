@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/tv_device.dart';
 import 'adb_client.dart';
+import 'protection.dart';
 
 // ─── Riverpod Provider ────────────────────────────────────────────────────────
 
@@ -97,25 +98,44 @@ class AdbPackageManager {
       final raw = await adb.shell('pm list packages');
       final pkgs = _parsePackageList(raw);
 
+      // What the TV itself says: its home screens (never touched) and the
+      // apps visible in its menu (owner's apps: never pre-selected).
+      final homes = _parseComponents(await adb.shell(
+          'cmd package query-activities --brief -a android.intent.action.MAIN '
+          '-c android.intent.category.HOME 2>/dev/null'));
+      final launchable = _parseComponents(await adb.shell(
+          'cmd package query-activities --brief -a android.intent.action.MAIN '
+          '-c android.intent.category.LEANBACK_LAUNCHER 2>/dev/null; '
+          'cmd package query-activities --brief -a android.intent.action.MAIN '
+          '-c android.intent.category.LAUNCHER 2>/dev/null'));
+      // Memory each package uses right now (what removing it frees).
+      final ramKb = _parsePsRss(await adb.shell('ps -A -o RSS,NAME 2>/dev/null || ps'));
+
       final packages = pkgs.map((name) {
         final entry = db[name];
+        var verdict = entry?.verdict ?? PackageVerdict.keep;
+        if (Protection.isProtected(name) || homes.contains(name)) {
+          verdict = PackageVerdict.system;
+        } else if (verdict == PackageVerdict.remove && launchable.contains(name)) {
+          verdict = PackageVerdict.caution; // a visible app: the owner decides
+        }
         return TvPackage(
           packageName: name,
           label:   entry?.label,
-          sizeMb:  entry?.sizeMb ?? 0,
-          verdict: entry?.verdict ?? PackageVerdict.keep,
+          sizeMb:  (ramKb[name] ?? 0) ~/ 1024,
+          verdict: verdict,
           reason:  entry?.reason,
         );
       }).toList()
         ..sort((a, b) {
-          // Sort: remove → caution → keep → system
-          final order = {
+          const order = {
             PackageVerdict.remove:  0,
             PackageVerdict.caution: 1,
             PackageVerdict.keep:    2,
             PackageVerdict.system:  3,
           };
-          return (order[a.verdict] ?? 2).compareTo(order[b.verdict] ?? 2);
+          final o = (order[a.verdict] ?? 2).compareTo(order[b.verdict] ?? 2);
+          return o != 0 ? o : b.sizeMb.compareTo(a.sizeMb);
         });
 
       return ScanResult(
@@ -126,6 +146,122 @@ class AdbPackageManager {
     } finally {
       adb.close();
     }
+  }
+
+  /// "com.pkg/.Activity" lines -> package names.
+  static Set<String> _parseComponents(String out) {
+    final re = RegExp(r'^\s*([A-Za-z0-9_.]+)/');
+    return out
+        .split('\n')
+        .map((l) => re.firstMatch(l)?.group(1))
+        .whereType<String>()
+        .toSet();
+  }
+
+  /// RSS (KB) per package from `ps -A -o RSS,NAME` (Android 8+) or plain `ps`.
+  static Map<String, int> _parsePsRss(String out) {
+    final res = <String, int>{};
+    final short = RegExp(r'^\s*(\d+)\s+(\S+)\s*$');
+    for (final line in out.split('\n')) {
+      int? kb;
+      String? name;
+      final m = short.firstMatch(line);
+      if (m != null) {
+        kb = int.tryParse(m.group(1)!);
+        name = m.group(2);
+      } else {
+        final p = line.trim().split(RegExp(r'\s+'));
+        if (p.length >= 9) {
+          kb = int.tryParse(p[4]);
+          name = p.last;
+        }
+      }
+      if (kb == null || name == null) continue;
+      final pkg = name.split(':').first;
+      res[pkg] = (res[pkg] ?? 0) + kb;
+    }
+    return res;
+  }
+
+  // ── Boost ──────────────────────────────────────────────────────────────────
+
+  static const _animKeys = [
+    'window_animation_scale',
+    'transition_animation_scale',
+    'animator_duration_scale',
+  ];
+
+  /// Faster animations (0.5x), close background apps, trim app caches.
+  /// Measures free RAM and /data before and after. Animation values are
+  /// returned so History can put them back.
+  Future<BoostResult> boost(TvDevice device) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      final before = await _mem(adb);
+      final dataBefore = await _dataFreeKb(adb);
+
+      final old = <String, String>{};
+      for (final k in _animKeys) {
+        final v = (await adb.shell('settings get global $k')).trim();
+        if (v != '0.5') {
+          old[k] = v;
+          await adb.shell('settings put global $k 0.5');
+        }
+      }
+      await adb.shell('am kill-all');
+      await adb.shell('pm trim-caches 999G', timeout: const Duration(seconds: 60));
+      await Future.delayed(const Duration(seconds: 2));
+
+      final after = await _mem(adb);
+      final dataAfter = await _dataFreeKb(adb);
+      return BoostResult(
+        ramTotalMb: before.$1 ~/ 1024,
+        ramBeforeMb: before.$2 ~/ 1024,
+        ramAfterMb: after.$2 ~/ 1024,
+        cacheFreedMb: dataAfter > dataBefore ? (dataAfter - dataBefore) ~/ 1024 : 0,
+        oldSettings: old,
+        completedAt: DateTime.now(),
+      );
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Puts animation settings back as they were before boost().
+  Future<void> undoBoost(TvDevice device, Map<String, String> old) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      for (final e in old.entries) {
+        if (!RegExp(r'^[a-z_]+$').hasMatch(e.key)) continue;
+        final v = e.value;
+        if (v.isEmpty || v == 'null' || !RegExp(r'^[0-9.]+$').hasMatch(v)) {
+          await adb.shell('settings delete global ${e.key}');
+        } else {
+          await adb.shell('settings put global ${e.key} $v');
+        }
+      }
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// (MemTotal, MemAvailable) in KB.
+  static Future<(int, int)> _mem(AdbClient adb) async {
+    final out = await adb.shell('head -3 /proc/meminfo');
+    int kb(String key) {
+      final m = RegExp('^$key:\\s+(\\d+)', multiLine: true).firstMatch(out);
+      return m == null ? 0 : int.parse(m.group(1)!);
+    }
+    final avail = kb('MemAvailable');
+    return (kb('MemTotal'), avail > 0 ? avail : kb('MemFree'));
+  }
+
+  static Future<int> _dataFreeKb(AdbClient adb) async {
+    final out = await adb.shell('df -k /data');
+    final m = RegExp(r'^\S+\s+(\d+)\s+(\d+)\s+(\d+)', multiLine: true).firstMatch(out);
+    return m == null ? 0 : int.parse(m.group(3)!);
   }
 
   // ── Clean ───────────────────────────────────────────────────────────────────

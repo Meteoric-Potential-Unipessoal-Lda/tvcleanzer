@@ -61,6 +61,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
   Widget _card(CleanRecord r) {
     final busy = _busy.contains(r.id);
+    final boost = r.isBoost;
+    const sub = TextStyle(fontSize: 13, color: AppColors.fgMid);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -77,12 +79,13 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
               color: AppColors.accentDim,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.tv_rounded, color: AppColors.accent, size: 22),
+            child: Icon(boost ? Icons.bolt_rounded : Icons.tv_rounded,
+                color: AppColors.accent, size: 22),
           ),
           const Gap(12),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(r.tvName,
+              Text(boost ? 'Ускорение · ${r.tvName}' : r.tvName,
                   style: GoogleFonts.syne(
                       fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.fg)),
               Text(_fmt(r.date),
@@ -91,12 +94,19 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           ),
           _badge(r),
         ]),
+        if (boost) ...[
+          const Gap(8),
+          Text('Свободная память: ${r.ramBeforeMb} → ${r.ramAfterMb} МБ', style: sub),
+          if (r.cacheFreedMb > 0) Text('Очищено кэша: ${r.cacheFreedMb} МБ', style: sub),
+          if (r.settings.isNotEmpty) const Text('Анимации ускорены до 0.5×', style: sub),
+          const Gap(8),
+        ],
         if (r.savedMb > 0) ...[
           const Gap(8),
           Text('Освобождено около ${r.savedMb} МБ',
               style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
         ],
-        Theme(
+        if (!boost) Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
             tilePadding: EdgeInsets.zero,
@@ -121,7 +131,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             ],
           ),
         ),
-        if (!r.restored)
+        if (r.canRestore)
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -131,7 +141,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.undo_rounded, size: 18),
-              label: Text(busy ? 'Возвращаем…' : 'Вернуть всё'),
+              label: Text(busy ? 'Возвращаем…' : (boost ? 'Вернуть анимации' : 'Вернуть всё')),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.fg,
                 side: const BorderSide(color: AppColors.cardBd),
@@ -146,7 +156,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
   Widget _badge(CleanRecord r) {
     final color = r.restored ? AppColors.ok : AppColors.danger;
-    final text = r.restored ? 'Возвращено' : 'Скрыто ${r.packages.length}';
+    final text = r.restored
+        ? 'Возвращено'
+        : (r.isBoost ? 'Ускорено' : 'Скрыто ${r.packages.length}');
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -165,10 +177,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.bgCard,
-        title: const Text('Вернуть приложения?'),
-        content: Text(
-            'На телевизор «${r.tvName}» вернутся ${r.packages.length} скрытых приложений. '
-            'Телевизор должен быть включён и в той же Wi-Fi сети.'),
+        title: Text(r.isBoost ? 'Вернуть анимации?' : 'Вернуть приложения?'),
+        content: Text(r.isBoost
+            ? 'Анимации на «${r.tvName}» вернутся к прежней скорости. '
+              'Телевизор должен быть включён и в той же Wi-Fi сети.'
+            : 'На телевизор «${r.tvName}» вернутся ${r.packages.length} скрытых приложений. '
+              'Телевизор должен быть включён и в той же Wi-Fi сети.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
           FilledButton(
@@ -188,10 +202,19 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     String message;
     try {
       final tv = TvDevice.fromAdb(ip: r.tvIp, brand: '', model: '', androidVer: '');
-      final ok = await ref.read(adbServiceProvider).rollback(tv, r.backupId);
+      final api = ref.read(adbServiceProvider);
+      bool ok;
+      if (r.isBoost) {
+        await api.undoBoost(tv, r.settings);
+        ok = true;
+      } else {
+        ok = await api.rollback(tv, r.backupId);
+      }
       if (ok) {
         await ref.read(historyProvider.notifier).markRestored(r.id);
-        message = 'Готово: приложения вернулись на телевизор.';
+        message = r.isBoost
+            ? 'Готово: анимации как раньше.'
+            : 'Готово: приложения вернулись на телевизор.';
       } else {
         message = 'Часть приложений вернуть не удалось. Попробуйте ещё раз.';
       }

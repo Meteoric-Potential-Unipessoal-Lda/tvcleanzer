@@ -3,6 +3,7 @@ import 'dart:io';
 
 import '../models/tv_device.dart';
 import 'adb_package_manager.dart';
+import 'app_log.dart';
 
 // ─── TV Discovery via ADB port 5555 ──────────────────────────────────────────
 
@@ -43,8 +44,9 @@ class TvDiscovery {
             .getDeviceInfo(ip)
             .timeout(_adbTimeout);
         yield device;
-      } catch (_) {
-        // Not an ADB device or auth failed — skip silently
+      } catch (e) {
+        // Not an ADB device or auth failed: skip, but keep it for reports
+        AppLog.error('connect $ip', e);
       }
     }
   }

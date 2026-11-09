@@ -148,3 +148,25 @@ class CleanResult {
     );
   }
 }
+
+/// Result of "Ускорить": free RAM before/after, cache freed, previous
+/// animation settings (for undo).
+class BoostResult {
+  final int ramTotalMb;
+  final int ramBeforeMb;
+  final int ramAfterMb;
+  final int cacheFreedMb;
+  final Map<String, String> oldSettings;
+  final DateTime completedAt;
+
+  const BoostResult({
+    required this.ramTotalMb,
+    required this.ramBeforeMb,
+    required this.ramAfterMb,
+    required this.cacheFreedMb,
+    required this.oldSettings,
+    required this.completedAt,
+  });
+
+  int get ramGainMb => ramAfterMb > ramBeforeMb ? ramAfterMb - ramBeforeMb : 0;
+}

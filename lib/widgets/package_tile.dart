@@ -6,7 +6,10 @@ import '../theme/app_theme.dart';
 class PackageTile extends StatelessWidget {
   final TvPackage pkg;
   final bool dimmed;
-  const PackageTile({super.key, required this.pkg, this.dimmed = false});
+  /// null = no checkbox; true/false = selectable row.
+  final bool? selected;
+  final VoidCallback? onTap;
+  const PackageTile({super.key, required this.pkg, this.dimmed = false, this.selected, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +27,20 @@ class PackageTile extends StatelessWidget {
       PackageVerdict.system  => Icons.shield_outlined,
     };
 
-    return Opacity(
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Opacity(
       opacity: dimmed ? .5 : 1,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
           color: AppColors.bgCard,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.cardBd),
+          border: Border.all(
+              color: selected == true ? color.withValues(alpha: .55) : AppColors.cardBd),
         ),
         child: Row(children: [
           // Icon badge
@@ -72,8 +80,22 @@ class PackageTile extends StatelessWidget {
                 style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w600)),
             ),
           ],
+          if (selected != null) ...[
+            const Gap(10),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 160),
+              transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
+              child: Icon(
+                selected! ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+                key: ValueKey(selected),
+                color: selected! ? color : AppColors.fgMuted,
+                size: 24,
+              ),
+            ),
+          ],
         ]),
       ),
+    ),
     );
   }
 }

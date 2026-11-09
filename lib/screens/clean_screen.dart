@@ -6,13 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
 import '../state/history.dart';
+import '../services/app_log.dart';
 import '../theme/app_theme.dart';
 import '../widgets/package_tile.dart';
 import 'result_screen.dart';
 
 // ─── Providers ───────────────────────────────────────────────────────────────
 
-final cleanProvider = StateNotifierProvider.family<CleanNotifier, CleanState, _CleanArgs>(
+final cleanProvider = StateNotifierProvider.autoDispose.family<CleanNotifier, CleanState, _CleanArgs>(
   (ref, args) => CleanNotifier(
     args.device, args.packages, ref.read(adbServiceProvider),
     onDone: (r) => ref.read(historyProvider.notifier)
@@ -77,6 +78,7 @@ class CleanNotifier extends StateNotifier<CleanState> {
         removed: _packages.length,
       );
     } catch (e) {
+      AppLog.error('clean ${_device.ipAddress}', e);
       if (!mounted) return;
       state = CleanState(
         phase: CleanPhase.error,

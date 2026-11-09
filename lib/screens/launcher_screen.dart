@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/launcher_skin.dart';
 import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
+import '../services/app_log.dart';
 import '../state/current_tv.dart';
 import '../state/launcher_skin_state.dart';
 import '../theme/app_theme.dart';
@@ -88,8 +89,10 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       _launcher = AdbPackageManager.launcherPkg;
       _checked = true;
     } on AdbException catch (e) {
+      AppLog.error('launcher install', e);
       _installError = e.message;
-    } catch (_) {
+    } catch (e) {
+      AppLog.error('launcher install', e);
       _installError = _offline;
     }
     if (mounted) setState(() => _step = null);

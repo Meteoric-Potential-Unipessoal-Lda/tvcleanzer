@@ -9,6 +9,7 @@ import '../services/tv_discovery.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 import '../widgets/tv_card.dart';
+import 'help_screen.dart';
 
 // ─── Providers ───────────────────────────────────────────────────────────────
 
@@ -127,6 +128,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ),
     actions: [
       IconButton(
+        icon: const Icon(Icons.help_outline_rounded),
+        color: AppColors.fgMid,
+        tooltip: 'Помощь',
+        onPressed: () => showHelpSheet(context, ref),
+      ),
+      IconButton(
         icon: const Icon(Icons.refresh_rounded),
         color: AppColors.accent,
         tooltip: 'Найти снова',
@@ -202,6 +209,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         icon: const Icon(Icons.refresh_rounded),
         label: const Text('Искать снова'),
         onPressed: () => ref.read(discoveryProvider.notifier).startScan(),
+      ),
+      const Gap(8),
+      TextButton.icon(
+        icon: const Icon(Icons.menu_book_rounded, size: 18),
+        label: const Text('Как включить отладку на моём ТВ?'),
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const HelpScreen())),
       ),
     ]),
   );

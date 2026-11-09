@@ -16,6 +16,17 @@ class CleanRecord {
   final int savedMb;
   final DateTime date;
   final bool restored;
+  /// 'clean' (apps hidden) or 'boost' (animations + memory/cache).
+  final String kind;
+  /// boost: previous global settings to put back (key -> old value).
+  final Map<String, String> settings;
+  /// boost: free RAM before/after and cache freed, for the card.
+  final int ramBeforeMb;
+  final int ramAfterMb;
+  final int cacheFreedMb;
+
+  bool get isBoost => kind == 'boost';
+  bool get canRestore => !restored && (isBoost ? settings.isNotEmpty : packages.isNotEmpty);
 
   const CleanRecord({
     required this.id,
@@ -26,6 +37,11 @@ class CleanRecord {
     required this.savedMb,
     required this.date,
     this.restored = false,
+    this.kind = 'clean',
+    this.settings = const {},
+    this.ramBeforeMb = 0,
+    this.ramAfterMb = 0,
+    this.cacheFreedMb = 0,
   });
 
   /// Same format the clean step uses as backupId (JSON list of packages).
@@ -42,6 +58,11 @@ class CleanRecord {
         savedMb: savedMb,
         date: date,
         restored: restored ?? this.restored,
+        kind: kind,
+        settings: settings,
+        ramBeforeMb: ramBeforeMb,
+        ramAfterMb: ramAfterMb,
+        cacheFreedMb: cacheFreedMb,
       );
 
   Map<String, dynamic> toJson() => {
@@ -53,6 +74,11 @@ class CleanRecord {
         'savedMb': savedMb,
         'date': date.toIso8601String(),
         'restored': restored,
+        'kind': kind,
+        'settings': settings,
+        'ramBeforeMb': ramBeforeMb,
+        'ramAfterMb': ramAfterMb,
+        'cacheFreedMb': cacheFreedMb,
       };
 
   factory CleanRecord.fromJson(Map<String, dynamic> j) => CleanRecord(
@@ -65,6 +91,12 @@ class CleanRecord {
         savedMb: (j['savedMb'] as num?)?.toInt() ?? 0,
         date: DateTime.tryParse(j['date'] as String? ?? '') ?? DateTime.now(),
         restored: j['restored'] as bool? ?? false,
+        kind: j['kind'] as String? ?? 'clean',
+        settings: (j['settings'] as Map? ?? const {}).map(
+            (k, v) => MapEntry(k as String, '$v')),
+        ramBeforeMb: (j['ramBeforeMb'] as num?)?.toInt() ?? 0,
+        ramAfterMb: (j['ramAfterMb'] as num?)?.toInt() ?? 0,
+        cacheFreedMb: (j['cacheFreedMb'] as num?)?.toInt() ?? 0,
       );
 }
 
@@ -109,6 +141,25 @@ class HistoryNotifier extends StateNotifier<List<CleanRecord>> {
       labels: labels,
       savedMb: result.savedMb,
       date: result.completedAt,
+    );
+    state = [rec, ...state].take(_max).toList();
+    await _save();
+  }
+
+  Future<void> addBoost(TvDevice tv, BoostResult r) async {
+    final rec = CleanRecord(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      tvIp: tv.ipAddress,
+      tvName: tv.shortName.isEmpty ? tv.ipAddress : tv.shortName,
+      packages: const [],
+      labels: const {},
+      savedMb: 0,
+      date: r.completedAt,
+      kind: 'boost',
+      settings: r.oldSettings,
+      ramBeforeMb: r.ramBeforeMb,
+      ramAfterMb: r.ramAfterMb,
+      cacheFreedMb: r.cacheFreedMb,
     );
     state = [rec, ...state].take(_max).toList();
     await _save();
