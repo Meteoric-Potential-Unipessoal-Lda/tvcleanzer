@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
+import '../state/history.dart';
 import '../theme/app_theme.dart';
 import '../widgets/package_tile.dart';
 import 'result_screen.dart';
@@ -12,7 +13,11 @@ import 'result_screen.dart';
 // ─── Providers ───────────────────────────────────────────────────────────────
 
 final cleanProvider = StateNotifierProvider.family<CleanNotifier, CleanState, _CleanArgs>(
-  (ref, args) => CleanNotifier(args.device, args.packages, ref.read(adbServiceProvider)),
+  (ref, args) => CleanNotifier(
+    args.device, args.packages, ref.read(adbServiceProvider),
+    onDone: (r) => ref.read(historyProvider.notifier)
+        .addFromClean(args.device, args.packages, r),
+  ),
 );
 
 @immutable
@@ -36,11 +41,14 @@ class CleanState {
 enum CleanPhase { confirm, cleaning, done, error }
 
 class CleanNotifier extends StateNotifier<CleanState> {
-  CleanNotifier(this._device, this._packages, this._api)
+  CleanNotifier(this._device, this._packages, this._api, {this.onDone})
     : super(CleanState(phase: CleanPhase.confirm, total: _packages.length));
   final TvDevice          _device;
   final List<TvPackage>   _packages;
   final AdbPackageManager _api;
+  /// Called once with the result, so it lands in History even if the user
+  /// closes the result screen.
+  final Future<void> Function(CleanResult)? onDone;
 
   Future<void> startClean() async {
     state = CleanState(phase: CleanPhase.cleaning, total: _packages.length);
@@ -60,6 +68,7 @@ class CleanNotifier extends StateNotifier<CleanState> {
     // Wait for the real result (should be done or close by now).
     try {
       final result = await apiFuture;
+      await onDone?.call(result);
       if (!mounted) return;
       state = CleanState(
         phase:   CleanPhase.done,

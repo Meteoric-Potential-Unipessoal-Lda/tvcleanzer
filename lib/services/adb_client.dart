@@ -307,6 +307,20 @@ class AdbClient {
 
   static Future<_Keys>? _keysFuture;
 
+  /// Creates the RSA key ahead of time (first launch: a few seconds of work in
+  /// a background isolate), so the first TV connection is fast.
+  static Future<void> warmUp() => _keys();
+
+  /// Whether this install already has its ADB key.
+  static Future<bool> hasKeys() async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      return sp.getString(_kN) != null;
+    } catch (_) {
+      return false;
+    }
+  }
+
   static Future<_Keys> _keys() =>
       _keysFuture ??= _loadOrGenerateKeys().catchError((Object e) {
         _keysFuture = null;

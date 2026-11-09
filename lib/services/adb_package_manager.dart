@@ -39,26 +39,35 @@ class AdbPackageManager {
     try {
       final cnxnProps = await adb.connect();
 
-      // Run a single getprop call to get extra properties
+      // Basic props + memory in one round trip.
       final propOut = await adb.shell(
-          'getprop ro.product.brand && '
-          'getprop ro.product.model && '
-          'getprop ro.build.version.release && '
-          'getprop ro.build.version.sdk && '
-          'cat /proc/meminfo | head -1');
+          'getprop ro.product.brand; '
+          'getprop ro.product.model; '
+          'getprop ro.build.version.release; '
+          'getprop ro.build.version.sdk; '
+          'head -3 /proc/meminfo');
 
       final lines  = propOut.split('\n').map((l) => l.trim()).toList();
-      final brand  = lines.isNotEmpty ? lines[0] : (cnxnProps['ro.product.brand'] ?? '');
-      final model  = lines.length > 1 ? lines[1] : (cnxnProps['ro.product.model'] ?? 'Android TV');
-      final ver    = lines.length > 2 ? lines[2] : (cnxnProps['ro.build.version.release'] ?? '?');
-      final sdk    = int.tryParse(lines.length > 3 ? lines[3] : '') ?? 0;
+      String at(int i) => i < lines.length ? lines[i] : '';
+      final brand  = at(0).isNotEmpty ? at(0) : (cnxnProps['ro.product.brand'] ?? '');
+      final model  = at(1).isNotEmpty ? at(1) : (cnxnProps['ro.product.model'] ?? 'Android TV');
+      final ver    = at(2).isNotEmpty ? at(2) : (cnxnProps['ro.build.version.release'] ?? '?');
+      final sdk    = int.tryParse(at(3)) ?? 0;
 
-      // Parse MemTotal from /proc/meminfo: "MemTotal:     1024000 kB"
-      int ramMb = 0;
-      if (lines.length > 4) {
-        final m = RegExp(r'(\d+)').firstMatch(lines[4]);
-        if (m != null) ramMb = int.parse(m.group(1)!) ~/ 1024;
+      // /proc/meminfo: "MemTotal:  2015332 kB", "MemAvailable:  812340 kB"
+      int memKb(String key) {
+        for (final l in lines.skip(4)) {
+          if (l.startsWith('$key:')) {
+            final m = RegExp(r'(\d+)').firstMatch(l);
+            if (m != null) return int.parse(m.group(1)!);
+          }
+        }
+        return 0;
       }
+      final ramMb     = memKb('MemTotal') ~/ 1024;
+      final ramFreeMb = (memKb('MemAvailable') > 0
+              ? memKb('MemAvailable')
+              : memKb('MemFree')) ~/ 1024;
 
       return TvDevice.fromAdb(
         ip: ip,
@@ -67,6 +76,7 @@ class AdbPackageManager {
         androidVer: ver,
         sdkVersion: sdk,
         ramMb: ramMb,
+        ramFreeMb: ramFreeMb,
         cnxnProps: cnxnProps,
       );
     } finally {
@@ -189,6 +199,30 @@ class AdbPackageManager {
       adb.close();
     }
     return failures == 0;
+  }
+
+  // ── Launcher ──────────────────────────────────────────────────────────────
+
+  /// Package name of the TV's current home screen app, or null when the
+  /// system has no default and asks the user every time.
+  Future<String?> currentLauncher(TvDevice device) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      final out = await adb.shell(
+          'cmd package resolve-activity --brief '
+          '-a android.intent.action.MAIN -c android.intent.category.HOME '
+          '2>/dev/null || pm resolve-activity --brief '
+          '-a android.intent.action.MAIN -c android.intent.category.HOME');
+      final comp = out
+          .split('\n')
+          .map((l) => l.trim())
+          .lastWhere((l) => l.contains('/'), orElse: () => '');
+      if (comp.isEmpty || comp.startsWith('android/')) return null; // chooser
+      return comp.split('/').first;
+    } finally {
+      adb.close();
+    }
   }
 
   // ── Package DB ───────────────────────────────────────────────────────────────

@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
+import '../state/history.dart';
 import '../theme/app_theme.dart';
 
 class ResultScreen extends ConsumerStatefulWidget {
@@ -99,7 +100,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
         if (result.backupId.isNotEmpty) ...[
           const Gap(12),
-          _stat('Резервная копия', 'создана', Icons.backup_rounded, AppColors.ok, fullWidth: true)
+          _stat('Сохранено в «Истории»', 'можно вернуть', Icons.history_rounded, AppColors.ok, fullWidth: true)
             .animate().fadeIn(delay: 500.ms),
         ],
 
@@ -146,8 +147,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                 const Text('Можно отменить', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.fg)),
                 const Gap(4),
                 const Text(
-                  'Резервная копия сохранена на телевизоре. '
-                  'Если что-то пошло не так — восстановление займёт пару секунд.',
+                  'Список скрытых приложений сохранён во вкладке «История». '
+                  'Вернуть их можно в любой момент, это займёт пару секунд.',
                   style: TextStyle(fontSize: 12, color: AppColors.fgMuted, height: 1.5),
                 ),
                 const Gap(10),
@@ -268,6 +269,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       final ok = await ref.read(adbServiceProvider).rollback(widget.device, widget.result.backupId);
       if (!mounted) return;
       if (ok) {
+        await ref.read(historyProvider.notifier)
+            .markRestoredByBackup(widget.result.backupId);
+        if (!mounted) return;
         setState(() { _rolling = false; _rollbackDone = true; });
       } else {
         setState(() { _rolling = false; });

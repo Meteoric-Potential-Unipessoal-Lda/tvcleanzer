@@ -1,25 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../theme/app_theme.dart';
 import '../screens/scan_screen.dart';
+import '../state/current_tv.dart';
 
-class TvCard extends StatelessWidget {
+class TvCard extends ConsumerWidget {
   final TvDevice device;
   const TvCard({super.key, required this.device});
 
   @override
-  Widget build(BuildContext context) {
-    final ramPct = 1 - device.ramFreeMb / device.ramMb;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hasRam = device.ramMb > 0;
+    final ramPct = hasRam
+        ? (1 - device.ramFreeMb / device.ramMb).clamp(0.0, 1.0)
+        : 0.0;
+
+    void open() {
+      ref.read(currentTvProvider.notifier).select(device);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => ScanScreen(device: device)));
+    }
 
     return Material(
       color: AppColors.bgCard,
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (_) => ScanScreen(device: device))),
+        onTap: open,
         child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
@@ -59,7 +69,7 @@ class TvCard extends StatelessWidget {
             const Gap(14),
 
             // RAM bar
-            Row(children: [
+            if (hasRam) Row(children: [
               const Text('ОЗУ', style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
               const Gap(8),
               Expanded(child: ClipRRect(
@@ -78,14 +88,13 @@ class TvCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 11, color: AppColors.fgMid)),
             ]),
 
-            const Gap(14),
+            if (hasRam) const Gap(14),
 
             // CTA
             SizedBox(width: double.infinity, child: FilledButton.icon(
               icon: const Icon(Icons.search_rounded, size: 18),
               label: const Text('Сканировать'),
-              onPressed: () => Navigator.push(context,
-                MaterialPageRoute(builder: (_) => ScanScreen(device: device))),
+              onPressed: open,
             )),
           ]),
         ),
