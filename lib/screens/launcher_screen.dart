@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../models/launcher_skin.dart';
+import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
 import '../state/current_tv.dart';
 import '../state/launcher_skin_state.dart';
@@ -31,22 +33,99 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   bool _checked = false;
   String? _launcher;
   String? _error;
+  bool? _installed;     // TVCleanzer Launcher on the TV (null = unknown)
+  String? _step;        // install/uninstall progress text
+  String? _installError;
 
-  Future<void> _check() async {
+  static const _offline =
+      'Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _check(silent: true));
+  }
+
+  Future<void> _check({bool silent = false}) async {
     final tv = ref.read(currentTvProvider);
-    if (tv == null) return;
+    if (tv == null || _checking) return;
     setState(() {
       _checking = true;
       _error = null;
     });
     try {
-      final pkg = await ref.read(adbServiceProvider).currentLauncher(tv);
+      final api = ref.read(adbServiceProvider);
+      final pkg = await api.currentLauncher(tv);
       _launcher = pkg;
+      _installed = pkg == AdbPackageManager.launcherPkg || await api.isLauncherInstalled(tv);
       _checked = true;
     } catch (_) {
-      _error = 'Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.';
+      if (!silent) _error = _offline;
     }
     if (mounted) setState(() => _checking = false);
+  }
+
+  Future<void> _install() async {
+    final tv = ref.read(currentTvProvider);
+    if (tv == null) return;
+    setState(() {
+      _installError = null;
+      _step = 'Готовим лаунчер…';
+    });
+    try {
+      Uint8List apk;
+      try {
+        final data = await rootBundle.load('assets/launcher/tvcleanzer-launcher.apk');
+        apk = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      } catch (_) {
+        throw AdbException('Лаунчер ещё не собран: запустите launcher/build.sh и пересоберите приложение.');
+      }
+      await ref.read(adbServiceProvider).installLauncher(
+            tv, apk, ref.read(selectedSkinProvider).id,
+            onStep: (s) { if (mounted) setState(() => _step = s); },
+          );
+      _installed = true;
+      _launcher = AdbPackageManager.launcherPkg;
+      _checked = true;
+    } on AdbException catch (e) {
+      _installError = e.message;
+    } catch (_) {
+      _installError = _offline;
+    }
+    if (mounted) setState(() => _step = null);
+  }
+
+  Future<void> _uninstall() async {
+    final tv = ref.read(currentTvProvider);
+    if (tv == null) return;
+    setState(() {
+      _installError = null;
+      _step = 'Возвращаем стандартный лаунчер…';
+    });
+    try {
+      await ref.read(adbServiceProvider).uninstallLauncher(tv);
+      _installed = false;
+      _checked = false;
+      _launcher = null;
+    } catch (_) {
+      _installError = _offline;
+    }
+    if (mounted) setState(() => _step = null);
+    _check(silent: true);
+  }
+
+  /// Pick a skin; if the launcher is already on the TV, apply it right away.
+  void _selectSkin(LauncherSkin s) {
+    ref.read(selectedSkinProvider.notifier).select(s);
+    final tv = ref.read(currentTvProvider);
+    if (tv != null && _installed == true) {
+      ref.read(adbServiceProvider).applyLauncherSkin(tv, s.id).catchError((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Не удалось применить шкурку: телевизор не отвечает.')));
+        }
+      });
+    }
   }
 
   @override
@@ -72,7 +151,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                 return _SkinChip(
                   skin: s,
                   selected: s.id == skin.id,
-                  onTap: () => ref.read(selectedSkinProvider.notifier).select(s),
+                  onTap: () => _selectSkin(s),
                 ).animate(delay: (i * 50).ms).fadeIn().slideX(begin: .2, end: 0);
               },
             ),
@@ -145,37 +224,82 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     );
   }
 
-  Widget _ourLauncherCard() => _card(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Text('TVCleanzer Launcher',
-                style: GoogleFonts.syne(
-                    fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
-            const Gap(8),
+  Widget _ourLauncherCard() {
+    final tv = ref.watch(currentTvProvider);
+    final busy = _step != null;
+    final installed = _installed == true;
+    final (chipText, chipColor) = installed
+        ? ('установлен', AppColors.ok)
+        : ('не установлен', AppColors.fgMid);
+    return _card(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Text('TVCleanzer Launcher',
+              style: GoogleFonts.syne(
+                  fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          const Gap(8),
+          if (_installed != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.warn.withValues(alpha: .12),
+                color: chipColor.withValues(alpha: .12),
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: const Text('в разработке',
-                  style: TextStyle(fontSize: 11, color: AppColors.warn, fontWeight: FontWeight.w600)),
+              child: Text(chipText,
+                  style: TextStyle(fontSize: 11, color: chipColor, fontWeight: FontWeight.w600)),
             ),
-          ]),
-          const Gap(8),
-          const Text(
-            'Свой лаунчер для телевизора: шкурка, порядок приложений и обои '
-            'настраиваются отсюда, с телефона. Выберите шкурку уже сейчас — '
-            'она применится сразу после установки.',
-            style: TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5),
-          ),
-          const Gap(12),
-          const SizedBox(
-            width: double.infinity,
-            child: FilledButton(onPressed: null, child: Text('Установить на ТВ — скоро')),
-          ),
         ]),
-      );
+        const Gap(8),
+        Text(
+          installed
+              ? 'Шкурка меняется сразу: просто выберите другую выше. '
+                'На телевизоре: долгое нажатие OK на приложении — добавить в избранное, '
+                'переставить или скрыть; шестерёнка — настройки.'
+              : 'Лёгкий лаунчер в стиле Apple TV: часы, избранное, все приложения, '
+                'шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+).',
+          style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5),
+        ),
+        if (_installError != null) ...[
+          const Gap(10),
+          Text(_installError!,
+              style: const TextStyle(fontSize: 13, color: AppColors.danger, height: 1.4)),
+        ],
+        const Gap(12),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: busy
+              ? Row(key: const ValueKey('busy'), children: [
+                  const SizedBox(
+                      width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                  const Gap(12),
+                  Expanded(
+                      child: Text(_step!,
+                          style: const TextStyle(color: AppColors.fg, fontSize: 14))),
+                ])
+              : SizedBox(
+                  key: ValueKey(installed),
+                  width: double.infinity,
+                  child: installed
+                      ? OutlinedButton.icon(
+                          icon: const Icon(Icons.undo_rounded, size: 18),
+                          label: const Text('Вернуть стандартный лаунчер'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.fg,
+                            side: const BorderSide(color: AppColors.cardBd),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          onPressed: tv == null ? null : _uninstall,
+                        )
+                      : FilledButton.icon(
+                          icon: const Icon(Icons.download_rounded),
+                          label: const Text('Установить на телевизор'),
+                          onPressed: tv == null ? null : _install,
+                        ),
+                ),
+        ),
+      ]),
+    );
+  }
 }
 
 /// Mock of the TV home screen in the selected skin. Colours animate on change.

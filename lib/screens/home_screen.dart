@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
 import '../services/tv_discovery.dart';
+import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 import '../widgets/tv_card.dart';
 
@@ -39,6 +40,10 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
         if (!mounted) return;
         // Avoid duplicates by IP
         final existing = state.devices.any((e) => e.ipAddress == d.ipAddress);
+        final current = _ref.read(currentTvProvider);
+        if (current == null || current.ipAddress == d.ipAddress) {
+          _ref.read(currentTvProvider.notifier).select(d); // Remote & Launcher use it
+        }
         if (!existing) {
           state = DiscoveryState(devices: [...state.devices, d], scanning: true);
         }

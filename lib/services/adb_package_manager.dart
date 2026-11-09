@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -224,6 +225,83 @@ class AdbPackageManager {
       adb.close();
     }
   }
+
+  // ── TVCleanzer Launcher ───────────────────────────────────────────────────
+
+  static const launcherPkg = 'com.tvcleanzer.launcher';
+  static const launcherHome = '$launcherPkg/.HomeActivity';
+
+  Future<bool> isLauncherInstalled(TvDevice device) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      final out = await adb.shell('pm path $launcherPkg');
+      return out.contains('package:');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Installs [apk] on the TV, makes it the home screen, applies [skin] and
+  /// presses Home so the user sees it. Needs Android 7+ on the TV.
+  /// [onStep] reports progress for the UI.
+  Future<void> installLauncher(TvDevice device, Uint8List apk, String skin,
+      {void Function(String step)? onStep}) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      onStep?.call('Подключаемся к телевизору…');
+      await adb.connect();
+      final sdk = int.tryParse(
+              (await adb.shell('getprop ro.build.version.sdk')).trim()) ??
+          device.sdkVersion;
+      if (sdk > 0 && sdk < 24) {
+        throw AdbException(
+            'Нужен Android 7 или новее на телевизоре (сейчас SDK $sdk).');
+      }
+
+      onStep?.call('Устанавливаем лаунчер…');
+      final res = await adb.execWithInput(
+          'cmd package install -r -S ${apk.length}', apk,
+          timeout: const Duration(seconds: 90));
+      if (!res.contains('Success')) {
+        throw AdbException('Установка не удалась: ${res.trim()}');
+      }
+
+      onStep?.call('Делаем главным экраном…');
+      await adb.shell('cmd package set-home-activity $launcherHome');
+      await adb.shell(_applyCommand(skin));
+      await adb.shell('input keyevent 3');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Sends settings to the installed launcher (it redraws immediately).
+  Future<void> applyLauncherSkin(TvDevice device, String skin) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      await adb.shell(_applyCommand(skin));
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Removes TVCleanzer Launcher; the TV falls back to its own home screen.
+  Future<void> uninstallLauncher(TvDevice device) async {
+    final adb = AdbClient(host: device.ipAddress);
+    try {
+      await adb.connect();
+      await adb.shell('pm uninstall $launcherPkg');
+      await adb.shell('input keyevent 3');
+    } finally {
+      adb.close();
+    }
+  }
+
+  static String _applyCommand(String skin) =>
+      'am broadcast -n $launcherPkg/.ConfigReceiver '
+      '-a com.tvcleanzer.launcher.APPLY --es skin $skin';
 
   // ── Package DB ───────────────────────────────────────────────────────────────
 

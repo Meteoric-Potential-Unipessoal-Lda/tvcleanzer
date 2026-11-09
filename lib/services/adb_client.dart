@@ -104,6 +104,7 @@ class AdbClient {
   Object? _sockError;
   bool _sockClosed = false;
   int _nextLocalId = 1;
+  int _peerMaxData = 4096; // from the TV's CNXN; safe default for old adbd
 
   // ── Public API ──────────────────────────────────────────────────────────────
 
@@ -186,6 +187,60 @@ class AdbClient {
     }
   }
 
+  /// Runs [command] via the `exec:` service and streams [input] to its stdin,
+  /// e.g. `cmd package install -S <size>` with the APK bytes (Android 7+).
+  /// Returns everything the command printed.
+  Future<String> execWithInput(String command, Uint8List input,
+      {Duration timeout = const Duration(seconds: 60)}) async {
+    final localId = _nextLocalId++;
+    _send(_Msg(_cmdOpen, localId, 0, _cString('exec:$command')));
+    final out = BytesBuilder(copy: false);
+
+    // Wait for the stream to open.
+    int? remoteId;
+    while (remoteId == null) {
+      final m = await _read(timeout, 'Command timed out: $command');
+      if (m.arg1 != localId) continue;
+      if (m.cmd == _cmdOkay) {
+        remoteId = m.arg0;
+      } else if (m.cmd == _cmdClse) {
+        throw AdbException('TV refused the command: $command');
+      }
+    }
+
+    // Send the data chunk by chunk; every WRTE must be acknowledged with OKAY.
+    final chunk = min(_peerMaxData, 64 * 1024);
+    var off = 0;
+    while (off < input.length) {
+      final end = min(off + chunk, input.length);
+      _send(_Msg(_cmdWrte, localId, remoteId, Uint8List.sublistView(input, off, end)));
+      off = end;
+      while (true) {
+        final m = await _read(timeout, 'Upload timed out: $command');
+        if (m.arg1 != localId) continue;
+        if (m.cmd == _cmdOkay) break;
+        if (m.cmd == _cmdWrte) {
+          out.add(m.data);
+          _send(_Msg(_cmdOkay, localId, remoteId));
+        } else if (m.cmd == _cmdClse) {
+          return utf8.decode(out.takeBytes(), allowMalformed: true); // ended early
+        }
+      }
+    }
+
+    // Read the command's answer until the TV closes the stream.
+    while (true) {
+      final m = await _read(timeout, 'Command timed out: $command');
+      if (m.arg1 != localId) continue;
+      if (m.cmd == _cmdWrte) {
+        out.add(m.data);
+        _send(_Msg(_cmdOkay, localId, remoteId));
+      } else if (m.cmd == _cmdClse) {
+        return utf8.decode(out.takeBytes(), allowMalformed: true);
+      }
+    }
+  }
+
   void close() {
     _sockSub?.cancel();
     _sock?.destroy();
@@ -245,6 +300,7 @@ class AdbClient {
   }
 
   Map<String, String> _parseCnxn(_Msg msg) {
+    if (msg.arg1 > 0) _peerMaxData = msg.arg1;
     // Banner: "device::ro.product.name=…;ro.product.model=…;features=…"
     final raw =
         utf8.decode(msg.data, allowMalformed: true).replaceAll('\x00', '');

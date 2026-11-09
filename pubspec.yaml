@@ -65,3 +65,4 @@ flutter:
   assets:
     - assets/packages.json        # bundled package database (from packages.tsv)
     - assets/icon/
+    - assets/launcher/            # TVCleanzer Launcher APK (launcher/build.sh)

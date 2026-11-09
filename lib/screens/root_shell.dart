@@ -51,20 +51,19 @@ class _RootShellState extends State<RootShell> {
       body: Stack(fit: StackFit.expand, children: [
         // All tabs stay alive; only the active one is visible and ticking.
         for (var i = 0; i < _pages.length; i++)
+          // The fade itself must keep ticking, so TickerMode wraps only the
+          // page: otherwise a tab that is being hidden freezes fully visible.
           IgnorePointer(
             ignoring: i != _index,
-            child: TickerMode(
-              enabled: i == _index,
-              child: AnimatedOpacity(
-                opacity: i == _index ? 1 : 0,
-                duration: const Duration(milliseconds: 220),
-                curve: Curves.easeOut,
-                child: AnimatedSlide(
-                  offset: i == _index ? Offset.zero : const Offset(0, .015),
-                  duration: const Duration(milliseconds: 260),
-                  curve: Curves.easeOutCubic,
-                  child: _pages[i],
-                ),
+            child: AnimatedOpacity(
+              opacity: i == _index ? 1 : 0,
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOut,
+              child: AnimatedSlide(
+                offset: i == _index ? Offset.zero : const Offset(0, .015),
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeOutCubic,
+                child: TickerMode(enabled: i == _index, child: _pages[i]),
               ),
             ),
           ),
