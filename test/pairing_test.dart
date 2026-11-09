@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointycastle/asn1.dart';
 import 'package:pointycastle/export.dart';
 import 'package:tvcleanzer/services/pairing/adb_crypto.dart';
 import 'package:tvcleanzer/services/pairing/adb_pairing.dart';
