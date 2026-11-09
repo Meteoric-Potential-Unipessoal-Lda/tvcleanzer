@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/tv_device.dart';
 import 'adb_client.dart';
+import 'package_db.dart';
 import 'protection.dart';
 
 // ─── Riverpod Provider ────────────────────────────────────────────────────────
@@ -563,14 +564,15 @@ class AdbPackageManager {
 
   // ── Package DB ───────────────────────────────────────────────────────────────
 
+  /// Forget the cached database (after PackageDb.refresh found a newer one).
+  static void resetDb() => _db = null;
+
   static Future<Map<String, _Entry>> _loadDb() async {
     if (_db != null) return _db!;
 
-    final raw  = await rootBundle.loadString('assets/packages.json');
-    final list = jsonDecode(raw) as List<dynamic>;
+    final list = await PackageDb.load();
     _db = {};
-    for (final item in list) {
-      final m = item as Map<String, dynamic>;
+    for (final m in list) {
       final name = m['packageName'] as String? ?? '';
       if (name.isEmpty) continue;
       _db![name] = _Entry(

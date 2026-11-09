@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../services/app_log.dart';
+import '../services/package_db.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 
@@ -212,8 +213,11 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
             },
           ),
           const Gap(4),
-          const Text('TVCleanzer $appVersion · база приложений на основе CleanYourTV (MIT)',
-              style: TextStyle(color: AppColors.fgMuted, fontSize: 11)),
+          Text(
+              'TVCleanzer $appVersion · база ${PackageDb.count > 0 ? '${PackageDb.count} приложений, ' : ''}'
+              'версия ${PackageDb.version} · на основе CleanYourTV (MIT)',
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: AppColors.fgMuted, fontSize: 11)),
         ]),
       ),
     ),

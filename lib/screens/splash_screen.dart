@@ -5,6 +5,8 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../services/adb_client.dart';
+import '../services/adb_package_manager.dart';
+import '../services/package_db.dart';
 import '../state/current_tv.dart';
 import '../state/history.dart';
 import '../state/launcher_skin_state.dart';
@@ -35,6 +37,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       ref.read(currentTvProvider.notifier).load(),
       ref.read(selectedSkinProvider.notifier).load(),
     ]);
+    // Database update in the background: never delays the start.
+    PackageDb.refresh().then((newer) {
+      if (newer) AdbPackageManager.resetDb();
+    });
     if (!await AdbClient.hasKeys() && mounted) {
       setState(() => _status = 'Создаём ключ для подключения к ТВ…');
     }
