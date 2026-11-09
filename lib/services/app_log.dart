@@ -3,7 +3,7 @@ import 'dart:io';
 import '../models/tv_device.dart';
 
 /// Version shown in reports (keep in sync with pubspec.yaml).
-const appVersion = '0.9.0';
+const appVersion = '0.9.1';
 
 /// Small in-memory log of recent problems, for "Сообщить о проблеме".
 class AppLog {
