@@ -280,7 +280,19 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                   key: ValueKey(installed),
                   width: double.infinity,
                   child: installed
-                      ? OutlinedButton.icon(
+                      ? Column(children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: FilledButton.icon(
+                              icon: const Icon(Icons.system_update_alt_rounded),
+                              label: const Text('Обновить лаунчер на ТВ'),
+                              onPressed: tv == null ? null : _install,
+                            ),
+                          ),
+                          const Gap(10),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
                           icon: const Icon(Icons.undo_rounded, size: 18),
                           label: const Text('Вернуть стандартный лаунчер'),
                           style: OutlinedButton.styleFrom(
@@ -289,7 +301,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
                           onPressed: tv == null ? null : _uninstall,
-                        )
+                            ),
+                          ),
+                        ])
                       : FilledButton.icon(
                           icon: const Icon(Icons.download_rounded),
                           label: const Text('Установить на телевизор'),
