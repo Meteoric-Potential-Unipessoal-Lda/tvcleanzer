@@ -27,11 +27,15 @@ final class AppTile extends LinearLayout {
 
     private static final DecelerateInterpolator EASE = new DecelerateInterpolator(1.6f);
 
-    AppTile(Context c, AppEntry app, int w, int h, Skin skin, boolean labelsAlways, float textSp) {
+    private final float focusScale;
+
+    AppTile(Context c, AppEntry app, int w, int h, Skin skin, boolean labelsAlways, float textSp,
+            float focusScale) {
         super(c);
         this.app = app;
         this.h = h;
         this.labelsAlways = labelsAlways;
+        this.focusScale = focusScale;
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER_HORIZONTAL);
         setClipChildren(false);
@@ -98,7 +102,7 @@ final class AppTile extends LinearLayout {
     }
 
     private void onFocus(boolean has) {
-        float s = has ? 1.1f : 1f;
+        float s = has ? focusScale : 1f;
         card.animate().scaleX(s).scaleY(s)
                 .translationZ(has ? Ui.dp(getContext(), 20) : 0)
                 .setDuration(180).setInterpolator(EASE).start();

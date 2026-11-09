@@ -31,6 +31,21 @@ final class Ui {
         return g;
     }
 
+    /** Frosted-glass look: light translucent fill + hairline border. */
+    static GradientDrawable glass(float radiusPx) {
+        GradientDrawable g = new GradientDrawable();
+        g.setColor(0x1AFFFFFF);
+        g.setStroke(1, 0x26FFFFFF);
+        g.setCornerRadius(radiusPx);
+        return g;
+    }
+
+    /** Darkens the bottom of the screen for depth (keeps any skin calm on bright TVs). */
+    static GradientDrawable vignette() {
+        return new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{0x00000000, 0x33000000, 0x8C000000});
+    }
+
     static GradientDrawable background(Skin s) {
         return new GradientDrawable(GradientDrawable.Orientation.TL_BR,
                 new int[]{s.bgTop, s.bgBottom});
@@ -41,7 +56,7 @@ final class Ui {
         GradientDrawable g = new GradientDrawable();
         g.setGradientType(GradientDrawable.RADIAL_GRADIENT);
         g.setGradientRadius(radiusPx);
-        g.setColors(new int[]{withAlpha(accent, 0x38), withAlpha(accent, 0)});
+        g.setColors(new int[]{withAlpha(accent, 0x2E), withAlpha(accent, 0)});
         return g;
     }
 

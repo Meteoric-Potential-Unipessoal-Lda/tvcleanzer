@@ -11,12 +11,12 @@ final class Skin {
     }
 
     static final Skin[] ALL = {
-        new Skin("midnight", "Полночь",  0xFF0B1120, 0xFF16233B, 0xFF00CFA8, 0xFF1E293B),
-        new Skin("aurora",   "Аврора",   0xFF0F172A, 0xFF3B2A7A, 0xFFA78BFA, 0xFF2E2A5C),
-        new Skin("sunset",   "Закат",    0xFF1F1022, 0xFF7C2D12, 0xFFFB923C, 0xFF4A1E1A),
-        new Skin("ocean",    "Океан",    0xFF0C1E2E, 0xFF0E7490, 0xFF22D3EE, 0xFF12405A),
-        new Skin("graphite", "Графит",   0xFF111111, 0xFF2A2A2A, 0xFFE5E5E5, 0xFF333333),
-        new Skin("forest",   "Лес",      0xFF0B1F14, 0xFF14532D, 0xFF4ADE80, 0xFF1C3B28),
+        new Skin("midnight", "Полночь",  0xFF070B14, 0xFF101A2E, 0xFF00CFA8, 0xFF1A2335),
+        new Skin("aurora",   "Аврора",   0xFF0A0C1A, 0xFF221A47, 0xFFA78BFA, 0xFF2A2547),
+        new Skin("sunset",   "Закат",    0xFF120A10, 0xFF3D1A10, 0xFFFB923C, 0xFF3A1F1A),
+        new Skin("ocean",    "Океан",    0xFF061019, 0xFF0A3346, 0xFF22D3EE, 0xFF123447),
+        new Skin("graphite", "Графит",   0xFF0A0A0A, 0xFF1E1E1E, 0xFFE5E5E5, 0xFF2B2B2B),
+        new Skin("forest",   "Лес",      0xFF07120C, 0xFF0E2E1B, 0xFF4ADE80, 0xFF1A3324),
     };
 
     static Skin byId(String id) {

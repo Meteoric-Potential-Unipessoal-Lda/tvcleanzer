@@ -230,6 +230,7 @@ class AdbPackageManager {
 
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
+  static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
     final adb = AdbClient(host: device.ipAddress);
@@ -269,6 +270,10 @@ class AdbPackageManager {
 
       onStep?.call('Делаем главным экраном…');
       await adb.shell('cmd package set-home-activity $launcherHome');
+      // Firmwares that force their own launcher on Home: our accessibility
+      // service catches the Home key. Re-adding it rebinds after an update.
+      await _setHomeKeyService(adb, enabled: false);
+      await _setHomeKeyService(adb, enabled: true);
       await adb.shell(_applyCommand(skin));
       await adb.shell('input keyevent 3');
     } finally {
@@ -292,10 +297,27 @@ class AdbPackageManager {
     final adb = AdbClient(host: device.ipAddress);
     try {
       await adb.connect();
+      await _setHomeKeyService(adb, enabled: false);
       await adb.shell('pm uninstall $launcherPkg');
       await adb.shell('input keyevent 3');
     } finally {
       adb.close();
+    }
+  }
+
+  /// Adds/removes our service in `enabled_accessibility_services`, keeping
+  /// whatever other services the TV already has there.
+  Future<void> _setHomeKeyService(AdbClient adb, {required bool enabled}) async {
+    final raw = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
+    final list = (raw.isEmpty || raw == 'null' ? <String>[] : raw.split(':'))
+        .where((s) => s.isNotEmpty && s != _homeKeyService)
+        .toList();
+    if (enabled) list.add(_homeKeyService);
+    if (list.isEmpty) {
+      await adb.shell('settings delete secure enabled_accessibility_services');
+    } else {
+      await adb.shell("settings put secure enabled_accessibility_services '${list.join(':')}'");
+      await adb.shell('settings put secure accessibility_enabled 1');
     }
   }
 

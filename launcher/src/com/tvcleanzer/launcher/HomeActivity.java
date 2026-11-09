@@ -55,6 +55,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private final Map<String, Boolean> bannerCache = new HashMap<>();
     private List<AppEntry> apps = new ArrayList<>();
     private List<AppEntry> favorites = new ArrayList<>();
+    private final Set<String> homeApps = new java.util.HashSet<>();
 
     private FrameLayout root;
     private ScrollView scroll;
@@ -142,7 +143,19 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private void reloadApps() {
         io.execute(() -> {
             final List<AppEntry> list = AppEntry.loadAll(this);
-            main.post(() -> { apps = list; build(); });
+            final Set<String> homes = new java.util.HashSet<>();
+            try {
+                for (android.content.pm.ResolveInfo ri : pm.queryIntentActivities(
+                        new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0)) {
+                    homes.add(ri.activityInfo.packageName);
+                }
+            } catch (Throwable ignored) {}
+            main.post(() -> {
+                apps = list;
+                homeApps.clear();
+                homeApps.addAll(homes);
+                build();
+            });
         });
     }
 
@@ -160,11 +173,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // First start: popular streaming apps that are installed, then TV apps.
         for (String k : DEFAULT_FAVORITES) {
             AppEntry a = byPkg.get(k);
-            if (a != null && !hidden.contains(k) && out.size() < 6) out.add(a);
+            if (a != null && !hidden.contains(k) && !homeApps.contains(k) && out.size() < 6) out.add(a);
         }
         for (AppEntry a : apps) {
             if (out.size() >= 6) break;
-            if (a.leanback && !out.contains(a) && !hidden.contains(a.pkg)) out.add(a);
+            if (a.leanback && !out.contains(a) && !hidden.contains(a.pkg) && !homeApps.contains(a.pkg)) out.add(a);
         }
         return out;
     }
@@ -192,7 +205,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         int padV = Math.round(screenW * 0.03f);
         int gap = Ui.dp(this, 22);
         int contentW = screenW - 2 * padH;
-        int favW = (contentW - gap * (FAV_VISIBLE - 1)) / FAV_VISIBLE;
+        int favW = (contentW - 2 * Ui.dp(this, 22) - gap * (FAV_VISIBLE - 1)) / FAV_VISIBLE;
         int favH = favW * 9 / 16;
         int tileW = (contentW - gap * (GRID_COLUMNS - 1)) / GRID_COLUMNS;
         int tileH = tileW * 9 / 16;
@@ -208,6 +221,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         glp.topMargin = -gs / 2;
         glp.rightMargin = -gs / 3;
         root.addView(glow, glp);
+        View vig = new View(this);
+        vig.setBackground(Ui.vignette());
+        root.addView(vig, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
         scroll = new ScrollView(this);
         scroll.setClipChildren(false);
@@ -226,15 +243,23 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
         List<AppTile> tiles = new ArrayList<>();
         if (!favorites.isEmpty()) {
-            page.addView(sectionTitle("Избранное", Ui.dp(this, 34)));
+            page.addView(sectionTitle("Избранное", Ui.dp(this, 30)));
+            FrameLayout shelf = new FrameLayout(this);
+            shelf.setBackground(Ui.glass(Ui.dp(this, 30)));
+            shelf.setClipChildren(true);
+            LinearLayout.LayoutParams shp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            shp.topMargin = Ui.dp(this, 12);
             HorizontalScrollView hs = new HorizontalScrollView(this);
-            hs.setClipChildren(false);
+            hs.setClipChildren(true);
             hs.setClipToPadding(false);
             hs.setHorizontalScrollBarEnabled(false);
-            hs.setPadding(0, Ui.dp(this, 14), 0, Ui.dp(this, 6));
+            hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            int inset = Ui.dp(this, 22);
+            hs.setPadding(inset, Ui.dp(this, 18), inset, Ui.dp(this, 10));
             LinearLayout row = row();
             for (int i = 0; i < favorites.size(); i++) {
-                AppTile t = tile(favorites.get(i), favW, favH, skin, labelsAlways, 15);
+                AppTile t = tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i > 0) lp.leftMargin = gap;
@@ -242,7 +267,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 tiles.add(t);
             }
             hs.addView(row);
-            page.addView(hs);
+            shelf.addView(hs);
+            page.addView(shelf, shp);
         }
 
         List<AppEntry> rest = new ArrayList<>();
@@ -256,7 +282,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     row.setPadding(0, Ui.dp(this, 12), 0, Ui.dp(this, 4));
                     page.addView(row);
                 }
-                AppTile t = tile(rest.get(i), tileW, tileH, skin, labelsAlways, 13);
+                AppTile t = tile(rest.get(i), tileW, tileH, skin, labelsAlways, 13, 1.12f);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i % GRID_COLUMNS > 0) lp.leftMargin = gap;
@@ -290,35 +316,88 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
         LinearLayout left = new LinearLayout(this);
         left.setOrientation(LinearLayout.VERTICAL);
-        TextView greet = Ui.text(this, 30, 0xFFFFFFFF, "sans-serif-medium");
-        greet.setText(greeting());
-        TextClock date = new TextClock(this);
-        date.setFormat12Hour("EEEE, d MMMM");
-        date.setFormat24Hour("EEEE, d MMMM");
-        date.setTextSize(16);
-        date.setTextColor(0x99FFFFFF);
+        TextView greet = Ui.text(this, 15, 0xB3FFFFFF, "sans-serif-medium");
+        greet.setText(greeting().toUpperCase());
+        greet.setLetterSpacing(0.16f);
         left.addView(greet);
-        LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(
+
+        LinearLayout timeRow = new LinearLayout(this);
+        timeRow.setOrientation(LinearLayout.HORIZONTAL);
+        timeRow.setGravity(Gravity.CENTER_VERTICAL);
+        TextClock clock = new TextClock(this);
+        String fmt = prefs.clock24() ? "HH:mm" : "h:mm";
+        clock.setFormat24Hour(fmt);
+        clock.setFormat12Hour(fmt);
+        clock.setTextSize(64);
+        clock.setTextColor(0xFFFFFFFF);
+        clock.setIncludeFontPadding(false);
+        clock.setLetterSpacing(-0.02f);
+        clock.setTypeface(android.graphics.Typeface.create("sans-serif-thin", android.graphics.Typeface.NORMAL));
+        timeRow.addView(clock);
+
+        View divider = new View(this);
+        divider.setBackgroundColor(0x40FFFFFF);
+        LinearLayout.LayoutParams dvp = new LinearLayout.LayoutParams(Ui.dp(this, 1), Ui.dp(this, 44));
+        dvp.leftMargin = Ui.dp(this, 20);
+        dvp.rightMargin = Ui.dp(this, 20);
+        timeRow.addView(divider, dvp);
+
+        TextClock date = new TextClock(this);
+        date.setFormat12Hour("EEEE\nd MMMM");
+        date.setFormat24Hour("EEEE\nd MMMM");
+        date.setAllCaps(true);
+        date.setLetterSpacing(0.12f);
+        date.setTextSize(15);
+        date.setLineSpacing(Ui.dp(this, 4), 1f);
+        date.setTextColor(0xB3FFFFFF);
+        timeRow.addView(date);
+        LinearLayout.LayoutParams trp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dlp.topMargin = Ui.dp(this, 6);
-        left.addView(date, dlp);
+        trp.topMargin = Ui.dp(this, 4);
+        left.addView(timeRow, trp);
         bar.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-        TextClock clock = new TextClock(this);
-        clock.setFormat24Hour(prefs.clock24() ? "HH:mm" : "h:mm");
-        clock.setFormat12Hour(prefs.clock24() ? "HH:mm" : "h:mm");
-        clock.setTextSize(40);
-        clock.setTextColor(0xFFFFFFFF);
-        clock.setTypeface(android.graphics.Typeface.create("sans-serif-light", android.graphics.Typeface.NORMAL));
-        bar.addView(clock);
+        Pill net = new Pill(this, networkLabel());
+        net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
+        bar.addView(net);
+
+        Pill tvSettings = new Pill(this, "Настройки ТВ");
+        tvSettings.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+        LinearLayout.LayoutParams pp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        pp.leftMargin = Ui.dp(this, 14);
+        bar.addView(tvSettings, pp);
 
         GearButton gear = new GearButton(this, skin.accent);
         int gs = Ui.dp(this, 46);
         LinearLayout.LayoutParams gp = new LinearLayout.LayoutParams(gs, gs);
-        gp.leftMargin = Ui.dp(this, 24);
+        gp.leftMargin = Ui.dp(this, 14);
         gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
         bar.addView(gear, gp);
         return bar;
+    }
+
+    @SuppressWarnings("deprecation")
+    private String networkLabel() {
+        try {
+            android.net.ConnectivityManager cm =
+                    (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            android.net.NetworkInfo ni = cm == null ? null : cm.getActiveNetworkInfo();
+            if (ni == null || !ni.isConnected()) return "Нет сети";
+            if (ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET) return "Ethernet";
+            if (ni.getType() == android.net.ConnectivityManager.TYPE_WIFI) return "Wi-Fi";
+            return "В сети";
+        } catch (Throwable t) {
+            return "Сеть";
+        }
+    }
+
+    private void openSettings(String action) {
+        try {
+            startActivity(new Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        } catch (Exception e) {
+            try { startActivity(new Intent(Settings.ACTION_SETTINGS)); } catch (Exception ignored) {}
+        }
     }
 
     private String greeting() {
@@ -348,8 +427,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         return r;
     }
 
-    private AppTile tile(AppEntry a, int w, int h, Skin skin, boolean labelsAlways, float sp) {
-        AppTile t = new AppTile(this, a, w, h, skin, labelsAlways, sp);
+    private AppTile tile(AppEntry a, int w, int h, Skin skin, boolean labelsAlways, float sp, float scale) {
+        AppTile t = new AppTile(this, a, w, h, skin, labelsAlways, sp, scale);
         t.setOnClickListener(v -> launch(a));
         t.setOnLongClickListener(v -> { showOptions(t); return true; });
         return t;
@@ -385,6 +464,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     }
 
     private void launch(AppEntry a) {
+        // Opening the TV's own launcher on purpose: don't bounce back from it.
+        HomeKeyService.allowedStockPkg = homeApps.contains(a.pkg) ? a.pkg : null;
         try {
             startActivity(a.launchIntent());
         } catch (ActivityNotFoundException | SecurityException e) {
