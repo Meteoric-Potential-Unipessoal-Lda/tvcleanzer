@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:network_info_plus/network_info_plus.dart';
-
 import '../models/tv_device.dart';
 import 'adb_package_manager.dart';
 
@@ -63,18 +61,43 @@ class TvDiscovery {
     }
   }
 
+  /// Base of the phone's Wi-Fi /24 subnet, e.g. "192.168.1.".
+  /// Uses dart:io directly (no plugin): prefers Wi-Fi interfaces
+  /// (en*/wlan*) and skips cellular, VPN and virtual ones.
   Future<String?> _subnetBase() async {
+    List<NetworkInterface> ifaces;
     try {
-      final info = NetworkInfo();
-      final ip   = await info.getWifiIP();
-      if (ip == null || ip.isEmpty) return null;
-
-      final parts = ip.split('.');
-      if (parts.length != 4) return null;
-      return '${parts[0]}.${parts[1]}.${parts[2]}.';
+      ifaces = await NetworkInterface.list(type: InternetAddressType.IPv4);
     } catch (_) {
       return null;
     }
+    const skip = ['lo', 'pdp_ip', 'rmnet', 'ccmni', 'utun', 'ipsec', 'tun',
+                  'bridge', 'vmnet', 'awdl', 'llw', 'ap', 'p2p'];
+    String? best, fallback;
+    for (final iface in ifaces) {
+      final name = iface.name.toLowerCase();
+      if (skip.any(name.startsWith)) continue;
+      for (final a in iface.addresses) {
+        if (!_isPrivate(a.address)) continue;
+        if (name.startsWith('en') || name.startsWith('wlan')) {
+          best ??= a.address;
+        } else {
+          fallback ??= a.address;
+        }
+      }
+    }
+    final ip = best ?? fallback;
+    if (ip == null) return null;
+    final parts = ip.split('.');
+    return '${parts[0]}.${parts[1]}.${parts[2]}.';
+  }
+
+  static bool _isPrivate(String ip) {
+    final p = ip.split('.').map(int.tryParse).toList();
+    if (p.length != 4 || p.contains(null)) return false;
+    return p[0] == 10 ||
+        (p[0] == 192 && p[1] == 168) ||
+        (p[0] == 172 && p[1]! >= 16 && p[1]! <= 31);
   }
 
   static Future<void> _inBatches<T>(
