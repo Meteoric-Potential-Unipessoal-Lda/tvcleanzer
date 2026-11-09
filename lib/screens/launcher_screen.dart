@@ -191,7 +191,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     } else if (_launcher == null) {
       body = 'Главный лаунчер не выбран: телевизор спрашивает при нажатии «Домой».';
     } else {
-      body = _knownLaunchers[_launcher] ?? _launcher!;
+      body = _knownLaunchers[_launcher] ?? 'Лаунчер производителя ($_launcher)';
     }
     return _card(
       child: Row(children: [

@@ -35,8 +35,10 @@ rm -rf build && mkdir -p build/classes build/dex
 "$BT/aapt2" compile --dir res -o build/res.zip
 "$BT/aapt2" link -o build/unsigned.apk -I "$ANDROID_JAR" --manifest AndroidManifest.xml build/res.zip --auto-add-overlay
 
-javac -source 8 -target 8 -Xlint:-options -encoding UTF-8 \
-  -bootclasspath "$ANDROID_JAR" -d build/classes $(find src -name '*.java')
+# --release 8 keeps java.* from the JDK (lambdas need its LambdaMetafactory);
+# android.* comes from android.jar on the classpath. d8 desugars for API 21.
+javac --release 8 -Xlint:-options -encoding UTF-8 \
+  -classpath "$ANDROID_JAR" -d build/classes $(find src -name '*.java')
 "$BT/d8" --min-api 21 --release --lib "$ANDROID_JAR" --output build/dex $(find build/classes -name '*.class')
 (cd build/dex && zip -q -u ../unsigned.apk classes.dex)
 
