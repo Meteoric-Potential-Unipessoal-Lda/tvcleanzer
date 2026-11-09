@@ -65,7 +65,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           Container(
             width: 88, height: 88,
             decoration: BoxDecoration(
-              color: (hasFailures ? AppColors.warn : AppColors.ok).withOpacity(.15),
+              color: (hasFailures ? AppColors.warn : AppColors.ok).withValues(alpha: .15),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -84,7 +84,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             hasFailures
               ? '${result.removedCount} убрано, ${result.failedPackages.length} не удалось'
               : '${result.removedCount} приложений скрыто',
-            style: TextStyle(color: AppColors.fgMid),
+            style: const TextStyle(color: AppColors.fgMid),
           ).animate().fadeIn(delay: 300.ms),
         ])),
 
@@ -119,7 +119,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             decoration: BoxDecoration(
               color: AppColors.bgCard,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.warn.withOpacity(.3)),
+              border: Border.all(color: AppColors.warn.withValues(alpha: .3)),
             ),
             child: Row(children: [
               const Icon(Icons.warning_amber_rounded, color: AppColors.warn, size: 16),
@@ -181,7 +181,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   Widget _buildRollingBack() => Center(
     child: Column(mainAxisSize: MainAxisSize.min, children: [
-      SizedBox(
+      const SizedBox(
         width: 64, height: 64,
         child: CircularProgressIndicator(strokeWidth: 3, color: AppColors.warn),
       ),
@@ -189,7 +189,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       Text('Восстанавливаем…',
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      Text('Скрытые приложения возвращаются на телевизор.',
+      const Text('Скрытые приложения возвращаются на телевизор.',
         textAlign: TextAlign.center,
         style: TextStyle(color: AppColors.fgMuted)),
     ]).animate().fadeIn(duration: 300.ms),
@@ -200,7 +200,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       Container(
         width: 80, height: 80,
         decoration: BoxDecoration(
-          color: AppColors.ok.withOpacity(.15),
+          color: AppColors.ok.withValues(alpha: .15),
           shape: BoxShape.circle,
         ),
         child: const Icon(Icons.check_rounded, color: AppColors.ok, size: 40),
@@ -209,7 +209,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       Text('Всё восстановлено!',
         style: GoogleFonts.syne(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.fg)),
       const Gap(8),
-      Text('Приложения вернулись на телевизор.',
+      const Text('Приложения вернулись на телевизор.',
         textAlign: TextAlign.center,
         style: TextStyle(color: AppColors.fgMid)),
       const Gap(32),
@@ -226,9 +226,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     final child = Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(.08),
+        color: color.withValues(alpha: .08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withOpacity(.2)),
+        border: Border.all(color: color.withValues(alpha: .2)),
       ),
       child: Row(children: [
         Icon(icon, color: color, size: 22),

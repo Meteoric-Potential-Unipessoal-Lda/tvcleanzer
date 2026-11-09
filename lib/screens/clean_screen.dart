@@ -127,13 +127,13 @@ class CleanScreen extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.warn.withOpacity(.1),
+            color: AppColors.warn.withValues(alpha: .1),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.warn.withOpacity(.3)),
+            border: Border.all(color: AppColors.warn.withValues(alpha: .3)),
           ),
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Icon(Icons.info_outline_rounded, color: AppColors.warn, size: 20),
-            const Gap(10),
+          child: const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(Icons.info_outline_rounded, color: AppColors.warn, size: 20),
+            Gap(10),
             Expanded(child: Text(
               'Приложения будут скрыты, а не удалены навсегда. '
               'Восстановить их можно в любой момент.',
@@ -149,7 +149,7 @@ class CleanScreen extends ConsumerWidget {
         if (totalMb > 0) ...[
           const Gap(4),
           Text('Освободится ~$totalMb МБ',
-            style: TextStyle(color: AppColors.fgMuted, fontSize: 13)),
+            style: const TextStyle(color: AppColors.fgMuted, fontSize: 13)),
         ],
         const Gap(16),
 
@@ -202,12 +202,12 @@ class CleanScreen extends ConsumerWidget {
           state.removed < state.total
             ? 'Убираем ${state.removed + 1} из ${state.total}…'
             : 'Завершаем…',
-          style: TextStyle(color: AppColors.fgMid),
+          style: const TextStyle(color: AppColors.fgMid),
         ),
         const Gap(4),
         if (state.removed < state.total && state.removed < packages.length)
           Text(packages[state.removed].displayName,
-            style: TextStyle(color: AppColors.fgMuted, fontSize: 12),
+            style: const TextStyle(color: AppColors.fgMuted, fontSize: 12),
             maxLines: 1, overflow: TextOverflow.ellipsis),
       ]).animate().fadeIn(duration: 400.ms)),
     );
@@ -232,7 +232,7 @@ class CleanScreen extends ConsumerWidget {
       Text('Ошибка очистки',
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      Text(error, textAlign: TextAlign.center, style: TextStyle(color: AppColors.fgMid, fontSize: 13)),
+      Text(error, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.fgMid, fontSize: 13)),
       const Gap(24),
       Row(mainAxisSize: MainAxisSize.min, children: [
         OutlinedButton(onPressed: () => Navigator.pop(context), child: const Text('Назад')),

@@ -138,10 +138,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       decoration: BoxDecoration(
         color: AppColors.accentDim,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.accent.withOpacity(.25)),
+        border: Border.all(color: AppColors.accent.withValues(alpha: .25)),
       ),
       child: Row(children: [
-        SizedBox(
+        const SizedBox(
           width: 18, height: 18,
           child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.accent),
         ),
@@ -151,17 +151,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             state.devices.isEmpty
               ? 'Ищем телевизоры в сети…'
               : 'Продолжаем поиск…',
-            style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w500),
+            style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.w500),
           ),
           const Gap(4),
-          Text(
+          const Text(
             'Если на телевизоре появится запрос отладки — отметьте «Всегда разрешать» и нажмите «Разрешить».',
             style: TextStyle(color: AppColors.fgMid, fontSize: 12, height: 1.4),
           ),
         ])),
         if (state.devices.isNotEmpty)
           Text('${state.devices.length} найдено',
-            style: TextStyle(color: AppColors.accent, fontSize: 12)),
+            style: const TextStyle(color: AppColors.accent, fontSize: 12)),
       ]),
     ).animate().fadeIn(duration: 300.ms);
   }
@@ -185,9 +185,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       if (error != null)
         Text(error,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.danger, fontSize: 13))
+          style: const TextStyle(color: AppColors.danger, fontSize: 13))
       else
-        Text(
+        const Text(
           'Включите отладку по сети на телевизоре:\nНастройки → Параметры разработчика →\nОтладка по ADB (сеть) → ВКЛ',
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.fgMid, fontSize: 14, height: 1.6),

@@ -36,7 +36,7 @@ ThemeData _buildTheme() {
     ),
     scaffoldBackgroundColor: AppColors.bg,
     textTheme: text,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color:        AppColors.bgCard,
       elevation:    0,
       shape: RoundedRectangleBorder(

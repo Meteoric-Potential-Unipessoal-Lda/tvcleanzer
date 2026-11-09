@@ -91,7 +91,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
 
   Widget _buildScanning() => Center(
     child: Column(mainAxisSize: MainAxisSize.min, children: [
-      SizedBox(
+      const SizedBox(
         width: 72, height: 72,
         child: CircularProgressIndicator(
           strokeWidth: 3, color: AppColors.accent,
@@ -101,7 +101,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       Text('Анализируем телевизор…',
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      Text('Это займёт несколько секунд',
+      const Text('Это займёт несколько секунд',
         style: TextStyle(color: AppColors.fgMuted)),
     ]).animate().fadeIn(duration: 400.ms),
   );
@@ -120,7 +120,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
         decoration: BoxDecoration(
           color: AppColors.accentDim,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.accent.withOpacity(.25)),
+          border: Border.all(color: AppColors.accent.withValues(alpha: .25)),
         ),
         child: Row(children: [
           const Text('🧹', style: TextStyle(fontSize: 32)),
@@ -129,7 +129,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
             Text('${toRemove.length} приложений можно убрать',
               style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
             Text('Освободится около ${result.totalSaveMb} МБ',
-              style: TextStyle(color: AppColors.fgMid, fontSize: 13)),
+              style: const TextStyle(color: AppColors.fgMid, fontSize: 13)),
           ])),
         ]),
       ).animate().fadeIn(duration: 300.ms).slideY(begin: .15, end: 0),
@@ -185,7 +185,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       Text('Телевизор чистый!',
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      Text('Мусорных приложений не обнаружено.',
+      const Text('Мусорных приложений не обнаружено.',
         textAlign: TextAlign.center,
         style: TextStyle(color: AppColors.fgMid)),
     ]),
@@ -202,7 +202,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
         const Gap(8),
         Text(error,
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.fgMid)),
+          style: const TextStyle(color: AppColors.fgMid)),
         const Gap(24),
         FilledButton(
           onPressed: () => ref.read(scanProvider(widget.device).notifier).startScan(),
@@ -217,7 +217,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       color: color, borderRadius: BorderRadius.circular(2),
     )),
     const Gap(8),
-    Text(label.toUpperCase(), style: TextStyle(
+    Text(label.toUpperCase(), style: const TextStyle(
       fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: .08, color: AppColors.fgMuted,
     )),
   ]);

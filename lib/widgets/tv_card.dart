@@ -42,9 +42,9 @@ class TvCard extends StatelessWidget {
                   style: GoogleFonts.syne(
                     fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
                 Text(device.ipAddress,
-                  style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+                  style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
               ])),
-              Icon(Icons.chevron_right_rounded, color: AppColors.fgMuted),
+              const Icon(Icons.chevron_right_rounded, color: AppColors.fgMuted),
             ]),
 
             const Gap(14),
@@ -60,7 +60,7 @@ class TvCard extends StatelessWidget {
 
             // RAM bar
             Row(children: [
-              Text('ОЗУ', style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+              const Text('ОЗУ', style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
               const Gap(8),
               Expanded(child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -75,7 +75,7 @@ class TvCard extends StatelessWidget {
               )),
               const Gap(8),
               Text('${device.ramFreeMb} МБ свободно',
-                style: TextStyle(fontSize: 11, color: AppColors.fgMid)),
+                style: const TextStyle(fontSize: 11, color: AppColors.fgMid)),
             ]),
 
             const Gap(14),
@@ -98,9 +98,9 @@ class TvCard extends StatelessWidget {
     decoration: BoxDecoration(
       color: AppColors.accentDim,
       borderRadius: BorderRadius.circular(50),
-      border: Border.all(color: AppColors.accent.withOpacity(.2)),
+      border: Border.all(color: AppColors.accent.withValues(alpha: .2)),
     ),
     child: Text(label,
-      style: TextStyle(fontSize: 11, color: AppColors.accent, fontWeight: FontWeight.w500)),
+      style: const TextStyle(fontSize: 11, color: AppColors.accent, fontWeight: FontWeight.w500)),
   );
 }

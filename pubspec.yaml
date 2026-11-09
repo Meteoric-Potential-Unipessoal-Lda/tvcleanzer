@@ -25,7 +25,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.0
 
 # ── App Icon configuration ──────────────────────────────────────────────────
@@ -36,6 +36,7 @@ flutter_launcher_icons:
   adaptive_icon_foreground: "assets/icon/icon_fg.png"
   adaptive_icon_background: "assets/icon/icon_bg.png"
   min_sdk_android: 21
+  remove_alpha_ios: true
   web:
     generate: false
   windows:
@@ -65,5 +66,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/packages.json        # bundled package database (from packages.tsv)
-    - assets/icons/
     - assets/icon/

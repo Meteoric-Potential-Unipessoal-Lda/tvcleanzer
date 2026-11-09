@@ -39,7 +39,7 @@ class PackageTile extends StatelessWidget {
           Container(
             width: 36, height: 36,
             decoration: BoxDecoration(
-              color: color.withOpacity(.12),
+              color: color.withValues(alpha: .12),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: color, size: 18),
@@ -65,7 +65,7 @@ class PackageTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
               decoration: BoxDecoration(
-                color: color.withOpacity(.1),
+                color: color.withValues(alpha: .1),
                 borderRadius: BorderRadius.circular(50),
               ),
               child: Text('${pkg.sizeMb} МБ',
