@@ -161,10 +161,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
               ]),
             ),
             itemCount: _favs.length,
-            onReorder: (a, b) => setState(() {
-              if (b > a) b--;
-              _favs.insert(b, _favs.removeAt(a));
-            }),
+            onReorderItem: (a, b) => setState(() => _favs.insert(b, _favs.removeAt(a))),
             itemBuilder: (_, i) => Container(
               key: ValueKey(_favs[i]),
               margin: const EdgeInsets.only(bottom: 8),
@@ -247,7 +244,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             ),
             child: SwitchListTile(
               value: _kids,
-              activeColor: AppColors.accent,
+              activeThumbColor: AppColors.accent,
               onChanged: (v) => setState(() => _kids = v),
               title: const Text('Детский режим'),
               subtitle: const Text('На ТВ останутся только выбранные приложения. Выйти — по PIN.',
