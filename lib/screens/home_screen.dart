@@ -110,7 +110,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     pinned: true,
     expandedHeight: 110,
     flexibleSpace: FlexibleSpaceBar(
-      title: Text('TVClear',
+      title: Text('TVCleanzer',
         style: GoogleFonts.syne(
           fontWeight: FontWeight.w800,
           fontSize: 22,

@@ -1,5 +1,5 @@
-name: tvclear_phone
-description: TVClear — companion app for Android TV cleaning
+name: tvcleanzer
+description: TVCleanzer — free app to clean bloatware from Android TV
 version: 1.0.0+1
 
 environment:

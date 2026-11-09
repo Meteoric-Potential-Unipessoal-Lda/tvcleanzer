@@ -110,7 +110,7 @@ class AdbClient {
 
     // ── 1. Send CNXN ─────────────────────────────────────────────────────────
     _send(_Msg(_CNXN, _ADB_VERSION, _MAX_PAYLOAD,
-        Uint8List.fromList(utf8.encode('host::ro.product.name=TVClear\x00'))));
+        Uint8List.fromList(utf8.encode('host::ro.product.name=TVCleanzer\x00'))));
 
     // ── 2. Receive AUTH TOKEN ─────────────────────────────────────────────────
     final auth1 = await _next().timeout(timeout,
@@ -316,7 +316,7 @@ class AdbClient {
     bd.setInt32 (off, e,     Endian.little);            // exponent
 
     final b64  = base64.encode(bd.buffer.asUint8List());
-    final full = '$b64 TVClear@phone\x00';
+    final full = '$b64 TVCleanzer@phone\x00';
     return Uint8List.fromList(utf8.encode(full));
   }
 

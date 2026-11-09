@@ -47,7 +47,7 @@ class ScanNotifier extends StateNotifier<ScanState> {
       return 'Нет связи с телевизором. Убедитесь, что телефон и телевизор в одной Wi-Fi сети.';
     }
     if (s.contains('timeout') || s.contains('Timeout')) {
-      return 'Телевизор не отвечает. Откройте TVClear на телевизоре и попробуйте снова.';
+      return 'Телевизор не отвечает. Проверьте, что на телевизоре включена отладка по сети, и попробуйте снова.';
     }
     return 'Ошибка: $s';
   }

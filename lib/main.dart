@@ -30,7 +30,7 @@ class TvClearApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TVClear',
+      title: 'TVCleanzer',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.buildTheme(),
       home: const HomeScreen(),
