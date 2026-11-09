@@ -36,8 +36,8 @@ class AdbPackageManager {
   // ── Device info ─────────────────────────────────────────────────────────────
 
   /// Connect to [ip] via ADB and return a populated [TvDevice].
-  Future<TvDevice> getDeviceInfo(String ip) async {
-    final adb = AdbClient(host: ip);
+  Future<TvDevice> getDeviceInfo(String ip, {int port = 5555}) async {
+    final adb = AdbClient(host: ip, port: port);
     try {
       final cnxnProps = await adb.connect();
 
@@ -73,6 +73,7 @@ class AdbPackageManager {
 
       return TvDevice.fromAdb(
         ip: ip,
+        port: port,
         brand: brand,
         model: model,
         androidVer: ver,
@@ -92,7 +93,7 @@ class AdbPackageManager {
   /// bundled packages.json database.
   Future<ScanResult> scan(TvDevice device) async {
     final db  = await _loadDb();
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       final raw = await adb.shell('pm list packages');
@@ -195,7 +196,7 @@ class AdbPackageManager {
   /// Measures free RAM and /data before and after. Animation values are
   /// returned so History can put them back.
   Future<BoostResult> boost(TvDevice device) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       final before = await _mem(adb);
@@ -230,7 +231,7 @@ class AdbPackageManager {
 
   /// Puts animation settings back as they were before boost().
   Future<void> undoBoost(TvDevice device, Map<String, String> old) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       for (final e in old.entries) {
@@ -270,7 +271,7 @@ class AdbPackageManager {
   /// Returns a [CleanResult]. The [CleanResult.backupId] stores a JSON list
   /// of removed package names so rollback can restore them.
   Future<CleanResult> clean(TvDevice device, List<TvPackage> packages) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     final failed  = <String>[];
     final removed = <String>[];
 
@@ -320,7 +321,7 @@ class AdbPackageManager {
     }
     if (pkgs.isEmpty) return true;
 
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     int failures = 0;
     try {
       await adb.connect();
@@ -343,7 +344,7 @@ class AdbPackageManager {
   /// Package name of the TV's current home screen app, or null when the
   /// system has no default and asks the user every time.
   Future<String?> currentLauncher(TvDevice device) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       final out = await adb.shell(
@@ -369,7 +370,7 @@ class AdbPackageManager {
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       final out = await adb.shell('pm path $launcherPkg');
@@ -384,7 +385,7 @@ class AdbPackageManager {
   /// [onStep] reports progress for the UI.
   Future<void> installLauncher(TvDevice device, Uint8List apk, String skin,
       {void Function(String step)? onStep}) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       onStep?.call('Подключаемся к телевизору…');
       await adb.connect();
@@ -427,7 +428,7 @@ class AdbPackageManager {
 
   /// Sends settings to the installed launcher (it redraws immediately).
   Future<void> applyLauncherSkin(TvDevice device, String skin) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       await adb.shell(_applyCommand(skin));
@@ -438,7 +439,7 @@ class AdbPackageManager {
 
   /// Removes TVCleanzer Launcher; the TV falls back to its own home screen.
   Future<void> uninstallLauncher(TvDevice device) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       await _setHomeKeyService(adb, enabled: false);
@@ -451,7 +452,7 @@ class AdbPackageManager {
 
   /// Apps, favourites, hidden and kids lists from the installed launcher.
   Future<LauncherState> launcherState(TvDevice device) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       final out = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/apps');
@@ -505,7 +506,7 @@ class AdbPackageManager {
     if (kidsApps != null) b.write(' --esa kidsApps ${list(kidsApps)}');
     if (pin != null && RegExp(r'^\d{4,8}$').hasMatch(pin)) b.write(' --es pin $pin');
     if (kids != null) b.write(' --ez kids $kids');
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       await adb.shell(b.toString());
@@ -518,7 +519,7 @@ class AdbPackageManager {
 
   /// Uploads a JPEG as the launcher background.
   Future<void> setWallpaper(TvDevice device, Uint8List jpeg) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       await adb.execWithInput(
@@ -532,7 +533,7 @@ class AdbPackageManager {
   }
 
   Future<void> removeWallpaper(TvDevice device) async {
-    final adb = AdbClient(host: device.ipAddress);
+    final adb = AdbClient(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '

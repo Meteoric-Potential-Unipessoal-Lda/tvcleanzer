@@ -22,6 +22,7 @@ class CurrentTvNotifier extends StateNotifier<TvDevice?> {
       final m = jsonDecode(raw) as Map<String, dynamic>;
       state = TvDevice.fromAdb(
         ip: m['ip'] as String,
+        port: (m['port'] as num?)?.toInt() ?? 5555,
         brand: m['brand'] as String? ?? '',
         model: m['model'] as String? ?? '',
         androidVer: m['androidVer'] as String? ?? '',
@@ -40,6 +41,7 @@ class CurrentTvNotifier extends StateNotifier<TvDevice?> {
       final sp = await SharedPreferences.getInstance();
       await sp.setString(_key, jsonEncode({
         'ip': d.ipAddress,
+        'port': d.port,
         'brand': d.brand,
         'model': d.model,
         'androidVer': d.androidVer,

@@ -135,7 +135,7 @@ class HistoryNotifier extends StateNotifier<List<CleanRecord>> {
     };
     final rec = CleanRecord(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      tvIp: tv.ipAddress,
+      tvIp: tv.id, // "host" or "host:port"
       tvName: tv.shortName.isEmpty ? tv.ipAddress : tv.shortName,
       packages: removed,
       labels: labels,
@@ -149,7 +149,7 @@ class HistoryNotifier extends StateNotifier<List<CleanRecord>> {
   Future<void> addBoost(TvDevice tv, BoostResult r) async {
     final rec = CleanRecord(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      tvIp: tv.ipAddress,
+      tvIp: tv.id, // "host" or "host:port"
       tvName: tv.shortName.isEmpty ? tv.ipAddress : tv.shortName,
       packages: const [],
       labels: const {},

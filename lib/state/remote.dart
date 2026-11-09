@@ -27,7 +27,7 @@ final remoteProvider =
     StateNotifierProvider<RemoteController, RemoteState>((ref) {
   final c = RemoteController();
   ref.listen<TvDevice?>(currentTvProvider, (prev, next) {
-    if (prev?.ipAddress != next?.ipAddress) c.reset();
+    if (prev?.id != next?.id) c.reset();
   });
   ref.onDispose(c.close);
   return c;
@@ -69,7 +69,11 @@ class RemoteController extends StateNotifier<RemoteState> {
         if (_client == null || _ip != ip) {
           _drop();
           _set(const RemoteState(RemoteStatus.connecting));
-          final c = AdbClient(host: ip);
+          // [ip] is a TvDevice.id: "host" or "host:port" (wireless debugging).
+          final i = ip.lastIndexOf(':');
+          final c = i < 0
+              ? AdbClient(host: ip)
+              : AdbClient(host: ip.substring(0, i), port: int.parse(ip.substring(i + 1)));
           await c.connect();
           _client = c;
           _ip = ip;

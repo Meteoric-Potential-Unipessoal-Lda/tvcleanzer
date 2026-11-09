@@ -27,14 +27,14 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   }
 
   void _key(TvDevice tv, int code) =>
-      ref.read(remoteProvider.notifier).key(tv.ipAddress, code);
+      ref.read(remoteProvider.notifier).key(tv.id, code);
 
   Future<void> _sendText(TvDevice tv) async {
     final value = _text.text.trim();
     if (value.isEmpty) return;
     setState(() => _sending = true);
     try {
-      await ref.read(remoteProvider.notifier).text(tv.ipAddress, value);
+      await ref.read(remoteProvider.notifier).text(tv.id, value);
       _text.clear();
     } catch (_) {
       // status card shows the error

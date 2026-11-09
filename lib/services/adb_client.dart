@@ -9,6 +9,8 @@ import 'dart:typed_data';
 import 'package:pointycastle/export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'pairing/adb_crypto.dart';
+
 // ─── ADB protocol constants ───────────────────────────────────────────────────
 
 const int _cmdCnxn = 0x4E584E43;
@@ -17,6 +19,8 @@ const int _cmdOpen = 0x4E45504F;
 const int _cmdOkay = 0x59414B4F;
 const int _cmdClse = 0x45534C43;
 const int _cmdWrte = 0x45545257;
+const int _cmdStls = 0x534C5453; // Wireless debugging: switch to TLS
+const int _stlsVersion = 0x01000000;
 
 const int _authToken = 1;
 const int _authSignature = 2;
@@ -136,7 +140,12 @@ class AdbClient {
 
     var msg = await _read(timeout,
         'TV did not respond. Make sure network debugging is enabled.');
-    if (msg.cmd == _cmdCnxn) return _parseCnxn(msg); // auth disabled on TV
+    if (msg.cmd == _cmdStls) {
+      // Wireless debugging (Android 11+): TLS with our paired certificate.
+      await _startTls();
+      msg = await _read(timeout, 'TV did not accept the paired key. Pair again.');
+    }
+    if (msg.cmd == _cmdCnxn) return _parseCnxn(msg); // auth disabled on TV / TLS done
     if (msg.cmd != _cmdAuth || msg.arg0 != _authToken) {
       throw AdbAuthException(
           'Expected AUTH token, got 0x${msg.cmd.toRadixString(16)}');
@@ -158,6 +167,52 @@ class AdbClient {
     throw AdbAuthException(
         'Unexpected auth response: 0x${msg.cmd.toRadixString(16)}');
   }
+
+  Future<void> _startTls() async {
+    final id = await tlsIdentity();
+    _send(_Msg(_cmdStls, _stlsVersion, 0));
+    await _sock!.flush();
+    _sockSub?.pause(); // the plain-text stream stops here
+    final ctx = SecurityContext(withTrustedRoots: false)
+      ..useCertificateChainBytes(utf8.encode(id.certPem))
+      ..usePrivateKeyBytes(utf8.encode(id.keyPem));
+    final secure = await SecureSocket.secure(_sock!,
+        host: host, context: ctx, onBadCertificate: (_) => true);
+    _buf.clear();
+    _sock = secure;
+    _sockSub = secure.listen(
+      _onData,
+      onError: (Object e) {
+        _sockError = e;
+        _wake();
+      },
+      onDone: () {
+        _sockClosed = true;
+        _wake();
+      },
+      cancelOnError: true,
+    );
+  }
+
+  /// Our RSA key as a TLS client identity (Wireless debugging) and the
+  /// ADB public key string sent during pairing.
+  static Future<AdbIdentity>? _identity;
+  static Future<AdbIdentity> tlsIdentity() => _identity ??= () async {
+        final k = await _keys();
+        final (cert, _) = AdbCrypto.selfSignedCert(k.n, k.e, k.d);
+        final pkcs8 = AdbCrypto.pkcs8(k.n, k.e, k.d);
+        return AdbIdentity(
+          certDer: cert,
+          pkcs8: pkcs8,
+          pkcs1: AdbCrypto.pkcs1(k.n, k.e, k.d),
+          publicKey: _androidPublicKey(k),
+          certPem: AdbCrypto.pem('CERTIFICATE', cert),
+          keyPem: AdbCrypto.pem('PRIVATE KEY', pkcs8),
+        );
+      }().catchError((Object e) {
+        _identity = null;
+        throw e;
+      });
 
   /// Runs [command] via the `shell:` service and returns its full output.
   /// [timeout] is an inactivity timeout between messages.
@@ -454,4 +509,17 @@ class AdbClient {
     }
     return ((m - x) % m).toInt();
   }
+}
+
+class AdbIdentity {
+  final Uint8List certDer, pkcs8, pkcs1, publicKey;
+  final String certPem, keyPem;
+  const AdbIdentity({
+    required this.certDer,
+    required this.pkcs8,
+    required this.pkcs1,
+    required this.publicKey,
+    required this.certPem,
+    required this.keyPem,
+  });
 }

@@ -201,7 +201,13 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     setState(() => _busy.add(r.id));
     String message;
     try {
-      final tv = TvDevice.fromAdb(ip: r.tvIp, brand: '', model: '', androidVer: '');
+      final sep = r.tvIp.lastIndexOf(':');
+      final tv = sep < 0
+          ? TvDevice.fromAdb(ip: r.tvIp, brand: '', model: '', androidVer: '')
+          : TvDevice.fromAdb(
+              ip: r.tvIp.substring(0, sep),
+              port: int.tryParse(r.tvIp.substring(sep + 1)) ?? 5555,
+              brand: '', model: '', androidVer: '');
       final api = ref.read(adbServiceProvider);
       bool ok;
       if (r.isBoost) {

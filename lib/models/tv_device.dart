@@ -9,7 +9,7 @@ class TvDevice {
   final int    ramMb;
   final int    ramFreeMb;
   final String ipAddress;
-  final int    port;        // ADB port (always 5555)
+  final int    port;        // ADB port: 5555, or the Wireless debugging port
   final DateTime discoveredAt;
 
   const TvDevice({
@@ -30,6 +30,7 @@ class TvDevice {
   /// optional CNXN props (the key=value pairs in the ADB CNXN banner).
   factory TvDevice.fromAdb({
     required String ip,
+    int port = 5555,
     required String brand,
     required String model,
     required String androidVer,
@@ -41,7 +42,7 @@ class TvDevice {
     final b = brand.isNotEmpty ? brand : (cnxnProps['ro.product.brand'] ?? 'TV');
     final m = model.isNotEmpty ? model : (cnxnProps['ro.product.model'] ?? 'Android TV');
     return TvDevice(
-      id:          ip,
+      id:          port == 5555 ? ip : '$ip:$port',
       name:        '$b $m'.trim(),
       brand:       b,
       model:       m,
@@ -54,12 +55,15 @@ class TvDevice {
       ramMb:       ramMb,
       ramFreeMb:   ramFreeMb,
       ipAddress:   ip,
-      port:        5555,
+      port:        port,
       discoveredAt: DateTime.now(),
     );
   }
 
   String get shortName => '$brand $model'.trim();
+
+  /// Wireless debugging (TLS, paired by code) rather than plain port 5555.
+  bool get isWireless => port != 5555;
 }
 
 /// One package entry returned by the TV app /scan endpoint.

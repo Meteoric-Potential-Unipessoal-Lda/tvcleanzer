@@ -10,6 +10,7 @@ import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 import '../widgets/tv_card.dart';
 import 'help_screen.dart';
+import 'pair_screen.dart';
 
 // ─── Providers ───────────────────────────────────────────────────────────────
 
@@ -33,8 +34,19 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
   DiscoveryNotifier(this._ref) : super(const DiscoveryState());
   final Ref _ref;
 
+  /// Adds a TV connected another way (wireless debugging by code).
+  void add(TvDevice d) {
+    state = DiscoveryState(
+      devices: [d, ...state.devices.where((e) => e.id != d.id)],
+      scanning: state.scanning,
+      error: state.error,
+    );
+  }
+
   Future<void> startScan() async {
-    state = const DiscoveryState(scanning: true);
+    // Wireless-debugging TVs aren't on port 5555: keep the one we paired with.
+    final cur = _ref.read(currentTvProvider);
+    state = DiscoveryState(scanning: true, devices: [if (cur != null && cur.isWireless) cur]);
     final discovery = _ref.read(tvDiscoveryProvider);
     try {
       await for (final d in discovery.discover()) {
@@ -42,7 +54,7 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
         // Avoid duplicates by IP
         final existing = state.devices.any((e) => e.ipAddress == d.ipAddress);
         final current = _ref.read(currentTvProvider);
-        if (current == null || current.ipAddress == d.ipAddress) {
+        if (current == null || (current.ipAddress == d.ipAddress && !current.isWireless)) {
           _ref.read(currentTvProvider.notifier).select(d); // Remote & Launcher use it
         }
         if (!existing) {
@@ -112,6 +124,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  void _openPair() => Navigator.push(context,
+      MaterialPageRoute(builder: (_) => const PairScreen()));
+
   SliverAppBar _buildAppBar() => SliverAppBar(
     pinned: true,
     expandedHeight: 110,
@@ -127,6 +142,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       titlePadding: const EdgeInsetsDirectional.only(start: 16, bottom: 16),
     ),
     actions: [
+      IconButton(
+        icon: const Icon(Icons.pin_rounded),
+        color: AppColors.fgMid,
+        tooltip: 'Подключить по коду',
+        onPressed: _openPair,
+      ),
       IconButton(
         icon: const Icon(Icons.help_outline_rounded),
         color: AppColors.fgMid,
@@ -211,6 +232,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         onPressed: () => ref.read(discoveryProvider.notifier).startScan(),
       ),
       const Gap(8),
+      OutlinedButton.icon(
+        icon: const Icon(Icons.pin_rounded, size: 18),
+        label: const Text('Google TV / Android 11+: подключить по коду'),
+        onPressed: _openPair,
+      ),
+      const Gap(4),
       TextButton.icon(
         icon: const Icon(Icons.menu_book_rounded, size: 18),
         label: const Text('Как включить отладку на моём ТВ?'),
