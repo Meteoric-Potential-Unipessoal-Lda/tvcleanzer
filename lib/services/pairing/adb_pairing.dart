@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter/services.dart' show MissingPluginException, PlatformException;
 import 'package:pointycastle/export.dart' show InvalidCipherTextException;
 
 import '../adb_client.dart';
@@ -34,6 +34,10 @@ class AdbPairing {
     try {
       ch = await NativeTlsChannel.open(host, port,
           certDer: id.certDer, keyPkcs8: id.pkcs8, keyPkcs1: id.pkcs1);
+    } on MissingPluginException {
+      throw PairingException(
+          'На компьютере подключение по коду пока не работает. Включите на ТВ «Отладку по сети» '
+          '(порт 5555) — такой ТВ найдётся сам — или подключите ТВ по коду с телефона.');
     } on PlatformException catch (e) {
       throw PairingException(e.code == 'unsupported'
           ? (e.message ?? 'Этот телефон не поддерживает сопряжение по коду.')

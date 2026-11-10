@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -124,6 +126,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  /// Pairing by code needs the native TLS channel (Android, iOS only for now).
+  static bool get _canPair => Platform.isAndroid || Platform.isIOS;
+
   void _openPair() => Navigator.push(context,
       MaterialPageRoute(builder: (_) => const PairScreen()));
 
@@ -142,12 +147,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       titlePadding: const EdgeInsetsDirectional.only(start: 16, bottom: 16),
     ),
     actions: [
-      IconButton(
-        icon: const Icon(Icons.pin_rounded),
-        color: AppColors.fgMid,
-        tooltip: 'Подключить по коду',
-        onPressed: _openPair,
-      ),
+      if (_canPair)
+        IconButton(
+          icon: const Icon(Icons.pin_rounded),
+          color: AppColors.fgMid,
+          tooltip: 'Подключить по коду',
+          onPressed: _openPair,
+        ),
       IconButton(
         icon: const Icon(Icons.help_outline_rounded),
         color: AppColors.fgMid,
@@ -231,12 +237,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         label: const Text('Искать снова'),
         onPressed: () => ref.read(discoveryProvider.notifier).startScan(),
       ),
-      const Gap(8),
-      OutlinedButton.icon(
-        icon: const Icon(Icons.pin_rounded, size: 18),
-        label: const Text('Google TV / Android 11+: подключить по коду'),
-        onPressed: _openPair,
-      ),
+      if (_canPair) ...[
+        const Gap(8),
+        OutlinedButton.icon(
+          icon: const Icon(Icons.pin_rounded, size: 18),
+          label: const Text('Google TV / Android 11+: подключить по коду'),
+          onPressed: _openPair,
+        ),
+      ],
       const Gap(4),
       TextButton.icon(
         icon: const Icon(Icons.menu_book_rounded, size: 18),

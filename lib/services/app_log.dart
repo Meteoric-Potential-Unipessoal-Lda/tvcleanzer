@@ -27,7 +27,7 @@ class AppLog {
   static String report({TvDevice? tv, String? launcher}) {
     final b = StringBuffer()
       ..writeln('TVCleanzer $appVersion — отчёт о проблеме')
-      ..writeln('Телефон: ${Platform.operatingSystem} ${Platform.operatingSystemVersion}');
+      ..writeln('Устройство: ${Platform.operatingSystem} ${Platform.operatingSystemVersion}');
     if (tv != null) {
       b.writeln('ТВ: ${tv.shortName.isEmpty ? 'неизвестно' : tv.shortName}, '
           'Android ${tv.androidVer} (SDK ${tv.sdkVersion}), ОЗУ ${tv.ramMb} МБ');

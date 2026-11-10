@@ -1,0 +1,65 @@
+name: Windows build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Windows runner (generate + brand)
+        shell: pwsh
+        run: ./tools/windows_setup.ps1
+
+      - name: Tests
+        run: flutter test
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Build
+        run: flutter build windows --release
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $rel = 'build\windows\x64\runner\Release'
+          # Visual C++ runtime next to the exe: works on PCs without the redistributable.
+          foreach ($dll in 'msvcp140.dll','vcruntime140.dll','vcruntime140_1.dll') {
+            Copy-Item "$env:WINDIR\System32\$dll" $rel -ErrorAction SilentlyContinue
+          }
+          $ver = (Select-String -Path pubspec.yaml -Pattern '^version:\s*([0-9.]+)').Matches[0].Groups[1].Value
+          New-Item -ItemType Directory dist -Force | Out-Null
+          $dir = "dist\TVCleanzer"
+          Copy-Item $rel $dir -Recurse
+          $zip = "dist\TVCleanzer-$ver-windows-x64.zip"
+          Compress-Archive -Path $dir -DestinationPath $zip
+          $sha = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
+          "ZIP=$zip" >> $env:GITHUB_ENV
+          "SHA=$sha" >> $env:GITHUB_ENV
+          Write-Host "$zip  sha256 $sha"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TVCleanzer-windows-x64
+          path: ${{ env.ZIP }}
+
+      - name: Release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP }}
+          body: "Windows x64. SHA-256: ${{ env.SHA }}"

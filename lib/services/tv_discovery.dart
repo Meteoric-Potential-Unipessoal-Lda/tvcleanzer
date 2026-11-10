@@ -63,7 +63,7 @@ class TvDiscovery {
     }
   }
 
-  /// Base of the phone's Wi-Fi /24 subnet, e.g. "192.168.1.".
+  /// Base of the phone's (or PC's) Wi-Fi /24 subnet, e.g. "192.168.1.".
   /// Uses dart:io directly (no plugin): prefers Wi-Fi interfaces
   /// (en*/wlan*) and skips cellular, VPN and virtual ones.
   Future<String?> _subnetBase() async {
@@ -74,14 +74,22 @@ class TvDiscovery {
       return null;
     }
     const skip = ['lo', 'pdp_ip', 'rmnet', 'ccmni', 'utun', 'ipsec', 'tun',
-                  'bridge', 'vmnet', 'awdl', 'llw', 'ap', 'p2p'];
+                  'bridge', 'vmnet', 'awdl', 'llw', 'ap', 'p2p',
+                  // Windows: virtual / VPN adapters
+                  'vethernet', 'virtualbox', 'vmware', 'hyper-v', 'bluetooth',
+                  'tailscale', 'zerotier', 'radmin', 'hamachi', 'openvpn',
+                  'wireguard', 'npcap', 'teredo', 'isatap'];
+    // Phone: en*/wlan*; Windows: "Wi-Fi", "Ethernet", localized "Беспроводная сеть".
+    bool preferred(String n) =>
+        n.startsWith('en') || n.startsWith('wlan') || n.startsWith('wi-fi') ||
+        n.startsWith('wifi') || n.startsWith('ethernet') || n.contains('беспровод');
     String? best, fallback;
     for (final iface in ifaces) {
       final name = iface.name.toLowerCase();
       if (skip.any(name.startsWith)) continue;
       for (final a in iface.addresses) {
         if (!_isPrivate(a.address)) continue;
-        if (name.startsWith('en') || name.startsWith('wlan')) {
+        if (preferred(name)) {
           best ??= a.address;
         } else {
           fallback ??= a.address;

@@ -42,7 +42,9 @@ flutter_launcher_icons:
   web:
     generate: false
   windows:
-    generate: false
+    generate: true
+    image_path: "assets/icon/icon.png"
+    icon_size: 256
   macos:
     generate: false
 
