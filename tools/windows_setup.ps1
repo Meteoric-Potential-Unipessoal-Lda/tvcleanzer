@@ -13,7 +13,7 @@ if (-not (Test-Path 'windows\runner\main.cpp')) {
 function Edit-File($path, [scriptblock]$fn) {
   $t = [IO.File]::ReadAllText($path)
   $n = & $fn $t
-  if ($n -ne $t) { [IO.File]::WriteAllText($path, $n, (New-Object Text.UTF8Encoding($true))) }
+  if ($n -cne $t) { [IO.File]::WriteAllText($path, $n, (New-Object Text.UTF8Encoding($true))) }
 }
 
 Edit-File 'windows\runner\main.cpp' {
