@@ -15,6 +15,9 @@ Uint8List _zip(Map<String, List<int>> files) {
 }
 
 void main() {
+  // listApps reads the bundled package database (rootBundle).
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   test('apksIn: plain APK, split bundle, and not an app', () {
     final apk = _zip({'AndroidManifest.xml': [1, 2, 3], 'classes.dex': [4]});
     expect(AdbPackageManager.apksIn('a.apk', apk).single.$1, 'a.apk');
