@@ -10,6 +10,7 @@ import '../services/package_db.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 
+import '../l10n/l10n.dart';
 class _Guide {
   final String brand;
   final String hint;
@@ -19,42 +20,42 @@ class _Guide {
   const _Guide(this.brand, this.hint, this.steps, {this.note, this.supported = true});
 }
 
-const _guides = <_Guide>[
-  _Guide('Android TV', 'Haier, Hartens, Sony, TCL, Kivi, DEXP, приставки', [
-    'Откройте Настройки → «Настройки устройства» (на части моделей — «Система»).',
-    'Зайдите в «Об устройстве».',
-    'Наведите на строку «Сборка» и нажмите ОК на пульте 7 раз подряд — появится «Вы стали разработчиком».',
-    'Вернитесь назад: появился пункт «Для разработчиков». Откройте его.',
-    'Включите «Отладка по USB». Если есть «Отладка по сети» или «ADB по сети» — включите и её.',
+final _guides = <_Guide>[
+  _Guide('Android TV', tr('Haier, Hartens, Sony, TCL, Kivi, DEXP, приставки'), [
+    tr('Откройте Настройки → «Настройки устройства» (на части моделей — «Система»).'),
+    tr('Зайдите в «Об устройстве».'),
+    tr('Наведите на строку «Сборка» и нажмите ОК на пульте 7 раз подряд — появится «Вы стали разработчиком».'),
+    tr('Вернитесь назад: появился пункт «Для разработчиков». Откройте его.'),
+    tr('Включите «Отладка по USB». Если есть «Отладка по сети» или «ADB по сети» — включите и её.'),
   ]),
-  _Guide('Google TV', 'Новые Sony, TCL, Hisense, Chromecast', [
-    'Настройки → «Система» → «Об устройстве».',
-    'Нажмите ОК 7 раз на строке «Сборка ОС Android TV».',
-    'Назад в «Система» → «Для разработчиков».',
-    'Включите «Отладка по USB».',
-    'Если телевизор не находится: там же включите «Беспроводная отладка» и в TVCleanzer нажмите «Подключить по коду» (значок с цифрами вверху главного экрана).',
-  ], note: 'Подключение по коду нужно один раз. Работает на телефонах с Android 10 и новее (лучше 12+) и на iPhone.'),
-  _Guide('Xiaomi Mi TV', 'Глобальная прошивка с PatchWall / Android TV', [
-    'Настройки → «Настройки устройства» → «Об устройстве».',
-    'Нажмите ОК 7 раз на строке «Сборка».',
-    'Назад → «Для разработчиков» → включите «Отладка по USB».',
+  _Guide('Google TV', tr('Новые Sony, TCL, Hisense, Chromecast'), [
+    tr('Настройки → «Система» → «Об устройстве».'),
+    tr('Нажмите ОК 7 раз на строке «Сборка ОС Android TV».'),
+    tr('Назад в «Система» → «Для разработчиков».'),
+    tr('Включите «Отладка по USB».'),
+    tr('Если телевизор не находится: там же включите «Беспроводная отладка» и в TVCleanzer нажмите «Подключить по коду» (значок с цифрами вверху главного экрана).'),
+  ], note: tr('Подключение по коду нужно один раз. Работает на телефонах с Android 10 и новее (лучше 12+) и на iPhone.')),
+  _Guide('Xiaomi Mi TV', tr('Глобальная прошивка с PatchWall / Android TV'), [
+    tr('Настройки → «Настройки устройства» → «Об устройстве».'),
+    tr('Нажмите ОК 7 раз на строке «Сборка».'),
+    tr('Назад → «Для разработчиков» → включите «Отладка по USB».'),
   ]),
-  _Guide('Xiaomi Китай', 'Redmi и Xiaomi с китайской прошивкой (HyperOS, MIUI TV)', [
-    'Настройки → «О телевизоре».',
-    'Нажмите ОК 7 раз на строке «Модель продукта».',
-    'Назад → «Аккаунт и безопасность» → включите «Отладка ADB».',
-  ], note: 'На этих прошивках отладка выключается после каждой перезагрузки телевизора — включайте её перед работой с TVCleanzer.'),
-  _Guide('Fire TV', 'Amazon Fire TV и телевизоры с Fire OS', [
-    'Настройки → «Моё Fire TV» → «О программе».',
-    'Нажмите ОК 7 раз на названии устройства.',
-    'Назад → «Для разработчиков» → включите «Отладка ADB».',
-  ], note: 'Fire OS не даёт сменить главный экран: чистка и пульт работают, свой лаунчер — нет.'),
-  _Guide('Philips', 'Android TV и Google TV от Philips', [
-    'Проверьте Настройки → «Об устройстве»: если там есть версия Android (прошивка TPM…), делайте как для Android TV.',
-  ], note: 'Прошивки TPN… (Titan OS, Saphi) — не Android, с ними TVCleanzer не работает.'),
-  _Guide('Samsung, LG', 'а также Hisense VIDAA, Roku', [
-    'Это не Android: Samsung — Tizen, LG — webOS, Hisense — VIDAA.',
-    'Отладки по сети на них нет, поэтому TVCleanzer с ними не работает.',
+  _Guide(tr('Xiaomi Китай'), tr('Redmi и Xiaomi с китайской прошивкой (HyperOS, MIUI TV)'), [
+    tr('Настройки → «О телевизоре».'),
+    tr('Нажмите ОК 7 раз на строке «Модель продукта».'),
+    tr('Назад → «Аккаунт и безопасность» → включите «Отладка ADB».'),
+  ], note: tr('На этих прошивках отладка выключается после каждой перезагрузки телевизора — включайте её перед работой с TVCleanzer.')),
+  _Guide('Fire TV', tr('Amazon Fire TV и телевизоры с Fire OS'), [
+    tr('Настройки → «Моё Fire TV» → «О программе».'),
+    tr('Нажмите ОК 7 раз на названии устройства.'),
+    tr('Назад → «Для разработчиков» → включите «Отладка ADB».'),
+  ], note: tr('Fire OS не даёт сменить главный экран: чистка и пульт работают, свой лаунчер — нет.')),
+  _Guide('Philips', tr('Android TV и Google TV от Philips'), [
+    tr('Проверьте Настройки → «Об устройстве»: если там есть версия Android (прошивка TPM…), делайте как для Android TV.'),
+  ], note: tr('Прошивки TPN… (Titan OS, Saphi) — не Android, с ними TVCleanzer не работает.')),
+  _Guide('Samsung, LG', tr('а также Hisense VIDAA, Roku'), [
+    tr('Это не Android: Samsung — Tizen, LG — webOS, Hisense — VIDAA.'),
+    tr('Отладки по сети на них нет, поэтому TVCleanzer с ними не работает.'),
   ], supported: false),
 ];
 
@@ -72,11 +73,11 @@ class _HelpScreenState extends State<HelpScreen> {
   Widget build(BuildContext context) {
     final g = _guides[_i];
     return Scaffold(
-      appBar: AppBar(title: const Text('Как включить отладку')),
+      appBar: AppBar(title: Text(tr('Как включить отладку'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
         children: [
-          const Text('Выберите свой телевизор:',
+          Text(tr('Выберите свой телевизор:'),
               style: TextStyle(color: AppColors.fgMid, fontSize: 13)),
           const Gap(10),
           Wrap(spacing: 8, runSpacing: 8, children: [
@@ -123,8 +124,7 @@ class _HelpScreenState extends State<HelpScreen> {
                 if (g.supported) ...[
                   const Gap(18),
                   _note(
-                    'Телефон и телевизор должны быть в одной Wi-Fi сети. При первом подключении '
-                    'на ТВ появится «Разрешить отладку?» — отметьте «Всегда разрешать» и нажмите «Разрешить».',
+                    tr('Телефон и телевизор должны быть в одной Wi-Fi сети. При первом подключении на ТВ появится «Разрешить отладку?» — отметьте «Всегда разрешать» и нажмите «Разрешить».'),
                     AppColors.accent,
                   ),
                 ],
@@ -190,8 +190,8 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
           const Gap(12),
           ListTile(
             leading: const Icon(Icons.menu_book_rounded, color: AppColors.accent),
-            title: const Text('Как включить отладку на ТВ'),
-            subtitle: const Text('Пошагово для вашего бренда'),
+            title: Text(tr('Как включить отладку на ТВ')),
+            subtitle: Text(tr('Пошагово для вашего бренда')),
             onTap: () {
               Navigator.pop(ctx);
               Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpScreen()));
@@ -199,15 +199,15 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
           ),
           ListTile(
             leading: const Icon(Icons.bug_report_rounded, color: AppColors.warn),
-            title: const Text('Сообщить о проблеме'),
-            subtitle: const Text('Скопирует модель ТВ и журнал ошибок'),
+            title: Text(tr('Сообщить о проблеме')),
+            subtitle: Text(tr('Скопирует модель ТВ и журнал ошибок')),
             onTap: () async {
               final text = AppLog.report(tv: ref.read(currentTvProvider));
               await Clipboard.setData(ClipboardData(text: text));
               if (ctx.mounted) Navigator.pop(ctx);
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Скопировано. Вставьте в чат TVCleanzer в Telegram и допишите, что случилось.'),
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(tr('Скопировано. Вставьте в чат TVCleanzer в Telegram и допишите, что случилось.')),
                   duration: Duration(seconds: 5),
                 ));
               }
@@ -215,8 +215,7 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
           ),
           const Gap(4),
           Text(
-              'TVCleanzer $appVersion · база ${PackageDb.count > 0 ? '${PackageDb.count} приложений, ' : ''}'
-              'версия ${PackageDb.version} · на основе CleanYourTV (MIT)',
+              tr('TVCleanzer {0} · база {1}версия {2} · на основе CleanYourTV (MIT)', [appVersion, PackageDb.count > 0 ? tr('{0} приложений, ', [PackageDb.count]) : '', PackageDb.version]),
               textAlign: TextAlign.center,
               style: const TextStyle(color: AppColors.fgMuted, fontSize: 11)),
         ]),

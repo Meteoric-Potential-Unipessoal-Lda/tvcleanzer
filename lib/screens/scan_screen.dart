@@ -12,6 +12,7 @@ import '../theme/app_theme.dart';
 import '../widgets/package_tile.dart';
 import 'clean_screen.dart';
 
+import '../l10n/l10n.dart';
 // ─── Providers ───────────────────────────────────────────────────────────────
 
 final scanProvider = StateNotifierProvider.autoDispose.family<ScanNotifier, ScanState, TvDevice>(
@@ -48,12 +49,12 @@ class ScanNotifier extends StateNotifier<ScanState> {
   String _friendlyError(Object e) {
     final s = e.toString();
     if (s.contains('SocketException') || s.contains('connection')) {
-      return 'Нет связи с телевизором. Убедитесь, что телефон и телевизор в одной Wi-Fi сети.';
+      return tr('Нет связи с телевизором. Убедитесь, что телефон и телевизор в одной Wi-Fi сети.');
     }
     if (s.contains('timeout') || s.contains('Timeout') || s.contains('timed out')) {
-      return 'Телевизор не отвечает. Проверьте, что на телевизоре включена отладка по сети, и попробуйте снова.';
+      return tr('Телевизор не отвечает. Проверьте, что на телевизоре включена отладка по сети, и попробуйте снова.');
     }
-    return 'Ошибка: $s';
+    return tr('Ошибка: {0}', [s]);
   }
 }
 
@@ -104,10 +105,10 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
         child: CircularProgressIndicator(strokeWidth: 3, color: AppColors.accent),
       ),
       const Gap(24),
-      Text('Анализируем телевизор…',
+      Text(tr('Анализируем телевизор…'),
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      const Text('Сверяем с 463 проверенными списками',
+      Text(tr('Сверяем с 463 проверенными списками'),
         style: TextStyle(color: AppColors.fgMuted)),
     ]).animate().fadeIn(duration: 400.ms),
   );
@@ -141,7 +142,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
         _boostCard(),
         const Gap(20),
         if (toRemove.isNotEmpty) ...[
-          _sectionHeader('Рекомендуем убрать', AppColors.danger, '${toRemove.length}'),
+          _sectionHeader(tr('Рекомендуем убрать'), AppColors.danger, '${toRemove.length}'),
           const Gap(8),
           ...toRemove.asMap().entries.map((e) =>
             PackageTile(
@@ -155,10 +156,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
           const Gap(16),
         ],
         if (toCaution.isNotEmpty) ...[
-          _sectionHeader('На ваше усмотрение', AppColors.warn, '${toCaution.length}'),
+          _sectionHeader(tr('На ваше усмотрение'), AppColors.warn, '${toCaution.length}'),
           const Gap(4),
-          const Text('Функции и приложения: голос, трансляция, сервисы видео. '
-              'Отметьте, только если точно не пользуетесь.',
+          Text(tr('Функции и приложения: голос, трансляция, сервисы видео. Отметьте, только если точно не пользуетесь.'),
               style: TextStyle(fontSize: 12, color: AppColors.fgMuted, height: 1.4)),
           const Gap(8),
           ...toCaution.map((p) => PackageTile(
@@ -175,10 +175,10 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
               tilePadding: EdgeInsets.zero,
               iconColor: AppColors.fgMid,
               collapsedIconColor: AppColors.fgMuted,
-              title: _sectionHeader('Не трогаем', AppColors.ok, '${toKeep.length}'),
-              subtitle: const Padding(
+              title: _sectionHeader(tr('Не трогаем'), AppColors.ok, '${toKeep.length}'),
+              subtitle: Padding(
                 padding: EdgeInsets.only(top: 4),
-                child: Text('Система, входы HDMI, пульт, главный экран и ваши приложения',
+                child: Text(tr('Система, входы HDMI, пульт, главный экран и ваши приложения'),
                     style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
               ),
               children: [for (final p in toKeep.take(200)) PackageTile(pkg: p, dimmed: true)],
@@ -194,8 +194,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
             child: SizedBox(width: double.infinity, child: FilledButton.icon(
               icon: const Icon(Icons.cleaning_services_rounded),
               label: Text(chosenMb > 0
-                  ? 'Убрать ${chosen.length} · освободить ~$chosenMb МБ'
-                  : 'Убрать ${chosen.length}'),
+                  ? tr('Убрать {0} · освободить ~{1} МБ', [chosen.length, chosenMb])
+                  : tr('Убрать {0}', [chosen.length])),
               style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
               onPressed: () => Navigator.push(context,
                 MaterialPageRoute(builder: (_) => CleanScreen(
@@ -219,10 +219,10 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       const Text('🧹', style: TextStyle(fontSize: 32)),
       const Gap(14),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(remove > 0 ? '$remove лишних приложений' : 'Явного мусора нет',
+        Text(remove > 0 ? tr('{0} лишних приложений', [remove]) : tr('Явного мусора нет'),
           style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
         const Gap(2),
-        Text(caution > 0 ? 'Ещё $caution — на ваше усмотрение' : 'Всё скрытое можно вернуть из «Истории»',
+        Text(caution > 0 ? tr('Ещё {0} — на ваше усмотрение', [caution]) : tr('Всё скрытое можно вернуть из «Истории»'),
           style: const TextStyle(color: AppColors.fgMid, fontSize: 13)),
       ])),
     ]),
@@ -248,11 +248,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
         child: const Icon(Icons.bolt_rounded, color: Color(0xFFC4B5FD)),
       ),
       const Gap(12),
-      const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Ускорить телевизор',
+      Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(tr('Ускорить телевизор'),
             style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.fg, fontSize: 15)),
         SizedBox(height: 2),
-        Text('Быстрее анимации, свободнее память, чище кэш. С замером до и после.',
+        Text(tr('Быстрее анимации, свободнее память, чище кэш. С замером до и после.'),
             style: TextStyle(fontSize: 12, color: AppColors.fgMid, height: 1.35)),
       ])),
       const Gap(8),
@@ -264,7 +264,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                 backgroundColor: const Color(0xFFA78BFA),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               ),
-              child: const Text('Пуск'),
+              child: Text(tr('Пуск')),
             ),
     ]),
   ).animate().fadeIn(delay: 100.ms, duration: 300.ms);
@@ -288,8 +288,8 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       AppLog.error('boost ${widget.device.ipAddress}', e);
       if (!mounted) return;
       setState(() => _boosting = false);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Не получилось: телевизор не отвечает.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(tr('Не получилось: телевизор не отвечает.'))));
     }
   }
 
@@ -298,10 +298,10 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     child: Column(children: [
       const Text('✅', style: TextStyle(fontSize: 48)),
       const Gap(16),
-      Text('Телевизор чистый!',
+      Text(tr('Телевизор чистый!'),
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      const Text('Мусорных приложений не обнаружено. Попробуйте «Ускорить».',
+      Text(tr('Мусорных приложений не обнаружено. Попробуйте «Ускорить».'),
         textAlign: TextAlign.center,
         style: TextStyle(color: AppColors.fgMid)),
     ]),
@@ -313,7 +313,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         const Icon(Icons.wifi_off_rounded, color: AppColors.danger, size: 48),
         const Gap(16),
-        Text('Не удалось подключиться',
+        Text(tr('Не удалось подключиться'),
           style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
         const Gap(8),
         Text(error,
@@ -322,7 +322,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
         const Gap(24),
         FilledButton(
           onPressed: () => ref.read(scanProvider(widget.device).notifier).startScan(),
-          child: const Text('Попробовать снова'),
+          child: Text(tr('Попробовать снова')),
         ),
       ]),
     ),
@@ -359,32 +359,32 @@ class _BoostSheet extends StatelessWidget {
           const Icon(Icons.bolt_rounded, color: Color(0xFFC4B5FD), size: 44)
               .animate().scale(begin: const Offset(.5, .5), duration: 500.ms, curve: Curves.elasticOut),
           const Gap(10),
-          Text('Телевизор ускорен',
+          Text(tr('Телевизор ускорен'),
               style: GoogleFonts.syne(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.fg)),
           const Gap(20),
           Row(children: [
-            _metric('Было', r.ramBeforeMb, AppColors.fgMid),
+            _metric(tr('Было'), r.ramBeforeMb, AppColors.fgMid),
             const Icon(Icons.arrow_forward_rounded, color: AppColors.fgMuted),
-            _metric('Стало', r.ramAfterMb, AppColors.accent, animate: true),
+            _metric(tr('Стало'), r.ramAfterMb, AppColors.accent, animate: true),
           ]),
           const Gap(6),
           Text(r.ramTotalMb > 0
-              ? 'свободной памяти из ${r.ramTotalMb} МБ'
-              : 'свободной памяти',
+              ? tr('свободной памяти из {0} МБ', [r.ramTotalMb])
+              : tr('свободной памяти'),
               style: const TextStyle(color: AppColors.fgMuted, fontSize: 12)),
           const Gap(18),
           Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
-            if (r.ramGainMb > 0) _chip('+${r.ramGainMb} МБ памяти', AppColors.accent),
-            if (r.cacheFreedMb > 0) _chip('−${r.cacheFreedMb} МБ кэша', const Color(0xFFC4B5FD)),
-            if (r.oldSettings.isNotEmpty) _chip('анимации ×2 быстрее', AppColors.warn),
+            if (r.ramGainMb > 0) _chip(tr('+{0} МБ памяти', [r.ramGainMb]), AppColors.accent),
+            if (r.cacheFreedMb > 0) _chip(tr('−{0} МБ кэша', [r.cacheFreedMb]), const Color(0xFFC4B5FD)),
+            if (r.oldSettings.isNotEmpty) _chip(tr('анимации ×2 быстрее'), AppColors.warn),
           ]),
           const Gap(14),
-          const Text('Анимации можно вернуть во вкладке «История».',
+          Text(tr('Анимации можно вернуть во вкладке «История».'),
               style: TextStyle(color: AppColors.fgMuted, fontSize: 12)),
           const Gap(16),
           SizedBox(width: double.infinity, child: FilledButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Отлично'),
+            child: Text(tr('Отлично')),
           )),
         ]),
       ),
@@ -399,7 +399,7 @@ class _BoostSheet extends StatelessWidget {
         tween: IntTween(begin: animate ? (mb * .6).round() : mb, end: mb),
         duration: const Duration(milliseconds: 1100),
         curve: Curves.easeOutCubic,
-        builder: (_, v, __) => Text('$v МБ',
+        builder: (_, v, __) => Text(tr('{0} МБ', [v]),
             style: GoogleFonts.syne(fontSize: 26, fontWeight: FontWeight.w800, color: color)),
       ),
     ]),

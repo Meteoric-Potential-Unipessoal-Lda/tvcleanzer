@@ -9,6 +9,7 @@ import '../services/adb_package_manager.dart';
 import '../state/history.dart';
 import '../theme/app_theme.dart';
 
+import '../l10n/l10n.dart';
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
   @override
@@ -22,7 +23,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   Widget build(BuildContext context) {
     final records = ref.watch(historyProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('История')),
+      appBar: AppBar(title: Text(tr('История'))),
       body: records.isEmpty
           ? _empty()
           : ListView.builder(
@@ -45,13 +46,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             const Icon(Icons.history_rounded, size: 56, color: AppColors.fgMuted),
             const Gap(16),
-            Text('Пока пусто',
+            Text(tr('Пока пусто'),
                 style: GoogleFonts.syne(
                     fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
             const Gap(8),
-            const Text(
-              'После очистки здесь появится список скрытых приложений. '
-              'Их можно вернуть в любой момент.',
+            Text(
+              tr('После очистки здесь появится список скрытых приложений. Их можно вернуть в любой момент.'),
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.fgMid, height: 1.5),
             ),
@@ -85,7 +85,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           const Gap(12),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(boost ? 'Ускорение · ${r.tvName}' : r.tvName,
+              Text(boost ? tr('Ускорение · {0}', [r.tvName]) : r.tvName,
                   style: GoogleFonts.syne(
                       fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.fg)),
               Text(_fmt(r.date),
@@ -96,14 +96,14 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         ]),
         if (boost) ...[
           const Gap(8),
-          Text('Свободная память: ${r.ramBeforeMb} → ${r.ramAfterMb} МБ', style: sub),
-          if (r.cacheFreedMb > 0) Text('Очищено кэша: ${r.cacheFreedMb} МБ', style: sub),
-          if (r.settings.isNotEmpty) const Text('Анимации ускорены до 0.5×', style: sub),
+          Text(tr('Свободная память: {0} → {1} МБ', [r.ramBeforeMb, r.ramAfterMb]), style: sub),
+          if (r.cacheFreedMb > 0) Text(tr('Очищено кэша: {0} МБ', [r.cacheFreedMb]), style: sub),
+          if (r.settings.isNotEmpty) Text(tr('Анимации ускорены до 0.5×'), style: sub),
           const Gap(8),
         ],
         if (r.savedMb > 0) ...[
           const Gap(8),
-          Text('Освобождено около ${r.savedMb} МБ',
+          Text(tr('Освобождено около {0} МБ', [r.savedMb]),
               style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
         ],
         if (!boost) Theme(
@@ -113,7 +113,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             childrenPadding: const EdgeInsets.only(bottom: 8),
             iconColor: AppColors.fgMid,
             collapsedIconColor: AppColors.fgMuted,
-            title: Text('Приложения (${r.packages.length})',
+            title: Text(tr('Приложения ({0})', [r.packages.length]),
                 style: const TextStyle(fontSize: 13, color: AppColors.fg)),
             children: [
               for (final p in r.packages)
@@ -141,7 +141,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.undo_rounded, size: 18),
-              label: Text(busy ? 'Возвращаем…' : (boost ? 'Вернуть анимации' : 'Вернуть всё')),
+              label: Text(busy ? tr('Возвращаем…') : (boost ? tr('Вернуть анимации') : tr('Вернуть всё'))),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.fg,
                 side: const BorderSide(color: AppColors.cardBd),
@@ -157,8 +157,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   Widget _badge(CleanRecord r) {
     final color = r.restored ? AppColors.ok : AppColors.danger;
     final text = r.restored
-        ? 'Возвращено'
-        : (r.isBoost ? 'Ускорено' : 'Скрыто ${r.packages.length}');
+        ? tr('Возвращено')
+        : (r.isBoost ? tr('Ускорено') : tr('Скрыто {0}', [r.packages.length]));
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -177,20 +177,18 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.bgCard,
-        title: Text(r.isBoost ? 'Вернуть анимации?' : 'Вернуть приложения?'),
+        title: Text(r.isBoost ? tr('Вернуть анимации?') : tr('Вернуть приложения?')),
         content: Text(r.isBoost
-            ? 'Анимации на «${r.tvName}» вернутся к прежней скорости. '
-              'Телевизор должен быть включён и в той же Wi-Fi сети.'
-            : 'На телевизор «${r.tvName}» вернутся ${r.packages.length} скрытых приложений. '
-              'Телевизор должен быть включён и в той же Wi-Fi сети.'),
+            ? tr('Анимации на «{0}» вернутся к прежней скорости. Телевизор должен быть включён и в той же Wi-Fi сети.', [r.tvName])
+            : tr('На телевизор «{0}» вернутся {1} скрытых приложений. Телевизор должен быть включён и в той же Wi-Fi сети.', [r.tvName, r.packages.length])),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Отмена'))),
           FilledButton(
             onPressed: () {
               Navigator.pop(ctx);
               _restore(r);
             },
-            child: const Text('Вернуть'),
+            child: Text(tr('Вернуть')),
           ),
         ],
       ),
@@ -219,13 +217,13 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       if (ok) {
         await ref.read(historyProvider.notifier).markRestored(r.id);
         message = r.isBoost
-            ? 'Готово: анимации как раньше.'
-            : 'Готово: приложения вернулись на телевизор.';
+            ? tr('Готово: анимации как раньше.')
+            : tr('Готово: приложения вернулись на телевизор.');
       } else {
-        message = 'Часть приложений вернуть не удалось. Попробуйте ещё раз.';
+        message = tr('Часть приложений вернуть не удалось. Попробуйте ещё раз.');
       }
     } catch (_) {
-      message = 'Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.';
+      message = tr('Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.');
     }
     if (!mounted) return;
     setState(() => _busy.remove(r.id));

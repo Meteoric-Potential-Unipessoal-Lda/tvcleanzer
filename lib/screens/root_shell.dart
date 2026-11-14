@@ -7,6 +7,7 @@ import 'home_screen.dart';
 import 'launcher_screen.dart';
 import 'remote_screen.dart';
 
+import '../l10n/l10n.dart';
 class _Tab {
   final IconData icon;
   final IconData activeIcon;
@@ -14,11 +15,11 @@ class _Tab {
   const _Tab(this.icon, this.activeIcon, this.label);
 }
 
-const _tabs = [
-  _Tab(Icons.cleaning_services_outlined, Icons.cleaning_services_rounded, 'Очистка'),
-  _Tab(Icons.dashboard_customize_outlined, Icons.dashboard_customize_rounded, 'Лаунчер'),
-  _Tab(Icons.history_rounded, Icons.history_rounded, 'История'),
-  _Tab(Icons.settings_remote_outlined, Icons.settings_remote_rounded, 'Пульт'),
+final _tabs = [
+  _Tab(Icons.cleaning_services_outlined, Icons.cleaning_services_rounded, tr('Очистка')),
+  _Tab(Icons.dashboard_customize_outlined, Icons.dashboard_customize_rounded, tr('Лаунчер')),
+  _Tab(Icons.history_rounded, Icons.history_rounded, tr('История')),
+  _Tab(Icons.settings_remote_outlined, Icons.settings_remote_rounded, tr('Пульт')),
 ];
 
 /// Main screen with the four tabs and the animated bottom menu.

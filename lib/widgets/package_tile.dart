@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import '../models/tv_device.dart';
 import '../theme/app_theme.dart';
 
+import '../l10n/l10n.dart';
 class PackageTile extends StatelessWidget {
   final TvPackage pkg;
   final bool dimmed;
@@ -76,7 +77,7 @@ class PackageTile extends StatelessWidget {
                 color: color.withValues(alpha: .1),
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: Text('${pkg.sizeMb} МБ',
+              child: Text(tr('{0} МБ', [pkg.sizeMb]),
                 style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w600)),
             ),
           ],

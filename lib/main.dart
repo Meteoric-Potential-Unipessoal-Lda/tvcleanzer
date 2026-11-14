@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'l10n/l10n.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  initLanguage();
 
   // Keep status bar translucent and use light icons on dark bg
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -34,6 +37,13 @@ class TvCleanzerApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.buildTheme(),
       home: const SplashScreen(),
+      locale: Locale(appLanguage),
+      supportedLocales: [for (final l in supportedLanguages) Locale(l)],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       builder: (context, child) => _DesktopFrame(child: child!),
     );
   }

@@ -14,8 +14,9 @@ import '../state/launcher_skin_state.dart';
 import '../theme/app_theme.dart';
 import 'launcher_edit_screen.dart';
 
-const _knownLaunchers = {
-  'com.google.android.tvlauncher': 'Стандартный Android TV',
+import '../l10n/l10n.dart';
+final _knownLaunchers = {
+  'com.google.android.tvlauncher': tr('Стандартный Android TV'),
   'com.google.android.apps.tv.launcherx': 'Google TV',
   'com.mitv.tvhome': 'Xiaomi PatchWall',
   'com.mitv.tvhome.atv': 'Xiaomi PatchWall',
@@ -39,8 +40,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   String? _step;        // install/uninstall progress text
   String? _installError;
 
-  static const _offline =
-      'Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.';
+  static final _offline =
+      tr('Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.');
 
   @override
   void initState() {
@@ -72,7 +73,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     if (tv == null) return;
     setState(() {
       _installError = null;
-      _step = 'Готовим лаунчер…';
+      _step = tr('Готовим лаунчер…');
     });
     try {
       Uint8List apk;
@@ -80,7 +81,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         final data = await rootBundle.load('assets/launcher/tvcleanzer-launcher.apk');
         apk = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       } catch (_) {
-        throw AdbException('Лаунчер ещё не собран: запустите launcher/build.sh и пересоберите приложение.');
+        throw AdbException(tr('Лаунчер ещё не собран: запустите launcher/build.sh и пересоберите приложение.'));
       }
       await ref.read(adbServiceProvider).installLauncher(
             tv, apk, ref.read(selectedSkinProvider).id,
@@ -104,7 +105,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     if (tv == null) return;
     setState(() {
       _installError = null;
-      _step = 'Возвращаем стандартный лаунчер…';
+      _step = tr('Возвращаем стандартный лаунчер…');
     });
     try {
       await ref.read(adbServiceProvider).uninstallLauncher(tv);
@@ -126,7 +127,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       ref.read(adbServiceProvider).applyLauncherSkin(tv, s.id).catchError((_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Не удалось применить шкурку: телевизор не отвечает.')));
+              SnackBar(content: Text(tr('Не удалось применить шкурку: телевизор не отвечает.'))));
         }
       });
     }
@@ -136,13 +137,13 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   Widget build(BuildContext context) {
     final skin = ref.watch(selectedSkinProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Лаунчер')),
+      appBar: AppBar(title: Text(tr('Лаунчер'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
           _SkinPreview(skin: skin),
           const Gap(20),
-          _label('Шкурки'),
+          _label(tr('Шкурки')),
           const Gap(10),
           SizedBox(
             height: 108,
@@ -187,15 +188,15 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     final tv = ref.watch(currentTvProvider);
     String body;
     if (tv == null) {
-      body = 'Выберите телевизор на вкладке «Очистка».';
+      body = tr('Выберите телевизор на вкладке «Очистка».');
     } else if (_error != null) {
       body = _error!;
     } else if (!_checked) {
-      body = 'Узнаем, какой лаунчер сейчас главный на «${tv.shortName.isEmpty ? tv.ipAddress : tv.shortName}».';
+      body = tr('Узнаем, какой лаунчер сейчас главный на «{0}».', [tv.shortName.isEmpty ? tv.ipAddress : tv.shortName]);
     } else if (_launcher == null) {
-      body = 'Главный лаунчер не выбран: телевизор спрашивает при нажатии «Домой».';
+      body = tr('Главный лаунчер не выбран: телевизор спрашивает при нажатии «Домой».');
     } else {
-      body = _knownLaunchers[_launcher] ?? 'Лаунчер производителя ($_launcher)';
+      body = _knownLaunchers[_launcher] ?? tr('Лаунчер производителя ({0})', [_launcher]);
     }
     return _card(
       child: Row(children: [
@@ -203,7 +204,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         const Gap(12),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('Сейчас на телевизоре',
+            Text(tr('Сейчас на телевизоре'),
                 style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
             const Gap(2),
             AnimatedSwitcher(
@@ -222,7 +223,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           _checking
               ? const SizedBox(
                   width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2))
-              : TextButton(onPressed: _check, child: Text(_checked ? 'Обновить' : 'Проверить')),
+              : TextButton(onPressed: _check, child: Text(_checked ? tr('Обновить') : tr('Проверить'))),
         ],
       ]),
     );
@@ -233,8 +234,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     final busy = _step != null;
     final installed = _installed == true;
     final (chipText, chipColor) = installed
-        ? ('установлен', AppColors.ok)
-        : ('не установлен', AppColors.fgMid);
+        ? (tr('установлен'), AppColors.ok)
+        : (tr('не установлен'), AppColors.fgMid);
     return _card(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
@@ -256,11 +257,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         const Gap(8),
         Text(
           installed
-              ? 'Шкурка меняется сразу: просто выберите другую выше. '
-                'На телевизоре: долгое нажатие OK на приложении — добавить в избранное, '
-                'переставить или скрыть; шестерёнка — настройки.'
-              : 'Лёгкий лаунчер в стиле Apple TV: часы, избранное, все приложения, '
-                'шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+).',
+              ? tr('Шкурка меняется сразу: просто выберите другую выше. На телевизоре: долгое нажатие OK на приложении — добавить в избранное, переставить или скрыть; шестерёнка — настройки.')
+              : tr('Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+).'),
           style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5),
         ),
         if (_installError != null) ...[
@@ -289,7 +287,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                             width: double.infinity,
                             child: FilledButton.icon(
                               icon: const Icon(Icons.tune_rounded),
-                              label: const Text('Настроить: избранное, детям, обои'),
+                              label: Text(tr('Настроить: избранное, детям, обои')),
                               onPressed: tv == null ? null : () => Navigator.push(context,
                                   MaterialPageRoute(builder: (_) => LauncherEditScreen(tv: tv))),
                             ),
@@ -304,7 +302,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                               ),
                               icon: const Icon(Icons.system_update_alt_rounded),
-                              label: const Text('Обновить лаунчер на ТВ'),
+                              label: Text(tr('Обновить лаунчер на ТВ')),
                               onPressed: tv == null ? null : _install,
                             ),
                           ),
@@ -313,7 +311,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                             width: double.infinity,
                             child: OutlinedButton.icon(
                           icon: const Icon(Icons.undo_rounded, size: 18),
-                          label: const Text('Вернуть стандартный лаунчер'),
+                          label: Text(tr('Вернуть стандартный лаунчер')),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.fg,
                             side: const BorderSide(color: AppColors.cardBd),
@@ -325,7 +323,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                         ])
                       : FilledButton.icon(
                           icon: const Icon(Icons.download_rounded),
-                          label: const Text('Установить на телевизор'),
+                          label: Text(tr('Установить на телевизор')),
                           onPressed: tv == null ? null : _install,
                         ),
                 ),
@@ -386,7 +384,7 @@ class _SkinPreview extends StatelessWidget {
                 style: TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w600)),
           ]),
           const Spacer(),
-          const Text('Избранное', style: TextStyle(fontSize: 10, color: Colors.white60)),
+          Text(tr('Избранное'), style: TextStyle(fontSize: 10, color: Colors.white60)),
           const Gap(6),
           SizedBox(
             height: 40,
@@ -401,7 +399,7 @@ class _SkinPreview extends StatelessWidget {
             ]),
           ),
           const Gap(10),
-          const Text('Приложения', style: TextStyle(fontSize: 10, color: Colors.white60)),
+          Text(tr('Приложения'), style: TextStyle(fontSize: 10, color: Colors.white60)),
           const Gap(6),
           SizedBox(
             height: 26,

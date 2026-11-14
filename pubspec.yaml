@@ -8,6 +8,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   # ADB crypto
   pointycastle: ^3.9.1           # RSA-2048 key generation
   # State management

@@ -11,6 +11,7 @@ import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
 import '../theme/app_theme.dart';
 
+import '../l10n/l10n.dart';
 /// Set up the launcher on the TV from the phone: favourites order,
 /// kids mode, own photo as background.
 class LauncherEditScreen extends ConsumerStatefulWidget {
@@ -59,7 +60,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
       if (mounted) setState(() => _error = e.message);
     } catch (e) {
       AppLog.error('launcher state', e);
-      if (mounted) setState(() => _error = 'Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.');
+      if (mounted) setState(() => _error = tr('Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.'));
     }
   }
 
@@ -78,7 +79,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
       _snack(e.message);
     } catch (e) {
       AppLog.error('launcher apply', e);
-      _snack('Не получилось: телевизор не отвечает.');
+      _snack(tr('Не получилось: телевизор не отвечает.'));
     }
     if (mounted) setState(() => _saving = false);
   }
@@ -94,12 +95,12 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Лаунчер на ТВ'),
-          bottom: const TabBar(
+          title: Text(tr('Лаунчер на ТВ')),
+          bottom: TabBar(
             indicatorColor: AppColors.accent,
             labelColor: AppColors.accent,
             unselectedLabelColor: AppColors.fgMid,
-            tabs: [Tab(text: 'Избранное'), Tab(text: 'Детям'), Tab(text: 'Обои')],
+            tabs: [Tab(text: tr('Избранное')), Tab(text: tr('Детям')), Tab(text: tr('Обои'))],
           ),
         ),
         body: _error != null
@@ -119,7 +120,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             const Gap(12),
             Text(_error!, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.fgMid)),
             const Gap(16),
-            FilledButton(onPressed: _load, child: const Text('Попробовать снова')),
+            FilledButton(onPressed: _load, child: Text(tr('Попробовать снова'))),
           ]),
         ),
       );
@@ -149,13 +150,13 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             header: Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Row(children: [
-                const Expanded(
-                  child: Text('Потяните за ручку, чтобы поменять порядок. Первые четыре видны сразу.',
+                Expanded(
+                  child: Text(tr('Потяните за ручку, чтобы поменять порядок. Первые четыре видны сразу.'),
                       style: TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
                 ),
                 TextButton.icon(
                   icon: const Icon(Icons.add_rounded),
-                  label: const Text('Добавить'),
+                  label: Text(tr('Добавить')),
                   onPressed: _addFav,
                 ),
               ]),
@@ -191,7 +192,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             ),
           ),
         ),
-        _saveBar('Применить на ТВ', () => _run('Избранное обновлено на телевизоре',
+        _saveBar(tr('Применить на ТВ'), () => _run(tr('Избранное обновлено на телевизоре'),
             () => ref.read(adbServiceProvider).applyLauncher(widget.tv, favorites: _favs))),
       ]);
 
@@ -209,9 +210,9 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
           controller: sc,
           padding: const EdgeInsets.all(12),
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(8),
-              child: Text('Добавить в избранное', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+              child: Text(tr('Добавить в избранное'), style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
             ),
             for (final a in rest)
               ListTile(
@@ -246,8 +247,8 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
               value: _kids,
               activeThumbColor: AppColors.accent,
               onChanged: (v) => setState(() => _kids = v),
-              title: const Text('Детский режим'),
-              subtitle: const Text('На ТВ останутся только выбранные приложения. Выйти — по PIN.',
+              title: Text(tr('Детский режим')),
+              subtitle: Text(tr('На ТВ останутся только выбранные приложения. Выйти — по PIN.'),
                   style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
             ),
           ),
@@ -259,17 +260,16 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             maxLength: 8,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
-              labelText: st.hasPin ? 'Новый PIN (необязательно)' : 'PIN для выхода (4–8 цифр)',
+              labelText: st.hasPin ? tr('Новый PIN (необязательно)') : tr('PIN для выхода (4–8 цифр)'),
               filled: true,
               fillColor: AppColors.bgCard,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
             ),
           ),
-          const Text('Не настоящая блокировка: ребёнок, который знает про отладку, обойдёт её. '
-              'Но от случайных приложений и рекламы — защитит.',
+          Text(tr('Не настоящая блокировка: ребёнок, который знает про отладку, обойдёт её. Но от случайных приложений и рекламы — защитит.'),
               style: TextStyle(fontSize: 11, color: AppColors.fgMuted, height: 1.4)),
           const Gap(16),
-          const Text('ЧТО МОЖНО ДЕТЯМ',
+          Text(tr('ЧТО МОЖНО ДЕТЯМ'),
               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: .8, color: AppColors.fgMuted)),
           const Gap(6),
           for (final a in st.apps)
@@ -282,13 +282,13 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             ),
         ]),
       ),
-      _saveBar('Применить на ТВ', () {
+      _saveBar(tr('Применить на ТВ'), () {
         final pin = _pin.text.trim();
         if (_kids && !st.hasPin && pin.length < 4) {
-          _snack('Сначала придумайте PIN из 4–8 цифр — без него из детского режима не выйти.');
+          _snack(tr('Сначала придумайте PIN из 4–8 цифр — без него из детского режима не выйти.'));
           return;
         }
-        _run(_kids ? 'Детский режим включён на телевизоре' : 'Настройки детского режима сохранены', () async {
+        _run(_kids ? tr('Детский режим включён на телевизоре') : tr('Настройки детского режима сохранены'), () async {
           await ref.read(adbServiceProvider).applyLauncher(widget.tv,
               kidsApps: _kidsApps, pin: pin.isEmpty ? null : pin, kids: _kids);
           _pin.clear();
@@ -315,32 +315,32 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
           Icon(has ? Icons.photo_rounded : Icons.add_photo_alternate_rounded,
               size: 48, color: has ? AppColors.accent : AppColors.fgMid),
           const Gap(8),
-          Text(has ? 'На ТВ стоит ваше фото' : 'Фон сейчас из шкурки',
+          Text(has ? tr('На ТВ стоит ваше фото') : tr('Фон сейчас из шкурки'),
               style: const TextStyle(color: AppColors.fg, fontWeight: FontWeight.w600)),
         ]),
       ).animate().fadeIn(duration: 250.ms),
       const Gap(16),
-      const Text('Фото слегка затемнится, чтобы текст на ТВ читался. Лучше горизонтальное, 16:9.',
+      Text(tr('Фото слегка затемнится, чтобы текст на ТВ читался. Лучше горизонтальное, 16:9.'),
           style: TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
       const Gap(16),
       FilledButton.icon(
         icon: _saving
             ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
             : const Icon(Icons.photo_library_rounded),
-        label: const Text('Выбрать фото'),
+        label: Text(tr('Выбрать фото')),
         onPressed: _saving ? null : _pickPhoto,
       ),
       if (has) ...[
         const Gap(10),
         OutlinedButton.icon(
           icon: const Icon(Icons.hide_image_rounded),
-          label: const Text('Убрать фото'),
+          label: Text(tr('Убрать фото')),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.fg,
             side: const BorderSide(color: AppColors.cardBd),
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
-          onPressed: _saving ? null : () => _run('Фон вернулся к шкурке', () async {
+          onPressed: _saving ? null : () => _run(tr('Фон вернулся к шкурке'), () async {
             await ref.read(adbServiceProvider).removeWallpaper(widget.tv);
             await _load();
           }),
@@ -356,12 +356,12 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
           source: ImageSource.gallery, maxWidth: 1920, maxHeight: 1920, imageQuality: 85);
     } catch (e) {
       AppLog.error('pick photo', e);
-      _snack('Нет доступа к фото. Разрешите его в настройках телефона.');
+      _snack(tr('Нет доступа к фото. Разрешите его в настройках телефона.'));
       return;
     }
     if (img == null) return;
     final bytes = await img.readAsBytes();
-    await _run('Фото стоит фоном на телевизоре', () async {
+    await _run(tr('Фото стоит фоном на телевизоре'), () async {
       await ref.read(adbServiceProvider).setWallpaper(widget.tv, bytes);
       await _load();
     });

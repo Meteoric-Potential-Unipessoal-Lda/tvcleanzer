@@ -16,6 +16,7 @@ import 'help_screen.dart';
 import 'pair_screen.dart';
 import 'scan_screen.dart';
 
+import '../l10n/l10n.dart';
 // ─── Providers ───────────────────────────────────────────────────────────────
 
 /// Singleton TvDiscovery — reuses the shared AdbPackageManager instance.
@@ -108,7 +109,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _buildSearchStatus(state),
               const Gap(24),
               if (state.devices.isNotEmpty) ...[
-                _sectionLabel('Телевизоры в сети'),
+                _sectionLabel(tr('Телевизоры в сети')),
                 const Gap(12),
                 ...state.devices.asMap().entries.map((e) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
@@ -124,7 +125,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 const Gap(8),
                 Center(child: TextButton.icon(
                   icon: const Icon(Icons.play_circle_outline_rounded, size: 18),
-                  label: const Text('Нет телевизора рядом? Попробовать демо'),
+                  label: Text(tr('Нет телевизора рядом? Попробовать демо')),
                   onPressed: _openDemo,
                 )),
               ],
@@ -169,19 +170,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         IconButton(
           icon: const Icon(Icons.pin_rounded),
           color: AppColors.fgMid,
-          tooltip: 'Подключить по коду',
+          tooltip: tr('Подключить по коду'),
           onPressed: _openPair,
         ),
       IconButton(
         icon: const Icon(Icons.help_outline_rounded),
         color: AppColors.fgMid,
-        tooltip: 'Помощь',
+        tooltip: tr('Помощь'),
         onPressed: () => showHelpSheet(context, ref),
       ),
       IconButton(
         icon: const Icon(Icons.refresh_rounded),
         color: AppColors.accent,
-        tooltip: 'Найти снова',
+        tooltip: tr('Найти снова'),
         onPressed: () => ref.read(discoveryProvider.notifier).startScan(),
       ),
       const Gap(8),
@@ -206,18 +207,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             state.devices.isEmpty
-              ? 'Ищем телевизоры в сети…'
-              : 'Продолжаем поиск…',
+              ? tr('Ищем телевизоры в сети…')
+              : tr('Продолжаем поиск…'),
             style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.w500),
           ),
           const Gap(4),
-          const Text(
-            'Если на телевизоре появится запрос отладки — отметьте «Всегда разрешать» и нажмите «Разрешить».',
+          Text(
+            tr('Если на телевизоре появится запрос отладки — отметьте «Всегда разрешать» и нажмите «Разрешить».'),
             style: TextStyle(color: AppColors.fgMid, fontSize: 12, height: 1.4),
           ),
         ])),
         if (state.devices.isNotEmpty)
-          Text('${state.devices.length} найдено',
+          Text(tr('{0} найдено', [state.devices.length]),
             style: const TextStyle(color: AppColors.accent, fontSize: 12)),
       ]),
     ).animate().fadeIn(duration: 300.ms);
@@ -236,7 +237,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     child: Column(children: [
       const Text('📺', style: TextStyle(fontSize: 48)),
       const Gap(16),
-      Text('Телевизоры не найдены',
+      Text(tr('Телевизоры не найдены'),
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
       if (error != null)
@@ -244,29 +245,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           textAlign: TextAlign.center,
           style: const TextStyle(color: AppColors.danger, fontSize: 13))
       else
-        const Text(
-          'Включите отладку по сети на телевизоре:\nНастройки → Параметры разработчика →\nОтладка по ADB (сеть) → ВКЛ',
+        Text(
+          tr('Включите отладку по сети на телевизоре:\nНастройки → Параметры разработчика →\nОтладка по ADB (сеть) → ВКЛ'),
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.fgMid, fontSize: 14, height: 1.6),
         ),
       const Gap(24),
       FilledButton.icon(
         icon: const Icon(Icons.refresh_rounded),
-        label: const Text('Искать снова'),
+        label: Text(tr('Искать снова')),
         onPressed: () => ref.read(discoveryProvider.notifier).startScan(),
       ),
       if (_canPair) ...[
         const Gap(8),
         OutlinedButton.icon(
           icon: const Icon(Icons.pin_rounded, size: 18),
-          label: const Text('Google TV / Android 11+: подключить по коду'),
+          label: Text(tr('Google TV / Android 11+: подключить по коду')),
           onPressed: _openPair,
         ),
       ],
       const Gap(4),
       TextButton.icon(
         icon: const Icon(Icons.menu_book_rounded, size: 18),
-        label: const Text('Как включить отладку на моём ТВ?'),
+        label: Text(tr('Как включить отладку на моём ТВ?')),
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (_) => const HelpScreen())),
       ),

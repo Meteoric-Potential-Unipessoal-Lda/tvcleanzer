@@ -11,6 +11,7 @@ import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
 
+import '../l10n/l10n.dart';
 /// «Беспроводная отладка» (Android 11+, Google TV, Chromecast): pair once
 /// with the 6-digit code, then connect to the port from the main screen.
 class PairScreen extends ConsumerStatefulWidget {
@@ -49,10 +50,10 @@ class _PairScreenState extends ConsumerState<PairScreen> {
     final addr = _parse(_pairAddr.text);
     final code = _code.text.trim();
     if (addr == null) {
-      return setState(() => _error = 'Введите адрес как на экране ТВ, например 192.168.1.20:37155');
+      return setState(() => _error = tr('Введите адрес как на экране ТВ, например 192.168.1.20:37155'));
     }
     if (!RegExp(r'^\d{6}$').hasMatch(code)) {
-      return setState(() => _error = 'Код — 6 цифр из окна «Подключение по коду».');
+      return setState(() => _error = tr('Код — 6 цифр из окна «Подключение по коду».'));
     }
     setState(() { _busy = true; _error = null; });
     try {
@@ -67,7 +68,7 @@ class _PairScreenState extends ConsumerState<PairScreen> {
       setState(() => _error = e.message);
     } catch (e) {
       AppLog.error('pair', e);
-      setState(() => _error = 'Сопряжение не удалось: $e');
+      setState(() => _error = tr('Сопряжение не удалось: {0}', [e]));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -76,7 +77,7 @@ class _PairScreenState extends ConsumerState<PairScreen> {
   Future<void> _connect() async {
     final addr = _parse(_connAddr.text);
     if (addr == null) {
-      return setState(() => _error = 'Введите IP-адрес и порт с экрана «Беспроводная отладка».');
+      return setState(() => _error = tr('Введите IP-адрес и порт с экрана «Беспроводная отладка».'));
     }
     setState(() { _busy = true; _error = null; });
     try {
@@ -88,7 +89,7 @@ class _PairScreenState extends ConsumerState<PairScreen> {
     } catch (e) {
       AppLog.error('wireless connect', e);
       setState(() => _error =
-          'Не удалось подключиться. Проверьте порт: он на главном экране «Беспроводной отладки» и отличается от порта сопряжения.');
+          tr('Не удалось подключиться. Проверьте порт: он на главном экране «Беспроводной отладки» и отличается от порта сопряжения.'));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -98,35 +99,33 @@ class _PairScreenState extends ConsumerState<PairScreen> {
   Widget build(BuildContext context) {
     final pairing = _step == _Step.pair;
     return Scaffold(
-      appBar: AppBar(title: const Text('Подключить по коду')),
+      appBar: AppBar(title: Text(tr('Подключить по коду'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
-          _StepHeader(n: 1, title: 'Сопряжение', done: !pairing),
+          _StepHeader(n: 1, title: tr('Сопряжение'), done: !pairing),
           const Gap(8),
           if (pairing) ...[
-            const _Hint(
-              'На ТВ: Настройки → Для разработчиков → Беспроводная отладка → ВКЛ → '
-              '«Подключить устройство с помощью кода». Введите адрес и код из этого окна.'),
+            _Hint(
+              tr('На ТВ: Настройки → Для разработчиков → Беспроводная отладка → ВКЛ → «Подключить устройство с помощью кода». Введите адрес и код из этого окна.')),
             const Gap(16),
-            _Field(controller: _pairAddr, label: 'IP-адрес и порт', hint: '192.168.1.20:37155',
+            _Field(controller: _pairAddr, label: tr('IP-адрес и порт'), hint: '192.168.1.20:37155',
                 keyboard: const TextInputType.numberWithOptions(decimal: true),
                 formatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.:]'))]),
             const Gap(12),
-            _Field(controller: _code, label: 'Код', hint: '6 цифр',
+            _Field(controller: _code, label: tr('Код'), hint: tr('6 цифр'),
                 keyboard: TextInputType.number,
                 formatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
                 big: true),
           ],
           const Gap(24),
-          _StepHeader(n: 2, title: 'Подключение', done: false, dim: pairing),
+          _StepHeader(n: 2, title: tr('Подключение'), done: false, dim: pairing),
           if (!pairing) ...[
             const Gap(8),
-            const _Hint(
-              'Готово, телефон сопряжён. Окно с кодом можно закрыть. На главном экране '
-              '«Беспроводной отладки» указан IP-адрес и порт — введите их.'),
+            _Hint(
+              tr('Готово, телефон сопряжён. Окно с кодом можно закрыть. На главном экране «Беспроводной отладки» указан IP-адрес и порт — введите их.')),
             const Gap(16),
-            _Field(controller: _connAddr, label: 'IP-адрес и порт', hint: '192.168.1.20:41023',
+            _Field(controller: _connAddr, label: tr('IP-адрес и порт'), hint: '192.168.1.20:41023',
                 keyboard: const TextInputType.numberWithOptions(decimal: true),
                 formatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.:]'))],
                 autofocus: true),
@@ -142,12 +141,11 @@ class _PairScreenState extends ConsumerState<PairScreen> {
             child: _busy
                 ? const SizedBox(width: 20, height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.bg))
-                : Text(pairing ? 'Сопрячь' : 'Подключить'),
+                : Text(pairing ? tr('Сопрячь') : tr('Подключить')),
           ),
           const Gap(16),
-          const Text(
-            'Нужно один раз. Для старых ТВ с «Отладкой по сети» (порт 5555) этот шаг не нужен — '
-            'они находятся автоматически.',
+          Text(
+            tr('Нужно один раз. Для старых ТВ с «Отладкой по сети» (порт 5555) этот шаг не нужен — они находятся автоматически.'),
             style: TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4),
           ),
         ],

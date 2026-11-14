@@ -13,6 +13,7 @@ import '../state/launcher_skin_state.dart';
 import '../theme/app_theme.dart';
 import 'root_shell.dart';
 
+import '../l10n/l10n.dart';
 /// Animated loader shown right after the native splash. Loads saved state
 /// and prepares the ADB key (the first launch spends a few seconds on it).
 class SplashScreen extends ConsumerStatefulWidget {
@@ -22,7 +23,7 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
-  String _status = 'Загружаем…';
+  String _status = tr('Загружаем…');
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       if (newer) AdbPackageManager.resetDb();
     });
     if (!await AdbClient.hasKeys() && mounted) {
-      setState(() => _status = 'Создаём ключ для подключения к ТВ…');
+      setState(() => _status = tr('Создаём ключ для подключения к ТВ…'));
     }
     try {
       await AdbClient.warmUp();
@@ -115,7 +116,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 .fadeIn(delay: 250.ms, duration: 400.ms)
                 .slideY(begin: .3, end: 0, curve: Curves.easeOutCubic),
             const Gap(6),
-            const Text('Чистый телевизор без лишнего',
+            Text(tr('Чистый телевизор без лишнего'),
                     style: TextStyle(color: AppColors.fgMid, fontSize: 14))
                 .animate()
                 .fadeIn(delay: 400.ms, duration: 400.ms),

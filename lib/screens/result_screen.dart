@@ -8,6 +8,7 @@ import '../services/adb_package_manager.dart';
 import '../state/history.dart';
 import '../theme/app_theme.dart';
 
+import '../l10n/l10n.dart';
 class ResultScreen extends ConsumerStatefulWidget {
   final TvDevice device;
   final CleanResult result;
@@ -35,14 +36,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Результат'),
+          title: Text(tr('Результат')),
           automaticallyImplyLeading: false,
           actions: [
             if (!_rolling)
               IconButton(
                 icon: const Icon(Icons.home_rounded),
                 color: AppColors.accent,
-                tooltip: 'На главную',
+                tooltip: tr('На главную'),
                 onPressed: () => Navigator.of(context).popUntil((r) => r.isFirst),
               ),
             const Gap(8),
@@ -77,14 +78,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           ).animate().scale(begin: const Offset(.6,.6), duration: 500.ms, curve: Curves.elasticOut),
           const Gap(20),
           Text(
-            hasFailures ? 'Частичная очистка' : 'Телевизор очищен!',
+            hasFailures ? tr('Частичная очистка') : tr('Телевизор очищен!'),
             style: GoogleFonts.syne(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.fg),
           ).animate().fadeIn(delay: 200.ms, duration: 400.ms),
           const Gap(8),
           Text(
             hasFailures
-              ? '${result.removedCount} убрано, ${result.failedPackages.length} не удалось'
-              : '${result.removedCount} приложений скрыто',
+              ? tr('{0} убрано, {1} не удалось', [result.removedCount, result.failedPackages.length])
+              : tr('{0} приложений скрыто', [result.removedCount]),
             style: const TextStyle(color: AppColors.fgMid),
           ).animate().fadeIn(delay: 300.ms),
         ])),
@@ -93,14 +94,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
         // Stats row
         Row(children: [
-          _stat('Убрано', '${result.removedCount}', Icons.delete_outline_rounded, AppColors.danger),
+          _stat(tr('Убрано'), '${result.removedCount}', Icons.delete_outline_rounded, AppColors.danger),
           const Gap(12),
-          _stat('Освобождено', '${result.savedMb} МБ', Icons.storage_rounded, AppColors.accent),
+          _stat(tr('Освобождено'), tr('{0} МБ', [result.savedMb]), Icons.storage_rounded, AppColors.accent),
         ]).animate().fadeIn(delay: 400.ms, duration: 400.ms).slideY(begin: .1, end: 0),
 
         if (result.backupId.isNotEmpty) ...[
           const Gap(12),
-          _stat('Сохранено в «Истории»', 'можно вернуть', Icons.history_rounded, AppColors.ok, fullWidth: true)
+          _stat(tr('Сохранено в «Истории»'), tr('можно вернуть'), Icons.history_rounded, AppColors.ok, fullWidth: true)
             .animate().fadeIn(delay: 500.ms),
         ],
 
@@ -110,7 +111,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             Container(width: 3, height: 14, decoration: BoxDecoration(
               color: AppColors.warn, borderRadius: BorderRadius.circular(2))),
             const Gap(8),
-            Text('НЕ УДАЛОСЬ УБРАТЬ'.toUpperCase(), style: const TextStyle(
+            Text(tr('НЕ УДАЛОСЬ УБРАТЬ').toUpperCase(), style: const TextStyle(
               fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.fgMuted, letterSpacing: .08)),
           ]),
           const Gap(8),
@@ -144,17 +145,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               const Icon(Icons.undo_rounded, color: AppColors.fgMuted, size: 20),
               const Gap(12),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('Можно отменить', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.fg)),
+                Text(tr('Можно отменить'), style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.fg)),
                 const Gap(4),
-                const Text(
-                  'Список скрытых приложений сохранён во вкладке «История». '
-                  'Вернуть их можно в любой момент, это займёт пару секунд.',
+                Text(
+                  tr('Список скрытых приложений сохранён во вкладке «История». Вернуть их можно в любой момент, это займёт пару секунд.'),
                   style: TextStyle(fontSize: 12, color: AppColors.fgMuted, height: 1.5),
                 ),
                 const Gap(10),
                 OutlinedButton.icon(
                   icon: const Icon(Icons.undo_rounded, size: 16),
-                  label: const Text('Восстановить'),
+                  label: Text(tr('Восстановить')),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.fg,
                     side: const BorderSide(color: AppColors.cardBd),
@@ -171,7 +171,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
         SizedBox(width: double.infinity, child: FilledButton.icon(
           icon: const Icon(Icons.home_rounded),
-          label: const Text('Готово'),
+          label: Text(tr('Готово')),
           style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
           onPressed: () => Navigator.of(context).popUntil((r) => r.isFirst),
         )).animate().fadeIn(delay: 700.ms),
@@ -187,10 +187,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         child: CircularProgressIndicator(strokeWidth: 3, color: AppColors.warn),
       ),
       const Gap(24),
-      Text('Восстанавливаем…',
+      Text(tr('Восстанавливаем…'),
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      const Text('Скрытые приложения возвращаются на телевизор.',
+      Text(tr('Скрытые приложения возвращаются на телевизор.'),
         textAlign: TextAlign.center,
         style: TextStyle(color: AppColors.fgMuted)),
     ]).animate().fadeIn(duration: 300.ms),
@@ -207,16 +207,16 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         child: const Icon(Icons.check_rounded, color: AppColors.ok, size: 40),
       ).animate().scale(begin: const Offset(.6,.6), duration: 500.ms, curve: Curves.elasticOut),
       const Gap(20),
-      Text('Всё восстановлено!',
+      Text(tr('Всё восстановлено!'),
         style: GoogleFonts.syne(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.fg)),
       const Gap(8),
-      const Text('Приложения вернулись на телевизор.',
+      Text(tr('Приложения вернулись на телевизор.'),
         textAlign: TextAlign.center,
         style: TextStyle(color: AppColors.fgMid)),
       const Gap(32),
       FilledButton.icon(
         icon: const Icon(Icons.home_rounded),
-        label: const Text('На главную'),
+        label: Text(tr('На главную')),
         style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14)),
         onPressed: () => Navigator.of(context).popUntil((r) => r.isFirst),
       ),
@@ -246,18 +246,18 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   void _confirmRollback(BuildContext context) {
     showDialog(context: context, builder: (ctx) => AlertDialog(
       backgroundColor: AppColors.bgCard,
-      title: const Text('Восстановить?'),
-      content: const Text(
-        'Скрытые приложения вернутся на телевизор. Текущее состояние очистки будет отменено.'),
+      title: Text(tr('Восстановить?')),
+      content: Text(
+        tr('Скрытые приложения вернутся на телевизор. Текущее состояние очистки будет отменено.')),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Отмена')),
+        TextButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Отмена'))),
         FilledButton(
           style: FilledButton.styleFrom(backgroundColor: AppColors.warn),
           onPressed: () {
             Navigator.pop(ctx);
             _performRollback();
           },
-          child: const Text('Восстановить'),
+          child: Text(tr('Восстановить')),
         ),
       ],
     ));
@@ -276,8 +276,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       } else {
         setState(() { _rolling = false; });
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Не удалось восстановить. Попробуйте снова.'),
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(tr('Не удалось восстановить. Попробуйте снова.')),
             backgroundColor: AppColors.danger,
           ));
         }
@@ -286,7 +286,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       if (!mounted) return;
       setState(() { _rolling = false; });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Ошибка: $e'),
+        content: Text(tr('Ошибка: {0}', [e])),
         backgroundColor: AppColors.danger,
       ));
     }

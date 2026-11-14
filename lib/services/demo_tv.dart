@@ -12,7 +12,7 @@ class DemoTv {
 
   static TvDevice device() => TvDevice.fromAdb(
         ip: host,
-        brand: 'Демо',
+        brand: 'Demo',
         model: 'Android TV',
         androidVer: '12',
         sdkVersion: 31,
@@ -83,7 +83,7 @@ class DemoTv {
     'org.videolan.vlc': 'VLC',
     'com.spotify.tv.android': 'Spotify',
     'com.android.vending': 'Google Play',
-    'com.android.tv.settings': 'Настройки',
+    'com.android.tv.settings': 'Settings',
   };
   static const _launchable = [
     'com.google.android.youtube.tv', 'com.netflix.ninja', 'com.amazon.amazonvideo.livingroom',
@@ -163,7 +163,7 @@ class DemoAdbClient extends AdbClient {
   }) async {
     await _lag(250);
     return {
-      'ro.product.brand': 'Демо',
+      'ro.product.brand': 'Demo',
       'ro.product.model': 'Android TV',
       'ro.build.version.release': '12',
       'ro.build.version.sdk': '31',
@@ -198,7 +198,7 @@ class DemoAdbClient extends AdbClient {
         'MemAvailable:    ${s._memAvailKb} kB\n';
 
     if (c.startsWith('getprop ro.product.brand')) {
-      return 'Демо\nAndroid TV\n12\n31\n${meminfo()}';
+      return 'Demo\nAndroid TV\n12\n31\n${meminfo()}';
     }
     if (c == 'getprop ro.build.version.sdk') return '31\n';
     if (c.startsWith('head -3 /proc/meminfo')) return meminfo();

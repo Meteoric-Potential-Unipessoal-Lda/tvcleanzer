@@ -8,6 +8,7 @@ import 'adb_client.dart';
 import 'package_db.dart';
 import 'protection.dart';
 
+import '../l10n/l10n.dart';
 // ─── Riverpod Provider ────────────────────────────────────────────────────────
 
 final adbServiceProvider = Provider<AdbPackageManager>(
@@ -122,10 +123,10 @@ class AdbPackageManager {
         }
         return TvPackage(
           packageName: name,
-          label:   entry?.label,
+          label:   entry == null ? null : tr(entry.label),
           sizeMb:  (ramKb[name] ?? 0) ~/ 1024,
           verdict: verdict,
-          reason:  entry?.reason,
+          reason:  entry == null ? null : trReason(entry.reason),
         );
       }).toList()
         ..sort((a, b) {
@@ -387,25 +388,25 @@ class AdbPackageManager {
       {void Function(String step)? onStep}) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
-      onStep?.call('Подключаемся к телевизору…');
+      onStep?.call(tr('Подключаемся к телевизору…'));
       await adb.connect();
       final sdk = int.tryParse(
               (await adb.shell('getprop ro.build.version.sdk')).trim()) ??
           device.sdkVersion;
       if (sdk > 0 && sdk < 24) {
         throw AdbException(
-            'Нужен Android 7 или новее на телевизоре (сейчас SDK $sdk).');
+            tr('Нужен Android 7 или новее на телевизоре (сейчас SDK {0}).', [sdk]));
       }
 
-      onStep?.call('Устанавливаем лаунчер…');
+      onStep?.call(tr('Устанавливаем лаунчер…'));
       final res = await adb.execWithInput(
           'cmd package install -r -S ${apk.length}', apk,
           timeout: const Duration(seconds: 90));
       if (!res.contains('Success')) {
-        throw AdbException('Установка не удалась: ${res.trim()}');
+        throw AdbException(tr('Установка не удалась: {0}', [res.trim()]));
       }
 
-      onStep?.call('Делаем главным экраном…');
+      onStep?.call(tr('Делаем главным экраном…'));
       // Android 10+: the HOME role; older: preferred home activity.
       if (sdk >= 29) {
         final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
@@ -471,7 +472,7 @@ class AdbPackageManager {
         ));
       }
       if (apps.isEmpty) {
-        throw AdbException('Лаунчер не ответил. Обновите его на ТВ кнопкой «Обновить лаунчер».');
+        throw AdbException(tr('Лаунчер не ответил. Обновите его на ТВ кнопкой «Обновить лаунчер».'));
       }
       final kv = <String, String>{};
       for (final m in RegExp(r'key=(\w+), value=(\S+)').allMatches(set)) {

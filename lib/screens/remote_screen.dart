@@ -10,6 +10,7 @@ import '../state/remote.dart';
 import '../theme/app_theme.dart';
 import '../widgets/pressable.dart';
 
+import '../l10n/l10n.dart';
 class RemoteScreen extends ConsumerStatefulWidget {
   const RemoteScreen({super.key});
   @override
@@ -47,7 +48,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     final tv = ref.watch(currentTvProvider);
     final rs = ref.watch(remoteProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Пульт')),
+      appBar: AppBar(title: Text(tr('Пульт'))),
       body: tv == null
           ? _noTv()
           : SingleChildScrollView(
@@ -58,16 +59,16 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                 _DPad(onKey: (c) => _key(tv, c)),
                 const Gap(28),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  _RoundButton(icon: Icons.arrow_back_rounded, label: 'Назад', onTap: () => _key(tv, Keys.back)),
-                  _RoundButton(icon: Icons.home_rounded, label: 'Домой', onTap: () => _key(tv, Keys.home)),
-                  _RoundButton(icon: Icons.menu_rounded, label: 'Меню', onTap: () => _key(tv, Keys.menu)),
+                  _RoundButton(icon: Icons.arrow_back_rounded, label: tr('Назад'), onTap: () => _key(tv, Keys.back)),
+                  _RoundButton(icon: Icons.home_rounded, label: tr('Домой'), onTap: () => _key(tv, Keys.home)),
+                  _RoundButton(icon: Icons.menu_rounded, label: tr('Меню'), onTap: () => _key(tv, Keys.menu)),
                 ]),
                 const Gap(18),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  _RoundButton(icon: Icons.volume_down_rounded, label: 'Тише', onTap: () => _key(tv, Keys.volDown)),
-                  _RoundButton(icon: Icons.volume_off_rounded, label: 'Без звука', onTap: () => _key(tv, Keys.mute)),
-                  _RoundButton(icon: Icons.volume_up_rounded, label: 'Громче', onTap: () => _key(tv, Keys.volUp)),
-                  _RoundButton(icon: Icons.play_arrow_rounded, label: 'Пауза', onTap: () => _key(tv, Keys.playPause)),
+                  _RoundButton(icon: Icons.volume_down_rounded, label: tr('Тише'), onTap: () => _key(tv, Keys.volDown)),
+                  _RoundButton(icon: Icons.volume_off_rounded, label: tr('Без звука'), onTap: () => _key(tv, Keys.mute)),
+                  _RoundButton(icon: Icons.volume_up_rounded, label: tr('Громче'), onTap: () => _key(tv, Keys.volUp)),
+                  _RoundButton(icon: Icons.play_arrow_rounded, label: tr('Пауза'), onTap: () => _key(tv, Keys.playPause)),
                 ]),
                 const Gap(28),
                 _textInput(tv),
@@ -76,15 +77,14 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     );
   }
 
-  Widget _noTv() => const Center(
+  Widget _noTv() => Center(
         child: Padding(
           padding: EdgeInsets.all(32),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.settings_remote_rounded, size: 56, color: AppColors.fgMuted),
             SizedBox(height: 16),
             Text(
-              'Сначала выберите телевизор на вкладке «Очистка», '
-              'и телефон станет его пультом.',
+              tr('Сначала выберите телевизор на вкладке «Очистка», и телефон станет его пультом.'),
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.fgMid, height: 1.5),
             ),
@@ -94,10 +94,10 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
 
   Widget _status(TvDevice tv, RemoteState rs) {
     final (color, text) = switch (rs.status) {
-      RemoteStatus.idle => (AppColors.fgMuted, 'Нажмите любую кнопку, чтобы подключиться'),
-      RemoteStatus.connecting => (AppColors.warn, 'Подключаемся…'),
-      RemoteStatus.ready => (AppColors.ok, 'Подключено'),
-      RemoteStatus.error => (AppColors.danger, rs.message ?? 'Нет связи'),
+      RemoteStatus.idle => (AppColors.fgMuted, tr('Нажмите любую кнопку, чтобы подключиться')),
+      RemoteStatus.connecting => (AppColors.warn, tr('Подключаемся…')),
+      RemoteStatus.ready => (AppColors.ok, tr('Подключено')),
+      RemoteStatus.error => (AppColors.danger, rs.message ?? tr('Нет связи')),
     };
     return Container(
       padding: const EdgeInsets.all(14),
@@ -141,7 +141,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
             onSubmitted: (_) => _sendText(tv),
             style: const TextStyle(color: AppColors.fg),
             decoration: InputDecoration(
-              hintText: 'Текст на ТВ (латиница)',
+              hintText: tr('Текст на ТВ (латиница)'),
               hintStyle: const TextStyle(color: AppColors.fgMuted),
               filled: true,
               fillColor: AppColors.bgCard,

@@ -9,6 +9,7 @@ import 'adb_crypto.dart';
 import 'spake2.dart';
 import 'tls_channel.dart';
 
+import '../../l10n/l10n.dart';
 class PairingException implements Exception {
   final String message;
   PairingException(this.message);
@@ -36,18 +37,17 @@ class AdbPairing {
           certDer: id.certDer, keyPkcs8: id.pkcs8, keyPkcs1: id.pkcs1);
     } on MissingPluginException {
       throw PairingException(
-          'На компьютере подключение по коду пока не работает. Включите на ТВ «Отладку по сети» '
-          '(порт 5555) — такой ТВ найдётся сам — или подключите ТВ по коду с телефона.');
+          tr('На компьютере подключение по коду пока не работает. Включите на ТВ «Отладку по сети» (порт 5555) — такой ТВ найдётся сам — или подключите ТВ по коду с телефона.'));
     } on PlatformException catch (e) {
       throw PairingException(e.code == 'unsupported'
-          ? (e.message ?? 'Этот телефон не поддерживает сопряжение по коду.')
-          : 'Не удалось подключиться к $host:$port. Проверьте адрес и порт в окне с кодом.');
+          ? (e.message ?? tr('Этот телефон не поддерживает сопряжение по коду.'))
+          : tr('Не удалось подключиться к {0}:{1}. Проверьте адрес и порт в окне с кодом.', [host, port]));
     }
     try {
       await run(ch, code, id.publicKey);
     } on PlatformException {
       // The TV drops the connection when the code is wrong or the window closed.
-      throw PairingException('Сопряжение не удалось. Проверьте код и что окно с кодом ещё открыто на ТВ.');
+      throw PairingException(tr('Сопряжение не удалось. Проверьте код и что окно с кодом ещё открыто на ТВ.'));
     } finally {
       await ch.close();
     }
@@ -72,12 +72,12 @@ class AdbPairing {
     final enc = await _readPacket(t, _typePeerInfo);
     try {
       final theirs = AdbCrypto.aesGcm(false, aesKey, AdbCrypto.counterNonce(0), enc);
-      if (theirs.length != peerInfoSize) throw PairingException('Телевизор прислал странный ответ.');
+      if (theirs.length != peerInfoSize) throw PairingException(tr('Телевизор прислал странный ответ.'));
       return theirs;
     } on InvalidCipherTextException {
-      throw PairingException('Неверный код. Проверьте шесть цифр на экране телевизора.');
+      throw PairingException(tr('Неверный код. Проверьте шесть цифр на экране телевизора.'));
     } on ArgumentError {
-      throw PairingException('Неверный код. Проверьте шесть цифр на экране телевизора.');
+      throw PairingException(tr('Неверный код. Проверьте шесть цифр на экране телевизора.'));
     }
   }
 
@@ -93,7 +93,7 @@ class AdbPairing {
     final h = ByteData.sublistView(await t.read(6));
     final size = h.getUint32(2, Endian.big);
     if (h.getUint8(1) != type || size > 2 * peerInfoSize) {
-      throw PairingException('Телевизор прервал сопряжение. Проверьте код и попробуйте снова.');
+      throw PairingException(tr('Телевизор прервал сопряжение. Проверьте код и попробуйте снова.'));
     }
     return t.read(size);
   }

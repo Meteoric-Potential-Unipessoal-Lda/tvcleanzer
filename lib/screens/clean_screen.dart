@@ -11,6 +11,7 @@ import '../theme/app_theme.dart';
 import '../widgets/package_tile.dart';
 import 'result_screen.dart';
 
+import '../l10n/l10n.dart';
 // ─── Providers ───────────────────────────────────────────────────────────────
 
 final cleanProvider = StateNotifierProvider.autoDispose.family<CleanNotifier, CleanState, _CleanArgs>(
@@ -91,9 +92,9 @@ class CleanNotifier extends StateNotifier<CleanState> {
   String _friendlyError(Object e) {
     final s = e.toString();
     if (s.contains('SocketException') || s.contains('connection')) {
-      return 'Связь с телевизором прервалась во время очистки.';
+      return tr('Связь с телевизором прервалась во время очистки.');
     }
-    return 'Ошибка: $s';
+    return tr('Ошибка: {0}', [s]);
   }
 }
 
@@ -115,7 +116,7 @@ class CleanScreen extends ConsumerWidget {
               state.phase == CleanPhase.error,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Очистка'),
+          title: Text(tr('Очистка')),
           leading: state.phase == CleanPhase.cleaning
               ? const SizedBox.shrink()
               : const BackButton(),
@@ -142,12 +143,11 @@ class CleanScreen extends ConsumerWidget {
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: AppColors.warn.withValues(alpha: .3)),
           ),
-          child: const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Icon(Icons.info_outline_rounded, color: AppColors.warn, size: 20),
             Gap(10),
             Expanded(child: Text(
-              'Приложения будут скрыты, а не удалены навсегда. '
-              'Восстановить их можно в любой момент.',
+              tr('Приложения будут скрыты, а не удалены навсегда. Восстановить их можно в любой момент.'),
               style: TextStyle(color: AppColors.warn, fontSize: 13, height: 1.5),
             )),
           ]),
@@ -155,11 +155,11 @@ class CleanScreen extends ConsumerWidget {
 
         const Gap(20),
 
-        Text('${packages.length} приложений будут скрыты',
+        Text(tr('{0} приложений будут скрыты', [packages.length]),
           style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
         if (totalMb > 0) ...[
           const Gap(4),
-          Text('Освободится ~$totalMb МБ',
+          Text(tr('Освободится ~{0} МБ', [totalMb]),
             style: const TextStyle(color: AppColors.fgMuted, fontSize: 13)),
         ],
         const Gap(16),
@@ -177,12 +177,12 @@ class CleanScreen extends ConsumerWidget {
         child: Row(children: [
           Expanded(child: OutlinedButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Отмена'),
+            child: Text(tr('Отмена')),
           )),
           const Gap(12),
           Expanded(flex: 2, child: FilledButton.icon(
             icon: const Icon(Icons.cleaning_services_rounded),
-            label: const Text('Очистить'),
+            label: Text(tr('Очистить')),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
               backgroundColor: AppColors.danger,
@@ -211,8 +211,8 @@ class CleanScreen extends ConsumerWidget {
         const Gap(8),
         Text(
           state.removed < state.total
-            ? 'Убираем ${state.removed + 1} из ${state.total}…'
-            : 'Завершаем…',
+            ? tr('Убираем {0} из {1}…', [state.removed + 1, state.total])
+            : tr('Завершаем…'),
           style: const TextStyle(color: AppColors.fgMid),
         ),
         const Gap(4),
@@ -240,17 +240,17 @@ class CleanScreen extends ConsumerWidget {
     Center(child: Padding(padding: const EdgeInsets.all(24), child: Column(mainAxisSize: MainAxisSize.min, children: [
       const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 48),
       const Gap(16),
-      Text('Ошибка очистки',
+      Text(tr('Ошибка очистки'),
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
       Text(error, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.fgMid, fontSize: 13)),
       const Gap(24),
       Row(mainAxisSize: MainAxisSize.min, children: [
-        OutlinedButton(onPressed: () => Navigator.pop(context), child: const Text('Назад')),
+        OutlinedButton(onPressed: () => Navigator.pop(context), child: Text(tr('Назад'))),
         const Gap(12),
         FilledButton(
           onPressed: () => ref.read(cleanProvider(args).notifier).startClean(),
-          child: const Text('Повторить'),
+          child: Text(tr('Повторить')),
         ),
       ]),
     ])));

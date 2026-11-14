@@ -7,6 +7,7 @@ import '../theme/app_theme.dart';
 import '../screens/scan_screen.dart';
 import '../state/current_tv.dart';
 
+import '../l10n/l10n.dart';
 class TvCard extends ConsumerWidget {
   final TvDevice device;
   const TvCard({super.key, required this.device});
@@ -51,7 +52,7 @@ class TvCard extends ConsumerWidget {
                 Text(device.shortName,
                   style: GoogleFonts.syne(
                     fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
-                Text(device.isDemo ? 'Демо-режим: без настоящего телевизора' : device.ipAddress,
+                Text(device.isDemo ? tr('Демо-режим: без настоящего телевизора') : device.ipAddress,
                   style: TextStyle(fontSize: 12,
                       color: device.isDemo ? AppColors.accent : AppColors.fgMuted)),
               ])),
@@ -71,7 +72,7 @@ class TvCard extends ConsumerWidget {
 
             // RAM bar
             if (hasRam) Row(children: [
-              const Text('ОЗУ', style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+              Text(tr('ОЗУ'), style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
               const Gap(8),
               Expanded(child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),
@@ -85,7 +86,7 @@ class TvCard extends ConsumerWidget {
                 ),
               )),
               const Gap(8),
-              Text('${device.ramFreeMb} МБ свободно',
+              Text(tr('{0} МБ свободно', [device.ramFreeMb]),
                 style: const TextStyle(fontSize: 11, color: AppColors.fgMid)),
             ]),
 
@@ -94,7 +95,7 @@ class TvCard extends ConsumerWidget {
             // CTA
             SizedBox(width: double.infinity, child: FilledButton.icon(
               icon: const Icon(Icons.search_rounded, size: 18),
-              label: const Text('Сканировать'),
+              label: Text(tr('Сканировать')),
               onPressed: open,
             )),
           ]),

@@ -6,6 +6,7 @@ import '../models/tv_device.dart';
 import '../services/adb_client.dart';
 import 'current_tv.dart';
 
+import '../l10n/l10n.dart';
 enum RemoteStatus { idle, connecting, ready, error }
 
 class RemoteState {
@@ -84,8 +85,8 @@ class RemoteController extends StateNotifier<RemoteState> {
       } catch (e) {
         _drop(); // stale connection (TV slept, Wi-Fi changed) — retry once
         if (attempt == 1) {
-          _set(const RemoteState(RemoteStatus.error,
-              'Нет связи с телевизором. Проверьте, что он включён и в той же Wi-Fi сети.'));
+          _set(RemoteState(RemoteStatus.error,
+              tr('Нет связи с телевизором. Проверьте, что он включён и в той же Wi-Fi сети.')));
           rethrow;
         }
       }
