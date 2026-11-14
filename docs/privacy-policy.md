@@ -1,6 +1,6 @@
 # Политика конфиденциальности TVCleanzer
 
-Действует с 9 ноября 2026 г. · Разработчик: Meteoric Potential Unipessoal Lda · Связь: [EMAIL ПОДДЕРЖКИ]
+Действует с 9 ноября 2026 г. · Разработчик: Meteoric Potential Unipessoal Lda (App Store), Dayava Corporation (Google Play) · Связь: dayavacorp@gmail.com
 
 ## Коротко
 TVCleanzer не собирает и не передаёт ваши личные данные. У приложения нет аккаунтов, рекламы и аналитики.
@@ -35,7 +35,7 @@ TVCleanzer не собирает и не передаёт ваши личные 
 
 # TVCleanzer Privacy Policy
 
-Effective November 9, 2026 · Developer: Meteoric Potential Unipessoal Lda · Contact: [SUPPORT EMAIL]
+Effective November 9, 2026 · Developer: Meteoric Potential Unipessoal Lda (App Store), Dayava Corporation (Google Play) · Contact: dayavacorp@gmail.com
 
 TVCleanzer does not collect or share personal data. No accounts, no ads, no analytics.
 

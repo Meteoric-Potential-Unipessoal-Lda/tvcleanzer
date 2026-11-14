@@ -1,6 +1,6 @@
 # Тексты для магазинов
 
-Заменить перед отправкой: [EMAIL ПОДДЕРЖКИ], [ССЫЛКА НА ПОЛИТИКУ], [ССЫЛКА НА ВИДЕО].
+Заменить перед отправкой: dayavacorp@gmail.com, https://github.com/Meteoric-Potential-Unipessoal-Lda/tvcleanzer/blob/main/docs/privacy-policy.md, [ССЫЛКА НА ВИДЕО].
 
 ## Google Play (RU)
 
