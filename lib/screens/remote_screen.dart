@@ -79,14 +79,14 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
 
   Widget _noTv() => Center(
         child: Padding(
-          padding: EdgeInsets.all(32),
+          padding: const EdgeInsets.all(32),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.settings_remote_rounded, size: 56, color: AppColors.fgMuted),
-            SizedBox(height: 16),
+            const Icon(Icons.settings_remote_rounded, size: 56, color: AppColors.fgMuted),
+            const SizedBox(height: 16),
             Text(
               tr('Сначала выберите телевизор на вкладке «Очистка», и телефон станет его пультом.'),
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.fgMid, height: 1.5),
+              style: const TextStyle(color: AppColors.fgMid, height: 1.5),
             ),
           ]),
         ),

@@ -214,7 +214,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const Gap(4),
           Text(
             tr('Если на телевизоре появится запрос отладки — отметьте «Всегда разрешать» и нажмите «Разрешить».'),
-            style: TextStyle(color: AppColors.fgMid, fontSize: 12, height: 1.4),
+            style: const TextStyle(color: AppColors.fgMid, fontSize: 12, height: 1.4),
           ),
         ])),
         if (state.devices.isNotEmpty)
@@ -248,7 +248,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Text(
           tr('Включите отладку по сети на телевизоре:\nНастройки → Параметры разработчика →\nОтладка по ADB (сеть) → ВКЛ'),
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.fgMid, fontSize: 14, height: 1.6),
+          style: const TextStyle(color: AppColors.fgMid, fontSize: 14, height: 1.6),
         ),
       const Gap(24),
       FilledButton.icon(

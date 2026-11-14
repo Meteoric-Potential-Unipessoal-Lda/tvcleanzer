@@ -53,7 +53,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             Text(
               tr('После очистки здесь появится список скрытых приложений. Их можно вернуть в любой момент.'),
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.fgMid, height: 1.5),
+              style: const TextStyle(color: AppColors.fgMid, height: 1.5),
             ),
           ]),
         ),

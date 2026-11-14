@@ -205,7 +205,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(tr('Сейчас на телевизоре'),
-                style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+                style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
             const Gap(2),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
@@ -384,7 +384,7 @@ class _SkinPreview extends StatelessWidget {
                 style: TextStyle(fontSize: 13, color: Colors.white, fontWeight: FontWeight.w600)),
           ]),
           const Spacer(),
-          Text(tr('Избранное'), style: TextStyle(fontSize: 10, color: Colors.white60)),
+          Text(tr('Избранное'), style: const TextStyle(fontSize: 10, color: Colors.white60)),
           const Gap(6),
           SizedBox(
             height: 40,
@@ -399,7 +399,7 @@ class _SkinPreview extends StatelessWidget {
             ]),
           ),
           const Gap(10),
-          Text(tr('Приложения'), style: TextStyle(fontSize: 10, color: Colors.white60)),
+          Text(tr('Приложения'), style: const TextStyle(fontSize: 10, color: Colors.white60)),
           const Gap(6),
           SizedBox(
             height: 26,

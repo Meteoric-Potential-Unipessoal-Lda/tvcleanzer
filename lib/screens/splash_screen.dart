@@ -117,7 +117,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 .slideY(begin: .3, end: 0, curve: Curves.easeOutCubic),
             const Gap(6),
             Text(tr('Чистый телевизор без лишнего'),
-                    style: TextStyle(color: AppColors.fgMid, fontSize: 14))
+                    style: const TextStyle(color: AppColors.fgMid, fontSize: 14))
                 .animate()
                 .fadeIn(delay: 400.ms, duration: 400.ms),
           ]),

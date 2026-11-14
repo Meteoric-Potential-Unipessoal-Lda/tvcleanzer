@@ -146,7 +146,7 @@ class _PairScreenState extends ConsumerState<PairScreen> {
           const Gap(16),
           Text(
             tr('Нужно один раз. Для старых ТВ с «Отладкой по сети» (порт 5555) этот шаг не нужен — они находятся автоматически.'),
-            style: TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4),
+            style: const TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4),
           ),
         ],
       ),

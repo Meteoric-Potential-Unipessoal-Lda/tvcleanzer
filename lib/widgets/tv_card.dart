@@ -72,7 +72,7 @@ class TvCard extends ConsumerWidget {
 
             // RAM bar
             if (hasRam) Row(children: [
-              Text(tr('ОЗУ'), style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+              Text(tr('ОЗУ'), style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
               const Gap(8),
               Expanded(child: ClipRRect(
                 borderRadius: BorderRadius.circular(4),

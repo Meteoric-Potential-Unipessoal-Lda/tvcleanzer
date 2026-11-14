@@ -152,7 +152,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
               child: Row(children: [
                 Expanded(
                   child: Text(tr('Потяните за ручку, чтобы поменять порядок. Первые четыре видны сразу.'),
-                      style: TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
+                      style: const TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
                 ),
                 TextButton.icon(
                   icon: const Icon(Icons.add_rounded),
@@ -211,8 +211,8 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
           padding: const EdgeInsets.all(12),
           children: [
             Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(tr('Добавить в избранное'), style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+              padding: const EdgeInsets.all(8),
+              child: Text(tr('Добавить в избранное'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
             ),
             for (final a in rest)
               ListTile(
@@ -249,7 +249,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
               onChanged: (v) => setState(() => _kids = v),
               title: Text(tr('Детский режим')),
               subtitle: Text(tr('На ТВ останутся только выбранные приложения. Выйти — по PIN.'),
-                  style: TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+                  style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
             ),
           ),
           const Gap(12),
@@ -267,10 +267,10 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             ),
           ),
           Text(tr('Не настоящая блокировка: ребёнок, который знает про отладку, обойдёт её. Но от случайных приложений и рекламы — защитит.'),
-              style: TextStyle(fontSize: 11, color: AppColors.fgMuted, height: 1.4)),
+              style: const TextStyle(fontSize: 11, color: AppColors.fgMuted, height: 1.4)),
           const Gap(16),
           Text(tr('ЧТО МОЖНО ДЕТЯМ'),
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: .8, color: AppColors.fgMuted)),
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: .8, color: AppColors.fgMuted)),
           const Gap(6),
           for (final a in st.apps)
             CheckboxListTile(
@@ -321,7 +321,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
       ).animate().fadeIn(duration: 250.ms),
       const Gap(16),
       Text(tr('Фото слегка затемнится, чтобы текст на ТВ читался. Лучше горизонтальное, 16:9.'),
-          style: TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
+          style: const TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
       const Gap(16),
       FilledButton.icon(
         icon: _saving

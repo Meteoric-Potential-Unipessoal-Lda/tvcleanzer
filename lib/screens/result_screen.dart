@@ -145,11 +145,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               const Icon(Icons.undo_rounded, color: AppColors.fgMuted, size: 20),
               const Gap(12),
               Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(tr('Можно отменить'), style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.fg)),
+                Text(tr('Можно отменить'), style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.fg)),
                 const Gap(4),
                 Text(
                   tr('Список скрытых приложений сохранён во вкладке «История». Вернуть их можно в любой момент, это займёт пару секунд.'),
-                  style: TextStyle(fontSize: 12, color: AppColors.fgMuted, height: 1.5),
+                  style: const TextStyle(fontSize: 12, color: AppColors.fgMuted, height: 1.5),
                 ),
                 const Gap(10),
                 OutlinedButton.icon(
@@ -192,7 +192,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       const Gap(8),
       Text(tr('Скрытые приложения возвращаются на телевизор.'),
         textAlign: TextAlign.center,
-        style: TextStyle(color: AppColors.fgMuted)),
+        style: const TextStyle(color: AppColors.fgMuted)),
     ]).animate().fadeIn(duration: 300.ms),
   );
 
@@ -212,7 +212,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       const Gap(8),
       Text(tr('Приложения вернулись на телевизор.'),
         textAlign: TextAlign.center,
-        style: TextStyle(color: AppColors.fgMid)),
+        style: const TextStyle(color: AppColors.fgMid)),
       const Gap(32),
       FilledButton.icon(
         icon: const Icon(Icons.home_rounded),

@@ -144,11 +144,11 @@ class CleanScreen extends ConsumerWidget {
             border: Border.all(color: AppColors.warn.withValues(alpha: .3)),
           ),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Icon(Icons.info_outline_rounded, color: AppColors.warn, size: 20),
-            Gap(10),
+            const Icon(Icons.info_outline_rounded, color: AppColors.warn, size: 20),
+            const Gap(10),
             Expanded(child: Text(
               tr('Приложения будут скрыты, а не удалены навсегда. Восстановить их можно в любой момент.'),
-              style: TextStyle(color: AppColors.warn, fontSize: 13, height: 1.5),
+              style: const TextStyle(color: AppColors.warn, fontSize: 13, height: 1.5),
             )),
           ]),
         ).animate().fadeIn(duration: 300.ms),

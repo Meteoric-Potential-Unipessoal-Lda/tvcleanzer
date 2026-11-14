@@ -78,7 +78,7 @@ class _HelpScreenState extends State<HelpScreen> {
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
         children: [
           Text(tr('Выберите свой телевизор:'),
-              style: TextStyle(color: AppColors.fgMid, fontSize: 13)),
+              style: const TextStyle(color: AppColors.fgMid, fontSize: 13)),
           const Gap(10),
           Wrap(spacing: 8, runSpacing: 8, children: [
             for (var i = 0; i < _guides.length; i++)
@@ -208,7 +208,7 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text(tr('Скопировано. Вставьте в чат TVCleanzer в Telegram и допишите, что случилось.')),
-                  duration: Duration(seconds: 5),
+                  duration: const Duration(seconds: 5),
                 ));
               }
             },
