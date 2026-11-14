@@ -44,8 +44,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             "ru.ivi.client", "com.spotify.tv.android", "org.videolan.vlc",
             "com.plexapp.android", "com.android.vending", "com.android.tv.settings",
     };
-    private static final int GRID_COLUMNS = 6;
-    private static final int FAV_VISIBLE = 4;
+    /** Per tile size (Prefs.TILES_*): apps per row and favourites visible at once. */
+    private static final int[] GRID_COLUMNS = {7, 6, 5};
+    private static final int[] FAV_VISIBLE = {5, 4, 3};
 
     private Prefs prefs;
     private PackageManager pm;
@@ -63,6 +64,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private FrameLayout root;
     private ScrollView scroll;
     private boolean resumed, dirty;
+    private boolean entered;                       // entrance animation played
+    private final List<View> ambientGlows = new ArrayList<>();
+    private android.animation.ValueAnimator ambientAnim;
 
     private final BroadcastReceiver packages = new BroadcastReceiver() {
         @Override
@@ -108,12 +112,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onResume() {
         super.onResume();
         resumed = true;
-        if (dirty) { dirty = false; build(); }
+        if (dirty) { dirty = false; build(); } else startAmbient();
     }
 
     @Override
     protected void onPause() {
         resumed = false;
+        stopAmbient();
         super.onPause();
     }
 
@@ -206,7 +211,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final Set<String> hidden = prefs.hidden();
         final boolean kids = prefs.kids();
         favorites = kids ? new ArrayList<AppEntry>() : resolveFavorites(hidden);
-        final int cols = kids ? 4 : GRID_COLUMNS;
+        final int size = prefs.tileSize();
+        final int anim = prefs.anim();
+        final int ringColor = prefs.ringAccent() ? skin.accent : 0xF2FFFFFF;
+        final int cols = kids ? 4 : GRID_COLUMNS[size];
+        final int favVisible = FAV_VISIBLE[size];
 
         // Own photo as background: decode off the UI thread, then redraw.
         long rev = prefs.wallpaperRev();
@@ -223,11 +232,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         int padV = Math.round(screenW * 0.03f);
         int gap = Ui.dp(this, 22);
         int contentW = screenW - 2 * padH;
-        int favW = (contentW - 2 * Ui.dp(this, 22) - gap * (FAV_VISIBLE - 1)) / FAV_VISIBLE;
+        int favW = (contentW - 2 * Ui.dp(this, 22) - gap * (favVisible - 1)) / favVisible;
         int favH = favW * 9 / 16;
         int tileW = (contentW - gap * (cols - 1)) / cols;
         int tileH = tileW * 9 / 16;
 
+        stopAmbient();
+        ambientGlows.clear();
         root.removeAllViews();
         root.setBackground(Ui.background(skin));
 
@@ -238,7 +249,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             root.addView(wp, new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             View dim = new View(this);
-            dim.setBackgroundColor(0x66000000); // keeps text readable on any photo
+            // keeps text readable on any photo; the owner picks how much (0–90 %)
+            dim.setBackgroundColor(Math.round(prefs.wallDim() * 2.55f) << 24);
             root.addView(dim, new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         } else {
@@ -250,6 +262,19 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             glp.topMargin = -gs / 2;
             glp.rightMargin = -gs / 3;
             root.addView(glow, glp);
+            ambientGlows.add(glow);
+            if (prefs.ambient() && anim != Prefs.ANIM_OFF) {
+                // a second, softer glow low on the left: the two drift slowly ("live" background)
+                View glow2 = new View(this);
+                int gs2 = Math.round(screenW * 0.55f);
+                glow2.setBackground(Ui.glow(skin.accent, gs2 / 2f));
+                glow2.setAlpha(.7f);
+                FrameLayout.LayoutParams g2 = new FrameLayout.LayoutParams(gs2, gs2, Gravity.BOTTOM | Gravity.START);
+                g2.bottomMargin = -gs2 / 2;
+                g2.leftMargin = -gs2 / 4;
+                root.addView(glow2, g2);
+                ambientGlows.add(glow2);
+            }
         }
         View vig = new View(this);
         vig.setBackground(Ui.vignette());
@@ -313,7 +338,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.setPadding(inset, Ui.dp(this, 18), inset, Ui.dp(this, 10));
             LinearLayout row = row();
             for (int i = 0; i < favorites.size(); i++) {
-                AppTile t = tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f);
+                AppTile t = tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i > 0) lp.leftMargin = gap;
@@ -348,7 +373,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     row.setPadding(0, Ui.dp(this, 12), 0, Ui.dp(this, 4));
                     page.addView(row);
                 }
-                AppTile t = tile(rest.get(i), tileW, tileH, skin, kids || labelsAlways, kids ? 16 : 13, kids ? 1.08f : 1.12f);
+                AppTile t = tile(rest.get(i), tileW, tileH, skin, kids || labelsAlways,
+                        kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), kids ? 1.08f : 1.12f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i % cols > 0) lp.leftMargin = gap;
@@ -372,7 +398,12 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (target == null && !tiles.isEmpty()) target = tiles.get(0);
         if (target != null) target.requestFocus();
 
+        if (!entered) {
+            entered = true;
+            for (int i = 0; i < tiles.size(); i++) tiles.get(i).enter(i);
+        }
         loadArt(tiles);
+        if (resumed) startAmbient();
     }
 
     private View topBar(Skin skin) {
@@ -522,14 +553,43 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         return r;
     }
 
-    private AppTile tile(AppEntry a, int w, int h, Skin skin, boolean labelsAlways, float sp, float scale) {
-        AppTile t = new AppTile(this, a, w, h, skin, labelsAlways, sp, scale);
+    private AppTile tile(AppEntry a, int w, int h, Skin skin, boolean labelsAlways, float sp, float scale,
+                         int anim, int ringColor) {
+        AppTile t = new AppTile(this, a, w, h, skin, labelsAlways, sp, scale, anim, ringColor);
         t.setOnClickListener(v -> launch(a));
         t.setOnLongClickListener(v -> {
             if (!prefs.kids()) showOptions(t);
             return true;
         });
         return t;
+    }
+
+    // ── Live background: the accent glows drift slowly while Home is visible ──
+
+    private void startAmbient() {
+        if (ambientAnim != null || ambientGlows.size() < 2 || !prefs.ambient()
+                || prefs.anim() == Prefs.ANIM_OFF || wallBitmap != null) return;
+        final View a = ambientGlows.get(0), b = ambientGlows.get(1);
+        final float dx = getResources().getDisplayMetrics().widthPixels * 0.06f;
+        ambientAnim = android.animation.ValueAnimator.ofFloat(0f, 1f);
+        ambientAnim.setDuration(prefs.anim() == Prefs.ANIM_SOFT ? 22000 : 14000);
+        ambientAnim.setRepeatCount(android.animation.ValueAnimator.INFINITE);
+        ambientAnim.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+        ambientAnim.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        ambientAnim.addUpdateListener(v -> {
+            float f = (float) v.getAnimatedValue();
+            a.setTranslationX(-dx * f);
+            a.setTranslationY(dx * 0.5f * f);
+            a.setAlpha(0.75f + 0.25f * f);
+            b.setTranslationX(dx * (1f - f));
+            b.setTranslationY(-dx * 0.4f * (1f - f));
+            b.setAlpha(0.45f + 0.35f * (1f - f));
+        });
+        ambientAnim.start();
+    }
+
+    private void stopAmbient() {
+        if (ambientAnim != null) { ambientAnim.cancel(); ambientAnim = null; }
     }
 
     private void loadArt(List<AppTile> tiles) {

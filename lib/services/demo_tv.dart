@@ -111,6 +111,8 @@ class _DemoState {
   bool kids = false;
   bool pin = false;
   bool wallpaper = false;
+  int tmpFile = -1; // size of the upload in /data/local/tmp
+  Map<String, String> look = {};
   int _extraFreeKb = 0;
   int dataFreeKb = 5120000;
 
@@ -128,6 +130,8 @@ class _DemoState {
     kids = false;
     pin = false;
     wallpaper = false;
+    tmpFile = -1;
+    look = {};
     _extraFreeKb = 0;
     dataFreeKb = 5120000;
   }
@@ -183,6 +187,13 @@ class DemoAdbClient extends AdbClient {
     }
     if (command.contains('wallpaper.jpg')) _s.wallpaper = true;
     return '';
+  }
+
+  @override
+  Future<void> execIn(String command, Uint8List input,
+      {Duration timeout = const Duration(seconds: 90)}) async {
+    await _lag(500);
+    if (command.startsWith('cat > ')) _s.tmpFile = input.length;
   }
 
   @override
@@ -292,9 +303,21 @@ class DemoAdbClient extends AdbClient {
     }
     if (c.startsWith('content query') && c.endsWith('/apps')) return _appsRows();
     if (c.startsWith('content query') && c.endsWith('/settings')) {
-      return 'Row: 0 key=kids, value=${s.kids ? 1 : 0}\n'
-          'Row: 1 key=pin, value=${s.pin ? 1 : 0}\n'
-          'Row: 2 key=wallpaper, value=${s.wallpaper ? 1 : 0}\n';
+      final rows = {'kids': s.kids ? 1 : 0, 'pin': s.pin ? 1 : 0, 'wallpaper': s.wallpaper ? 1 : 0,
+        'version': 4, ...s.look};
+      var i = 0;
+      return rows.entries.map((e) => 'Row: ${i++} key=${e.key}, value=${e.value}').join('\n');
+    }
+    if (c.startsWith('wc -c < ')) return s.tmpFile < 0 ? 'wc: No such file\n' : '${s.tmpFile}\n';
+    if (c.startsWith('content write') && c.contains('/wallpaper') && s.launcherInstalled && s.tmpFile >= 0) {
+      return 'TVC_OK\n';
+    }
+    if (c.startsWith('rm -f /data/local/tmp/')) {
+      s.tmpFile = -1;
+      return '';
+    }
+    if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
+      return s.launcherInstalled ? '    versionCode=4 minSdk=21 targetSdk=34\n' : '';
     }
     // input keyevent / input text / getprop … — a TV just does it
     return '';
@@ -327,5 +350,9 @@ class DemoAdbClient extends AdbClient {
     if (k != null) _s.kids = k.group(1) == 'true' && _s.pin;
     if (c.contains('--es wallpaper none')) _s.wallpaper = false;
     if (c.contains('--es wallpaper set')) _s.wallpaper = true;
+    for (final m in RegExp(r'--e[iz] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels) (\S+)').allMatches(c)) {
+      final v = m.group(2)!;
+      _s.look[m.group(1)!] = v == 'true' ? '1' : v == 'false' ? '0' : v;
+    }
   }
 }

@@ -6,14 +6,43 @@ import android.graphics.BitmapFactory;
 
 import java.io.File;
 
-/** Own photo as the background. The phone app writes it over ADB. */
+/**
+ * Own photo as the background. The phone app writes it over ADB:
+ *   content write --uri content://com.tvcleanzer.launcher.state/wallpaper  (launcher 0.4+, Android 10+)
+ * or, on older setups, straight into the app's external files dir.
+ */
 final class Wallpaper {
     private Wallpaper() {}
 
-    static File file(Context c) {
+    /** Where StateProvider stores an uploaded photo (private, survives scoped storage). */
+    static File internal(Context c) { return new File(c.getFilesDir(), "wallpaper.jpg"); }
+
+    /** Old location (launcher 0.3 and Android 7–9 upload path). */
+    static File legacy(Context c) {
         File dir = c.getExternalFilesDir(null);
-        if (dir == null) dir = c.getFilesDir();
-        return new File(dir, "wallpaper.jpg");
+        return dir == null ? null : new File(dir, "wallpaper.jpg");
+    }
+
+    /** The photo in use: the newest of the two locations. */
+    static File file(Context c) {
+        File a = internal(c), b = legacy(c);
+        boolean ha = a.exists() && a.length() > 0, hb = b != null && b.exists() && b.length() > 0;
+        if (ha && hb) return a.lastModified() >= b.lastModified() ? a : b;
+        if (hb) return b;
+        return a;
+    }
+
+    static boolean exists(Context c) {
+        File f = file(c);
+        return f.exists() && f.length() > 0;
+    }
+
+    static void delete(Context c) {
+        //noinspection ResultOfMethodCallIgnored
+        internal(c).delete();
+        File b = legacy(c);
+        //noinspection ResultOfMethodCallIgnored
+        if (b != null) b.delete();
     }
 
     /** Decoded close to screen size to keep memory low on 1 GB TVs. */
@@ -24,6 +53,7 @@ final class Wallpaper {
             BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(f.getAbsolutePath(), o);
+            if (o.outWidth <= 0 || o.outHeight <= 0) return null; // not an image we can read
             int target = Math.max(1280, c.getResources().getDisplayMetrics().widthPixels);
             int sample = 1;
             while (o.outWidth / (sample * 2) >= target) sample *= 2;

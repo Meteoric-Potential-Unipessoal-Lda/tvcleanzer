@@ -19,6 +19,11 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.hasExtra("clock24")) p.setClock24(intent.getBooleanExtra("clock24", true));
         if (intent.hasExtra("labels")) p.setLabelsAlways(intent.getBooleanExtra("labels", false));
         if (intent.getBooleanExtra("resetFavorites", false)) p.resetFavorites();
+        if (intent.hasExtra("anim")) p.setAnim(intent.getIntExtra("anim", Prefs.ANIM_FULL));
+        if (intent.hasExtra("ringAccent")) p.setRingAccent(intent.getBooleanExtra("ringAccent", false));
+        if (intent.hasExtra("tiles")) p.setTileSize(intent.getIntExtra("tiles", Prefs.TILES_NORMAL));
+        if (intent.hasExtra("wallDim")) p.setWallDim(intent.getIntExtra("wallDim", 40));
+        if (intent.hasExtra("ambient")) p.setAmbient(intent.getBooleanExtra("ambient", true));
 
         String[] fav = intent.getStringArrayExtra("favorites");
         if (fav != null) p.setFavorites(clean(fav));
@@ -26,10 +31,7 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (hid != null) p.setHidden(new HashSet<>(clean(hid)));
 
         if (intent.hasExtra("wallpaper")) {
-            if ("none".equals(intent.getStringExtra("wallpaper"))) {
-                //noinspection ResultOfMethodCallIgnored
-                Wallpaper.file(context).delete();
-            }
+            if ("none".equals(intent.getStringExtra("wallpaper"))) Wallpaper.delete(context);
             p.bumpWallpaper(); // the phone wrote a new file (or removed it)
         }
 

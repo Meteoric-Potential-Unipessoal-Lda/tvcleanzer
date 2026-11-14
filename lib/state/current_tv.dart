@@ -14,6 +14,12 @@ class CurrentTvNotifier extends StateNotifier<TvDevice?> {
 
   static const _key = 'current_tv';
 
+  /// Leaves the demo: back to the last real TV, or to no TV at all.
+  Future<void> restoreSaved() async {
+    state = null;
+    await load();
+  }
+
   Future<void> load() async {
     try {
       final sp = await SharedPreferences.getInstance();
@@ -37,6 +43,7 @@ class CurrentTvNotifier extends StateNotifier<TvDevice?> {
 
   Future<void> select(TvDevice d) async {
     state = d;
+    if (d.isDemo) return; // the demo TV never outlives the app session
     try {
       final sp = await SharedPreferences.getInstance();
       await sp.setString(_key, jsonEncode({

@@ -28,14 +28,20 @@ final class AppTile extends LinearLayout {
     private static final DecelerateInterpolator EASE = new DecelerateInterpolator(1.6f);
 
     private final float focusScale;
+    private final int anim;       // Prefs.ANIM_*
+    private final int duration;
 
     AppTile(Context c, AppEntry app, int w, int h, Skin skin, boolean labelsAlways, float textSp,
-            float focusScale) {
+            float focusScale, int anim, int ringColor) {
         super(c);
         this.app = app;
         this.h = h;
         this.labelsAlways = labelsAlways;
-        this.focusScale = focusScale;
+        this.anim = anim;
+        // soft: half the lift, a bit slower; off: no movement at all (weak TVs)
+        this.focusScale = anim == Prefs.ANIM_OFF ? 1f
+                : anim == Prefs.ANIM_SOFT ? 1f + (focusScale - 1f) * 0.5f : focusScale;
+        this.duration = anim == Prefs.ANIM_OFF ? 0 : anim == Prefs.ANIM_SOFT ? 260 : 180;
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER_HORIZONTAL);
         setClipChildren(false);
@@ -66,7 +72,7 @@ final class AppTile extends LinearLayout {
         inner.setPadding(pad, 0, pad, Math.round(h * 0.1f));
         card.addView(inner, ilp);
 
-        ring = Ui.ring(0xF2FFFFFF, Ui.dp(c, 3), radius);
+        ring = Ui.ring(ringColor, Ui.dp(c, 3), radius);
 
         label = Ui.text(c, textSp, 0xFFFFFFFF, "sans-serif-medium");
         label.setGravity(Gravity.CENTER);
@@ -97,21 +103,35 @@ final class AppTile extends LinearLayout {
         }
         art.setLayoutParams(lp);
         art.setImageDrawable(d);
-        art.setAlpha(0f);
-        art.animate().alpha(1f).setDuration(180).start();
+        if (anim == Prefs.ANIM_OFF) {
+            art.setAlpha(1f);
+        } else {
+            art.setAlpha(0f);
+            art.animate().alpha(1f).setDuration(180).start();
+        }
     }
 
     private void onFocus(boolean has) {
         float s = has ? focusScale : 1f;
+        float z = anim == Prefs.ANIM_OFF ? 0 : Ui.dp(getContext(), anim == Prefs.ANIM_SOFT ? 10 : 20);
         card.animate().scaleX(s).scaleY(s)
-                .translationZ(has ? Ui.dp(getContext(), 20) : 0)
-                .setDuration(180).setInterpolator(EASE).start();
+                .translationZ(has ? z : 0)
+                .setDuration(duration).setInterpolator(EASE).start();
         card.setForeground(has ? ring : null);
         if (labelsAlways) {
-            label.animate().alpha(has ? 1f : .75f).setDuration(150).start();
+            label.animate().alpha(has ? 1f : .75f).setDuration(Math.min(duration, 150)).start();
         } else {
-            label.setTranslationY(has ? -Ui.dp(getContext(), 4) : 0);
-            label.animate().alpha(has ? 1f : 0f).translationY(0).setDuration(180).start();
+            label.setTranslationY(has && duration > 0 ? -Ui.dp(getContext(), 4) : 0);
+            label.animate().alpha(has ? 1f : 0f).translationY(0).setDuration(duration).start();
         }
+    }
+
+    /** First appearance of the home screen: tiles rise in one after another. */
+    void enter(int index) {
+        if (anim != Prefs.ANIM_FULL) return;
+        setAlpha(0f);
+        setTranslationY(Ui.dp(getContext(), 18));
+        animate().alpha(1f).translationY(0).setStartDelay(60L + Math.min(index, 14) * 35L)
+                .setDuration(320).setInterpolator(EASE).start();
     }
 }

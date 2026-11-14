@@ -81,11 +81,21 @@ public class SettingsActivity extends Activity {
         addRow(skin, "Детский режим", prefs.kids() ? "Включён" : (prefs.hasPin() ? "Выключен" : "Настроить"),
                 this::kidsMode);
         if (prefs.hasPin()) addRow(skin, "PIN детского режима", "Сменить", this::changePin);
-        boolean hasWall = Wallpaper.file(this).exists();
+        String[] animNames = {"Полные", "Мягкие", "Выключены"};
+        addRow(skin, "Анимации", animNames[prefs.anim()], () -> prefs.setAnim((prefs.anim() + 1) % 3));
+        String[] tileNames = {"Мелкие", "Обычные", "Крупные"};
+        addRow(skin, "Размер плиток", tileNames[prefs.tileSize()], () -> prefs.setTileSize((prefs.tileSize() + 1) % 3));
+        addRow(skin, "Подсветка выбора", prefs.ringAccent() ? "Цвет темы" : "Белая",
+                () -> prefs.setRingAccent(!prefs.ringAccent()));
+        addRow(skin, "Живой фон", prefs.ambient() ? "Включён" : "Выключен", () -> prefs.setAmbient(!prefs.ambient()));
+        boolean hasWall = Wallpaper.exists(this);
+        if (hasWall) {
+            addRow(skin, "Затемнение фото", prefs.wallDim() + "%",
+                    () -> prefs.setWallDim(prefs.wallDim() >= 80 ? 0 : prefs.wallDim() + 20));
+        }
         addRow(skin, "Обои", hasWall ? "Своё фото · убрать" : "Ставятся с телефона", () -> {
-            if (!Wallpaper.file(this).exists()) return;
-            //noinspection ResultOfMethodCallIgnored
-            Wallpaper.file(this).delete();
+            if (!Wallpaper.exists(this)) return;
+            Wallpaper.delete(this);
             prefs.bumpWallpaper();
             Toast.makeText(this, "Обои убраны", Toast.LENGTH_SHORT).show();
         });

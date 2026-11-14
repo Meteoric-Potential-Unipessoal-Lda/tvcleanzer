@@ -15,7 +15,14 @@ final class Prefs {
     static final String FILE = "launcher";
     static final String SKIN = "skin", CLOCK24 = "clock24", LABELS = "labels",
             FAVORITES = "favorites", HIDDEN = "hidden",
-            WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash";
+            WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
+            ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
+            AMBIENT = "ambient";
+
+    /** Animation level: full, soft (smaller and slower), off (instant, for weak TVs). */
+    static final int ANIM_FULL = 0, ANIM_SOFT = 1, ANIM_OFF = 2;
+    /** Tile size: compact (7 per row), normal (6), large (5). */
+    static final int TILES_COMPACT = 0, TILES_NORMAL = 1, TILES_LARGE = 2;
 
     final SharedPreferences sp;
 
@@ -28,6 +35,22 @@ final class Prefs {
     /** true: names always under tiles; false: only for the focused tile (like tvOS). */
     boolean labelsAlways()   { return sp.getBoolean(LABELS, false); }
     void setLabelsAlways(boolean v) { sp.edit().putBoolean(LABELS, v).apply(); }
+
+    int anim()               { return clamp(sp.getInt(ANIM, ANIM_FULL), 0, 2); }
+    void setAnim(int v)      { sp.edit().putInt(ANIM, clamp(v, 0, 2)).apply(); }
+    /** Focus ring in the skin's accent colour instead of white. */
+    boolean ringAccent()     { return sp.getBoolean(RING_ACCENT, false); }
+    void setRingAccent(boolean v) { sp.edit().putBoolean(RING_ACCENT, v).apply(); }
+    int tileSize()           { return clamp(sp.getInt(TILES, TILES_NORMAL), 0, 2); }
+    void setTileSize(int v)  { sp.edit().putInt(TILES, clamp(v, 0, 2)).apply(); }
+    /** How much the own photo is darkened, percent (0–90). */
+    int wallDim()            { return clamp(sp.getInt(WALL_DIM, 40), 0, 90); }
+    void setWallDim(int v)   { sp.edit().putInt(WALL_DIM, clamp(v, 0, 90)).apply(); }
+    /** Slowly drifting accent glow behind the home screen (skins without a photo). */
+    boolean ambient()        { return sp.getBoolean(AMBIENT, true); }
+    void setAmbient(boolean v) { sp.edit().putBoolean(AMBIENT, v).apply(); }
+
+    private static int clamp(int v, int lo, int hi) { return Math.max(lo, Math.min(hi, v)); }
 
     boolean hasFavorites()   { return sp.contains(FAVORITES); }
     List<String> favorites() {

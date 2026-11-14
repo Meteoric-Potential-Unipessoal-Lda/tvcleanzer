@@ -301,6 +301,56 @@ class AdbClient {
     }
   }
 
+  /// Streams [input] into [command]'s stdin and closes the stream, like
+  /// `adb exec-in`: closing is what gives the command its end-of-file
+  /// (`cat > file` would otherwise wait forever). No output is returned —
+  /// check the result with a separate command (e.g. the file size).
+  Future<void> execIn(String command, Uint8List input,
+      {Duration timeout = const Duration(seconds: 90)}) async {
+    final localId = _nextLocalId++;
+    _send(_Msg(_cmdOpen, localId, 0, _cString('exec:$command')));
+
+    int? remoteId;
+    while (remoteId == null) {
+      final m = await _read(timeout, 'Command timed out: $command');
+      if (m.arg1 != localId) continue;
+      if (m.cmd == _cmdOkay) {
+        remoteId = m.arg0;
+      } else if (m.cmd == _cmdClse) {
+        throw AdbException('TV refused the command: $command');
+      }
+    }
+
+    final chunk = min(_peerMaxData, 64 * 1024);
+    var off = 0;
+    while (off < input.length) {
+      final end = min(off + chunk, input.length);
+      _send(_Msg(_cmdWrte, localId, remoteId, Uint8List.sublistView(input, off, end)));
+      off = end;
+      while (true) {
+        final m = await _read(timeout, 'Upload timed out: $command');
+        if (m.arg1 != localId) continue;
+        if (m.cmd == _cmdOkay) break;
+        if (m.cmd == _cmdWrte) {
+          _send(_Msg(_cmdOkay, localId, remoteId));
+        } else if (m.cmd == _cmdClse) {
+          throw AdbException('The TV closed the upload early: $command');
+        }
+      }
+    }
+
+    // Close our side: the TV closes the command's stdin, the command finishes.
+    _send(_Msg(_cmdClse, localId, remoteId));
+    try {
+      while (true) {
+        final m = await _read(const Duration(seconds: 5), 'close');
+        if (m.arg1 == localId && m.cmd == _cmdClse) break;
+      }
+    } on AdbException {
+      // Some adbd versions don't answer the close: the data is already there.
+    }
+  }
+
   void close() {
     _sockSub?.cancel();
     _sock?.destroy();

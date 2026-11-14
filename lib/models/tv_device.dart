@@ -194,6 +194,11 @@ class LauncherState {
   final bool kids;
   final bool hasPin;
   final bool hasWallpaper;
+  /// Launcher versionCode on the TV (0 = launcher 0.3 or older, which doesn't report it).
+  final int version;
+  /// Raw settings rows (anim, tiles, wallDim…), for LauncherLook.fromMap.
+  final Map<String, String> settings;
   const LauncherState({required this.apps, required this.kids,
-      required this.hasPin, required this.hasWallpaper});
+      required this.hasPin, required this.hasWallpaper,
+      this.version = 0, this.settings = const {}});
 }

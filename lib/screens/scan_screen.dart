@@ -11,6 +11,7 @@ import '../state/history.dart';
 import '../theme/app_theme.dart';
 import '../widgets/package_tile.dart';
 import 'clean_screen.dart';
+import 'home_screen.dart';
 
 import '../l10n/l10n.dart';
 // ─── Providers ───────────────────────────────────────────────────────────────
@@ -88,6 +89,16 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       appBar: AppBar(
         title: Text(widget.device.shortName),
         leading: const BackButton(),
+        actions: [
+          if (widget.device.isDemo)
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).popUntil((r) => r.isFirst);
+                ref.read(discoveryProvider.notifier).exitDemo();
+              },
+              child: Text(tr('Выйти из демо')),
+            ),
+        ],
       ),
       body: switch (state.phase) {
         ScanPhase.scanning => _buildScanning(),

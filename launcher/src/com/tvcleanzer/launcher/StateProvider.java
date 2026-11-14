@@ -5,13 +5,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
 
 /**
- * Read-only state for the TVCleanzer phone app, over ADB:
+ * State for the TVCleanzer phone app, over ADB:
  *   content query --uri content://com.tvcleanzer.launcher.state/apps
+ *   content query --uri content://com.tvcleanzer.launcher.state/settings
+ *   content write --uri content://com.tvcleanzer.launcher.state/wallpaper < photo.jpg
  * Protected by android.permission.DUMP: ADB shell has it, ordinary apps don't.
  */
 public class StateProvider extends ContentProvider {
@@ -27,7 +32,15 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"skin", p.skin().id});
             c.addRow(new Object[]{"kids", p.kids() ? 1 : 0});
             c.addRow(new Object[]{"pin", p.hasPin() ? 1 : 0});
-            c.addRow(new Object[]{"wallpaper", Wallpaper.file(getContext()).exists() ? 1 : 0});
+            c.addRow(new Object[]{"wallpaper", Wallpaper.exists(getContext()) ? 1 : 0});
+            c.addRow(new Object[]{"version", version()});
+            c.addRow(new Object[]{"anim", p.anim()});
+            c.addRow(new Object[]{"ringAccent", p.ringAccent() ? 1 : 0});
+            c.addRow(new Object[]{"tiles", p.tileSize()});
+            c.addRow(new Object[]{"wallDim", p.wallDim()});
+            c.addRow(new Object[]{"ambient", p.ambient() ? 1 : 0});
+            c.addRow(new Object[]{"clock24", p.clock24() ? 1 : 0});
+            c.addRow(new Object[]{"labels", p.labelsAlways() ? 1 : 0});
             return c;
         }
         // apps: label last, so commas in names don't break parsing on the phone
@@ -40,6 +53,26 @@ public class StateProvider extends ContentProvider {
                     kids.contains(a.pkg) ? 1 : 0, a.label.replace('\n', ' ')});
         }
         return c;
+    }
+
+    /** The phone streams a new background photo here ("w" only). */
+    @Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
+        if (getContext() == null || !"wallpaper".equals(uri.getLastPathSegment()) || !mode.contains("w")) {
+            throw new FileNotFoundException(uri.toString());
+        }
+        File f = Wallpaper.internal(getContext());
+        return ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_WRITE_ONLY
+                | ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_TRUNCATE);
+    }
+
+    private int version() {
+        try {
+            return getContext().getPackageManager()
+                    .getPackageInfo(getContext().getPackageName(), 0).versionCode;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     @Override public String getType(Uri uri) { return null; }

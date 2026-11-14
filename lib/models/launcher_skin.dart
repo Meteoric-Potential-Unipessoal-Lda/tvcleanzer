@@ -38,6 +38,18 @@ class LauncherSkin {
     LauncherSkin(id: 'forest', name: tr('Лес'),
         bgTop: const Color(0xFF07120C), bgBottom: const Color(0xFF0E2E1B),
         accent: const Color(0xFF4ADE80), tile: const Color(0xFF1A3324)),
+    LauncherSkin(id: 'ruby', name: tr('Рубин'),
+        bgTop: const Color(0xFF12070A), bgBottom: const Color(0xFF3A0E1C),
+        accent: const Color(0xFFF43F5E), tile: const Color(0xFF3A1622)),
+    LauncherSkin(id: 'gold', name: tr('Золото'),
+        bgTop: const Color(0xFF100D07), bgBottom: const Color(0xFF2E2410),
+        accent: const Color(0xFFFACC15), tile: const Color(0xFF33291A)),
+    LauncherSkin(id: 'arctic', name: tr('Арктика'),
+        bgTop: const Color(0xFF0B1220), bgBottom: const Color(0xFF1E3A5F),
+        accent: const Color(0xFF93C5FD), tile: const Color(0xFF22344F)),
+    LauncherSkin(id: 'neon', name: tr('Неон'),
+        bgTop: const Color(0xFF0D0716), bgBottom: const Color(0xFF2A0F3D),
+        accent: const Color(0xFFF472B6), tile: const Color(0xFF311A44)),
   ];
 
   static LauncherSkin byId(String? id) =>

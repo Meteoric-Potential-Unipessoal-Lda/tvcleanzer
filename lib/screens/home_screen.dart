@@ -48,6 +48,20 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
     );
   }
 
+  /// Leaves the demo: the demo TV disappears, the last real TV comes back.
+  Future<void> exitDemo() async {
+    state = DiscoveryState(
+      devices: state.devices.where((d) => !d.isDemo).toList(),
+      scanning: state.scanning,
+      error: state.error,
+    );
+    if (_ref.read(currentTvProvider)?.isDemo ?? false) {
+      await _ref.read(currentTvProvider.notifier).restoreSaved();
+    }
+    DemoTv.reset();
+    if (!state.scanning) await startScan();
+  }
+
   Future<void> startScan() async {
     // Wireless-debugging TVs aren't on port 5555: keep the one we paired with.
     final cur = _ref.read(currentTvProvider);

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/launcher_look.dart';
 import '../models/tv_device.dart';
 import 'adb_client.dart';
 import 'package_db.dart';
@@ -368,6 +369,8 @@ class AdbPackageManager {
 
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
+  /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
+  static const bundledLauncherVersion = 4;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -385,7 +388,7 @@ class AdbPackageManager {
   /// presses Home so the user sees it. Needs Android 7+ on the TV.
   /// [onStep] reports progress for the UI.
   Future<void> installLauncher(TvDevice device, Uint8List apk, String skin,
-      {void Function(String step)? onStep}) async {
+      {LauncherLook? look, void Function(String step)? onStep}) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       onStep?.call(tr('Подключаемся к телевизору…'));
@@ -420,7 +423,7 @@ class AdbPackageManager {
       // service catches the Home key. Re-adding it rebinds after an update.
       await _setHomeKeyService(adb, enabled: false);
       await _setHomeKeyService(adb, enabled: true);
-      await adb.shell(_applyCommand(skin));
+      await adb.shell(_applyCommand(skin, look));
       await adb.shell('input keyevent 3');
     } finally {
       adb.close();
@@ -483,6 +486,8 @@ class AdbPackageManager {
         kids: kv['kids'] == '1',
         hasPin: kv['pin'] == '1',
         hasWallpaper: kv['wallpaper'] == '1',
+        version: int.tryParse(kv['version'] ?? '') ?? 0,
+        settings: kv,
       );
     } finally {
       adb.close();
@@ -518,14 +523,44 @@ class AdbPackageManager {
 
   static const _launcherFiles = '/sdcard/Android/data/$launcherPkg/files';
 
-  /// Uploads a JPEG as the launcher background.
+  /// Uploads a photo as the launcher background.
+  ///
+  /// 1. The bytes go to /data/local/tmp with exec-in (closing the stream gives
+  ///    `cat` its end-of-file) and the size is checked.
+  /// 2. Launcher 0.4+ on Android 10+ takes it through its content provider
+  ///    (`content write`) into its private files: no scoped-storage surprises.
+  ///    Otherwise it is copied into the launcher's external files dir.
   Future<void> setWallpaper(TvDevice device, Uint8List jpeg) async {
+    const tmp = '/data/local/tmp/tvcleanzer_wall.jpg';
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
-      await adb.execWithInput(
-          "sh -c 'mkdir -p $_launcherFiles && cat > $_launcherFiles/wallpaper.jpg'", jpeg,
-          timeout: const Duration(seconds: 90));
+      var sent = false;
+      for (var attempt = 0; attempt < 2 && !sent; attempt++) {
+        await adb.execIn('cat > $tmp', jpeg);
+        final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first);
+        sent = size == jpeg.length;
+      }
+      if (!sent) {
+        await adb.shell('rm -f $tmp');
+        throw AdbException(tr('Фото не дошло до телевизора целиком. Попробуйте ещё раз.'));
+      }
+      final sdk = int.tryParse((await adb.shell('getprop ro.build.version.sdk')).trim()) ?? 0;
+      var stored = false;
+      if (sdk >= 29) {
+        final out = await adb.shell(
+            'content write --uri content://$launcherPkg.state/wallpaper < $tmp && echo TVC_OK');
+        stored = out.contains('TVC_OK');
+      }
+      if (!stored) {
+        final out = await adb.shell('mkdir -p $_launcherFiles && cp $tmp $_launcherFiles/wallpaper.jpg '
+            '&& chmod 666 $_launcherFiles/wallpaper.jpg && echo TVC_OK');
+        stored = out.contains('TVC_OK');
+      }
+      await adb.shell('rm -f $tmp');
+      if (!stored) {
+        throw AdbException(tr('Телевизор не дал сохранить фото. Обновите лаунчер на ТВ и попробуйте снова.'));
+      }
       await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
           '-a com.tvcleanzer.launcher.APPLY --es wallpaper set');
     } finally {
@@ -560,9 +595,33 @@ class AdbPackageManager {
     }
   }
 
-  static String _applyCommand(String skin) =>
+  static String _applyCommand(String skin, [LauncherLook? look]) =>
       'am broadcast -n $launcherPkg/.ConfigReceiver '
-      '-a com.tvcleanzer.launcher.APPLY --es skin $skin';
+      '-a com.tvcleanzer.launcher.APPLY --es skin $skin${look == null ? '' : ' ${look.extras}'}';
+
+  /// Animations, tile size, focus ring, photo dimming… (launcher 0.4+; older ones ignore them).
+  Future<void> applyLauncherLook(TvDevice device, LauncherLook look) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
+          '-a com.tvcleanzer.launcher.APPLY ${look.extras}');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// versionCode of the launcher on the TV, 0 if it is not installed.
+  Future<int> launcherVersion(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell('dumpsys package $launcherPkg | grep -m1 versionCode');
+      return int.tryParse(RegExp(r'versionCode=(\d+)').firstMatch(out)?.group(1) ?? '') ?? 0;
+    } finally {
+      adb.close();
+    }
+  }
 
   // ── Package DB ───────────────────────────────────────────────────────────────
 

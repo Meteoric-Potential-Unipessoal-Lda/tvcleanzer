@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../theme/app_theme.dart';
+import '../screens/home_screen.dart';
 import '../screens/scan_screen.dart';
 import '../state/current_tv.dart';
 
@@ -98,6 +99,18 @@ class TvCard extends ConsumerWidget {
               label: Text(tr('Сканировать')),
               onPressed: open,
             )),
+            if (device.isDemo) ...[
+              const Gap(8),
+              SizedBox(width: double.infinity, child: OutlinedButton.icon(
+                icon: const Icon(Icons.logout_rounded, size: 18),
+                label: Text(tr('Выйти из демо')),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.fg,
+                  side: const BorderSide(color: AppColors.cardBd),
+                ),
+                onPressed: () => ref.read(discoveryProvider.notifier).exitDemo(),
+              )),
+            ],
           ]),
         ),
       ),

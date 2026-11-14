@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -5,11 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../models/launcher_look.dart';
 import '../models/launcher_skin.dart';
 import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
 import '../state/current_tv.dart';
+import '../state/launcher_look_state.dart';
 import '../state/launcher_skin_state.dart';
 import '../theme/app_theme.dart';
 import 'launcher_edit_screen.dart';
@@ -39,6 +43,14 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   bool? _installed;     // TVCleanzer Launcher on the TV (null = unknown)
   String? _step;        // install/uninstall progress text
   String? _installError;
+  int? _version;        // launcher versionCode on the TV
+  Timer? _lookDebounce;
+
+  @override
+  void dispose() {
+    _lookDebounce?.cancel();
+    super.dispose();
+  }
 
   static final _offline =
       tr('Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.');
@@ -61,6 +73,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       final pkg = await api.currentLauncher(tv);
       _launcher = pkg;
       _installed = pkg == AdbPackageManager.launcherPkg || await api.isLauncherInstalled(tv);
+      _version = _installed == true ? await api.launcherVersion(tv) : null;
       _checked = true;
     } catch (_) {
       if (!silent) _error = _offline;
@@ -85,9 +98,11 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       }
       await ref.read(adbServiceProvider).installLauncher(
             tv, apk, ref.read(selectedSkinProvider).id,
+            look: ref.read(launcherLookProvider),
             onStep: (s) { if (mounted) setState(() => _step = s); },
           );
       _installed = true;
+      _version = AdbPackageManager.bundledLauncherVersion;
       _launcher = AdbPackageManager.launcherPkg;
       _checked = true;
     } on AdbException catch (e) {
@@ -119,6 +134,26 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     _check(silent: true);
   }
 
+  /// Fine settings: saved on the phone, sent to the TV a moment after the last change.
+  void _setLook(LauncherLook look) {
+    HapticFeedback.selectionClick();
+    ref.read(launcherLookProvider.notifier).set(look);
+    final tv = ref.read(currentTvProvider);
+    if (tv == null || _installed != true) return;
+    _lookDebounce?.cancel();
+    _lookDebounce = Timer(const Duration(milliseconds: 400), () {
+      ref.read(adbServiceProvider).applyLauncherLook(tv, ref.read(launcherLookProvider)).catchError((_) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(tr('Не получилось: телевизор не отвечает.'))));
+        }
+      });
+    });
+  }
+
+  bool get _outdated =>
+      _installed == true && _version != null && _version! < AdbPackageManager.bundledLauncherVersion;
+
   /// Pick a skin; if the launcher is already on the TV, apply it right away.
   void _selectSkin(LauncherSkin s) {
     ref.read(selectedSkinProvider.notifier).select(s);
@@ -136,12 +171,13 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   @override
   Widget build(BuildContext context) {
     final skin = ref.watch(selectedSkinProvider);
+    final look = ref.watch(launcherLookProvider);
     return Scaffold(
       appBar: AppBar(title: Text(tr('Лаунчер'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
-          _SkinPreview(skin: skin),
+          _SkinPreview(skin: skin, look: look),
           const Gap(20),
           _label(tr('Шкурки')),
           const Gap(10),
@@ -161,6 +197,10 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
               },
             ),
           ),
+          const Gap(20),
+          _label(tr('Тонкая настройка')),
+          const Gap(10),
+          _lookCard(look),
           const Gap(24),
           _currentLauncherCard(),
           const Gap(12),
@@ -183,6 +223,69 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         ),
         child: child,
       );
+
+  Widget _lookCard(LauncherLook look) {
+    Widget seg(String title, List<String> labels, int value, ValueChanged<int> onChanged) =>
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title, style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
+          const Gap(6),
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<int>(
+              showSelectedIcon: false,
+              style: SegmentedButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                selectedBackgroundColor: AppColors.accentDim,
+                selectedForegroundColor: AppColors.accent,
+                foregroundColor: AppColors.fgMid,
+                side: const BorderSide(color: AppColors.cardBd),
+              ),
+              segments: [
+                for (var i = 0; i < labels.length; i++)
+                  ButtonSegment<int>(value: i, label: Text(labels[i], maxLines: 1, overflow: TextOverflow.ellipsis)),
+              ],
+              selected: {value},
+              onSelectionChanged: (v) => onChanged(v.first),
+            ),
+          ),
+        ]);
+    Widget sw(String title, String? sub, bool value, ValueChanged<bool> onChanged) => SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          dense: true,
+          title: Text(title, style: const TextStyle(fontSize: 14, color: AppColors.fg)),
+          subtitle: sub == null
+              ? null
+              : Text(sub, style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+          value: value,
+          onChanged: onChanged,
+        );
+    return _card(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        seg(tr('Анимации'), [tr('Полные'), tr('Мягкие'), tr('Выкл.')], look.anim,
+            (v) => _setLook(look.copyWith(anim: v))),
+        const Gap(14),
+        seg(tr('Размер плиток'), [tr('Мелкие'), tr('Обычные'), tr('Крупные')], look.tiles,
+            (v) => _setLook(look.copyWith(tiles: v))),
+        const Gap(14),
+        seg(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет шкурки')], look.ringAccent ? 1 : 0,
+            (v) => _setLook(look.copyWith(ringAccent: v == 1))),
+        const Gap(6),
+        sw(tr('Живой фон'), tr('Свечение медленно плывёт по экрану'), look.ambient,
+            (v) => _setLook(look.copyWith(ambient: v))),
+        sw(tr('Часы 24 часа'), null, look.clock24, (v) => _setLook(look.copyWith(clock24: v))),
+        sw(tr('Названия под всеми плитками'), tr('Иначе — только у выбранной'), look.labels,
+            (v) => _setLook(look.copyWith(labels: v))),
+        const Gap(4),
+        Text(
+          _outdated
+              ? tr('Эти настройки появились в новой версии лаунчера: нажмите «Обновить лаунчер на ТВ» ниже.')
+              : tr('Слабый телевизор подтормаживает? Выключите анимации и живой фон.'),
+          style: TextStyle(fontSize: 12, height: 1.4, color: _outdated ? AppColors.warn : AppColors.fgMuted),
+        ),
+      ]),
+    );
+  }
 
   Widget _currentLauncherCard() {
     final tv = ref.watch(currentTvProvider);
@@ -261,6 +364,17 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
               : tr('Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+).'),
           style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5),
         ),
+        if (_outdated) ...[
+          const Gap(10),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Icon(Icons.new_releases_rounded, size: 18, color: AppColors.warn),
+            const Gap(8),
+            Expanded(
+              child: Text(tr('Есть новая версия лаунчера: тонкие настройки, живой фон, новые шкурки и надёжная загрузка фото. Нажмите «Обновить лаунчер на ТВ».'),
+                  style: const TextStyle(fontSize: 13, color: AppColors.warn, height: 1.4)),
+            ),
+          ]),
+        ],
         if (_installError != null) ...[
           const Gap(10),
           Text(_installError!,
@@ -336,12 +450,18 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
 /// Mock of the TV home screen in the selected skin. Colours animate on change.
 class _SkinPreview extends StatelessWidget {
   final LauncherSkin skin;
-  const _SkinPreview({required this.skin});
+  final LauncherLook look;
+  const _SkinPreview({required this.skin, required this.look});
 
   static const _d = Duration(milliseconds: 450);
 
   @override
   Widget build(BuildContext context) {
+    final ring = look.ringAccent ? skin.accent : Colors.white;
+    final focusScale = switch (look.anim) { 2 => 1.0, 1 => 1.03, _ => 1.06 };
+    final cols = const [7, 6, 5][look.tiles];
+    final favs = const [5, 4, 3][look.tiles];
+    final live = look.ambient && look.anim != 2;
     Widget tile({bool focused = false, double radius = 8}) => AnimatedContainer(
           duration: _d,
           curve: Curves.easeOut,
@@ -349,7 +469,7 @@ class _SkinPreview extends StatelessWidget {
             color: focused ? skin.accent.withValues(alpha: .25) : skin.tile,
             borderRadius: BorderRadius.circular(radius),
             border: Border.all(
-                color: focused ? skin.accent : Colors.transparent, width: 2),
+                color: focused ? ring : Colors.transparent, width: 2),
           ),
         );
 
@@ -368,7 +488,14 @@ class _SkinPreview extends StatelessWidget {
             colors: [skin.bgTop, skin.bgBottom],
           ),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Stack(clipBehavior: Clip.none, children: [
+          // accent glow; drifts when "live background" is on
+          Positioned(
+            right: -40,
+            top: -60,
+            child: _Glow(color: skin.accent, size: 170, live: live),
+          ),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             AnimatedContainer(
               duration: _d,
@@ -389,13 +516,12 @@ class _SkinPreview extends StatelessWidget {
           SizedBox(
             height: 40,
             child: Row(children: [
-              Expanded(child: Transform.scale(scale: 1.06, child: tile(focused: true))),
-              const Gap(8),
-              Expanded(child: tile()),
-              const Gap(8),
-              Expanded(child: tile()),
-              const Gap(8),
-              Expanded(child: tile()),
+              Expanded(child: AnimatedScale(
+                  scale: focusScale, duration: _d, child: tile(focused: true))),
+              for (var i = 1; i < favs; i++) ...[
+                const Gap(8),
+                Expanded(child: tile()),
+              ],
             ]),
           ),
           const Gap(10),
@@ -404,15 +530,40 @@ class _SkinPreview extends StatelessWidget {
           SizedBox(
             height: 26,
             child: Row(children: [
-              for (var i = 0; i < 6; i++) ...[
+              for (var i = 0; i < cols; i++) ...[
                 if (i > 0) const Gap(6),
                 Expanded(child: tile(radius: 6)),
               ],
             ]),
           ),
         ]),
+        ]),
       ),
     );
+  }
+}
+
+/// Soft accent glow of the preview; slowly moves like the TV's live background.
+class _Glow extends StatelessWidget {
+  final Color color;
+  final double size;
+  final bool live;
+  const _Glow({required this.color, required this.size, required this.live});
+
+  @override
+  Widget build(BuildContext context) {
+    final glow = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(colors: [color.withValues(alpha: .22), color.withValues(alpha: 0)]),
+      ),
+    );
+    if (!live) return glow;
+    return glow
+        .animate(key: ValueKey(color), onPlay: (c) => c.repeat(reverse: true))
+        .move(begin: Offset.zero, end: const Offset(-26, 14), duration: 5.seconds, curve: Curves.easeInOut);
   }
 }
 

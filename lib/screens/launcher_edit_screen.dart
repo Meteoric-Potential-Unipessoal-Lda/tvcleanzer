@@ -1,14 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
+import '../models/launcher_look.dart';
 import '../models/tv_device.dart';
 import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
+import '../state/launcher_look_state.dart';
 import '../theme/app_theme.dart';
 
 import '../l10n/l10n.dart';
@@ -30,11 +35,27 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   Set<String> _kidsApps = {};
   bool _kids = false;
   final _pin = TextEditingController();
+  File? _preview;     // copy of the photo sent to this TV, for the preview
+  double? _dim;       // slider value while dragging
 
   @override
   void initState() {
     super.initState();
     _load();
+    _loadPreview();
+  }
+
+  Future<File> _previewFile() async {
+    final dir = await getApplicationSupportDirectory();
+    final id = widget.tv.ipAddress.replaceAll(RegExp(r'[^A-Za-z0-9]'), '_');
+    return File('${dir.path}/wallpaper_$id.jpg');
+  }
+
+  Future<void> _loadPreview() async {
+    try {
+      final f = await _previewFile();
+      if (await f.exists() && mounted) setState(() => _preview = f);
+    } catch (_) {}
   }
 
   @override
@@ -49,6 +70,10 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
       final st = await ref.read(adbServiceProvider).launcherState(widget.tv);
       final favs = st.apps.where((a) => a.fav >= 0).toList()..sort((a, b) => a.fav.compareTo(b.fav));
       if (!mounted) return;
+      // Launcher 0.4+ reports its fine settings: the phone shows what the TV really has.
+      if (st.version >= 4) {
+        ref.read(launcherLookProvider.notifier).set(LauncherLook.fromMap(st.settings));
+      }
       setState(() {
         _state = st;
         _favs = favs.map((a) => a.pkg).toList();
@@ -301,33 +326,90 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   // ── Wallpaper ──────────────────────────────────────────────────────────
 
   Widget _wallTab() {
-    final has = _state!.hasWallpaper;
+    final st = _state!;
+    final has = st.hasWallpaper;
+    final look = ref.watch(launcherLookProvider);
+    final dim = _dim ?? look.wallDim.toDouble();
+    final preview = has ? _preview : null;
     return ListView(padding: const EdgeInsets.all(16), children: [
-      Container(
-        height: 180,
-        decoration: BoxDecoration(
+      AspectRatio(
+        aspectRatio: 16 / 9,
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(18),
-          gradient: const LinearGradient(colors: [Color(0xFF1E293B), Color(0xFF2E2A5C)]),
-          border: Border.all(color: AppColors.cardBd),
+          child: Stack(fit: StackFit.expand, children: [
+            if (preview != null)
+              Image.file(preview, fit: BoxFit.cover, gaplessPlayback: true)
+            else
+              const DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [Color(0xFF1E293B), Color(0xFF2E2A5C)]),
+                ),
+              ),
+            if (preview != null)
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 120),
+                color: Colors.black.withValues(alpha: dim / 100),
+              ),
+            if (preview != null)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text('20:45',
+                      style: TextStyle(fontSize: 34, color: Colors.white, fontWeight: FontWeight.w200)),
+                ),
+              )
+            else
+              Center(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Icon(has ? Icons.photo_rounded : Icons.add_photo_alternate_rounded,
+                      size: 48, color: has ? AppColors.accent : AppColors.fgMid),
+                  const Gap(8),
+                  Text(has ? tr('На ТВ стоит ваше фото') : tr('Фон сейчас из шкурки'),
+                      style: const TextStyle(color: AppColors.fg, fontWeight: FontWeight.w600)),
+                ]),
+              ),
+          ]),
         ),
-        alignment: Alignment.center,
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(has ? Icons.photo_rounded : Icons.add_photo_alternate_rounded,
-              size: 48, color: has ? AppColors.accent : AppColors.fgMid),
-          const Gap(8),
-          Text(has ? tr('На ТВ стоит ваше фото') : tr('Фон сейчас из шкурки'),
-              style: const TextStyle(color: AppColors.fg, fontWeight: FontWeight.w600)),
-        ]),
       ).animate().fadeIn(duration: 250.ms),
       const Gap(16),
-      Text(tr('Фото слегка затемнится, чтобы текст на ТВ читался. Лучше горизонтальное, 16:9.'),
+      if (has) ...[
+        Row(children: [
+          Text(tr('Затемнение фото'), style: const TextStyle(color: AppColors.fg, fontSize: 14)),
+          const Spacer(),
+          Text('${dim.round()}%', style: const TextStyle(color: AppColors.fgMid, fontSize: 13)),
+        ]),
+        Slider(
+          value: dim,
+          min: 0,
+          max: 90,
+          divisions: 9,
+          activeColor: AppColors.accent,
+          onChanged: (v) => setState(() => _dim = v),
+          onChangeEnd: (v) async {
+            final next = look.copyWith(wallDim: v.round());
+            await ref.read(launcherLookProvider.notifier).set(next);
+            if (mounted) setState(() => _dim = null);
+            try {
+              await ref.read(adbServiceProvider).applyLauncherLook(widget.tv, next);
+            } catch (_) {
+              _snack(tr('Не получилось: телевизор не отвечает.'));
+            }
+          },
+        ),
+        if (st.version < 4)
+          Text(tr('Затемнение работает в новой версии лаунчера: обновите его на вкладке «Лаунчер».'),
+              style: const TextStyle(color: AppColors.warn, fontSize: 12, height: 1.4)),
+        const Gap(8),
+      ],
+      Text(tr('Лучше горизонтальное фото, 16:9. Затемнение помогает читать часы и названия на ярких снимках.'),
           style: const TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
       const Gap(16),
       FilledButton.icon(
         icon: _saving
             ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
             : const Icon(Icons.photo_library_rounded),
-        label: Text(tr('Выбрать фото')),
+        label: Text(_saving ? tr('Отправляем фото на телевизор…') : tr('Выбрать фото')),
         onPressed: _saving ? null : _pickPhoto,
       ),
       if (has) ...[
@@ -342,6 +424,11 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
           ),
           onPressed: _saving ? null : () => _run(tr('Фон вернулся к шкурке'), () async {
             await ref.read(adbServiceProvider).removeWallpaper(widget.tv);
+            try {
+              final f = await _previewFile();
+              if (await f.exists()) await f.delete();
+            } catch (_) {}
+            _preview = null;
             await _load();
           }),
         ),
@@ -361,8 +448,18 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
     }
     if (img == null) return;
     final bytes = await img.readAsBytes();
+    if (bytes.isEmpty) {
+      _snack(tr('Не удалось прочитать фото. Выберите другое.'));
+      return;
+    }
     await _run(tr('Фото стоит фоном на телевизоре'), () async {
       await ref.read(adbServiceProvider).setWallpaper(widget.tv, bytes);
+      try {
+        final f = await _previewFile();
+        await f.writeAsBytes(bytes, flush: true);
+        PaintingBinding.instance.imageCache.evict(FileImage(f));
+        _preview = f;
+      } catch (_) {}
       await _load();
     });
   }
