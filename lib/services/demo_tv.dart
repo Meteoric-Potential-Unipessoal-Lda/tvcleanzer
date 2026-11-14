@@ -113,6 +113,7 @@ class _DemoState {
   bool pin = false;
   bool wallpaper = false;
   int tmpFile = -1; // size of the upload in /data/local/tmp
+  final sideloaded = <String>{}; // APKs installed from the Apps tab
   Map<String, String> look = {};
   int _extraFreeKb = 0;
   int dataFreeKb = 5120000;
@@ -132,6 +133,7 @@ class _DemoState {
     pin = false;
     wallpaper = false;
     tmpFile = -1;
+    sideloaded.clear();
     look = {};
     _extraFreeKb = 0;
     dataFreeKb = 5120000;
@@ -140,6 +142,7 @@ class _DemoState {
   Map<String, int> get all => {
         ...DemoTv._system, ...DemoTv._junk, ...DemoTv._features, ...DemoTv._apps,
         if (launcherInstalled) 'com.tvcleanzer.launcher': 9000,
+        for (final p in sideloaded) p: 0,
       };
 
   Iterable<String> get installed => all.keys.where((p) => !removed.contains(p));
@@ -182,6 +185,11 @@ class DemoAdbClient extends AdbClient {
   Future<String> execWithInput(String command, Uint8List input,
       {Duration timeout = const Duration(seconds: 60)}) async {
     await _lag(600);
+    if (command.startsWith('cmd package install -r -t ')) {
+      _s.sideloaded.add('org.smarttube.stable'); // an APK from the Apps tab
+      return 'Success\n';
+    }
+    if (command.startsWith('cmd package install-write ')) return 'Success: streamed ${input.length} bytes\n';
     if (command.startsWith('cmd package install')) {
       _s.launcherInstalled = true;
       return 'Success\n';
@@ -229,7 +237,7 @@ class DemoAdbClient extends AdbClient {
       ].map((l) => '  $l').join('\n');
     }
     if (c.startsWith('cmd package query-activities')) {
-      return DemoTv._launchable
+      return [...DemoTv._launchable, ...s.sideloaded]
           .where((p) => !s.removed.contains(p))
           .map((p) => '  $p/.MainActivity')
           .join('\n');
@@ -242,6 +250,24 @@ class DemoAdbClient extends AdbClient {
       return b.toString();
     }
     if (c.startsWith('pm list packages -d')) return ''; // nothing disabled on the demo TV
+    if (c.startsWith('pm list packages -3')) {
+      return ['org.videolan.vlc', 'com.spotify.tv.android', ...s.sideloaded]
+          .where((p) => !s.removed.contains(p))
+          .map((p) => 'package:$p')
+          .join('\n');
+    }
+    if (c.startsWith('cmd package install-create')) return 'Success: created install session [42]\n';
+    if (c.startsWith('cmd package install-commit')) {
+      s.sideloaded.add('org.smarttube.stable');
+      return 'Success\n';
+    }
+    if (c.startsWith('cmd package install-abandon')) return 'Success\n';
+    if (c.startsWith('monkey -p ')) return 'Events injected: 1\n';
+    if (c.startsWith('pm uninstall ') && !c.startsWith('pm uninstall -k') && c != 'pm uninstall com.tvcleanzer.launcher') {
+      final p = c.split(' ').last;
+      if (!s.sideloaded.remove(p)) s.removed.add(p);
+      return 'Success\n';
+    }
     if (c.startsWith('pm disable-user --user 0 ')) {
       await _lag(150);
       final p = c.split(' ').last;
@@ -314,7 +340,7 @@ class DemoAdbClient extends AdbClient {
       _applyBroadcast(c);
       return 'Broadcast completed: result=0\n';
     }
-    if (c.startsWith('content query') && c.endsWith('/apps')) return _appsRows();
+    if (c.startsWith('content query') && c.contains('/apps')) return _appsRows();
     if (c.startsWith('content query') && c.endsWith('/settings')) {
       final rows = {'kids': s.kids ? 1 : 0, 'pin': s.pin ? 1 : 0, 'wallpaper': s.wallpaper ? 1 : 0,
         'version': AdbPackageManager.bundledLauncherVersion, ...s.look};

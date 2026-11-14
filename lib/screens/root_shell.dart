@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../theme/app_theme.dart';
+import 'apps_screen.dart';
 import 'history_screen.dart';
 import 'home_screen.dart';
 import 'launcher_screen.dart';
@@ -18,11 +19,12 @@ class _Tab {
 final _tabs = [
   _Tab(Icons.cleaning_services_outlined, Icons.cleaning_services_rounded, tr('Очистка')),
   _Tab(Icons.dashboard_customize_outlined, Icons.dashboard_customize_rounded, tr('Лаунчер')),
+  _Tab(Icons.apps_outlined, Icons.apps_rounded, tr('Приложения')),
   _Tab(Icons.history_rounded, Icons.history_rounded, tr('История')),
   _Tab(Icons.settings_remote_outlined, Icons.settings_remote_rounded, tr('Пульт')),
 ];
 
-/// Main screen with the four tabs and the animated bottom menu.
+/// Main screen with the five tabs and the animated bottom menu.
 class RootShell extends StatefulWidget {
   const RootShell({super.key});
   @override
@@ -32,12 +34,15 @@ class RootShell extends StatefulWidget {
 class _RootShellState extends State<RootShell> {
   int _index = 0;
 
-  static const _pages = <Widget>[
-    HomeScreen(),
-    LauncherScreen(),
-    HistoryScreen(),
-    RemoteScreen(),
-  ];
+  static const _appsTab = 2;
+
+  List<Widget> get _pages => [
+        const HomeScreen(),
+        const LauncherScreen(),
+        AppsScreen(visible: _index == _appsTab),
+        const HistoryScreen(),
+        const RemoteScreen(),
+      ];
 
   void _select(int i) {
     if (i == _index) return;
@@ -47,11 +52,12 @@ class _RootShellState extends State<RootShell> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = _pages;
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: Stack(fit: StackFit.expand, children: [
         // All tabs stay alive; only the active one is visible and ticking.
-        for (var i = 0; i < _pages.length; i++)
+        for (var i = 0; i < pages.length; i++)
           // The fade itself must keep ticking, so TickerMode wraps only the
           // page: otherwise a tab that is being hidden freezes fully visible.
           IgnorePointer(
@@ -64,7 +70,7 @@ class _RootShellState extends State<RootShell> {
                 offset: i == _index ? Offset.zero : const Offset(0, .015),
                 duration: const Duration(milliseconds: 260),
                 curve: Curves.easeOutCubic,
-                child: TickerMode(enabled: i == _index, child: _pages[i]),
+                child: TickerMode(enabled: i == _index, child: pages[i]),
               ),
             ),
           ),
@@ -159,7 +165,7 @@ class _NavItem extends StatelessWidget {
             color: color,
             fontWeight: active ? FontWeight.w700 : FontWeight.w500,
           ),
-          child: Text(tab.label),
+          child: FittedBox(fit: BoxFit.scaleDown, child: Text(tab.label, maxLines: 1)),
         ),
       ]),
     );

@@ -202,3 +202,14 @@ class LauncherState {
       required this.hasPin, required this.hasWallpaper,
       this.version = 0, this.settings = const {}});
 }
+
+/// An app on the TV for the "Apps" tab: open it on the TV, uninstall it.
+class TvApp {
+  final String pkg;
+  final String label;
+  /// Installed by the owner (not part of the firmware): can be uninstalled.
+  final bool user;
+  /// Has an icon in the TV menu: can be opened.
+  final bool launchable;
+  const TvApp({required this.pkg, required this.label, required this.user, required this.launchable});
+}

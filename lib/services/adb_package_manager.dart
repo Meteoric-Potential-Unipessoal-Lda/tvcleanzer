@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:archive/archive.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -651,6 +652,179 @@ class AdbPackageManager {
     } finally {
       adb.close();
     }
+  }
+
+  // ── Apps: install APK, open on the TV, uninstall ────────────────────────────
+
+  /// Known names for apps whose package name says little.
+  static const _appNames = {
+    'org.smarttube.stable': 'SmartTube', 'org.smarttube.beta': 'SmartTube Beta',
+    'com.liskovsoft.smarttubetv': 'SmartTube', 'com.liskovsoft.smarttubetv.beta': 'SmartTube Beta',
+    'com.teamsmart.videomanager.tv': 'SmartTube', 'org.videolan.vlc': 'VLC', 'org.xbmc.kodi': 'Kodi',
+    'com.google.android.youtube.tv': 'YouTube', 'com.netflix.ninja': 'Netflix',
+    'com.spotify.tv.android': 'Spotify', 'com.android.tv.settings': 'Настройки',
+    'com.android.vending': 'Google Play', 'com.yandex.tv.home': 'Яндекс ТВ',
+    'ru.sberdevices.starlauncher': 'Салют ТВ', 'ru.sberdevices.starmarket': 'Каталог приложений Сбера',
+    'com.spocky.projengmenu': 'Projectivy Launcher', 'com.tvcleanzer.launcher': 'TVCleanzer Launcher',
+    'ru.vk.store.tv': 'RuStore', 'com.vk.tv': 'VK Видео', 'ru.rutube.app': 'Rutube',
+    'ru.kinopoisk.tv': 'Кинопоиск', 'ru.more.play': 'Okko', 'ru.ivi.client': 'Иви',
+    'ru.mts.mtstv': 'KION', 'com.lazycatsoftware.lmp': 'LazyMedia', 'com.lazycatsoftware.lazymediadeluxe': 'LazyMedia Deluxe',
+    'com.mxtech.videoplayer.ad': 'MX Player', 'com.ghisler.tcplugins.lan': 'Total Commander LAN',
+    'com.cxinventor.file.explorer': 'File Commander', 'com.estrongs.android.pop': 'ES Проводник',
+    'tv.twitch.android.app': 'Twitch', 'com.amazon.amazonvideo.livingroom': 'Prime Video',
+    'com.disney.disneyplus': 'Disney+', 'com.plexapp.android': 'Plex',
+  };
+
+  static String _appName(String pkg, Map<String, String> labels, Map<String, _Entry> db) {
+    final l = labels[pkg] ?? _appNames[pkg] ?? db[pkg]?.label;
+    if (l != null && l.isNotEmpty) return tr(l);
+    final segs = pkg.split('.').where((s) =>
+        !const {'com', 'org', 'ru', 'tv', 'android', 'app', 'apps', 'net', 'stable', 'release'}.contains(s)).toList();
+    final n = segs.isEmpty ? pkg.split('.').last : segs.last;
+    return n[0].toUpperCase() + n.substring(1);
+  }
+
+  /// Apps the owner can open or uninstall: everything with an icon in the TV
+  /// menu plus everything installed by the owner. Names come from our
+  /// launcher when it is installed (real labels), otherwise from the database.
+  Future<List<TvApp>> listApps(TvDevice device) async {
+    final db  = await _loadDb();
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final all = _parsePackageList(await adb.shell('pm list packages')).toSet();
+      final user = _parsePackageList(await adb.shell('pm list packages -3')).toSet();
+      final disabled = _parsePackageList(await adb.shell('pm list packages -d 2>/dev/null')).toSet();
+      final launchable = _parseComponents(await adb.shell(
+          'cmd package query-activities --brief -a android.intent.action.MAIN '
+          '-c android.intent.category.LEANBACK_LAUNCHER 2>/dev/null; '
+          'cmd package query-activities --brief -a android.intent.action.MAIN '
+          '-c android.intent.category.LAUNCHER 2>/dev/null'));
+      final labels = <String, String>{};
+      if (all.contains(launcherPkg)) {
+        final out = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/apps 2>/dev/null');
+        for (final m in RegExp(r'pkg=([^,]+),.*label=(.*)$', multiLine: true).allMatches(out)) {
+          labels[m.group(1)!] = m.group(2)!.trim();
+        }
+      }
+      final pkgs = {...user, ...launchable.where(all.contains)}
+        ..removeAll(disabled)
+        ..remove(launcherPkg);
+      final apps = [
+        for (final p in pkgs)
+          TvApp(pkg: p, label: _appName(p, labels, db), user: user.contains(p), launchable: launchable.contains(p)),
+      ]..sort((a, b) {
+          if (a.user != b.user) return a.user ? -1 : 1;
+          return a.label.toLowerCase().compareTo(b.label.toLowerCase());
+        });
+      return apps;
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Start [pkg] on the TV (its TV icon first, then the phone-style one).
+  Future<bool> openApp(TvDevice device, String pkg) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      for (final cat in ['LEANBACK_LAUNCHER', 'LAUNCHER']) {
+        final out = await adb.shell('monkey -p $pkg -c android.intent.category.$cat 1 2>&1');
+        if (out.contains('Events injected: 1')) return true;
+      }
+      return false;
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Fully uninstall an app the owner installed.
+  Future<bool> uninstallApp(TvDevice device, String pkg) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      return (await adb.shell('pm uninstall $pkg')).contains('Success');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// APKs inside a file: a plain .apk, or the split APKs of an .apks / .xapk
+  /// / .apkm bundle (a zip). Throws [AdbException] when there are none.
+  static List<(String, Uint8List)> apksIn(String fileName, Uint8List data) {
+    final isZip = data.length > 4 && data[0] == 0x50 && data[1] == 0x4B;
+    if (!isZip) throw AdbException(tr('Это не файл приложения Android (.apk).'));
+    final zip = ZipDecoder().decodeBytes(data);
+    // A plain APK is a zip with AndroidManifest.xml at the root.
+    if (zip.files.any((f) => f.name == 'AndroidManifest.xml')) return [(fileName, data)];
+    final apks = [
+      for (final f in zip.files)
+        if (f.isFile && f.name.toLowerCase().endsWith('.apk') && !f.name.contains('/'))
+          (f.name, Uint8List.fromList(List<int>.from(f.content))),
+    ];
+    if (apks.isEmpty) throw AdbException(tr('В этом файле нет приложения Android (.apk).'));
+    // base.apk first: some firmwares want it before the splits.
+    apks.sort((a, b) => (a.$1 == 'base.apk' ? 0 : 1).compareTo(b.$1 == 'base.apk' ? 0 : 1));
+    return apks;
+  }
+
+  /// Install an APK (or an .apks/.xapk bundle) from the phone on the TV.
+  /// Returns the installed package name when the TV reports it, else ''.
+  Future<String> installApk(TvDevice device, String fileName, Uint8List data,
+      {void Function(String step)? onStep}) async {
+    final apks = apksIn(fileName, data);
+    final before = <String>{};
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      before.addAll(_parsePackageList(await adb.shell('pm list packages -3')));
+      const t = Duration(minutes: 5);
+      final total = apks.fold<int>(0, (s, a) => s + a.$2.length);
+      onStep?.call(tr('Отправляем на телевизор {0} МБ…', [(total / 1048576).toStringAsFixed(1)]));
+      String res;
+      if (apks.length == 1) {
+        res = await adb.execWithInput('cmd package install -r -t -S ${apks.first.$2.length}', apks.first.$2, timeout: t);
+      } else {
+        final created = await adb.shell('cmd package install-create -r -t -S $total');
+        final id = RegExp(r'\[(\d+)\]').firstMatch(created)?.group(1);
+        if (id == null) throw AdbException(_installError(created));
+        var i = 0;
+        for (final (name, bytes) in apks) {
+          onStep?.call(tr('Отправляем часть {0} из {1}…', [++i, apks.length]));
+          final w = await adb.execWithInput(
+              'cmd package install-write -S ${bytes.length} $id ${name.replaceAll(RegExp(r'[^\w.-]'), '_')} -', bytes, timeout: t);
+          if (!w.contains('Success')) {
+            await adb.shell('cmd package install-abandon $id');
+            throw AdbException(_installError(w));
+          }
+        }
+        onStep?.call(tr('Устанавливаем…'));
+        res = await adb.shell('cmd package install-commit $id', timeout: t);
+      }
+      if (!res.contains('Success')) throw AdbException(_installError(res));
+      final after = _parsePackageList(await adb.shell('pm list packages -3')).toSet();
+      final added = after.difference(before);
+      return added.length == 1 ? added.first : '';
+    } finally {
+      adb.close();
+    }
+  }
+
+  static String _installError(String out) {
+    final o = out.trim();
+    if (o.contains('UPDATE_INCOMPATIBLE')) {
+      return tr('На телевизоре уже стоит это приложение с другой подписью. Удалите его в списке ниже и установите снова.');
+    }
+    if (o.contains('NO_MATCHING_ABIS')) {
+      return tr('Эта сборка не подходит для процессора телевизора. Скачайте версию armeabi-v7a (или universal).');
+    }
+    if (o.contains('OLDER_SDK')) return tr('Приложению нужна более новая версия Android, чем на телевизоре.');
+    if (o.contains('VERSION_DOWNGRADE')) {
+      return tr('На телевизоре уже стоит более новая версия. Удалите её в списке ниже, если нужна именно эта.');
+    }
+    if (o.contains('INSUFFICIENT_STORAGE')) return tr('На телевизоре не хватает места. Сначала сделайте очистку.');
+    if (o.contains('INVALID_APK') || o.contains('PARSE_FAILED')) return tr('Файл повреждён или это не приложение Android.');
+    return tr('Установка не удалась: {0}', [o.isEmpty ? '—' : o.split('\n').last]);
   }
 
   // ── Package DB ───────────────────────────────────────────────────────────────
