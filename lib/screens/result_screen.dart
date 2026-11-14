@@ -27,10 +27,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     final result = widget.result;
     final hasFailures = result.failedPackages.isNotEmpty;
 
+    // Back goes home (not to the stale scan). Navigator.popUntil below pops
+    // regardless of canPop, and its own pops arrive here with didPop=true.
     return PopScope(
-      canPop: !_rolling,
-      onPopInvokedWithResult: (_, __) {
-        if (!_rolling) {
+      canPop: false,
+      onPopInvokedWithResult: (didPop, __) {
+        if (!didPop && !_rolling) {
           Navigator.of(context).popUntil((r) => r.isFirst);
         }
       },

@@ -106,7 +106,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           Text(tr('Освобождено около {0} МБ', [r.savedMb]),
               style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
         ],
-        if (!boost) Theme(
+        if (!boost) Material(
+          // Own Material: the card's background would hide the tile's ink.
+          type: MaterialType.transparency,
+          child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
             tilePadding: EdgeInsets.zero,
@@ -130,6 +133,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 ),
             ],
           ),
+        ),
         ),
         if (r.canRestore)
           SizedBox(

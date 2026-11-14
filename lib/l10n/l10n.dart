@@ -12,6 +12,12 @@ String get appLanguage => _lang;
 
 /// Picks the language from the phone's settings. Call once before runApp.
 void initLanguage() {
+  // Forced language for store screenshots: --dart-define=TVC_LANG=en
+  const forced = String.fromEnvironment('TVC_LANG');
+  if (supportedLanguages.contains(forced)) {
+    _lang = forced;
+    return;
+  }
   for (final l in PlatformDispatcher.instance.locales) {
     final code = l.languageCode.toLowerCase();
     if (supportedLanguages.contains(code)) {

@@ -52,6 +52,11 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
     // Wireless-debugging TVs aren't on port 5555: keep the one we paired with.
     final cur = _ref.read(currentTvProvider);
     state = DiscoveryState(scanning: true, devices: [if (cur != null && (cur.isWireless || cur.isDemo)) cur]);
+    // Store screenshots (--dart-define=TVC_DEMO_ONLY=true): never show real TVs.
+    if (const bool.fromEnvironment('TVC_DEMO_ONLY')) {
+      state = DiscoveryState(devices: state.devices);
+      return;
+    }
     final discovery = _ref.read(tvDiscoveryProvider);
     try {
       await for (final d in discovery.discover()) {
