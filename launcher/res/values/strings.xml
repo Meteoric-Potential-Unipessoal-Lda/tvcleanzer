@@ -2,4 +2,5 @@
 <resources>
     <string name="home_service_label">TVCleanzer: кнопка Домой</string>
     <string name="home_service_desc">Кнопка Домой на пульте открывает TVCleanzer Launcher, даже если прошивка телевизора возвращает свой лаунчер. Отключается здесь или удалением лаунчера.</string>
+    <string name="dream_label">TVCleanzer: часы</string>
 </resources>

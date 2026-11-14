@@ -99,7 +99,9 @@ class AdbPackageManager {
     try {
       await adb.connect();
       final raw = await adb.shell('pm list packages');
-      final pkgs = _parsePackageList(raw);
+      // Disabled packages are already hidden (by TVCleanzer on Sber/Yandex, or by the owner).
+      final disabled = _parsePackageList(await adb.shell('pm list packages -d 2>/dev/null')).toSet();
+      final pkgs = _parsePackageList(raw).where((p) => !disabled.contains(p)).toList();
 
       // What the TV itself says: its home screens (never touched) and the
       // apps visible in its menu (owner's apps: never pre-selected).
@@ -269,26 +271,51 @@ class AdbPackageManager {
 
   // ── Clean ───────────────────────────────────────────────────────────────────
 
-  /// Uninstall [packages] from [device] using `pm uninstall -k --user 0`.
-  /// Returns a [CleanResult]. The [CleanResult.backupId] stores a JSON list
-  /// of removed package names so rollback can restore them.
+  /// Firmwares where removed apps must be disabled instead of uninstalled for
+  /// user 0: Sber StarOS (its platform service re-installs "mandatory" apps
+  /// after an uninstall, usually at the next boot) and Yandex TV / YaOS (the
+  /// tested method on CVTE boards). CleanYourTV sber-salute-tv-*, artel, sunwind.
+  static bool usesDisable(Iterable<String> installed) => installed.any((p) =>
+      p == 'ru.sberdevices.services' || p == 'com.yandex.tv.services');
+
+  /// Remove [packages] from [device]: `pm uninstall -k --user 0`, or
+  /// `pm disable-user --user 0` on Sber/Yandex firmwares (falls back to the
+  /// other method if the first one is refused). Returns a [CleanResult]. The
+  /// [CleanResult.backupId] stores a JSON list of removed package names so
+  /// rollback can restore them (rollback both re-installs and re-enables).
   Future<CleanResult> clean(TvDevice device, List<TvPackage> packages) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     final failed  = <String>[];
     final removed = <String>[];
 
+    Future<bool> uninstall(String p) async =>
+        (await adb.shell('pm uninstall -k --user 0 $p')).toLowerCase().contains('success');
+    Future<bool> disable(String p) async =>
+        (await adb.shell('pm disable-user --user 0 $p')).toLowerCase().contains('new state: disabled');
+
     try {
       await adb.connect();
+      final installed = _parsePackageList(await adb.shell('pm list packages'));
+      final viaDisable = usesDisable(installed);
+      final dream = (await adb.shell('settings get secure screensaver_components')).trim();
       for (final pkg in packages) {
+        final name = pkg.packageName;
         try {
-          final out = await adb.shell('pm uninstall -k --user 0 ${pkg.packageName}');
-          if (out.toLowerCase().contains('success')) {
-            removed.add(pkg.packageName);
-          } else {
-            failed.add(pkg.packageName);
-          }
+          final ok = viaDisable
+              ? (await disable(name) || await uninstall(name))
+              : await uninstall(name);
+          (ok ? removed : failed).add(name);
         } catch (_) {
-          failed.add(pkg.packageName);
+          failed.add(name);
+        }
+      }
+      // The firmware's screensaver was removed: switch to our clock, otherwise
+      // StarOS re-enables its own screensaver at boot while it stays selected.
+      final dreamPkg = dream.split(',').first.split('/').first;
+      if (removed.contains(dreamPkg) && installed.contains(launcherPkg)) {
+        final v = await adb.shell('dumpsys package $launcherPkg | grep -m1 versionCode');
+        if ((int.tryParse(RegExp(r'versionCode=(\d+)').firstMatch(v)?.group(1) ?? '') ?? 0) >= 5) {
+          await adb.shell('settings put secure screensaver_components $launcherPkg/.ClockDream');
         }
       }
     } finally {
@@ -329,8 +356,11 @@ class AdbPackageManager {
       await adb.connect();
       for (final name in pkgs) {
         try {
+          // Uninstalled for user 0 → install-existing; disabled (Sber/Yandex) → enable.
           final out = (await adb.shell('pm install-existing $name')).toLowerCase();
-          if (!out.contains('success') && !out.contains('installed for user')) failures++;
+          final back = out.contains('success') || out.contains('installed for user');
+          final en = (await adb.shell('pm enable $name')).toLowerCase();
+          if (!back && !en.contains('new state: enabled')) failures++;
         } catch (_) {
           failures++;
         }
@@ -370,7 +400,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 4;
+  static const bundledLauncherVersion = 5;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {

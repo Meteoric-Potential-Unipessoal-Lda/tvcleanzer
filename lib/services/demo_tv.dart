@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import '../models/tv_device.dart';
 import 'adb_client.dart';
+import 'adb_package_manager.dart';
 
 /// A pretend Android TV that lives inside the app. Lets people (and app store
 /// reviewers) try every screen without a TV: the same scan, clean, boost,
@@ -240,6 +241,18 @@ class DemoAdbClient extends AdbClient {
       });
       return b.toString();
     }
+    if (c.startsWith('pm list packages -d')) return ''; // nothing disabled on the demo TV
+    if (c.startsWith('pm disable-user --user 0 ')) {
+      await _lag(150);
+      final p = c.split(' ').last;
+      s.removed.add(p);
+      return 'Package $p new state: disabled-user\n';
+    }
+    if (c.startsWith('pm enable ')) {
+      final p = c.split(' ').last;
+      s.removed.remove(p);
+      return 'Package $p new state: enabled\n';
+    }
     if (c.startsWith('pm uninstall -k --user 0 ')) {
       await _lag(150);
       s.removed.add(c.split(' ').last);
@@ -304,7 +317,7 @@ class DemoAdbClient extends AdbClient {
     if (c.startsWith('content query') && c.endsWith('/apps')) return _appsRows();
     if (c.startsWith('content query') && c.endsWith('/settings')) {
       final rows = {'kids': s.kids ? 1 : 0, 'pin': s.pin ? 1 : 0, 'wallpaper': s.wallpaper ? 1 : 0,
-        'version': 4, ...s.look};
+        'version': AdbPackageManager.bundledLauncherVersion, ...s.look};
       var i = 0;
       return rows.entries.map((e) => 'Row: ${i++} key=${e.key}, value=${e.value}').join('\n');
     }
@@ -317,7 +330,7 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=4 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=5 minSdk=21 targetSdk=34\n' : '';
     }
     // input keyevent / input text / getprop … — a TV just does it
     return '';

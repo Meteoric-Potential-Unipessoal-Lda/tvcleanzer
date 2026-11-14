@@ -43,6 +43,22 @@ class Protection {
     r'^com\.droidlogic\.(tv\..*|tvinput|android\.tv)$',
     r'^com\.fengmi\.(platform|fmsettings)$',
     r'^com\.jmgo\.(hippo|autobrightness|android\.tv\..*)$',
+    // Yandex TV (YaOS): home, account/system glue, settings, inputs, keyboard, remote, store/payment/player.
+    // Efir (com.yandex.tv.input.efir) stays optional: HDMI and the tuner live in the vendor TV input.
+    r'^com\.yandex\.tv\.(home|services.*|settings.*|setupwizard|input\.(?!efir).*|live|keyboard|vendor\.config)$',
+    r'^com\.yandex\.(io\.sdk|webview|server\..*|devices\.(appstore|payment|player)|launcher\.updaterapp)$',
+    r'^com\.yandex_uni\.rro\.',
+    r'^ru\.yandex\.(bleremotecontrol|androidkeyboard\.tv)$',
+    // Sber (Salute TV / StarOS): platform service + assistant, HDMI inputs, keyboard, WebView, settings, the
+    // app catalogue (the only way apps get updated), overlays (CleanYourTV sber-salute-tv-at30a6, pb766).
+    r'^ru\.sberdevices\.(services(\..*)?|assistant|tvinputs|app\..*|webview|systemui|sberdevicesservicesystem|location\..*|settings|starlauncher|starmarket|updater|tvfactoryhelper)$',
+    r'^ru\.sberdevices\..*(overlay|\.rro|resources?)',
+    r'^com\.sberbank\.settings$',
+    // CVTE/MStar boards (Yandex, Sber, Haier, Hi, Leff…): factory menu and test tools, firmware updates, TV API.
+    r'factory|(^|[._])fac([._]|$)|hisensefac|hkcfac|(^|[._])aging([._]|$)|autotest|(^|[._])burn([._]|$)|license\.at$',
+    r'^com\.cvte\.tv\.(setting|api.*|tools)$',
+    r'^com\.cultraview\.osupdate$',
+    r'^com\.example\.upgrad$',
   ].map((p) => RegExp(p, caseSensitive: false)).toList();
 
   static final _launcher = RegExp('launcher', caseSensitive: false);

@@ -32,7 +32,7 @@ void main() {
     await api.setWallpaper(tv, Uint8List.fromList(List.filled(5000, 7)));
     final st = await api.launcherState(tv);
     expect(st.hasWallpaper, true);
-    expect(st.version, 4);
+    expect(st.version, AdbPackageManager.bundledLauncherVersion);
     final look = LauncherLook.fromMap(st.settings);
     expect(look.anim, 1);
     expect(look.tiles, 0);

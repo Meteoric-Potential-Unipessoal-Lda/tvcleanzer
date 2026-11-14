@@ -46,6 +46,22 @@ PROTECTED += [
  r'^com\.droidlogic\.(tv\..*|tvinput|android\.tv)$',
  r'^com\.fengmi\.(platform|fmsettings)$',
  r'^com\.jmgo\.(hippo|autobrightness|android\.tv\..*)$',
+ # Yandex TV (YaOS): home, account/system glue, settings, inputs, keyboard, remote, store/payment/player.
+ # Efir (com.yandex.tv.input.efir) stays optional: HDMI and the tuner live in the vendor TV input.
+ r'^com\.yandex\.tv\.(home|services.*|settings.*|setupwizard|input\.(?!efir).*|live|keyboard|vendor\.config)$',
+ r'^com\.yandex\.(io\.sdk|webview|server\..*|devices\.(appstore|payment|player)|launcher\.updaterapp)$',
+ r'^com\.yandex_uni\.rro\.',
+ r'^ru\.yandex\.(bleremotecontrol|androidkeyboard\.tv)$',
+ # Sber (Salute TV / StarOS): platform service + assistant, HDMI inputs, keyboard, WebView, settings, the
+ # app catalogue (the only way apps get updated), overlays (CleanYourTV sber-salute-tv-at30a6, pb766).
+ r'^ru\.sberdevices\.(services(\..*)?|assistant|tvinputs|app\..*|webview|systemui|sberdevicesservicesystem|location\..*|settings|starlauncher|starmarket|updater|tvfactoryhelper)$',
+ r'^ru\.sberdevices\..*(overlay|\.rro|resources?)',
+ r'^com\.sberbank\.settings$',
+ # CVTE/MStar boards (Yandex, Sber, Haier, Hi, Leff…): factory menu and test tools, firmware updates, TV API.
+ r'factory|(^|[._])fac([._]|$)|hisensefac|hkcfac|(^|[._])aging([._]|$)|autotest|(^|[._])burn([._]|$)|license\.at$',
+ r'^com\.cvte\.tv\.(setting|api.*|tools)$',
+ r'^com\.cultraview\.osupdate$',
+ r'^com\.example\.upgrad$',
 ]
 PROT = [re.compile(p, re.I) for p in PROTECTED]
 # tvmanager is protected by the TV-service rule, but Xiaomi's "TV Manager" cleaner is safe; keep it protected anyway (safe side).
@@ -148,6 +164,55 @@ OVERRIDES = {
  'com.amazon.shoptv.client': ('Amazon Shopping', A),
 }
 
+# Yandex TV and Sber (Salute TV): Russian names and verdicts from the CleanYourTV YaOS/StarOS lists
+# (artel-43d1200b, sunwind-sun-led32xs305, sber-salute-tv-at30a6, sber-salute-tv-pb766). These win over ASK:
+# telemetry and promo services go "remove", the owner's features stay "caution".
+G='Игровой сервис, на ТВ обычно не нужен'; C='«Ускоритель»-пустышка, сам ест память'
+DREAM='Заставка производителя: картинки и реклама, занимает место'
+RU = {
+ 'com.yandex.android.advid': ('Рекламный ID Яндекса', A, 'remove'),
+ 'com.yandex.tv.bugreportsender': ('Отчёты об ошибках Яндекса', T, 'remove'),
+ 'com.yandex.prebuiltstub': ('Пустая заглушка Яндекса', 'Пустая заглушка производителя', 'remove'),
+ 'com.yandex.tv.daydream': ('Заставка Яндекса', DREAM, 'caution'),
+ 'com.yandex.tv.webplayer': ('Веб-плеер Яндекса', 'Кинопоиск и YouTube играют без него', 'caution'),
+ 'com.yandex.tv.alice': ('Алиса', 'Голосовой помощник: без него не работает кнопка микрофона на пульте', 'caution'),
+ 'com.yandex.browser.tv': ('Яндекс Браузер', F, 'caution'),
+ 'com.yandex.tv.music': ('Яндекс Музыка', F, 'caution'),
+ 'com.yandex.tv.videoplayer': ('Видеоплеер Яндекса', F, 'caution'),
+ 'com.yandex.tv.input.efir': ('Эфир (онлайн-каналы Яндекса)', 'Онлайн-каналы без антенны: HDMI и антенна работают и без него', 'caution'),
+ 'com.yandex.tv.ytplayer': ('YouTube от Яндекса', F, 'caution'),
+ 'com.cultraview.newfilemanager': ('Файлы и USB-плеер', F, 'caution'),
+ 'ru.sberdevices.survey': ('Опросы Сбера', T, 'remove'),
+ 'ru.sberdevices.bugreporter': ('Отчёты об ошибках Сбера', T, 'remove'),
+ 'ru.sberdevices.starcleaner': ('Очистка памяти Сбера', C, 'remove'),
+ 'ru.sberdevices.openbeta': ('Бета-программа Сбера', 'Бета-версии прошивки, обычному владельцу не нужны', 'remove'),
+ 'ru.sberdevices.smarthome.promo': ('Реклама умного дома Сбера', A, 'remove'),
+ 'ru.sberdevices.subscriptions': ('СберПрайм (подписки)', A, 'caution'),
+ 'ru.sberdevices.music': ('Звук (музыка Сбера)', F, 'caution'),
+ 'ru.sberdevices.starlivetv': ('Онлайн-каналы Сбера', F, 'caution'),
+ 'ru.sberdevices.startube': ('YouTube от Сбера', F, 'caution'),
+ 'ru.sberdevices.videos': ('Видео (каталог Сбера)', F, 'caution'),
+ 'ru.sberdevices.sberplay': ('SberPlay (игры)', G, 'caution'),
+ 'ru.sberdevices.gamepad.service': ('Геймпад Сбера', G, 'caution'),
+ 'ru.sberdevices.starkidsroom.prod': ('Детская комната', F, 'caution'),
+ 'ru.sberdevices.parentcontrol': ('Родительский контроль Сбера', F, 'caution'),
+ 'ru.sberdevices.starprofile': ('Профили Сбера', F, 'caution'),
+ 'ru.sberdevices.starbrowser': ('Браузер Салют', F, 'caution'),
+ 'ru.sberdevices.tv': ('Настройка провайдеров ТВ', 'Программа передач для онлайн-каналов: HDMI и антенна работают без неё', 'caution'),
+ 'ru.sberdevices.starscreensaver': ('Заставка Сбера', DREAM, 'caution'),
+ 'ru.sberdevices.huaweicast': ('Huawei Cast+', F, 'caution'),
+ 'com.salute.star': ('Умный дом Сбера', F, 'caution'),
+ 'com.maxhub.screenshare.server.tv': ('MHshare (трансляция экрана)', F, 'caution'),
+ 'com.screenshare.platform': ('ScreenShare (для MHshare)', F, 'caution'),
+ 'ru.more.play': ('Okko', F, 'caution'),
+ 'ru.mts.mtstv': ('KION', F, 'caution'),
+ 'ru.ivi.client': ('Иви', F, 'caution'),
+ 'com.vgtrk.smotrim': ('Смотрим', F, 'caution'),
+ 'ru.tv1.android.tv': ('Первый канал', F, 'caution'),
+ 'tv.lfstrm.smotreshka_stb': ('Смотрёшка', F, 'caution'),
+ 'com.vk.tv': ('VK Видео', F, 'caution'),
+}
+
 LAUNCHER_OK = re.compile(r'launcher\.(recommendations|partnerwidget|customizer)$', re.I)
 def protected(p):
     # any brand's home screen stays: we clean, we don't replace the TV's launcher here
@@ -207,6 +272,16 @@ for p, e in curated.items():
     else:
         out.append({'packageName': p, 'label': e.get('label') or pretty(p), 'verdict': e['verdict'] if e['verdict'] in ('remove','caution') else 'caution',
                     'reason': DEFAULT_REASON, 'sizeMb': 0, 'lists': 0})
+have = {e['packageName']: e for e in out}
+for p, (lbl, reason, verdict) in RU.items():
+    if protected(p): continue
+    e = have.get(p)
+    if e is None:
+        e = {'packageName': p, 'sizeMb': 0, 'lists': 0}
+        out.append(e); have[p] = e
+    n = e['lists'] or active[p]
+    e.update(label=lbl, verdict=verdict,
+             reason=f'{reason} · скрывают в {n} из {len(files)} проверенных списков' if n else reason, lists=n)
 out.sort(key=lambda e: (-e['lists'], e['packageName']))
 import datetime
 # Phones download this file from GitHub and use it if "version" is higher:

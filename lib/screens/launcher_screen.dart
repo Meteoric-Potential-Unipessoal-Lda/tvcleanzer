@@ -24,6 +24,8 @@ final _knownLaunchers = {
   'com.google.android.apps.tv.launcherx': 'Google TV',
   'com.mitv.tvhome': 'Xiaomi PatchWall',
   'com.mitv.tvhome.atv': 'Xiaomi PatchWall',
+  'com.yandex.tv.home': tr('Яндекс ТВ'),
+  'ru.sberdevices.starlauncher': tr('Салют ТВ (Сбер)'),
   'com.spocky.projengmenu': 'Projectivy Launcher',
   'me.efesser.flauncher': 'FLauncher',
   'com.tvcleanzer.launcher': 'TVCleanzer Launcher',
