@@ -31,6 +31,22 @@ PROTECTED = [r'^android$',
  r'launcher$', r'(^|[._])home$', r'^com\.tvcleanzer\.',
 ]
 PROTECTED.append(r'webview'); PROTECTED.append(r'tclhome|smarttvhome|litehome|tvhome_master')
+# Projectors: optics, keystone/focus, sensors and the vendor services behind the remote and the
+# projection settings (CleanYourTV projector lists, "DO NOT DISABLE" / "Kept on purpose" sections).
+PROTECTED += [
+ r'keystone|autokst|focus|(^|[._])tof([._]|$)|dewarp|(^|[._])ptz([._]|$)|imaging|projector|projection|screenfit|obstacle|optical|lightengine',
+ r'^com\.xgimi\.(xrmservice|xgimiservice|misckey|windowsystem|uiconfiguration|tvinput|simpservice|soundermodeservice|bluetoothservice|starmirror|autoinstall|overseas\..*)$',
+ r'^com\.sdmc\.(kt|service|btservice|globalkey|remotecontrolservice|keyburn|standbyserver|sdmcplatform|sdmcservicehelper|bluetoothconnect)$',
+ r'^com\.zhixin\.(nebulasmart|apphelper|remoteautopair|nebulasetupwizard)$',
+ r'^com\.oceanwing\.(nebulalinker|receiver)$',
+ r'^com\.hysd\.', r'^com\.htc\.magcubicos$',
+ r'^com\.softwinner\.(awsource|vis|awlivetv|tv\..*)$', r'^com\.android\.(ytb|nfx)$',
+ r'^com\.epson\.(droidsettings|flexiblepicture|installation|warningui|bizmodeui)$',
+ r'^com\.benq\.(benqnewrc|appsmanager)$', r'^com\.inspur\.benq\.remoterc$',
+ r'^com\.droidlogic\.(tv\..*|tvinput|android\.tv)$',
+ r'^com\.fengmi\.(platform|fmsettings)$',
+ r'^com\.jmgo\.(hippo|autobrightness|android\.tv\..*)$',
+]
 PROT = [re.compile(p, re.I) for p in PROTECTED]
 # tvmanager is protected by the TV-service rule, but Xiaomi's "TV Manager" cleaner is safe; keep it protected anyway (safe side).
 ASK = re.compile(r'media|player|usb|talkback|marvin|accessib|katniss|assistant|voice|speech|pumpkin|hotword|dream|backdrop|screensaver|mediashell|cast|miplay|smartshare|mi_connect|airplay|wfd|miracast|dlna|music|video|youtube|netflix|amazon|prime|disney|spotify|kodi|gallery|photo|browser|livingroom|alarm|clock|alexa|fitness|kinopoisk|ivi|okko|wink|premier|start|more\.tv|hbo|max|plex|vlc|iptv|tv\.player|sber|yandex|vk')

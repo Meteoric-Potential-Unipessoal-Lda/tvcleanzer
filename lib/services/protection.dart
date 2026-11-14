@@ -26,6 +26,23 @@ class Protection {
     r'^com\.mitv\.tvhome(\.atv)?$',
     r'^com\.amazon\.tv\.launcher$',
     r'^com\.tvcleanzer\.',
+    // Projectors: optics, keystone/focus, sensors, and the vendor services behind
+    // the remote and the projection settings (CleanYourTV projector lists).
+    r'keystone|autokst|focus|(^|[._])tof([._]|$)|dewarp|(^|[._])ptz([._]|$)|imaging|projector|projection|screenfit|obstacle|optical|lightengine',
+    r'^com\.xgimi\.(xrmservice|xgimiservice|misckey|windowsystem|uiconfiguration|tvinput|simpservice|soundermodeservice|bluetoothservice|starmirror|autoinstall|overseas\..*)$',
+    r'^com\.sdmc\.(kt|service|btservice|globalkey|remotecontrolservice|keyburn|standbyserver|sdmcplatform|sdmcservicehelper|bluetoothconnect)$',
+    r'^com\.zhixin\.(nebulasmart|apphelper|remoteautopair|nebulasetupwizard)$',
+    r'^com\.oceanwing\.(nebulalinker|receiver)$',
+    r'^com\.hysd\.',
+    r'^com\.htc\.magcubicos$',
+    r'^com\.softwinner\.(awsource|vis|awlivetv|tv\..*)$',
+    r'^com\.android\.(ytb|nfx)$',
+    r'^com\.epson\.(droidsettings|flexiblepicture|installation|warningui|bizmodeui)$',
+    r'^com\.benq\.(benqnewrc|appsmanager)$',
+    r'^com\.inspur\.benq\.remoterc$',
+    r'^com\.droidlogic\.(tv\..*|tvinput|android\.tv)$',
+    r'^com\.fengmi\.(platform|fmsettings)$',
+    r'^com\.jmgo\.(hippo|autobrightness|android\.tv\..*)$',
   ].map((p) => RegExp(p, caseSensitive: false)).toList();
 
   static final _launcher = RegExp('launcher', caseSensitive: false);

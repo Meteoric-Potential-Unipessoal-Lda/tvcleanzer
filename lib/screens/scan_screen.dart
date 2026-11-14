@@ -108,7 +108,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       Text(tr('Анализируем телевизор…'),
         style: GoogleFonts.syne(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
       const Gap(8),
-      Text(tr('Сверяем с 463 проверенными списками'),
+      Text(tr('Сверяем с 472 проверенными списками'),
         style: const TextStyle(color: AppColors.fgMuted)),
     ]).animate().fadeIn(duration: 400.ms),
   );
