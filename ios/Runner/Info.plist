@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
 		<key>CFBundleDevelopmentRegion</key>
@@ -9,11 +11,11 @@
 		<key>CFBundleDisplayName</key>
 		<string>TVCleanzer</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-	<string>Выберите фото, чтобы поставить его фоном лаунчера на телевизоре.</string>
+	<string>Pick a photo to use as the background of the TV launcher. / Выберите фото, чтобы поставить его фоном лаунчера на телевизоре.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Можно сфотографировать картинку для фона лаунчера на телевизоре.</string>
+	<string>Take a photo to use as the background of the TV launcher. / Можно сфотографировать картинку для фона лаунчера на телевизоре.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-		<string>TVCleanzer ищет телевизор в вашей Wi-Fi сети и подключается к нему, чтобы убрать ненужные приложения.</string>
+		<string>TVCleanzer finds your TV on your Wi-Fi network and connects to it to remove unwanted apps. / TVCleanzer ищет телевизор в вашей Wi-Fi сети и подключается к нему, чтобы убрать ненужные приложения.</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>

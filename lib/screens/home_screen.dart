@@ -7,12 +7,14 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
+import '../services/demo_tv.dart';
 import '../services/tv_discovery.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 import '../widgets/tv_card.dart';
 import 'help_screen.dart';
 import 'pair_screen.dart';
+import 'scan_screen.dart';
 
 // ─── Providers ───────────────────────────────────────────────────────────────
 
@@ -48,7 +50,7 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
   Future<void> startScan() async {
     // Wireless-debugging TVs aren't on port 5555: keep the one we paired with.
     final cur = _ref.read(currentTvProvider);
-    state = DiscoveryState(scanning: true, devices: [if (cur != null && cur.isWireless) cur]);
+    state = DiscoveryState(scanning: true, devices: [if (cur != null && (cur.isWireless || cur.isDemo)) cur]);
     final discovery = _ref.read(tvDiscoveryProvider);
     try {
       await for (final d in discovery.discover()) {
@@ -56,7 +58,7 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
         // Avoid duplicates by IP
         final existing = state.devices.any((e) => e.ipAddress == d.ipAddress);
         final current = _ref.read(currentTvProvider);
-        if (current == null || (current.ipAddress == d.ipAddress && !current.isWireless)) {
+        if (current == null || current.isDemo || (current.ipAddress == d.ipAddress && !current.isWireless)) {
           _ref.read(currentTvProvider.notifier).select(d); // Remote & Launcher use it
         }
         if (!existing) {
@@ -118,6 +120,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
               if (!state.scanning && state.devices.isEmpty)
                 _buildEmpty(state.error),
+              if (!state.devices.any((d) => d.isDemo)) ...[
+                const Gap(8),
+                Center(child: TextButton.icon(
+                  icon: const Icon(Icons.play_circle_outline_rounded, size: 18),
+                  label: const Text('Нет телевизора рядом? Попробовать демо'),
+                  onPressed: _openDemo,
+                )),
+              ],
               const Gap(24),
             ])),
           ),
@@ -128,6 +138,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   /// Pairing by code needs the native TLS channel (Android, iOS only for now).
   static bool get _canPair => Platform.isAndroid || Platform.isIOS;
+
+  /// The built-in demo TV: every screen works without a real TV.
+  void _openDemo() {
+    final d = DemoTv.device();
+    ref.read(discoveryProvider.notifier).add(d);
+    ref.read(currentTvProvider.notifier).select(d);
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ScanScreen(device: d)));
+  }
 
   void _openPair() => Navigator.push(context,
       MaterialPageRoute(builder: (_) => const PairScreen()));

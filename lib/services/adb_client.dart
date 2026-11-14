@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:pointycastle/export.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'demo_tv.dart';
 import 'pairing/adb_crypto.dart';
 
 // ─── ADB protocol constants ───────────────────────────────────────────────────
@@ -99,6 +100,10 @@ class AdbClient {
   final int port;
 
   AdbClient({required this.host, this.port = 5555});
+
+  /// The client for a TV: the built-in demo TV answers from memory.
+  static AdbClient open({required String host, int port = 5555}) =>
+      host == DemoTv.host ? DemoAdbClient() : AdbClient(host: host, port: port);
 
   Socket? _sock;
   StreamSubscription<Uint8List>? _sockSub;

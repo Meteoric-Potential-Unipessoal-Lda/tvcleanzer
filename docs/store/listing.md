@@ -58,14 +58,15 @@ Needs an Android TV / Google TV set or box with "USB debugging" turned on in Dev
 
 Free. No ads. No data collection.
 
-## Что нового (0.9.1)
-RU: Большая база приложений (463 проверенные модели), «Ускорить» с замером, лаунчер со входами HDMI, своим фото и детским режимом, инструкции по брендам и кнопка «Сообщить о проблеме».
-EN: Much bigger app database (463 tested models), Boost with before/after numbers, launcher with HDMI inputs, your own photo and kids mode, per-brand setup guides and "Report a problem".
+## Что нового (1.0.0)
+RU: Первый выпуск. Очистка по базе из 463 проверенных моделей, «Ускорить» с замером, пульт, свой лаунчер с входами HDMI, фото и детским режимом, подключение Google TV по коду и демо-режим без телевизора.
+EN: First release. Clean-up based on 463 tested TV models, Boost with before/after numbers, phone remote, our own launcher with HDMI inputs, your photo and kids mode, Google TV pairing by code and a demo mode that works without a TV.
 
 ## Заметка для проверяющих Apple (App Review Notes)
 
 TVCleanzer is a companion app for Android TV sets. It needs an Android TV on the same Wi-Fi with "USB debugging" enabled in Developer options; it connects to it with Android's standard ADB protocol (TCP 5555) and runs package-manager commands (hide/restore preinstalled apps). Nothing is installed or executed on the iPhone beyond the app itself; the optional launcher APK is sent to the TV, not run on iOS.
-Local Network permission is required to find the TV. Photo access is optional (launcher background).
+HOW TO REVIEW WITHOUT A TV: on the first screen tap "Нет телевизора рядом? Попробовать демо" (Try the demo). A built-in demo TV opens and every feature works on it: scan, clean, history/undo, Boost, remote, launcher install and settings. The app UI is in Russian.
+Local Network permission is required to find a real TV. Photo access is optional (launcher background).
 Demo video of the full flow on a real TV: [ССЫЛКА НА ВИДЕО]
 No account, no login, no in-app purchases.
 
@@ -75,6 +76,7 @@ No account, no login, no in-app purchases.
 • Передаёт ли данные третьим лицам? — Нет.
 • Шифрование при передаче — не применимо (данные не передаются; база приложений скачивается по HTTPS).
 • Можно ли запросить удаление данных? — Данные хранятся только на устройстве и удаляются вместе с приложением.
+• Шрифты интерфейса загружаются с Google Fonts (fonts.gstatic.com) — обычный запрос файла, без данных о пользователе; разработчик ничего не получает.
 • Разрешения: INTERNET и ACCESS_NETWORK_STATE (связь с ТВ в локальной сети и загрузка базы). Фото — через системный выбор фото, без разрешения на всю галерею.
 
 ## Возрастной рейтинг
@@ -82,3 +84,12 @@ No account, no login, no in-app purchases.
 
 ## Категория
 Google Play: Инструменты. App Store: Утилиты (основная), Развлечения (дополнительная).
+
+## Доступ к приложению (Google Play → App access)
+«Все функции доступны без ограничений». Для проверки без телевизора: на первом экране кнопка «Нет телевизора рядом? Попробовать демо» — встроенный демо-телевизор, на нём работают все функции.
+
+## App Store — конфиденциальность (App Privacy)
+Data Not Collected. Отслеживание (tracking): нет.
+
+## Целевая аудитория (Google Play)
+18+ (инструмент для владельцев ТВ, не рассчитан на детей). Реклама: нет.

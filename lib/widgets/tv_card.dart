@@ -51,8 +51,9 @@ class TvCard extends ConsumerWidget {
                 Text(device.shortName,
                   style: GoogleFonts.syne(
                     fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
-                Text(device.ipAddress,
-                  style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+                Text(device.isDemo ? 'Демо-режим: без настоящего телевизора' : device.ipAddress,
+                  style: TextStyle(fontSize: 12,
+                      color: device.isDemo ? AppColors.accent : AppColors.fgMuted)),
               ])),
               const Icon(Icons.chevron_right_rounded, color: AppColors.fgMuted),
             ]),

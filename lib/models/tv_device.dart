@@ -64,6 +64,9 @@ class TvDevice {
 
   /// Wireless debugging (TLS, paired by code) rather than plain port 5555.
   bool get isWireless => port != 5555;
+
+  /// The built-in demo TV (no real device behind it).
+  bool get isDemo => ipAddress == 'demo.tv';
 }
 
 /// One package entry returned by the TV app /scan endpoint.

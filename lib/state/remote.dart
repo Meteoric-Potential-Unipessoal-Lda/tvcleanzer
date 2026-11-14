@@ -72,8 +72,8 @@ class RemoteController extends StateNotifier<RemoteState> {
           // [ip] is a TvDevice.id: "host" or "host:port" (wireless debugging).
           final i = ip.lastIndexOf(':');
           final c = i < 0
-              ? AdbClient(host: ip)
-              : AdbClient(host: ip.substring(0, i), port: int.parse(ip.substring(i + 1)));
+              ? AdbClient.open(host: ip)
+              : AdbClient.open(host: ip.substring(0, i), port: int.parse(ip.substring(i + 1)));
           await c.connect();
           _client = c;
           _ip = ip;
