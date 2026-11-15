@@ -449,5 +449,13 @@
 "Salute TV",
 "Catálogo de apps de Sber",
 "Kinopoisk",
-"ES File Explorer"
+"ES File Explorer",
+"En Yandex TV, TVCleanzer desactiva las apps en lugar de desinstalarlas, así las actualizaciones no las devuelven. Nunca toca la pantalla principal de Yandex, la cuenta, Kinopoisk ni las entradas HDMI. Si en Opciones de desarrollador no hay sección de depuración, mira la pestaña «Sin depuración».",
+"Sin depuración",
+"TUVIO, SunWind, Hi, Leff y otros con placa CVTE: hay Opciones de desarrollador, pero sin sección de depuración",
+"Primero simplemente busca en TVCleanzer: en algunos de estos televisores la depuración por red viene activada de fábrica, aunque el menú no la muestre.",
+"¿No aparece? Abre Ajustes → Imagen, sitúate en Contraste y marca 1147 en el mando. Si no se abre nada, prueba 9735.",
+"En el menú de servicio que se abre, entra en Debug (u Other) y activa ADB Enable. Reinicia la TV y vuelve a buscar en TVCleanzer.",
+"¿El código no funcionó o el menú no tiene ADB? Descarga la pequeña app FactoryMenu (com.stb.factorymenu, del hilo sobre placas CVTE en el foro 4PDA), instálala desde un USB con Archivos y ábrela → Debug → ADB Enable.",
+"En el menú de servicio cambia solo ADB: ahí también están los ajustes del panel, la retroiluminación y el modo de fábrica. En estos televisores la depuración puede dejar entrar a cualquiera de la red sin preguntar: al terminar, desactiva ADB ahí mismo o reinicia la TV."
 ]

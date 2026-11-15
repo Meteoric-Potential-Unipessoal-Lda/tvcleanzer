@@ -449,5 +449,13 @@
 "Salute TV",
 "Sber app catalogue",
 "Kinopoisk",
-"ES File Explorer"
+"ES File Explorer",
+"On Yandex TV, TVCleanzer disables apps instead of uninstalling them, so updates don’t bring them back. It never touches the Yandex home screen, the account, Kinopoisk or the HDMI inputs. If Developer options have no Debugging section, see the “No debugging” tab.",
+"No debugging",
+"TUVIO, SunWind, Hi, Leff and other CVTE-based TVs: Developer options exist but have no Debugging section",
+"First just run a search in TVCleanzer: on some of these TVs network debugging is on from the factory, even though the menu doesn’t show it.",
+"Not found? Open Settings → Picture, highlight Contrast and type 1147 on the remote. Nothing opened — try 9735.",
+"In the service menu that opens, go to Debug (or Other) and turn on ADB Enable. Restart the TV and search again in TVCleanzer.",
+"Code didn’t work or the menu has no ADB: download the small FactoryMenu app (com.stb.factorymenu, from the CVTE boards thread on the 4PDA forum), install it from a USB stick via Files, open it → Debug → ADB Enable.",
+"In the service menu change only ADB: it also holds panel, backlight and factory-mode settings. On these TVs debugging may let anyone on the network in without asking — when you’re done, turn ADB off there or restart the TV."
 ]

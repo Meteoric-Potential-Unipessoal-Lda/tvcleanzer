@@ -449,5 +449,13 @@
 "Salute TV",
 "Catalogue d’applis Sber",
 "Kinopoisk",
-"ES File Explorer"
+"ES File Explorer",
+"Sur Yandex TV, TVCleanzer désactive les applis au lieu de les désinstaller : les mises à jour ne les ramènent pas. Il ne touche jamais à l’écran d’accueil Yandex, au compte, à Kinopoisk ni aux entrées HDMI. Si les Options pour les développeurs n’ont pas de section Débogage, voyez l’onglet « Pas de débogage ».",
+"Pas de débogage",
+"TUVIO, SunWind, Hi, Leff et autres à carte CVTE : les Options pour les développeurs existent, mais sans section Débogage",
+"Commencez simplement par une recherche dans TVCleanzer : sur certaines de ces TV, le débogage réseau est activé d’usine, même si le menu ne l’affiche pas.",
+"Introuvable ? Ouvrez Paramètres → Image, placez-vous sur Contraste et tapez 1147 sur la télécommande. Rien ne s’ouvre — essayez 9735.",
+"Dans le menu de service qui s’ouvre, allez dans Debug (ou Other) et activez ADB Enable. Redémarrez la TV et relancez la recherche dans TVCleanzer.",
+"Le code ne marche pas ou le menu n’a pas d’ADB : téléchargez la petite appli FactoryMenu (com.stb.factorymenu, sujet sur les cartes CVTE du forum 4PDA), installez-la depuis une clé USB via Fichiers, ouvrez-la → Debug → ADB Enable.",
+"Dans le menu de service, ne modifiez que l’ADB : il contient aussi les réglages de la dalle, du rétroéclairage et le mode usine. Sur ces TV, le débogage peut laisser entrer n’importe qui sur le réseau sans demander — une fois fini, désactivez l’ADB au même endroit ou redémarrez la TV."
 ]
