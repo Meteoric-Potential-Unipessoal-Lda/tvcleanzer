@@ -457,5 +457,6 @@
 "Introuvable ? Ouvrez Paramètres → Image, placez-vous sur Contraste et tapez 1147 sur la télécommande. Rien ne s’ouvre — essayez 9735.",
 "Dans le menu de service qui s’ouvre, allez dans Debug (ou Other) et activez ADB Enable. Redémarrez la TV et relancez la recherche dans TVCleanzer.",
 "Le code ne marche pas ou le menu n’a pas d’ADB : téléchargez la petite appli FactoryMenu (com.stb.factorymenu, sujet sur les cartes CVTE du forum 4PDA), installez-la depuis une clé USB via Fichiers, ouvrez-la → Debug → ADB Enable.",
-"Dans le menu de service, ne modifiez que l’ADB : il contient aussi les réglages de la dalle, du rétroéclairage et le mode usine. Sur ces TV, le débogage peut laisser entrer n’importe qui sur le réseau sans demander — une fois fini, désactivez l’ADB au même endroit ou redémarrez la TV."
+"Dans le menu de service, ne modifiez que l’ADB : il contient aussi les réglages de la dalle, du rétroéclairage et le mode usine. Sur ces TV, le débogage peut laisser entrer n’importe qui sur le réseau sans demander — une fois fini, désactivez l’ADB au même endroit ou redémarrez la TV.",
+"Pas de deux-points sur le clavier ? Tapez un point ou une virgule après l’adresse : TVCleanzer le remplace par « : »."
 ]

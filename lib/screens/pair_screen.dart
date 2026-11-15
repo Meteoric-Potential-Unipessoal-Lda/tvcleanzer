@@ -111,7 +111,8 @@ class _PairScreenState extends ConsumerState<PairScreen> {
             const Gap(16),
             _Field(controller: _pairAddr, label: tr('IP-адрес и порт'), hint: '192.168.1.20:37155',
                 keyboard: const TextInputType.numberWithOptions(decimal: true),
-                formatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.:]'))]),
+                formatters: [AddrFormatter()],
+                helper: tr('Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».')),
             const Gap(12),
             _Field(controller: _code, label: tr('Код'), hint: tr('6 цифр'),
                 keyboard: TextInputType.number,
@@ -127,7 +128,8 @@ class _PairScreenState extends ConsumerState<PairScreen> {
             const Gap(16),
             _Field(controller: _connAddr, label: tr('IP-адрес и порт'), hint: '192.168.1.20:41023',
                 keyboard: const TextInputType.numberWithOptions(decimal: true),
-                formatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.:]'))],
+                formatters: [AddrFormatter()],
+                helper: tr('Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».'),
                 autofocus: true),
           ],
           if (_error != null) ...[
@@ -192,7 +194,9 @@ class _Field extends StatelessWidget {
   const _Field({
     required this.controller, required this.label, required this.hint,
     required this.keyboard, required this.formatters, this.big = false, this.autofocus = false,
+    this.helper,
   });
+  final String? helper;
   final TextEditingController controller;
   final String label;
   final String hint;
@@ -212,9 +216,40 @@ class _Field extends StatelessWidget {
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
+          helperText: helper,
+          helperMaxLines: 3,
           filled: true,
           fillColor: AppColors.bgCard,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
         ),
       );
+}
+
+/// IP-address-and-port field on a number pad: phone number pads have no ":".
+/// "," ";" " " and a fourth "." after a full IPv4 address become ":", so
+/// "192.168.1.20.37155" or "192.168.1.20,37155" turns into "192.168.1.20:37155".
+class AddrFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    final b = StringBuffer();
+    var dots = 0;
+    var colon = false;
+    for (final ch in newValue.text.split('')) {
+      if (RegExp(r'[0-9]').hasMatch(ch)) {
+        b.write(ch);
+      } else if (ch == '.' && !colon && dots < 3) {
+        dots++;
+        b.write('.');
+      } else if (RegExp(r'[.:,; ]').hasMatch(ch) && !colon && dots == 3) {
+        colon = true;
+        b.write(':');
+      }
+      // anything else is dropped
+    }
+    final text = b.toString();
+    if (text == newValue.text) return newValue;
+    final cut = newValue.text.length - text.length;
+    final off = (newValue.selection.baseOffset - cut).clamp(0, text.length);
+    return TextEditingValue(text: text, selection: TextSelection.collapsed(offset: off));
+  }
 }

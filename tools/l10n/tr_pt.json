@@ -457,5 +457,6 @@
 "Não foi encontrada? Abra Definições → Imagem, selecione Contraste e marque 1147 no comando. Se nada abrir, experimente 9735.",
 "No menu de serviço que abrir, entre em Debug (ou Other) e ative ADB Enable. Reinicie a TV e procure novamente no TVCleanzer.",
 "O código não funcionou ou o menu não tem ADB? Descarregue a pequena app FactoryMenu (com.stb.factorymenu, do tópico sobre placas CVTE no fórum 4PDA), instale-a a partir de uma pen USB através de Ficheiros e abra-a → Debug → ADB Enable.",
-"No menu de serviço altere apenas o ADB: lá também estão as definições do painel, da retroiluminação e o modo de fábrica. Nestas TVs a depuração pode deixar entrar qualquer pessoa da rede sem perguntar — quando terminar, desligue o ADB aí ou reinicie a TV."
+"No menu de serviço altere apenas o ADB: lá também estão as definições do painel, da retroiluminação e o modo de fábrica. Nestas TVs a depuração pode deixar entrar qualquer pessoa da rede sem perguntar — quando terminar, desligue o ADB aí ou reinicie a TV.",
+"Não há dois pontos no teclado? Escreva um ponto ou uma vírgula depois do endereço — o TVCleanzer troca-o por «:»."
 ]

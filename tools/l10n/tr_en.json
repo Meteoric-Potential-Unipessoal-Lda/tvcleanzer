@@ -457,5 +457,6 @@
 "Not found? Open Settings → Picture, highlight Contrast and type 1147 on the remote. Nothing opened — try 9735.",
 "In the service menu that opens, go to Debug (or Other) and turn on ADB Enable. Restart the TV and search again in TVCleanzer.",
 "Code didn’t work or the menu has no ADB: download the small FactoryMenu app (com.stb.factorymenu, from the CVTE boards thread on the 4PDA forum), install it from a USB stick via Files, open it → Debug → ADB Enable.",
-"In the service menu change only ADB: it also holds panel, backlight and factory-mode settings. On these TVs debugging may let anyone on the network in without asking — when you’re done, turn ADB off there or restart the TV."
+"In the service menu change only ADB: it also holds panel, backlight and factory-mode settings. On these TVs debugging may let anyone on the network in without asking — when you’re done, turn ADB off there or restart the TV.",
+"No colon on the keyboard? Type a dot or a comma after the address — TVCleanzer turns it into “:”."
 ]

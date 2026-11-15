@@ -3,6 +3,7 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».': 'No colon on the keyboard? Type a dot or a comma after the address — TVCleanzer turns it into “:”.',
     'На Яндекс ТВ TVCleanzer отключает приложения, а не удаляет: так их не вернут обновления. Главный экран Яндекса, аккаунт, Кинопоиск и входы HDMI он не трогает. Если в меню разработчика нет раздела «Отладка» — смотрите вкладку «Нет отладки».': 'On Yandex TV, TVCleanzer disables apps instead of uninstalling them, so updates don’t bring them back. It never touches the Yandex home screen, the account, Kinopoisk or the HDMI inputs. If Developer options have no Debugging section, see the “No debugging” tab.',
     'Нет отладки': 'No debugging',
     'TUVIO, SunWind, Hi, Leff и другие на плате CVTE: меню разработчика есть, а раздела «Отладка» в нём нет': 'TUVIO, SunWind, Hi, Leff and other CVTE-based TVs: Developer options exist but have no Debugging section',
@@ -464,6 +465,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».': 'Немає двокрапки на клавіатурі? Поставте після адреси крапку або кому — TVCleanzer сам замінить її на «:».',
     'На Яндекс ТВ TVCleanzer отключает приложения, а не удаляет: так их не вернут обновления. Главный экран Яндекса, аккаунт, Кинопоиск и входы HDMI он не трогает. Если в меню разработчика нет раздела «Отладка» — смотрите вкладку «Нет отладки».': 'На Яндекс ТБ TVCleanzer вимикає застосунки, а не видаляє: так їх не повернуть оновлення. Головний екран Яндекса, акаунт, Кінопошук і входи HDMI він не чіпає. Якщо в меню розробника немає розділу «Налагодження» — дивіться вкладку «Немає налагодження».',
     'Нет отладки': 'Немає налагодження',
     'TUVIO, SunWind, Hi, Leff и другие на плате CVTE: меню разработчика есть, а раздела «Отладка» в нём нет': 'TUVIO, SunWind, Hi, Leff та інші на платі CVTE: меню розробника є, а розділу «Налагодження» в ньому немає',
@@ -925,6 +927,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».': '¿No hay dos puntos en el teclado? Pon un punto o una coma después de la dirección: TVCleanzer lo cambia por «:».',
     'На Яндекс ТВ TVCleanzer отключает приложения, а не удаляет: так их не вернут обновления. Главный экран Яндекса, аккаунт, Кинопоиск и входы HDMI он не трогает. Если в меню разработчика нет раздела «Отладка» — смотрите вкладку «Нет отладки».': 'En Yandex TV, TVCleanzer desactiva las apps en lugar de desinstalarlas, así las actualizaciones no las devuelven. Nunca toca la pantalla principal de Yandex, la cuenta, Kinopoisk ni las entradas HDMI. Si en Opciones de desarrollador no hay sección de depuración, mira la pestaña «Sin depuración».',
     'Нет отладки': 'Sin depuración',
     'TUVIO, SunWind, Hi, Leff и другие на плате CVTE: меню разработчика есть, а раздела «Отладка» в нём нет': 'TUVIO, SunWind, Hi, Leff y otros con placa CVTE: hay Opciones de desarrollador, pero sin sección de depuración',
@@ -1386,6 +1389,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».': 'Não há dois pontos no teclado? Escreva um ponto ou uma vírgula depois do endereço — o TVCleanzer troca-o por «:».',
     'На Яндекс ТВ TVCleanzer отключает приложения, а не удаляет: так их не вернут обновления. Главный экран Яндекса, аккаунт, Кинопоиск и входы HDMI он не трогает. Если в меню разработчика нет раздела «Отладка» — смотрите вкладку «Нет отладки».': 'Na Yandex TV, o TVCleanzer desativa as apps em vez de as desinstalar, para que as atualizações não as tragam de volta. Nunca mexe no ecrã inicial da Yandex, na conta, no Kinopoisk nem nas entradas HDMI. Se as Opções de programador não tiverem a secção de depuração, veja o separador «Sem depuração».',
     'Нет отладки': 'Sem depuração',
     'TUVIO, SunWind, Hi, Leff и другие на плате CVTE: меню разработчика есть, а раздела «Отладка» в нём нет': 'TUVIO, SunWind, Hi, Leff e outros com placa CVTE: há Opções de programador, mas sem a secção de depuração',
@@ -1847,6 +1851,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».': 'Kein Doppelpunkt auf der Tastatur? Nach der Adresse einen Punkt oder ein Komma eingeben – TVCleanzer macht daraus „:“.',
     'На Яндекс ТВ TVCleanzer отключает приложения, а не удаляет: так их не вернут обновления. Главный экран Яндекса, аккаунт, Кинопоиск и входы HDMI он не трогает. Если в меню разработчика нет раздела «Отладка» — смотрите вкладку «Нет отладки».': 'Auf Yandex TV deaktiviert TVCleanzer Apps, statt sie zu deinstallieren – so holen Updates sie nicht zurück. Startbildschirm von Yandex, Konto, Kinopoisk und HDMI-Eingänge bleiben unberührt. Fehlt in den Entwickleroptionen der Bereich Debugging, siehe den Tab „Kein Debugging“.',
     'Нет отладки': 'Kein Debugging',
     'TUVIO, SunWind, Hi, Leff и другие на плате CVTE: меню разработчика есть, а раздела «Отладка» в нём нет': 'TUVIO, SunWind, Hi, Leff und andere mit CVTE-Platine: Entwickleroptionen sind da, aber ohne Bereich Debugging',
@@ -2308,6 +2313,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».': 'Pas de deux-points sur le clavier ? Tapez un point ou une virgule après l’adresse : TVCleanzer le remplace par « : ».',
     'На Яндекс ТВ TVCleanzer отключает приложения, а не удаляет: так их не вернут обновления. Главный экран Яндекса, аккаунт, Кинопоиск и входы HDMI он не трогает. Если в меню разработчика нет раздела «Отладка» — смотрите вкладку «Нет отладки».': 'Sur Yandex TV, TVCleanzer désactive les applis au lieu de les désinstaller : les mises à jour ne les ramènent pas. Il ne touche jamais à l’écran d’accueil Yandex, au compte, à Kinopoisk ni aux entrées HDMI. Si les Options pour les développeurs n’ont pas de section Débogage, voyez l’onglet « Pas de débogage ».',
     'Нет отладки': 'Pas de débogage',
     'TUVIO, SunWind, Hi, Leff и другие на плате CVTE: меню разработчика есть, а раздела «Отладка» в нём нет': 'TUVIO, SunWind, Hi, Leff et autres à carte CVTE : les Options pour les développeurs existent, mais sans section Débogage',
@@ -2769,6 +2775,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Нет двоеточия на клавиатуре? Поставьте после адреса точку или запятую — TVCleanzer сам заменит её на «:».': 'Niente due punti sulla tastiera? Digita un punto o una virgola dopo l’indirizzo: TVCleanzer lo trasforma in «:».',
     'На Яндекс ТВ TVCleanzer отключает приложения, а не удаляет: так их не вернут обновления. Главный экран Яндекса, аккаунт, Кинопоиск и входы HDMI он не трогает. Если в меню разработчика нет раздела «Отладка» — смотрите вкладку «Нет отладки».': 'Su Yandex TV, TVCleanzer disattiva le app invece di disinstallarle, così gli aggiornamenti non le riportano. Non tocca mai la schermata principale di Yandex, l’account, Kinopoisk né gli ingressi HDMI. Se nelle Opzioni sviluppatore manca la sezione Debug, vedi la scheda «Niente debug».',
     'Нет отладки': 'Niente debug',
     'TUVIO, SunWind, Hi, Leff и другие на плате CVTE: меню разработчика есть, а раздела «Отладка» в нём нет': 'TUVIO, SunWind, Hi, Leff e altri con scheda CVTE: le Opzioni sviluppatore ci sono, ma senza la sezione Debug',

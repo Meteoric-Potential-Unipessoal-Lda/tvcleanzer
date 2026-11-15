@@ -457,5 +457,6 @@
 "Non trovata? Apri Impostazioni → Immagine, posizionati su Contrasto e digita 1147 sul telecomando. Se non si apre nulla, prova 9735.",
 "Nel menu di servizio che si apre, vai in Debug (o Other) e attiva ADB Enable. Riavvia la TV e cerca di nuovo in TVCleanzer.",
 "Il codice non funziona o nel menu non c’è ADB: scarica la piccola app FactoryMenu (com.stb.factorymenu, dalla discussione sulle schede CVTE del forum 4PDA), installala da chiavetta USB tramite File, aprila → Debug → ADB Enable.",
-"Nel menu di servizio cambia solo ADB: lì ci sono anche le impostazioni del pannello, della retroilluminazione e la modalità di fabbrica. Su queste TV il debug può far entrare chiunque nella rete senza chiedere: al termine disattiva ADB lì o riavvia la TV."
+"Nel menu di servizio cambia solo ADB: lì ci sono anche le impostazioni del pannello, della retroilluminazione e la modalità di fabbrica. Su queste TV il debug può far entrare chiunque nella rete senza chiedere: al termine disattiva ADB lì o riavvia la TV.",
+"Niente due punti sulla tastiera? Digita un punto o una virgola dopo l’indirizzo: TVCleanzer lo trasforma in «:»."
 ]
