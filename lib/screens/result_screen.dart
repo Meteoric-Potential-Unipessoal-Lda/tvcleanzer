@@ -7,6 +7,7 @@ import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
 import '../state/history.dart';
 import '../theme/app_theme.dart';
+import '../widgets/support_card.dart';
 
 import '../l10n/l10n.dart';
 class ResultScreen extends ConsumerStatefulWidget {
@@ -169,7 +170,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           ).animate().fadeIn(delay: 600.ms, duration: 400.ms),
         ],
 
-        const Gap(32),
+        const Gap(20),
+        const SupportCard().animate().fadeIn(delay: 800.ms, duration: 400.ms),
+
+        const Gap(24),
 
         SizedBox(width: double.infinity, child: FilledButton.icon(
           icon: const Icon(Icons.home_rounded),

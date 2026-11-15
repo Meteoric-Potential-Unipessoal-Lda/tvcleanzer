@@ -3,6 +3,11 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Автор — {0} · {1}': 'Made by {0} · {1}',
+    'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer is free and has no ads. If it helped you, you can support the author.',
+    'Поддержать автора': 'Support the author',
+    'Спасибо! Любая сумма помогает делать TVCleanzer дальше.': 'Thank you! Any amount helps keep TVCleanzer going.',
+    'Ссылка скопирована: {0}': 'Link copied: {0}',
     '{0} мин': '{0} min',
     '{0} с': '{0} s',
     'Ваши фото по очереди, с часами и погодой: когда телевизор простаивает, и, если хотите, фоном главного экрана. Включается только по вашему желанию.': 'Your photos one after another, with the time and weather: when the TV is idle and, if you like, as the home screen background. Turns on only if you want it.',
@@ -571,6 +576,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Автор — {0} · {1}': 'Автор — {0} · {1}',
+    'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer безкоштовний і без реклами. Якщо він вам допоміг — можна підтримати автора.',
+    'Поддержать автора': 'Підтримати автора',
+    'Спасибо! Любая сумма помогает делать TVCleanzer дальше.': 'Дякуємо! Будь-яка сума допомагає розвивати TVCleanzer.',
+    'Ссылка скопирована: {0}': 'Посилання скопійовано: {0}',
     '{0} мин': '{0} хв',
     '{0} с': '{0} с',
     'Ваши фото по очереди, с часами и погодой: когда телевизор простаивает, и, если хотите, фоном главного экрана. Включается только по вашему желанию.': 'Ваші фото по черзі, з годинником і погодою: коли телевізор простоює, і, якщо хочете, фоном головного екрана. Вмикається лише за вашим бажанням.',
@@ -1139,6 +1149,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Автор — {0} · {1}': 'Autor: {0} · {1}',
+    'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer es gratis y sin anuncios. Si te ha ayudado, puedes apoyar al autor.',
+    'Поддержать автора': 'Apoyar al autor',
+    'Спасибо! Любая сумма помогает делать TVCleanzer дальше.': '¡Gracias! Cualquier cantidad ayuda a seguir con TVCleanzer.',
+    'Ссылка скопирована: {0}': 'Enlace copiado: {0}',
     '{0} мин': '{0} min',
     '{0} с': '{0} s',
     'Ваши фото по очереди, с часами и погодой: когда телевизор простаивает, и, если хотите, фоном главного экрана. Включается только по вашему желанию.': 'Tus fotos una tras otra, con la hora y el tiempo: cuando la TV está inactiva y, si quieres, como fondo de la pantalla principal. Solo se activa si lo deseas.',
@@ -1707,6 +1722,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Автор — {0} · {1}': 'Autor: {0} · {1}',
+    'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'O TVCleanzer é gratuito e sem anúncios. Se ajudou, pode apoiar o autor.',
+    'Поддержать автора': 'Apoiar o autor',
+    'Спасибо! Любая сумма помогает делать TVCleanzer дальше.': 'Obrigado! Qualquer valor ajuda a continuar o TVCleanzer.',
+    'Ссылка скопирована: {0}': 'Link copiado: {0}',
     '{0} мин': '{0} min',
     '{0} с': '{0} s',
     'Ваши фото по очереди, с часами и погодой: когда телевизор простаивает, и, если хотите, фоном главного экрана. Включается только по вашему желанию.': 'As suas fotos uma após outra, com a hora e a meteorologia: quando a TV está parada e, se quiser, como fundo do ecrã principal. Só liga se quiser.',
@@ -2275,6 +2295,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Автор — {0} · {1}': 'Autor: {0} · {1}',
+    'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer ist kostenlos und werbefrei. Wenn er Ihnen geholfen hat, können Sie den Autor unterstützen.',
+    'Поддержать автора': 'Autor unterstützen',
+    'Спасибо! Любая сумма помогает делать TVCleanzer дальше.': 'Danke! Jeder Betrag hilft, TVCleanzer weiterzuentwickeln.',
+    'Ссылка скопирована: {0}': 'Link kopiert: {0}',
     '{0} мин': '{0} Min.',
     '{0} с': '{0} s',
     'Ваши фото по очереди, с часами и погодой: когда телевизор простаивает, и, если хотите, фоном главного экрана. Включается только по вашему желанию.': 'Ihre Fotos nacheinander, mit Uhrzeit und Wetter: wenn der TV ruht und auf Wunsch als Hintergrund des Startbildschirms. Nur aktiv, wenn Sie es möchten.',
@@ -2843,6 +2868,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Автор — {0} · {1}': 'Auteur : {0} · {1}',
+    'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer est gratuit et sans publicité. S’il vous a aidé, vous pouvez soutenir l’auteur.',
+    'Поддержать автора': 'Soutenir l’auteur',
+    'Спасибо! Любая сумма помогает делать TVCleanzer дальше.': 'Merci ! Tout montant aide à faire avancer TVCleanzer.',
+    'Ссылка скопирована: {0}': 'Lien copié : {0}',
     '{0} мин': '{0} min',
     '{0} с': '{0} s',
     'Ваши фото по очереди, с часами и погодой: когда телевизор простаивает, и, если хотите, фоном главного экрана. Включается только по вашему желанию.': 'Vos photos l’une après l’autre, avec l’heure et la météo : quand la TV est inactive et, si vous voulez, en fond de l’écran d’accueil. Ne s’active que si vous le souhaitez.',
@@ -3411,6 +3441,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Автор — {0} · {1}': 'Autore: {0} · {1}',
+    'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer è gratuito e senza pubblicità. Se ti è stato utile, puoi sostenere l’autore.',
+    'Поддержать автора': 'Sostieni l’autore',
+    'Спасибо! Любая сумма помогает делать TVCleanzer дальше.': 'Grazie! Qualsiasi importo aiuta a portare avanti TVCleanzer.',
+    'Ссылка скопирована: {0}': 'Link copiato: {0}',
     '{0} мин': '{0} min',
     '{0} с': '{0} s',
     'Ваши фото по очереди, с часами и погодой: когда телевизор простаивает, и, если хотите, фоном главного экрана. Включается только по вашему желанию.': 'Le tue foto una dopo l’altra, con ora e meteo: quando la TV è inattiva e, se vuoi, come sfondo della schermata principale. Si attiva solo se lo desideri.',

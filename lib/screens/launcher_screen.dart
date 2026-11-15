@@ -19,6 +19,7 @@ import '../state/launcher_look_state.dart';
 import '../state/launcher_skin_state.dart';
 import '../theme/app_theme.dart';
 import 'launcher_edit_screen.dart';
+import '../widgets/support_card.dart';
 
 import '../l10n/l10n.dart';
 final _knownLaunchers = {
@@ -262,6 +263,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           _currentLauncherCard(),
           const Gap(12),
           _ourLauncherCard(),
+          const Gap(20),
+          const SupportCard(compact: true),
         ],
       ),
     );

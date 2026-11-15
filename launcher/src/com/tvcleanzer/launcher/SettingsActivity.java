@@ -54,6 +54,7 @@ public class SettingsActivity extends Activity {
         slp.topMargin = Ui.dp(this, 12);
         left.addView(title);
         left.addView(sub, slp);
+        left.addView(authorBlock());
         root.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
 
         // Right: rows
@@ -150,10 +151,73 @@ public class SettingsActivity extends Activity {
         addRow(skin, "Настройки телевизора", "Открыть", () -> {
             try { startActivity(new Intent(Settings.ACTION_SETTINGS)); } catch (Exception ignored) {}
         });
-        addRow(skin, "О лаунчере", "TVCleanzer Launcher " + version(), null);
+        addRow(skin, "О лаунчере", "TVCleanzer Launcher " + version() + " · " + AUTHOR_LINK, this::showAuthor);
 
         View v = list.getChildAt(Math.min(focusIndex, list.getChildCount() - 1));
         if (v != null) v.requestFocus();
+    }
+
+    // ── Author: quietly, at the bottom of Settings ───────────────────────────
+
+    static final String AUTHOR = "Андрей Жердев";
+    static final String AUTHOR_LINK = "t.me/zherdyevofficial";
+
+    /** A small QR (opens the author's Telegram on a phone) and one muted line. */
+    private View authorBlock() {
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.HORIZONTAL);
+        box.setGravity(Gravity.CENTER_VERTICAL);
+        box.setAlpha(0.55f);
+        android.widget.ImageView qr = qrView(Ui.dp(this, 64));
+        if (qr != null) box.addView(qr);
+        TextView t = Ui.text(this, 13, 0xCCFFFFFF, "sans-serif");
+        t.setSingleLine(false);
+        t.setText("Автор — " + AUTHOR + "\n" + AUTHOR_LINK);
+        LinearLayout.LayoutParams tl = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        tl.leftMargin = Ui.dp(this, 12);
+        box.addView(t, tl);
+        LinearLayout.LayoutParams bl = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bl.topMargin = Ui.dp(this, 40);
+        box.setLayoutParams(bl);
+        return box;
+    }
+
+    private android.widget.ImageView qrView(int size) {
+        int id = getResources().getIdentifier("author_qr", "drawable", getPackageName());
+        if (id == 0) return null;
+        android.widget.ImageView qr = new android.widget.ImageView(this);
+        qr.setImageResource(id);
+        qr.setBackground(Ui.round(0xFFFFFFFF, Ui.dp(this, 6)));
+        int p = Ui.dp(this, 3);
+        qr.setPadding(p, p, p, p);
+        qr.setLayoutParams(new LinearLayout.LayoutParams(size, size));
+        return qr;
+    }
+
+    /** "О лаунчере": a bigger QR, easy to scan from the sofa. */
+    private void showAuthor() {
+        LinearLayout v = new LinearLayout(this);
+        v.setOrientation(LinearLayout.VERTICAL);
+        v.setGravity(Gravity.CENTER_HORIZONTAL);
+        int p = Ui.dp(this, 24);
+        v.setPadding(p, p, p, p);
+        android.widget.ImageView qr = qrView(Ui.dp(this, 180));
+        if (qr != null) v.addView(qr);
+        TextView t = Ui.text(this, 16, 0xFFFFFFFF, "sans-serif");
+        t.setSingleLine(false);
+        t.setGravity(Gravity.CENTER_HORIZONTAL);
+        t.setText("TVCleanzer Launcher " + version() + "\nАвтор — " + AUTHOR + " · " + AUTHOR_LINK
+                + "\nНаведите камеру телефона на код: откроется Telegram-канал.");
+        LinearLayout.LayoutParams tl = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        tl.topMargin = Ui.dp(this, 14);
+        v.addView(t, tl);
+        new android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                .setView(v)
+                .setPositiveButton("Закрыть", null)
+                .show();
     }
 
     // ── Kids mode ─────────────────────────────────────────────────────────

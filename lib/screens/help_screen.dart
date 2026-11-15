@@ -11,6 +11,7 @@ import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 
 import '../l10n/l10n.dart';
+import '../widgets/support_card.dart';
 class _Guide {
   final String brand;
   final String hint;
@@ -246,6 +247,8 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
             },
           ),
           const Gap(4),
+          const SupportCard(compact: true),
+          const Gap(6),
           Text(
               tr('TVCleanzer {0} · база {1}версия {2} · на основе CleanYourTV (MIT)', [appVersion, PackageDb.count > 0 ? tr('{0} приложений, ', [PackageDb.count]) : '', PackageDb.version]),
               textAlign: TextAlign.center,
