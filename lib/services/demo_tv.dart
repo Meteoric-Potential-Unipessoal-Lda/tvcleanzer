@@ -113,6 +113,7 @@ class _DemoState {
   bool pin = false;
   bool wallpaper = false;
   int tmpFile = -1; // size of the upload in /data/local/tmp
+  int photos = 0;    // photo-frame photos on the launcher
   final sideloaded = <String>{}; // APKs installed from the Apps tab
   Map<String, String> look = {};
   int _extraFreeKb = 0;
@@ -133,6 +134,7 @@ class _DemoState {
     pin = false;
     wallpaper = false;
     tmpFile = -1;
+    photos = 0;
     sideloaded.clear();
     look = {};
     _extraFreeKb = 0;
@@ -305,6 +307,10 @@ class DemoAdbClient extends AdbClient {
       s.settings.remove(c.split(' ').last);
       return '';
     }
+    if (c.startsWith('dumpsys accessibility')) {
+      final on = (s.secure['enabled_accessibility_services'] ?? '').contains('tvcleanzer');
+      return on ? '  Bound services:{Service[label=TVCleanzer: кнопка Домой]}\n' : '  Bound services:{}\n';
+    }
     if (c.startsWith('settings get secure ')) return '${s.secure[c.split(' ').last] ?? 'null'}\n';
     if (c.startsWith('settings put secure ')) {
       final p = c.split(' ');
@@ -344,11 +350,15 @@ class DemoAdbClient extends AdbClient {
     if (c.startsWith('content query') && c.contains('/apps')) return _appsRows();
     if (c.startsWith('content query') && c.endsWith('/settings')) {
       final rows = {'kids': s.kids ? 1 : 0, 'pin': s.pin ? 1 : 0, 'wallpaper': s.wallpaper ? 1 : 0,
-        'version': AdbPackageManager.bundledLauncherVersion, ...s.look};
+        'version': AdbPackageManager.bundledLauncherVersion, 'photos': s.photos, ...s.look};
       var i = 0;
       return rows.entries.map((e) => 'Row: ${i++} key=${e.key}, value=${e.value}').join('\n');
     }
     if (c.startsWith('wc -c < ')) return s.tmpFile < 0 ? 'wc: No such file\n' : '${s.tmpFile}\n';
+    if (c.startsWith('content write') && c.contains('/photo ') && s.launcherInstalled && s.tmpFile >= 0) {
+      s.photos++;
+      return 'TVC_OK\n';
+    }
     if (c.startsWith('content write') && c.contains('/wallpaper') && s.launcherInstalled && s.tmpFile >= 0) {
       return 'TVC_OK\n';
     }
@@ -357,7 +367,7 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=14 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=15 minSdk=21 targetSdk=34\n' : '';
     }
     if (c.startsWith('dumpsys activity activities')) {
       // Home on the demo TV opens whatever is the home screen.
@@ -397,6 +407,9 @@ class DemoAdbClient extends AdbClient {
     if (k != null) _s.kids = k.group(1) == 'true' && _s.pin;
     if (c.contains('--es wallpaper none')) _s.wallpaper = false;
     if (c.contains('--es wallpaper set')) _s.wallpaper = true;
+    if (c.contains('--es photos clear')) _s.photos = 0;
+    final pd = RegExp(r"--es prevDream '([^']*)'").firstMatch(c);
+    if (pd != null) _s.look['prevDream'] = pd.group(1)!.isEmpty ? '-' : pd.group(1)!;
     final wc = RegExp(r"--es weatherCity ('[^']*'|\S+)").firstMatch(c);
     if (wc != null) {
       final v = wc.group(1)!.replaceAll("'", '');
@@ -404,7 +417,7 @@ class DemoAdbClient extends AdbClient {
     }
     final au = RegExp(r'--es autostart (\S+)').firstMatch(c);
     if (au != null) _s.look['autostart'] = au.group(1) == '""' ? '-' : au.group(1)!;
-    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon) (\S+)').allMatches(c)) {
+    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon|photoSec|homePhotos) (\S+)').allMatches(c)) {
       final v = m.group(2)!;
       _s.look[m.group(1)!] = v == 'true' ? '1' : v == 'false' ? '0' : v;
     }

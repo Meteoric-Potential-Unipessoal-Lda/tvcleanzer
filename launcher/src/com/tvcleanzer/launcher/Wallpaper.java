@@ -47,8 +47,11 @@ final class Wallpaper {
 
     /** Decoded close to screen size to keep memory low on 1 GB TVs. */
     static Bitmap load(Context c) {
-        File f = file(c);
-        if (!f.exists() || f.length() == 0) return null;
+        return decode(c, file(c));
+    }
+
+    static Bitmap decode(Context c, File f) {
+        if (f == null || !f.exists() || f.length() == 0) return null;
         try {
             BitmapFactory.Options o = new BitmapFactory.Options();
             o.inJustDecodeBounds = true;

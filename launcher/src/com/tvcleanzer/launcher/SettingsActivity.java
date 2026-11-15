@@ -107,6 +107,19 @@ public class SettingsActivity extends Activity {
                     : now != null ? now : prefs.weatherCity() + ": загружается…";
         }
         addRow(skin, "Погода", w, null);
+        int nPhotos = Photos.count(this);
+        addRow(skin, "Фоторамка", nPhotos == 0 ? "Фото добавляются с телефона" : "Фото: " + nPhotos, null);
+        if (nPhotos > 0) {
+            addRow(skin, "Фон главного экрана", prefs.homePhotos() ? "Меняется по фото" : "Одно фото / шкурка",
+                    () -> prefs.setHomePhotos(!prefs.homePhotos()));
+            final int[] secs = {10, 30, 60, 300};
+            int cur = prefs.photoSec();
+            addRow(skin, "Смена фото", cur >= 60 ? (cur / 60) + " мин" : cur + " с", () -> {
+                int k = 0;
+                for (int i = 0; i < secs.length; i++) if (secs[i] == prefs.photoSec()) k = i;
+                prefs.setPhotoSec(secs[(k + 1) % secs.length]);
+            });
+        }
         final int[] favSteps = {0, 4, 5, 6};
         int fc = prefs.favCols();
         addRow(skin, "Избранное", fc == 0 ? "Один ряд" : "Сетка по " + fc, () -> {

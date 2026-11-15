@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="14"
-    android:versionName="0.14">
+    android:versionCode="15"
+    android:versionName="0.15">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -82,6 +82,19 @@
         <service
             android:name=".ClockDream"
             android:label="@string/dream_label"
+            android:exported="true"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+        <!-- Photo frame: the owner's photos one after another, with the time; the phone app
+             makes it the TV's screensaver only when the owner asks -->
+        <service
+            android:name=".PhotoDream"
+            android:label="@string/photo_dream_label"
             android:exported="true"
             android:permission="android.permission.BIND_DREAM_SERVICE">
             <intent-filter>

@@ -40,6 +40,17 @@ public class ConfigReceiver extends BroadcastReceiver {
                 p.setWeatherPlace(city, lat, lon);
             }
         }
+        if (intent.hasExtra("photos")) {
+            String what = intent.getStringExtra("photos");
+            if ("clear".equals(what)) Photos.clear(context); else Photos.trim(context);
+            p.bumpPhotos();
+        }
+        if (intent.hasExtra("photoSec")) p.setPhotoSec(intent.getIntExtra("photoSec", 30));
+        if (intent.hasExtra("homePhotos")) p.setHomePhotos(intent.getBooleanExtra("homePhotos", false));
+        if (intent.hasExtra("prevDream")) {
+            String d = intent.getStringExtra("prevDream");
+            if (d != null && (d.isEmpty() || d.matches("[A-Za-z0-9_.]+/[A-Za-z0-9_.$]+"))) p.setPrevDream(d);
+        }
         if (intent.hasExtra("autostart")) {
             String a = intent.getStringExtra("autostart");
             p.setAutostart(a != null && a.matches("[A-Za-z0-9_.]+") ? a : "");

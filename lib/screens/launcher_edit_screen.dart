@@ -38,6 +38,8 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   final _pin = TextEditingController();
   File? _preview;     // copy of the photo sent to this TV, for the preview
   double? _dim;       // slider value while dragging
+  String _dream = ''; // the TV's screensaver component
+  String? _photoStep; // photo upload progress
 
   @override
   void initState() {
@@ -69,6 +71,11 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
     setState(() { _error = null; _state = null; });
     try {
       final st = await ref.read(adbServiceProvider).launcherState(widget.tv);
+      if (st.version >= 15) {
+        try {
+          _dream = await ref.read(adbServiceProvider).currentDream(widget.tv);
+        } catch (_) {}
+      }
       final favs = st.apps.where((a) => a.fav >= 0).toList()..sort((a, b) => a.fav.compareTo(b.fav));
       if (!mounted) return;
       // Launcher 0.4+ reports its fine settings: the phone shows what the TV really has.
@@ -481,7 +488,182 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
           }),
         ),
       ],
+      const Gap(28),
+      ..._photoFrame(st),
     ]);
+  }
+
+  // ── Photo frame (launcher 0.15+) ───────────────────────────────────────
+
+  static const _secSteps = [10, 30, 60, 300];
+
+  List<Widget> _photoFrame(LauncherState st) {
+    final count = int.tryParse(st.settings['photos'] ?? '') ?? 0;
+    final sec = int.tryParse(st.settings['photoSec'] ?? '') ?? 30;
+    final home = st.settings['homePhotos'] == '1';
+    final on = _dream.contains('PhotoDream');
+    final busy = _saving || _photoStep != null;
+    return [
+      Text(tr('Фоторамка'),
+          style: const TextStyle(color: AppColors.fg, fontSize: 17, fontWeight: FontWeight.w700)),
+      const Gap(6),
+      Text(tr('Ваши фото по очереди, с часами и погодой: когда телевизор простаивает, и, если хотите, фоном главного экрана. Включается только по вашему желанию.'),
+          style: const TextStyle(color: AppColors.fgMid, fontSize: 13, height: 1.4)),
+      const Gap(12),
+      if (st.version < 15)
+        Text(tr('Эта настройка появилась в новой версии лаунчера: обновите его на вкладке «Лаунчер».'),
+            style: const TextStyle(color: AppColors.warn, fontSize: 12, height: 1.4))
+      else ...[
+        Text(tr('На телевизоре фото: {0}', [count]),
+            style: const TextStyle(color: AppColors.fg, fontSize: 14)),
+        if (_photoStep != null) ...[
+          const Gap(8),
+          Row(children: [
+            const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)),
+            const Gap(10),
+            Expanded(child: Text(_photoStep!, style: const TextStyle(color: AppColors.fgMid, fontSize: 13))),
+          ]),
+        ],
+        const Gap(10),
+        Row(children: [
+          Expanded(
+            child: FilledButton.icon(
+              icon: const Icon(Icons.add_photo_alternate_rounded),
+              label: Text(tr('Добавить фото')),
+              onPressed: busy ? null : _addPhotos,
+            ),
+          ),
+          if (count > 0) ...[
+            const Gap(10),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.fg,
+                side: const BorderSide(color: AppColors.cardBd),
+              ),
+              onPressed: busy ? null : () => _run(tr('Фото удалены'), () async {
+                await ref.read(adbServiceProvider).clearPhotos(widget.tv);
+                await _load();
+              }),
+              child: Text(tr('Удалить все')),
+            ),
+          ],
+        ]),
+        const Gap(6),
+        Text(tr('До 30 фото. Они уменьшаются до 1920 пикселей и занимают немного места.'),
+            style: const TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
+        if (count > 0) ...[
+          const Gap(14),
+          Text(tr('Смена фото'), style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
+          const Gap(6),
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<int>(
+              showSelectedIcon: false,
+              segments: [
+                for (final v in _secSteps)
+                  ButtonSegment(value: v, label: Text(v >= 60 ? tr('{0} мин', [v ~/ 60]) : tr('{0} с', [v]))),
+              ],
+              selected: {_secSteps.contains(sec) ? sec : 30},
+              onSelectionChanged: busy ? null : (v) => _run(tr('Сохранено'), () async {
+                await ref.read(adbServiceProvider).setPhotoOptions(widget.tv, seconds: v.first);
+                await _load();
+              }),
+            ),
+          ),
+          const Gap(6),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: home,
+            activeThumbColor: AppColors.accent,
+            title: Text(tr('Менять фон главного экрана'), style: const TextStyle(color: AppColors.fg, fontSize: 14)),
+            subtitle: Text(tr('Фото сменяют друг друга вместо одного фона'),
+                style: const TextStyle(color: AppColors.fgMuted, fontSize: 12)),
+            onChanged: busy ? null : (v) => _run(tr('Сохранено'), () async {
+              await ref.read(adbServiceProvider).setPhotoOptions(widget.tv, homePhotos: v);
+              await _load();
+            }),
+          ),
+        ],
+        const Gap(8),
+        if (on) ...[
+          Row(children: [
+            const Icon(Icons.check_circle_rounded, color: AppColors.ok, size: 18),
+            const Gap(8),
+            Expanded(child: Text(tr('Сейчас заставка телевизора — фоторамка'),
+                style: const TextStyle(color: AppColors.ok, fontSize: 13))),
+          ]),
+          const Gap(8),
+          OutlinedButton.icon(
+            icon: const Icon(Icons.undo_rounded, size: 18),
+            label: Text(tr('Вернуть прежнюю заставку')),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.fg,
+              side: const BorderSide(color: AppColors.cardBd),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+            onPressed: busy ? null : () => _run(tr('Прежняя заставка возвращена'), () async {
+              await ref.read(adbServiceProvider).disablePhotoFrame(widget.tv, st.settings['prevDream'] ?? '');
+              await _load();
+            }),
+          ),
+        ] else
+          OutlinedButton.icon(
+            icon: const Icon(Icons.slideshow_rounded),
+            label: Text(tr('Сделать заставкой телевизора')),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.fg,
+              side: const BorderSide(color: AppColors.cardBd),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+            onPressed: busy ? null : () => _run(
+                tr('Фоторамка включена: она появится, когда телевизор постоит без дела. Через сколько минут — задаётся в настройках ТВ, раздел «Заставка».'),
+                () async {
+                  await ref.read(adbServiceProvider).enablePhotoFrame(widget.tv);
+                  await _load();
+                }),
+          ),
+      ],
+      const Gap(24),
+    ];
+  }
+
+  Future<void> _addPhotos() async {
+    List<XFile> picked;
+    try {
+      picked = await ImagePicker().pickMultiImage(maxWidth: 1920, maxHeight: 1920, imageQuality: 82, limit: 30);
+    } catch (e) {
+      AppLog.error('pick photos', e);
+      _snack(tr('Нет доступа к фото. Разрешите его в настройках телефона.'));
+      return;
+    }
+    if (picked.isEmpty) return;
+    final bytes = <Uint8List>[];
+    for (final x in picked.take(30)) {
+      final b = await x.readAsBytes();
+      if (b.isNotEmpty) bytes.add(b);
+    }
+    if (bytes.isEmpty) {
+      _snack(tr('Не удалось прочитать фото. Выберите другое.'));
+      return;
+    }
+    setState(() => _photoStep = tr('Отправляем фото {0} из {1}…', [1, bytes.length]));
+    try {
+      await ref.read(adbServiceProvider).addPhotos(widget.tv, bytes, onProgress: (done, total) {
+        if (mounted && done < total) {
+          setState(() => _photoStep = tr('Отправляем фото {0} из {1}…', [done + 1, total]));
+        }
+      });
+      HapticFeedback.mediumImpact();
+      _snack(tr('Фото добавлены: {0}', [bytes.length]));
+    } on AdbException catch (e) {
+      AppLog.error('photos', e);
+      _snack(e.message);
+    } catch (e) {
+      AppLog.error('photos', e);
+      _snack(tr('Не получилось: телевизор не отвечает.'));
+    }
+    if (mounted) setState(() => _photoStep = null);
+    await _load();
   }
 
   Future<void> _pickPhoto() async {

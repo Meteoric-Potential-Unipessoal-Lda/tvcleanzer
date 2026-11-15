@@ -402,7 +402,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 14;
+  static const bundledLauncherVersion = 15;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -523,11 +523,9 @@ class AdbPackageManager {
     } else {
       await adb.shell('cmd package set-home-activity $launcherHome');
     }
-    // Firmwares that force their own launcher on Home: our accessibility
-    // service catches the Home key. Re-adding it rebinds after an update.
-    await _setHomeKeyService(adb, enabled: false);
-    await _setHomeKeyService(adb, enabled: true);
-    await Future<void>.delayed(const Duration(seconds: 1));
+    // Firmwares that force their own launcher on Home: our accessibility service catches the
+    // Home key. It must not only be listed but really running ("bound").
+    await _ensureHomeKeyService(adb);
 
     onStep?.call(tr('Проверяем кнопку «Домой»…'));
     final resolved = _pkgOf(await _resolvedHome(adb));
@@ -749,6 +747,146 @@ class AdbPackageManager {
           '-a com.tvcleanzer.launcher.APPLY --es wallpaper none');
     } finally {
       adb.close();
+    }
+  }
+
+  // ── Photo frame (launcher 0.15+) ─────────────────────────────────────────
+
+  static const photoDream = '$launcherPkg/.PhotoDream';
+
+  Future<void> _broadcast(AdbClient adb, String extras) =>
+      adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver -a com.tvcleanzer.launcher.APPLY $extras');
+
+  /// Sends photos (already scaled on the phone) one by one: /data/local/tmp, then into the
+  /// launcher (content write on Android 10+, its external files dir before that).
+  Future<void> addPhotos(TvDevice device, List<Uint8List> jpegs,
+      {void Function(int done, int total)? onProgress}) async {
+    const tmp = '/data/local/tmp/tvcleanzer_photo.jpg';
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final sdk = int.tryParse((await adb.shell('getprop ro.build.version.sdk')).trim()) ?? 0;
+      var stored = 0;
+      for (var i = 0; i < jpegs.length; i++) {
+        onProgress?.call(i, jpegs.length);
+        final jpeg = jpegs[i];
+        var sent = false;
+        for (var attempt = 0; attempt < 2 && !sent; attempt++) {
+          await adb.execIn('cat > $tmp', jpeg);
+          final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first);
+          sent = size == jpeg.length;
+        }
+        if (!sent) continue;
+        var ok = false;
+        if (sdk >= 29) {
+          ok = (await adb.shell('content write --uri content://$launcherPkg.state/photo < $tmp && echo TVC_OK'))
+              .contains('TVC_OK');
+        }
+        if (!ok) {
+          final name = 'p${DateTime.now().millisecondsSinceEpoch}_$i.jpg';
+          ok = (await adb.shell('mkdir -p $_launcherFiles/photos && cp $tmp $_launcherFiles/photos/$name '
+                  '&& chmod 666 $_launcherFiles/photos/$name && echo TVC_OK'))
+              .contains('TVC_OK');
+        }
+        if (ok) stored++;
+      }
+      await adb.shell('rm -f $tmp');
+      await _broadcast(adb, '--es photos added');
+      onProgress?.call(jpegs.length, jpegs.length);
+      if (stored == 0) {
+        throw AdbException(tr('Телевизор не дал сохранить фото. Обновите лаунчер на ТВ и попробуйте снова.'));
+      }
+    } finally {
+      adb.close();
+    }
+  }
+
+  Future<void> clearPhotos(TvDevice device) => _apply(device, '--es photos clear');
+
+  Future<void> setPhotoOptions(TvDevice device, {int? seconds, bool? homePhotos}) => _apply(device,
+      [if (seconds != null) '--ei photoSec $seconds', if (homePhotos != null) '--ez homePhotos $homePhotos'].join(' '));
+
+  Future<void> _apply(TvDevice device, String extras) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await _broadcast(adb, extras);
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// The TV's screensaver component ('' = firmware default).
+  Future<String> currentDream(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final d = (await adb.shell('settings get secure screensaver_components')).trim();
+      return d == 'null' ? '' : d;
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Makes the photo frame the TV's screensaver; the previous one is kept by the launcher.
+  Future<void> enablePhotoFrame(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      var cur = (await adb.shell('settings get secure screensaver_components')).trim();
+      if (cur == 'null') cur = '';
+      if (!cur.contains('PhotoDream')) {
+        final prev = RegExp(r'^[A-Za-z0-9_.]+/[A-Za-z0-9_.$]+$').hasMatch(cur) ? cur : '';
+        await _broadcast(adb, "--es prevDream '$prev'");
+      }
+      await adb.shell('settings put secure screensaver_components $photoDream');
+      await adb.shell('settings put secure screensaver_enabled 1');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Gives the TV its previous screensaver back.
+  Future<void> disablePhotoFrame(TvDevice device, String prev) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      if (prev.isNotEmpty && prev != '-' && !prev.contains('PhotoDream')) {
+        await adb.shell('settings put secure screensaver_components $prev');
+      } else {
+        await adb.shell('settings delete secure screensaver_components');
+      }
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Is our Home-key service actually running? Being listed in the setting is not enough:
+  /// a TCL Google TV report showed it "Enabled" but not "Bound" after a quick off/on.
+  Future<bool> _homeKeyBound(AdbClient adb) async {
+    final out = await adb.shell('dumpsys accessibility 2>/dev/null | grep -i "bound services"');
+    return out.toLowerCase().contains('tvcleanzer');
+  }
+
+  /// Turns the Home-key service on and makes sure Android has started it. Off/on only when it
+  /// is listed but not running, with pauses: a toggle within the same second can leave it
+  /// enabled-but-unbound until the next reboot.
+  Future<void> _ensureHomeKeyService(AdbClient adb) async {
+    final raw = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
+    final listed = raw.split(':').contains(_homeKeyService);
+    final on = (await adb.shell('settings get secure accessibility_enabled')).trim() == '1';
+    if (listed && on && await _homeKeyBound(adb)) return;
+    if (!listed || !on) {
+      await _setHomeKeyService(adb, enabled: true);
+      await Future<void>.delayed(const Duration(milliseconds: 2500));
+      if (await _homeKeyBound(adb)) return;
+    }
+    for (var i = 0; i < 2; i++) {
+      await _setHomeKeyService(adb, enabled: false);
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
+      await _setHomeKeyService(adb, enabled: true);
+      await Future<void>.delayed(const Duration(milliseconds: 2500));
+      if (await _homeKeyBound(adb)) return;
     }
   }
 

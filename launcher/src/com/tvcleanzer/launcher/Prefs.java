@@ -17,7 +17,8 @@ final class Prefs {
             FAVORITES = "favorites", HIDDEN = "hidden",
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
-            AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", AUTOSTART = "autostart",
+            AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
+            PREV_DREAM = "prevDream", AUTOSTART = "autostart",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
@@ -126,6 +127,17 @@ final class Prefs {
     void resetFavorites()    { sp.edit().remove(FAVORITES).apply(); }
 
     long wallpaperRev()      { return sp.getLong(WALL_REV, 0); }
+    /** Photo frame: seconds per photo (10 s … 10 min). */
+    int photoSec()           { return clamp(sp.getInt(PHOTO_SEC, 30), 10, 600); }
+    void setPhotoSec(int v)  { sp.edit().putInt(PHOTO_SEC, clamp(v, 10, 600)).apply(); }
+    /** The home background changes through the photos too (off by default). */
+    boolean homePhotos()     { return sp.getBoolean(HOME_PHOTOS, false); }
+    void setHomePhotos(boolean v) { sp.edit().putBoolean(HOME_PHOTOS, v).apply(); }
+    long photoRev()          { return sp.getLong(PHOTO_REV, 0); }
+    void bumpPhotos()        { sp.edit().putLong(PHOTO_REV, System.currentTimeMillis()).apply(); }
+    /** The screensaver the TV had before the photo frame (to give it back). */
+    String prevDream()       { return sp.getString(PREV_DREAM, ""); }
+    void setPrevDream(String v) { sp.edit().putString(PREV_DREAM, v == null ? "" : v).apply(); }
     void bumpWallpaper()     { sp.edit().putLong(WALL_REV, System.currentTimeMillis()).apply(); }
 
     boolean kids()           { return sp.getBoolean(KIDS, false); }

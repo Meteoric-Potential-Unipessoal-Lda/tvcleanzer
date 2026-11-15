@@ -61,7 +61,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private final Set<String> homeApps = new java.util.HashSet<>();
     private List<Inputs.Item> inputs = new ArrayList<>();
     private android.graphics.Bitmap wallBitmap;
-    private long wallRev = -1;
+    private String wallKey = "";
+    private android.widget.ImageView wallView;
+    private int homePhotoIdx;
 
     private FrameLayout root;
     private ScrollView scroll;
@@ -124,7 +126,37 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         maybeAutostart();
         main.removeCallbacks(weatherTick);
         main.post(weatherTick);
+        main.removeCallbacks(homePhotoTick);
+        main.postDelayed(homePhotoTick, Math.max(30, prefs.photoSec()) * 1000L);
     }
+
+    /** Home background through the photo-frame photos, one every photoSec (at least 30 s). */
+    private final Runnable homePhotoTick = new Runnable() {
+        @Override public void run() {
+            if (!resumed) return;
+            long every = Math.max(30, prefs.photoSec()) * 1000L;
+            final List<java.io.File> list = prefs.homePhotos() && !prefs.kids() ? Photos.list(HomeActivity.this)
+                    : new ArrayList<java.io.File>();
+            if (list.size() > 1 && wallView != null) {
+                homePhotoIdx = (homePhotoIdx + 1) % list.size();
+                final java.io.File f = list.get(homePhotoIdx);
+                io.execute(() -> {
+                    final android.graphics.Bitmap b = Photos.load(HomeActivity.this, f);
+                    main.post(() -> {
+                        final android.widget.ImageView v = wallView;
+                        if (b == null || v == null) return;
+                        wallBitmap = b;
+                        if (prefs.anim() == Prefs.ANIM_OFF) { v.setImageBitmap(b); return; }
+                        v.animate().alpha(0f).setDuration(500).withEndAction(() -> {
+                            v.setImageBitmap(b);
+                            v.animate().alpha(1f).setDuration(700).start();
+                        }).start();
+                    });
+                });
+            }
+            main.postDelayed(this, every);
+        }
+    };
 
     /** The home screen can stay open for hours: re-check the weather every 10 minutes while visible. */
     private final Runnable weatherTick = new Runnable() {
@@ -357,6 +389,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onPause() {
         resumed = false;
         main.removeCallbacks(weatherTick);
+        main.removeCallbacks(homePhotoTick);
         stopAmbient();
         super.onPause();
     }
@@ -546,11 +579,14 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final int favVisible = FAV_VISIBLE[size];
 
         // Own photo as background: decode off the UI thread, then redraw.
-        long rev = prefs.wallpaperRev();
-        if (rev != wallRev) {
-            wallRev = rev;
+        // With "change the home background" on, the photo-frame photos take turns instead.
+        final List<java.io.File> photoList = !kids && prefs.homePhotos() ? Photos.list(this) : new ArrayList<java.io.File>();
+        String key = photoList.isEmpty() ? "w" + prefs.wallpaperRev() : "p" + prefs.photoRev();
+        if (!key.equals(wallKey)) {
+            wallKey = key;
             io.execute(() -> {
-                final android.graphics.Bitmap b = Wallpaper.load(this);
+                final android.graphics.Bitmap b = photoList.isEmpty() ? Wallpaper.load(this)
+                        : Photos.load(this, photoList.get(homePhotoIdx % photoList.size()));
                 main.post(() -> { wallBitmap = b; build(); });
             });
         }
@@ -574,6 +610,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             android.widget.ImageView wp = new android.widget.ImageView(this);
             wp.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
             wp.setImageBitmap(wallBitmap);
+            wallView = wp;
             root.addView(wp, new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             View dim = new View(this);
@@ -582,6 +619,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             root.addView(dim, new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         } else {
+            wallView = null;
             // Accent glow in the top-right corner
             View glow = new View(this);
             int gs = Math.round(screenW * 0.7f);

@@ -53,6 +53,10 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"weatherErr", p.weatherError().isEmpty() ? "-" : p.weatherError()});
             c.addRow(new Object[]{"weatherAt", p.weatherTs()});
             c.addRow(new Object[]{"autostart", p.autostart().isEmpty() ? "-" : p.autostart()});
+            c.addRow(new Object[]{"photos", Photos.count(getContext())});
+            c.addRow(new Object[]{"photoSec", p.photoSec()});
+            c.addRow(new Object[]{"homePhotos", p.homePhotos() ? 1 : 0});
+            c.addRow(new Object[]{"prevDream", p.prevDream().isEmpty() ? "-" : p.prevDream()});
             return c;
         }
         // apps: label last, so commas in names don't break parsing on the phone
@@ -70,10 +74,12 @@ public class StateProvider extends ContentProvider {
     /** The phone streams a new background photo here ("w" only). */
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
-        if (getContext() == null || !"wallpaper".equals(uri.getLastPathSegment()) || !mode.contains("w")) {
+        String seg = uri.getLastPathSegment();
+        if (getContext() == null || !mode.contains("w") || !("wallpaper".equals(seg) || "photo".equals(seg))) {
             throw new FileNotFoundException(uri.toString());
         }
-        File f = Wallpaper.internal(getContext());
+        // "photo": one more picture for the photo frame (ConfigReceiver --es photos added trims to MAX)
+        File f = "photo".equals(seg) ? Photos.newFile(getContext()) : Wallpaper.internal(getContext());
         return ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_WRITE_ONLY
                 | ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_TRUNCATE);
     }
