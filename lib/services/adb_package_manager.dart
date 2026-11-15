@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/launcher_look.dart';
 import '../models/tv_device.dart';
 import 'adb_client.dart';
+import 'app_log.dart';
 import 'package_db.dart';
 import 'protection.dart';
 
@@ -487,9 +488,25 @@ class AdbPackageManager {
     for (var i = 0; i < 2; i++) {
       await adb.shell('input keyevent 3');
       await Future<void>.delayed(const Duration(milliseconds: 2500));
+      if (await _frontPackage(adb) != launcherPkg) continue;
+      // Yandex TV puts its own home over ours a few seconds later: look again.
+      await Future<void>.delayed(const Duration(milliseconds: 4000));
       if (await _frontPackage(adb) == launcherPkg) return true;
     }
+    await _logHomeState(adb);
     return false;
+  }
+
+  /// For «?» reports: what the TV did with Home and whether our Home-key service runs.
+  Future<void> _logHomeState(AdbClient adb) async {
+    try {
+      final front = await _frontPackage(adb);
+      final acc = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
+      final bound = (await adb.shell(
+              'dumpsys accessibility 2>/dev/null | grep -iE "bound services|enabled services|crashed" | head -4'))
+          .replaceAll(RegExp(r'\s+'), ' ');
+      AppLog.error('home', 'front=$front; acc=$acc; $bound');
+    } catch (_) {}
   }
 
   /// Makes our launcher the home screen and checks it with a real Home press:

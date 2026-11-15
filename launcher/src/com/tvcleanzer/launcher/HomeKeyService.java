@@ -43,16 +43,35 @@ public class HomeKeyService extends AccessibilityService {
             "com.google.android.apps.tv.launcherx", "com.google.android.leanbacklauncher",
             "com.yandex.tv.home", "ru.sberdevices.starlauncher"));
 
+    /** Homes that also host the TV's own features (Alice search, Sber assistant, Google TV
+     *  search): replaced only right after Home / power-on / wake, never while the owner uses them.
+     *  (Google TV's launcherx stays out: there it is the real home that Back returns to.) */
+    static final Set<String> FEATURE_HOMES = new HashSet<>(Arrays.asList(
+            "com.yandex.tv.home", "ru.sberdevices.starlauncher"));
+
+    /** Until when a stock home that pops up is replaced without asking (uptime ms). Yandex TV
+     *  starts its home a second or two AFTER ours on Home, and late after power-on. */
+    private long armedUntil;
+    private int armedRedirects;
+
+    private void arm(long ms) {
+        armedUntil = SystemClock.uptimeMillis() + ms;
+        armedRedirects = 0;
+    }
+
+    private boolean armed() { return SystemClock.uptimeMillis() < armedUntil; }
+
     /** The first minutes after boot: the stock home is often on screen before Android binds us. */
     static final long BOOT_WINDOW_MS = 3 * 60 * 1000L;
 
     @Override
     protected void onServiceConnected() {
         refreshStockHomes();
-        if (SystemClock.elapsedRealtime() < BOOT_WINDOW_MS) checkFrontSoon();
+        if (SystemClock.elapsedRealtime() < BOOT_WINDOW_MS) { arm(90_000); checkFrontSoon(); }
         screenOn = new BroadcastReceiver() {
             @Override public void onReceive(Context c, Intent i) {
                 refreshStockHomes();
+                arm(60_000);
                 Prefs p = new Prefs(HomeKeyService.this);
                 final String auto = p.autostart();
                 if (!auto.isEmpty() && !p.kids()) {
@@ -82,7 +101,7 @@ public class HomeKeyService extends AccessibilityService {
     private void checkFrontSoon() {
         lastKeyAt = 0;
         final long armed = SystemClock.uptimeMillis();
-        for (long d : new long[]{1500, 4000, 9000, 15000}) {
+        for (long d : new long[]{1500, 4000, 9000, 15000, 25000, 40000}) {
             handler.postDelayed(() -> {
                 if (lastKeyAt > armed) return; // the user is already doing something
                 String pkg = frontPackage();
@@ -131,9 +150,18 @@ public class HomeKeyService extends AccessibilityService {
         lastKeyAt = SystemClock.uptimeMillis();
         // 191 = the "Mi" button on Xiaomi remotes (elsewhere it is a gamepad key)
         boolean miKey = code == 191 && android.os.Build.MANUFACTURER.toLowerCase().contains("xiaomi");
-        if (code != KeyEvent.KEYCODE_HOME && !miKey) return false;
+        if (code != KeyEvent.KEYCODE_HOME && !miKey) {
+            // the owner picked something (OK, Alice / voice key): leave the stock screens alone
+            if (e.getAction() == KeyEvent.ACTION_DOWN && (code == KeyEvent.KEYCODE_DPAD_CENTER
+                    || code == KeyEvent.KEYCODE_ENTER || code == KeyEvent.KEYCODE_SEARCH
+                    || code == KeyEvent.KEYCODE_VOICE_ASSIST || code == KeyEvent.KEYCODE_ASSIST)) {
+                armedUntil = 0;
+            }
+            return false;
+        }
         if (e.getAction() == KeyEvent.ACTION_UP) {
             allowedStockPkg = null;
+            arm(8000);
             openHome();
         }
         return true; // consume both down and up
@@ -152,7 +180,23 @@ public class HomeKeyService extends AccessibilityService {
             if (!pkg.equals(getPackageName()) && !pkg.equals("android")) allowedStockPkg = null;
             return;
         }
-        if (pkg.equals(allowedStockPkg) || wasSame) return; // user is in it on purpose
+        if (pkg.equals(allowedStockPkg)) return; // opened from our launcher on purpose
+        if (armed()) {
+            // right after Home / power-on: the firmware put its screen over ours
+            if (armedRedirects >= 6) return; // it keeps fighting: give up rather than loop
+            armedRedirects++;
+            long since = SystemClock.uptimeMillis() - lastRedirect;
+            if (since < 1200) {
+                handler.postDelayed(() -> {
+                    String now = frontPackage();
+                    if (now != null && isStock(now) && !now.equals(allowedStockPkg)) openHome();
+                }, 1300 - since);
+            } else {
+                openHome();
+            }
+            return;
+        }
+        if (FEATURE_HOMES.contains(pkg) || wasSame) return; // the owner is using it (Alice search…)
         if (SystemClock.uptimeMillis() - lastRedirect < 1500) return; // loop guard
         openHome();
     }
