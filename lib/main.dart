@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/l10n.dart';
+import 'services/tip_jar.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
@@ -21,6 +22,9 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  // Store builds: listen for tip purchases from the start (the store may finish one later).
+  TipJar.instance.init();
 
   runApp(
     const ProviderScope(child: TvCleanzerApp()),

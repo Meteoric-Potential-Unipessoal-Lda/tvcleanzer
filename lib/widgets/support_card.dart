@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 
 import '../l10n/l10n.dart';
 import '../services/support.dart';
+import '../services/tip_jar.dart';
 import '../theme/app_theme.dart';
 
 /// A quiet line about the author (Telegram), and «Поддержать автора» where donations are allowed.
@@ -12,7 +13,16 @@ class SupportCard extends StatelessWidget {
   const SupportCard({super.key, this.compact = false});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => ListenableBuilder(
+        listenable: TipJar.instance,
+        builder: (context, _) => _build(context),
+      );
+
+  /// Store builds: tips through the store; other builds: Boosty / Buy Me a Coffee.
+  static bool get _canSupport =>
+      Support.storeBuild ? TipJar.instance.products.isNotEmpty : Support.canDonate;
+
+  Widget _build(BuildContext context) {
     final author = InkWell(
       borderRadius: BorderRadius.circular(10),
       onTap: () => _open(context, Support.telegram),
@@ -28,7 +38,7 @@ class SupportCard extends StatelessWidget {
         ]),
       ),
     );
-    if (!Support.canDonate) return Center(child: author);
+    if (!_canSupport) return Center(child: author);
     return Container(
       padding: EdgeInsets.all(compact ? 10 : 14),
       decoration: BoxDecoration(
@@ -51,7 +61,7 @@ class SupportCard extends StatelessWidget {
             side: const BorderSide(color: AppColors.cardBd),
             visualDensity: VisualDensity.compact,
           ),
-          onPressed: () => _donate(context),
+          onPressed: () => Support.storeBuild ? _tips(context) : _donate(context),
         ),
         const Gap(4),
         author,
@@ -68,6 +78,46 @@ class SupportCard extends StatelessWidget {
             SnackBar(content: Text(tr('Ссылка скопирована: {0}', [url]))));
       }
     }
+  }
+
+  static void _tips(BuildContext context) {
+    final jar = TipJar.instance;
+    final seen = jar.thanks;
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.bgCard,
+      builder: (c) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: ListenableBuilder(
+            listenable: jar,
+            builder: (c, _) => Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(tr('Поддержать автора'),
+                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: AppColors.fg)),
+              const Gap(6),
+              Text(
+                  jar.thanks > seen
+                      ? tr('Спасибо! Это очень помогает делать TVCleanzer дальше.')
+                      : tr('Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.'),
+                  style: TextStyle(fontSize: 13, color: jar.thanks > seen ? AppColors.ok : AppColors.fgMid, height: 1.4)),
+              const Gap(12),
+              Row(children: [
+                for (final p in jar.products) ...[
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: jar.busy ? null : () => jar.buy(p),
+                      child: Text(p.price),
+                    ),
+                  ),
+                  if (p != jar.products.last) const Gap(8),
+                ],
+              ]),
+              const Gap(8),
+            ]),
+          ),
+        ),
+      ),
+    );
   }
 
   static void _donate(BuildContext context) {

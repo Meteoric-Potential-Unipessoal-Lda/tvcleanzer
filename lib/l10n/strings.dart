@@ -3,6 +3,8 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Thank you! This really helps keep TVCleanzer going.',
+    'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'A tip for the developer: it unlocks nothing and does not renew — just a thank-you for the app.',
     'Включать, когда телевизор простоит': 'Start when the TV has been idle for',
     'Показать сейчас': 'Show now',
     'Фоторамка запущена на телевизоре': 'The photo frame is running on the TV',
@@ -580,6 +582,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Дякуємо! Це дуже допомагає розвивати TVCleanzer.',
+    'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Чайові розробнику: нічого не відкривають і не продовжуються — просто дякую за застосунок.',
     'Включать, когда телевизор простоит': 'Вмикати, коли телевізор простоїть',
     'Показать сейчас': 'Показати зараз',
     'Фоторамка запущена на телевизоре': 'Фоторамку запущено на телевізорі',
@@ -1157,6 +1161,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Спасибо! Это очень помогает делать TVCleanzer дальше.': '¡Gracias! Esto ayuda mucho a seguir con TVCleanzer.',
+    'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Una propina para el desarrollador: no desbloquea nada ni se renueva, solo es un agradecimiento por la app.',
     'Включать, когда телевизор простоит': 'Activar cuando la TV lleve inactiva',
     'Показать сейчас': 'Mostrar ahora',
     'Фоторамка запущена на телевизоре': 'El marco de fotos se está mostrando en la TV',
@@ -1734,6 +1740,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Obrigado! Isto ajuda muito a continuar o TVCleanzer.',
+    'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Uma gorjeta para o programador: não desbloqueia nada nem se renova — é só um obrigado pela app.',
     'Включать, когда телевизор простоит': 'Ligar quando a TV estiver parada há',
     'Показать сейчас': 'Mostrar agora',
     'Фоторамка запущена на телевизоре': 'A moldura de fotos está a correr na TV',
@@ -2311,6 +2319,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Danke! Das hilft sehr, TVCleanzer weiterzuentwickeln.',
+    'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Ein Trinkgeld für den Entwickler: schaltet nichts frei und verlängert sich nicht – einfach ein Dankeschön für die App.',
     'Включать, когда телевизор простоит': 'Starten, wenn der TV ruht seit',
     'Показать сейчас': 'Jetzt zeigen',
     'Фоторамка запущена на телевизоре': 'Der Bilderrahmen läuft auf dem TV',
@@ -2888,6 +2898,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Merci ! Cela aide beaucoup à faire avancer TVCleanzer.',
+    'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Un pourboire pour le développeur : il ne débloque rien et ne se renouvelle pas — juste un merci pour l’appli.',
     'Включать, когда телевизор простоит': 'Démarrer quand la TV est inactive depuis',
     'Показать сейчас': 'Afficher maintenant',
     'Фоторамка запущена на телевизоре': 'Le cadre photo s’affiche sur la TV',
@@ -3465,6 +3477,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Grazie! Aiuta molto a portare avanti TVCleanzer.',
+    'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Una mancia per lo sviluppatore: non sblocca nulla e non si rinnova, è solo un grazie per l’app.',
     'Включать, когда телевизор простоит': 'Avvia quando la TV è inattiva da',
     'Показать сейчас': 'Mostra ora',
     'Фоторамка запущена на телевизоре': 'La cornice foto è attiva sulla TV',
