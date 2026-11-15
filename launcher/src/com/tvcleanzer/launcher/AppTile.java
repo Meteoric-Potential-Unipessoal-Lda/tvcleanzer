@@ -37,18 +37,28 @@ final class AppTile extends LinearLayout {
             float focusScale, int anim, int ringColor) {
         super(c);
         this.app = app;
-        this.h = h;
         this.labelsAlways = labelsAlways;
         this.anim = anim;
         // soft: half the lift, a bit slower; off: no movement at all (weak TVs)
         this.focusScale = anim == Prefs.ANIM_OFF ? 1f
                 : anim == Prefs.ANIM_SOFT ? 1f + (focusScale - 1f) * 0.5f : focusScale;
         this.duration = anim == Prefs.ANIM_OFF ? 0 : anim == Prefs.ANIM_SOFT ? 260 : 180;
+        // The zoomed card and its ring stay INSIDE this view: room for them is left around a
+        // slightly smaller card, so no parent (shelf, scroll, row) can clip them.
+        int room = Math.round(w * (this.focusScale - 1f) / 2f) + Ui.dp(c, 3) + Ui.dp(c, 3);
+        int outW = w;
+        w = Math.max(1, w - 2 * room);
+        h = Math.round(w * (float) h / outW);
+        this.h = h;
+        setPadding(room, room, room, 0);
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER_HORIZONTAL);
         setClipChildren(false);
         setClipToPadding(false);
         setFocusable(true);
+        // Android 8+ paints a grey "default focus highlight" over focusable views without a
+        // focused-state background: on tiles it covered the colour ring ("рамка обрезается").
+        if (android.os.Build.VERSION.SDK_INT >= 26) setDefaultFocusHighlightEnabled(false);
         setClickable(true);
         setLongClickable(true);
 

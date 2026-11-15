@@ -236,6 +236,7 @@ public class SettingsActivity extends Activity {
         int ph = Ui.dp(this, 22), pv = Ui.dp(this, 16);
         row.setPadding(ph, pv, ph, pv);
         row.setFocusable(true);
+        if (android.os.Build.VERSION.SDK_INT >= 26) row.setDefaultFocusHighlightEnabled(false);
         row.setClickable(true);
         float radius = Ui.dp(this, 14);
         row.setBackground(Ui.round(0x14FFFFFF, radius));

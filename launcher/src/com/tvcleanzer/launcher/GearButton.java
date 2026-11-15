@@ -15,6 +15,9 @@ final class GearButton extends View {
         super(c);
         this.accent = accent;
         setFocusable(true);
+        // Android 8+ paints a grey "default focus highlight" over focusable views without a
+        // focused-state background: on tiles it covered the colour ring ("рамка обрезается").
+        if (android.os.Build.VERSION.SDK_INT >= 26) setDefaultFocusHighlightEnabled(false);
         setClickable(true);
         gear.setStyle(Paint.Style.STROKE);
         setOnFocusChangeListener((v, has) -> {

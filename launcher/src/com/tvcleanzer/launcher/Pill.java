@@ -18,6 +18,9 @@ final class Pill extends TextView {
         int ph = Ui.dp(c, 22), pv = Ui.dp(c, 11);
         setPadding(ph, pv, ph, pv);
         setFocusable(true);
+        // Android 8+ paints a grey "default focus highlight" over focusable views without a
+        // focused-state background: on tiles it covered the colour ring ("рамка обрезается").
+        if (android.os.Build.VERSION.SDK_INT >= 26) setDefaultFocusHighlightEnabled(false);
         setClickable(true);
         final float r = Ui.dp(c, 30);
         setBackground(Ui.glass(r));

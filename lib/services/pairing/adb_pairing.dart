@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show MissingPluginException, PlatformExce
 import 'package:pointycastle/export.dart' show InvalidCipherTextException;
 
 import '../adb_client.dart';
+import '../app_log.dart';
 import 'adb_crypto.dart';
 import 'spake2.dart';
 import 'tls_channel.dart';
@@ -39,6 +40,8 @@ class AdbPairing {
       throw PairingException(
           tr('На компьютере подключение по коду пока не работает. Включите на ТВ «Отладку по сети» (порт 5555) — такой ТВ найдётся сам — или подключите ТВ по коду с телефона.'));
     } on PlatformException catch (e) {
+      // refused (window closed, wrong port) vs timeout (phone and TV can't see each other): the report tells
+      AppLog.error('pair ${e.code}', e.message ?? '');
       throw PairingException(e.code == 'unsupported'
           ? (e.message ?? tr('Этот телефон не поддерживает сопряжение по коду.'))
           : tr('Не удалось подключиться к {0}:{1}. Проверьте адрес и порт в окне с кодом.', [host, port]));
