@@ -356,6 +356,12 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         seg(tr('Размер плиток'), [tr('Мелкие'), tr('Обычные'), tr('Крупные')], look.tiles,
             (v) => _setLook(look.copyWith(tiles: v))),
         const Gap(14),
+        if (look.style == 0) ...[
+          seg(tr('Избранное на главном экране'), [tr('Один ряд'), tr('По 4'), tr('По 5'), tr('По 6')],
+              const [0, 4, 5, 6].contains(look.favCols) ? const [0, 4, 5, 6].indexOf(look.favCols) : 0,
+              (v) => _setLook(look.copyWith(favCols: const [0, 4, 5, 6][v]))),
+          const Gap(14),
+        ],
         seg(tr('Источники (HDMI)'), [tr('Вверху'), tr('Внизу'), tr('Скрыты')], look.inputs,
             (v) => _setLook(look.copyWith(inputs: v))),
         const Gap(14),

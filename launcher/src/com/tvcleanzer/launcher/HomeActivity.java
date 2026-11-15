@@ -164,11 +164,24 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         clock.setTextSize(sizeSp * prefs.clockSize() / 100f);
         clock.setTextColor(0xFFFFFFFF);
         clock.setIncludeFontPadding(false);
+        clock.setSingleLine(true);
         clock.setLetterSpacing(-0.02f);
         clock.setShadowLayer(Ui.dp(this, 12), 0, Ui.dp(this, 2), 0x66000000);
         clock.setTypeface(android.graphics.Typeface.create(Prefs.CLOCK_FONTS[prefs.clockFont()],
                 android.graphics.Typeface.NORMAL));
         return clock;
+    }
+
+    /** Big clock never wider than the screen or taller than a third of it ("Огромные" on 720p TVs). */
+    private static void fitClock(TextClock c, int maxW, int maxH) {
+        android.graphics.Paint p = new android.graphics.Paint(c.getPaint());
+        float size = c.getTextSize();
+        p.setTextSize(size);
+        float w = p.measureText("88:88");
+        android.graphics.Paint.FontMetrics fm = p.getFontMetrics();
+        float h = fm.descent - fm.ascent;
+        float k = Math.min(1f, Math.min(maxW / Math.max(1f, w), maxH / Math.max(1f, h)));
+        if (k < 1f) c.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, size * k * 0.97f);
     }
 
     /** Clock style: date, a big clock and the weather in the middle; a glass dock below. */
@@ -177,6 +190,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         LinearLayout mid = new LinearLayout(this);
         mid.setOrientation(LinearLayout.VERTICAL);
         mid.setGravity(center ? Gravity.CENTER_HORIZONTAL : Gravity.START);
+        int textGravity = center ? Gravity.CENTER_HORIZONTAL : Gravity.START;
+        int screenH = getResources().getDisplayMetrics().heightPixels;
 
         TextClock date = new TextClock(this);
         date.setFormat12Hour("EEEE, d MMMM");
@@ -185,25 +200,34 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         date.setTextColor(0xD9FFFFFF);
         date.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
         date.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
-        mid.addView(date);
-        mid.addView(bigClock(150));
+        // Full width, one line: wrap_content clocks were measured before their text arrived on
+        // some TVs and showed "2" instead of "20:52" (owners' photos).
+        date.setSingleLine(true);
+        date.setGravity(textGravity);
+        mid.addView(date, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextClock big = bigClock(150);
+        big.setSingleLine(true);
+        big.setGravity(textGravity);
+        fitClock(big, screenW - 2 * padH, Math.round(screenH * 0.34f));
+        mid.addView(big, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         weatherView = Ui.text(this, 20, 0xD9FFFFFF, "sans-serif-medium");
         weatherView.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
+        weatherView.setGravity(textGravity);
         LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         wlp.topMargin = Ui.dp(this, 6);
         mid.addView(weatherView, wlp);
         updateWeatherView();
 
         FrameLayout.LayoutParams mlp = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-                center ? Gravity.CENTER_HORIZONTAL | Gravity.TOP : Gravity.START | Gravity.TOP);
-        mlp.topMargin = Math.round(getResources().getDisplayMetrics().heightPixels * 0.16f);
-        if (!center) mlp.leftMargin = padH;
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP);
+        mlp.topMargin = Math.round(screenH * 0.12f);
+        mid.setPadding(padH, 0, padH, 0);
         root.addView(mid, mlp);
 
         // Dock: inputs, favourites (icons), settings, all apps
+        favGridCols = 0; // one row in the dock: ▲▼ do not move a favourite here
         LinearLayout dock = row();
         dock.setGravity(Gravity.CENTER_VERTICAL);
         dock.setBackground(Ui.glass(Ui.dp(this, 34)));
@@ -357,6 +381,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private String movingPkg;
     private boolean movingFav;
     private int gridCols = 4;
+    private int favGridCols = 0;
 
     private void startMove(AppEntry a, boolean fav, AppTile t) {
         movingPkg = a.pkg;
@@ -380,8 +405,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         switch (code) {
             case KeyEvent.KEYCODE_DPAD_LEFT: step = -1; break;
             case KeyEvent.KEYCODE_DPAD_RIGHT: step = 1; break;
-            case KeyEvent.KEYCODE_DPAD_UP: step = movingFav ? 0 : -gridCols; break;
-            case KeyEvent.KEYCODE_DPAD_DOWN: step = movingFav ? 0 : gridCols; break;
+            case KeyEvent.KEYCODE_DPAD_UP: step = movingFav ? -favGridCols : -gridCols; break;
+            case KeyEvent.KEYCODE_DPAD_DOWN: step = movingFav ? favGridCols : gridCols; break;
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_BACK:
@@ -600,12 +625,41 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             LinearLayout.LayoutParams shp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             shp.topMargin = Ui.dp(this, 12);
+            int inset = Ui.dp(this, 22);
+            final int fc = prefs.favCols();
+            favGridCols = fc;
+            if (fc > 0) {
+                // Several rows, fc per row: more favourites at a glance (owners asked for 6–8).
+                LinearLayout grid = new LinearLayout(this);
+                grid.setOrientation(LinearLayout.VERTICAL);
+                grid.setClipChildren(false);
+                grid.setClipToPadding(false);
+                grid.setPadding(inset, Ui.dp(this, 10), inset, Ui.dp(this, 10));
+                int fw = (contentW - 2 * inset - gap * (fc - 1)) / fc;
+                int fh = fw * 9 / 16;
+                LinearLayout row = null;
+                for (int i = 0; i < favorites.size(); i++) {
+                    if (i % fc == 0) {
+                        row = row();
+                        row.setPadding(0, Ui.dp(this, 6), 0, Ui.dp(this, 2));
+                        grid.addView(row);
+                    }
+                    AppTile t = tile(favorites.get(i), fw, fh, skin, labelsAlways, fc >= 6 ? 12 : 13, 1.1f, anim, ringColor);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    if (i % fc > 0) lp.leftMargin = gap;
+                    row.addView(t, lp);
+                    tiles.add(t);
+                }
+                shelf.setClipChildren(false);
+                shelf.addView(grid);
+                page.addView(shelf, shp);
+            } else {
             HorizontalScrollView hs = new HorizontalScrollView(this);
             hs.setClipChildren(true);
             hs.setClipToPadding(false);
             hs.setHorizontalScrollBarEnabled(false);
             hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
-            int inset = Ui.dp(this, 22);
             // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
             int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
             hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
@@ -621,6 +675,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.addView(row);
             shelf.addView(hs);
             page.addView(shelf, shp);
+            }
         }
 
         List<AppEntry> rest = new ArrayList<>();

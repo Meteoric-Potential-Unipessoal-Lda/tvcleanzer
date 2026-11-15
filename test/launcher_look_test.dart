@@ -35,6 +35,9 @@ void main() {
     expect(l.extras, contains('--ei style 1'));
     expect(l.extras, contains("--es weatherCity 'Saint-Jean d'\\''Arc'"));
     expect(l.extras, contains('--ef lat 51.7682'));
+    expect(LauncherLook.fromMap({'favCols': '5'}).favCols, 5);
+    expect(LauncherLook.fromMap({'favCols': '3'}).favCols, 0);
+    expect(const LauncherLook(favCols: 6).extras, contains('--ei favCols 6'));
     final off = LauncherLook.fromMap({'weatherCity': '-'});
     expect(off.weatherCity, '');
     expect(off.clockPos, 1);

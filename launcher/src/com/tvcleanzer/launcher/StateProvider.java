@@ -42,6 +42,7 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"clock24", p.clock24() ? 1 : 0});
             c.addRow(new Object[]{"labels", p.labelsAlways() ? 1 : 0});
             c.addRow(new Object[]{"inputs", p.inputsPos()});
+            c.addRow(new Object[]{"favCols", p.favCols()});
             c.addRow(new Object[]{"style", p.style()});
             c.addRow(new Object[]{"clockPos", p.clockPos()});
             c.addRow(new Object[]{"clockSize", p.clockSize()});

@@ -16,6 +16,8 @@ class LauncherLook {
   final bool labels;
   /// HDMI/inputs row: 0 above favourites, 1 under all apps, 2 hidden (launcher 0.6+).
   final int inputs;
+  /// Favourites: 0 one scrolling row, 4/5/6 a grid with that many per row (launcher 0.11+).
+  final int favCols;
   /// Home screen look (launcher 0.7+): 0 tiles, 1 big clock with a dock.
   final int style;
   /// Clock style: 0 left, 1 centre.
@@ -38,6 +40,7 @@ class LauncherLook {
     this.clock24 = true,
     this.labels = false,
     this.inputs = 0,
+    this.favCols = 0,
     this.style = 0,
     this.clockPos = 1,
     this.clockSize = 100,
@@ -48,7 +51,7 @@ class LauncherLook {
   });
 
   LauncherLook copyWith({int? anim, bool? ringAccent, int? tiles, int? wallDim,
-          bool? ambient, bool? clock24, bool? labels, int? inputs, int? style, int? clockPos,
+          bool? ambient, bool? clock24, bool? labels, int? inputs, int? favCols, int? style, int? clockPos,
           int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon}) =>
       LauncherLook(
         anim: anim ?? this.anim,
@@ -59,6 +62,7 @@ class LauncherLook {
         clock24: clock24 ?? this.clock24,
         labels: labels ?? this.labels,
         inputs: inputs ?? this.inputs,
+        favCols: favCols ?? this.favCols,
         style: style ?? this.style,
         clockPos: clockPos ?? this.clockPos,
         clockSize: clockSize ?? this.clockSize,
@@ -71,7 +75,7 @@ class LauncherLook {
   /// Extras for `am broadcast … com.tvcleanzer.launcher.APPLY`.
   String get extras => '--ei anim $anim --ez ringAccent $ringAccent --ei tiles $tiles '
       '--ei wallDim $wallDim --ez ambient $ambient --ez clock24 $clock24 --ez labels $labels '
-      '--ei inputs $inputs --ei style $style --ei clockPos $clockPos --ei clockSize $clockSize '
+      '--ei inputs $inputs --ei favCols $favCols --ei style $style --ei clockPos $clockPos --ei clockSize $clockSize '
       '--ei clockFont $clockFont --es weatherCity ${_q(weatherCity)}'
       '${weatherCity.isEmpty ? '' : ' --ef lat ${lat.toStringAsFixed(4)} --ef lon ${lon.toStringAsFixed(4)}'}';
 
@@ -80,7 +84,7 @@ class LauncherLook {
 
   Map<String, Object> toJson() => {
         'anim': anim, 'ringAccent': ringAccent, 'tiles': tiles, 'wallDim': wallDim,
-        'ambient': ambient, 'clock24': clock24, 'labels': labels, 'inputs': inputs,
+        'ambient': ambient, 'clock24': clock24, 'labels': labels, 'inputs': inputs, 'favCols': favCols,
         'style': style, 'clockPos': clockPos, 'clockSize': clockSize, 'clockFont': clockFont,
         'weatherCity': weatherCity, 'lat': lat, 'lon': lon,
       };
@@ -100,6 +104,7 @@ class LauncherLook {
         clock24: _b(m['clock24'], true),
         labels: _b(m['labels'], false),
         inputs: _i(m['inputs'], 0, 0, 2),
+        favCols: const [4, 5, 6].contains(_i(m['favCols'], 0, 0, 6)) ? _i(m['favCols'], 0, 0, 6) : 0,
         style: _i(m['style'], 0, 0, 1),
         clockPos: _i(m['clockPos'], 1, 0, 1),
         clockSize: _i(m['clockSize'], 100, 60, 180),

@@ -25,6 +25,7 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.hasExtra("wallDim")) p.setWallDim(intent.getIntExtra("wallDim", 40));
         if (intent.hasExtra("ambient")) p.setAmbient(intent.getBooleanExtra("ambient", true));
         if (intent.hasExtra("inputs")) p.setInputsPos(intent.getIntExtra("inputs", Prefs.INPUTS_TOP));
+        if (intent.hasExtra("favCols")) p.setFavCols(intent.getIntExtra("favCols", 0));
         if (intent.hasExtra("style")) p.setStyle(intent.getIntExtra("style", Prefs.STYLE_TILES));
         if (intent.hasExtra("clockPos")) p.setClockPos(intent.getIntExtra("clockPos", Prefs.CLOCK_CENTER));
         if (intent.hasExtra("clockSize")) p.setClockSize(intent.getIntExtra("clockSize", 100));

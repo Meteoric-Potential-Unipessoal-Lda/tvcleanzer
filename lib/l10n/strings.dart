@@ -3,6 +3,11 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Избранное на главном экране': 'Favourites on the home screen',
+    'Один ряд': 'One row',
+    'По 4': '4 per row',
+    'По 5': '5 per row',
+    'По 6': '6 per row',
     'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'The TV gets the weather from Open-Meteo or met.no every half hour; nothing about you is sent there.',
     'Убираем PatchWall…': 'Removing PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'the TV can’t get the weather: check that it has internet',
@@ -544,6 +549,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Избранное на главном экране': 'Обране на головному екрані',
+    'Один ряд': 'Один ряд',
+    'По 4': 'По 4',
+    'По 5': 'По 5',
+    'По 6': 'По 6',
     'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'Погоду телевізор бере з Open-Meteo або met.no раз на пів години; про вас туди нічого не надсилається.',
     'Убираем PatchWall…': 'Прибираємо PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'телевізор не може отримати погоду: перевірте, що на ньому є інтернет',
@@ -1085,6 +1095,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Избранное на главном экране': 'Favoritos en la pantalla principal',
+    'Один ряд': 'Una fila',
+    'По 4': '4 por fila',
+    'По 5': '5 por fila',
+    'По 6': '6 por fila',
     'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'La TV obtiene el tiempo de Open-Meteo o met.no cada media hora; no se envía nada sobre ti.',
     'Убираем PatchWall…': 'Quitando PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV no puede obtener el tiempo: comprueba que tenga internet',
@@ -1626,6 +1641,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Избранное на главном экране': 'Favoritos no ecrã principal',
+    'Один ряд': 'Uma fila',
+    'По 4': '4 por fila',
+    'По 5': '5 por fila',
+    'По 6': '6 por fila',
     'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'A TV obtém a meteorologia do Open-Meteo ou do met.no a cada meia hora; nada sobre si é enviado.',
     'Убираем PatchWall…': 'A remover o PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'a TV não consegue obter a meteorologia: verifique se tem internet',
@@ -2167,6 +2187,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Избранное на главном экране': 'Favoriten auf dem Startbildschirm',
+    'Один ряд': 'Eine Reihe',
+    'По 4': '4 pro Reihe',
+    'По 5': '5 pro Reihe',
+    'По 6': '6 pro Reihe',
     'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'Der TV holt das Wetter alle halbe Stunde von Open-Meteo oder met.no; über Sie wird nichts gesendet.',
     'Убираем PatchWall…': 'PatchWall wird entfernt…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'der TV bekommt kein Wetter: prüfen Sie, ob er Internet hat',
@@ -2708,6 +2733,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Избранное на главном экране': 'Favoris sur l’écran d’accueil',
+    'Один ряд': 'Une rangée',
+    'По 4': '4 par rangée',
+    'По 5': '5 par rangée',
+    'По 6': '6 par rangée',
     'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'La TV récupère la météo sur Open-Meteo ou met.no toutes les demi-heures ; rien sur vous n’y est envoyé.',
     'Убираем PatchWall…': 'Retrait de PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV n’arrive pas à obtenir la météo : vérifiez qu’elle a internet',
@@ -3249,6 +3279,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Избранное на главном экране': 'Preferiti nella schermata principale',
+    'Один ряд': 'Una fila',
+    'По 4': '4 per fila',
+    'По 5': '5 per fila',
+    'По 6': '6 per fila',
     'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'La TV prende il meteo da Open-Meteo o met.no ogni mezz’ora; nulla su di te viene inviato.',
     'Убираем PatchWall…': 'Rimozione di PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV non riesce a ottenere il meteo: verifica che abbia internet',

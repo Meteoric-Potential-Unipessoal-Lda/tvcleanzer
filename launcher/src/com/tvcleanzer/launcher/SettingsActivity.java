@@ -107,6 +107,13 @@ public class SettingsActivity extends Activity {
                     : now != null ? now : prefs.weatherCity() + ": загружается…";
         }
         addRow(skin, "Погода", w, null);
+        final int[] favSteps = {0, 4, 5, 6};
+        int fc = prefs.favCols();
+        addRow(skin, "Избранное", fc == 0 ? "Один ряд" : "Сетка по " + fc, () -> {
+            int k = 0;
+            for (int i = 0; i < favSteps.length; i++) if (favSteps[i] == prefs.favCols()) k = i;
+            prefs.setFavCols(favSteps[(k + 1) % favSteps.length]);
+        });
         String[] inputsNames = {"Вверху", "Внизу", "Скрыты"};
         addRow(skin, "Источники (HDMI)", inputsNames[prefs.inputsPos()],
                 () -> prefs.setInputsPos((prefs.inputsPos() + 1) % 3));

@@ -17,7 +17,7 @@ final class Prefs {
             FAVORITES = "favorites", HIDDEN = "hidden",
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
-            AMBIENT = "ambient", INPUTS_POS = "inputsPos", AUTOSTART = "autostart",
+            AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", AUTOSTART = "autostart",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
@@ -66,6 +66,9 @@ final class Prefs {
     void setAmbient(boolean v) { sp.edit().putBoolean(AMBIENT, v).apply(); }
     int inputsPos()          { return clamp(sp.getInt(INPUTS_POS, INPUTS_TOP), 0, 2); }
     void setInputsPos(int v) { sp.edit().putInt(INPUTS_POS, clamp(v, 0, 2)).apply(); }
+    /** Favourites: 0 = one scrolling row, 4/5/6 = a grid with that many per row (several rows). */
+    int favCols()            { int v = sp.getInt(FAV_COLS, 0); return v == 4 || v == 5 || v == 6 ? v : 0; }
+    void setFavCols(int v)   { sp.edit().putInt(FAV_COLS, v == 4 || v == 5 || v == 6 ? v : 0).apply(); }
     /** App opened when the TV is switched on ("" = just this home screen). */
     String autostart()       { return sp.getString(AUTOSTART, ""); }
     void setAutostart(String pkg) { sp.edit().putString(AUTOSTART, pkg == null ? "" : pkg).apply(); }
