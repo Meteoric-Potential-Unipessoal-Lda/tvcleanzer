@@ -17,6 +17,8 @@ PROTECTED = [r'^android$',
  r'^com\.android\.(systemui|settings|providers\..*|shell|phone|bluetooth|packageinstaller|permissioncontroller|inputdevices|externalstorage|webview|networkstack.*|tv\.settings|tv\.remote.*|keychain|location\.fused|se|nfc|server\..*|captiveportallogin|certinstaller|documentsui|vpndialogs|wallpaperbackup|backupconfirm|proxyhandler|sharedstoragebackup|dynsystem|localtransport|statementservice|tv)$',
  r'^com\.google\.android\.(gms|gsf|gsf\.login|ext\..*|webview|packageinstaller|permissioncontroller|tv\.remote\.service|tvlauncher|apps\.tv\.launcherx|leanbacklauncher|inputmethod\..*|tts|configupdater|networkstack.*|modulemetadata|overlay\..*)$',
  r'^com\.android\.vending$',
+ # Live Channels: the tuner player behind «Live TV» on many Android TVs (MiTV L55M5-5ARU report)
+ r'^com\.google\.android\.tv$',
  r'inputmethod|keyboard|sogou|latinime|leanbackime|(^|[._])ime([._]|$)',
  r'bluetooth|(^|[._])\w*remote\w*([._]|$)|(^|[._])(rcu\w*|autopair|btmanager)([._]|$)',
  r'(^|[._])(mediatek|realtek|amlogic|rtk|mstar|hisilicon|novatek)([._]|$)',
@@ -109,7 +111,7 @@ def label_from_comment(c):
 
 
 T='Телеметрия: отправляет данные производителю'; A='Реклама и навязанные рекомендации'; R='Следит, что вы смотрите (ACR)'
-P='Ставит партнёрские приложения без спроса'; D='Демо-режим для витрины магазина'; F='Функция или приложение: уберите, только если не пользуетесь'
+P='Ставит партнёрские приложения без спроса'; D='Демо-режим для витрины магазина'; F='Обычное приложение: уберите, если не пользуетесь'
 OVERRIDES = {
  'com.google.android.feedback': ('Отзывы Google', 'Отправляет отчёты об ошибках в Google'),
  'com.google.android.play.games': ('Play Игры', 'Игровой сервис Google, на ТВ почти не используется'),
@@ -213,6 +215,55 @@ RU = {
  'com.vk.tv': ('VK Видео', F, 'caution'),
 }
 
+# Plain words for what an app does and what stops working (owners said the generic lines tell them nothing).
+# Exact packages first, then name patterns; both only replace the generic reasons.
+STREAM='Онлайн-кинотеатр: уберите, если нет подписки и не смотрите'
+MUSIC='Музыка: уберите, если не слушаете музыку на телевизоре'
+SAVER='Заставка, когда ТВ простаивает. Без неё будет просто тёмный экран'
+CAST='Трансляция с телефона на ТВ: уберите, если не выводите видео с телефона'
+YT='YouTube: уберите, только если смотрите его в другом приложении'
+BROWSER='Браузер: уберите, если не открываете сайты на телевизоре'
+PLAYER='Плеер для видео: если после удаления что-то перестанет играть, верните его в «Истории»'
+GALLERY='Фото и видео с флешки: уберите, если не смотрите их на ТВ'
+ALEXA='Часть Alexa: уберите, если не пользуетесь голосовым помощником Amazon'
+VOICE='Голосовой помощник: без него не работает кнопка микрофона на пульте'
+CAMERA='Камера: на телевизоре без камеры не нужна'
+DESCR = {
+ 'com.google.android.videos': STREAM, 'com.amazon.amazonvideo.livingroom': STREAM, 'com.netflix.ninja': STREAM,
+ 'com.disney.disneyplus': STREAM, 'ru.more.play': STREAM, 'ru.mts.mtstv': STREAM, 'ru.ivi.client': STREAM,
+ 'tv.lfstrm.smotreshka_stb': STREAM,
+ 'com.google.android.youtube.tvmusic': MUSIC, 'com.spotify.tv.android': MUSIC, 'com.xiaomi.mimusic2': MUSIC,
+ 'com.yandex.tv.music': MUSIC, 'ru.sberdevices.music': MUSIC,
+ 'com.google.android.backdrop': SAVER, 'com.google.android.apps.tv.dreamx': SAVER, 'com.android.dreams.basic': SAVER,
+ 'com.mitv.dream': SAVER,
+ 'com.google.android.youtube.tv': YT, 'com.yandex.tv.ytplayer': YT, 'ru.sberdevices.startube': YT,
+ 'com.yandex.browser.tv': BROWSER, 'ru.sberdevices.starbrowser': BROWSER,
+ 'com.yandex.tv.videoplayer': PLAYER, 'com.cultraview.newfilemanager': 'Файлы и плеер для флешки: уберите, если не смотрите видео с USB',
+ 'com.mitv.gallery': GALLERY,
+ 'com.tcl.assistant': VOICE,
+ 'com.android.companiondevicemanager': 'Подключение часов и других гаджетов к ТВ; почти никому не нужно',
+ 'com.android.pacprocessor': 'Автонастройка прокси по PAC-файлу: нужна только в офисных сетях',
+ 'com.cvte.tv.ucservice': 'Аккаунт производителя (CVTE): нужен только для его фирменных сервисов',
+ 'com.android.camera2': CAMERA, 'com.android.cameraextensions': CAMERA,
+ 'com.google.android.syncadapters.contacts': 'Синхронизация контактов: на ТВ бесполезна',
+ 'com.android.managedprovisioning': 'Корпоративное управление устройством: дома не нужно',
+ 'com.android.cellbroadcastreceiver': 'Экстренные оповещения через сотовую сеть: на ТВ без SIM-карты не работают',
+ 'com.android.cellbroadcastservice': 'Экстренные оповещения через сотовую сеть: на ТВ без SIM-карты не работают',
+}
+DESCR_RX = [(re.compile(a, re.I), b) for a, b in [
+ (r'netflix|primevideo|amazonvideo|disney|hulu|(?<![a-z])hbo|okko|kinopoisk|ivi\.client|kion', STREAM),
+ (r'miracast|dlna|screenshare|screen_?mirror|airplay|\.dmr\b|(?<!broad)cast(?!le)', CAST),
+ (r'dream|screensaver|backdrop', SAVER),
+ (r'hbbtv', 'HbbTV: интерактивные кнопки эфирных каналов. Сами каналы работают и без него'),
+ (r'alexa', ALEXA),
+ (r'(?<!media)(?<!file)browser', BROWSER),
+ (r'gallery|album', GALLERY),
+ (r'camera', CAMERA),
+ (r'(?<!sound)(?<!audio)music(?!fx)|spotify', MUSIC),
+ (r'videoplayer|movieplayer|mediaplayer', PLAYER),
+]]
+GENERIC = {DEFAULT_REASON, F}
+
 LAUNCHER_OK = re.compile(r'launcher\.(recommendations|partnerwidget|customizer)$', re.I)
 def protected(p):
     # any brand's home screen stays: we clean, we don't replace the TV's launcher here
@@ -258,7 +309,7 @@ for p, a in active.items():
     lbl = None
     if comments[p]: lbl = label_from_comment(comments[p].most_common(1)[0][0])
     lbl = lbl or pretty(p)
-    if ask and reason == DEFAULT_REASON: reason = 'Функция или приложение: уберите, только если не пользуетесь'
+    if ask and reason == DEFAULT_REASON: reason = F
     if p in OVERRIDES:
         lbl, reason = OVERRIDES[p]
     out.append({'packageName': p, 'label': lbl, 'verdict': verdict,
@@ -282,6 +333,12 @@ for p, (lbl, reason, verdict) in RU.items():
     n = e['lists'] or active[p]
     e.update(label=lbl, verdict=verdict,
              reason=f'{reason} · скрывают в {n} из {len(files)} проверенных списков' if n else reason, lists=n)
+for e in out:
+    base, _, rest = e['reason'].partition(' · ')
+    if base not in GENERIC: continue
+    p = e['packageName']
+    new = DESCR.get(p) or next((r for rx, r in DESCR_RX if rx.search(p) or rx.search(e['label'])), None)
+    if new: e['reason'] = new + (' · ' + rest if rest else '')
 out.sort(key=lambda e: (-e['lists'], e['packageName']))
 import datetime
 # Phones download this file from GitHub and use it if "version" is higher:

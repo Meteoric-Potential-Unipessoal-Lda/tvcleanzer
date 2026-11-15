@@ -11,6 +11,9 @@ class Protection {
     r'^com\.android\.(systemui|settings|providers\..*|shell|phone|bluetooth|packageinstaller|permissioncontroller|inputdevices|externalstorage|webview|networkstack.*|tv\.settings|tv\.remote.*|keychain|location\.fused|se|nfc|server\..*|captiveportallogin|certinstaller|documentsui|vpndialogs|wallpaperbackup|backupconfirm|proxyhandler|sharedstoragebackup|dynsystem|localtransport|statementservice|tv)$',
     r'^com\.google\.android\.(gms|gsf|gsf\.login|ext\..*|webview|packageinstaller|permissioncontroller|tv\.remote\.service|tvlauncher|apps\.tv\.launcherx|leanbacklauncher|inputmethod\..*|tts|configupdater|networkstack.*|modulemetadata|overlay\..*)$',
     r'^com\.android\.vending$',
+    // Live Channels: on many Android TVs (Xiaomi Mi TV 4S and others) it is the antenna/cable player
+    // behind «Live TV»; without it Live TV only shows the last HDMI input (MiTV L55M5-5ARU report).
+    r'^com\.google\.android\.tv$',
     r'inputmethod|keyboard|sogou|latinime|leanbackime|(^|[._])ime([._]|$)',
     r'bluetooth|(^|[._])\w*remote\w*([._]|$)|(^|[._])(rcu\w*|autopair|btmanager)([._]|$)',
     r'(^|[._])(mediatek|realtek|amlogic|rtk|mstar|hisilicon|novatek)([._]|$)',

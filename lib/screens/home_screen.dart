@@ -48,6 +48,16 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
     );
   }
 
+  /// «Remove from the list» on a TV card (an old address, a TV that is gone).
+  Future<void> remove(TvDevice d) async {
+    state = DiscoveryState(
+      devices: state.devices.where((e) => e.id != d.id).toList(),
+      scanning: state.scanning,
+      error: state.error,
+    );
+    if (_ref.read(currentTvProvider)?.id == d.id) await _ref.read(currentTvProvider.notifier).forget();
+  }
+
   /// Leaves the demo: the demo TV disappears, the last real TV comes back.
   Future<void> exitDemo() async {
     state = DiscoveryState(

@@ -41,6 +41,15 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"ambient", p.ambient() ? 1 : 0});
             c.addRow(new Object[]{"clock24", p.clock24() ? 1 : 0});
             c.addRow(new Object[]{"labels", p.labelsAlways() ? 1 : 0});
+            c.addRow(new Object[]{"inputs", p.inputsPos()});
+            c.addRow(new Object[]{"style", p.style()});
+            c.addRow(new Object[]{"clockPos", p.clockPos()});
+            c.addRow(new Object[]{"clockSize", p.clockSize()});
+            c.addRow(new Object[]{"clockFont", p.clockFont()});
+            c.addRow(new Object[]{"weatherCity", p.hasWeather() ? p.weatherCity() : "-"});
+            c.addRow(new Object[]{"lat", p.weatherLat()});
+            c.addRow(new Object[]{"lon", p.weatherLon()});
+            c.addRow(new Object[]{"autostart", p.autostart().isEmpty() ? "-" : p.autostart()});
             return c;
         }
         // apps: label last, so commas in names don't break parsing on the phone

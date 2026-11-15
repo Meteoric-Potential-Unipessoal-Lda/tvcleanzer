@@ -112,6 +112,10 @@ final class AppTile extends LinearLayout {
     }
 
     private void onFocus(boolean has) {
+        // a zoomed tile must be drawn over the next row / the shelf edge
+        android.view.ViewParent parent = getParent();
+        if (parent instanceof android.view.View) ((android.view.View) parent).setTranslationZ(has ? 2f : 0f);
+        setTranslationZ(has ? 1f : 0f);
         float s = has ? focusScale : 1f;
         float z = anim == Prefs.ANIM_OFF ? 0 : Ui.dp(getContext(), anim == Prefs.ANIM_SOFT ? 10 : 20);
         card.animate().scaleX(s).scaleY(s)

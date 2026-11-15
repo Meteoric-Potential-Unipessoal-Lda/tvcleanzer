@@ -401,7 +401,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 5;
+  static const bundledLauncherVersion = 7;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -418,7 +418,7 @@ class AdbPackageManager {
   /// Installs [apk] on the TV, makes it the home screen, applies [skin] and
   /// presses Home so the user sees it. Needs Android 7+ on the TV.
   /// [onStep] reports progress for the UI.
-  Future<void> installLauncher(TvDevice device, Uint8List apk, String skin,
+  Future<LauncherBind> installLauncher(TvDevice device, Uint8List apk, String skin,
       {LauncherLook? look, void Function(String step)? onStep}) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
@@ -436,28 +436,127 @@ class AdbPackageManager {
       final res = await adb.execWithInput(
           'cmd package install -r -S ${apk.length}', apk,
           timeout: const Duration(seconds: 90));
-      if (!res.contains('Success')) {
-        throw AdbException(tr('Установка не удалась: {0}', [res.trim()]));
-      }
+      if (!res.contains('Success')) throw AdbException(_installError(res));
 
-      onStep?.call(tr('Делаем главным экраном…'));
-      // Android 10+: the HOME role; older: preferred home activity.
+      await adb.shell(_applyCommand(skin, look));
+      return await _bind(adb, sdk, onStep: onStep);
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// "Make it the home screen again" without reinstalling (Launcher tab).
+  Future<LauncherBind> rebindLauncher(TvDevice device, {void Function(String step)? onStep}) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final sdk = int.tryParse((await adb.shell('getprop ro.build.version.sdk')).trim()) ?? device.sdkVersion;
+      return await _bind(adb, sdk, onStep: onStep);
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Stock home screens we may take off the TV (for user 0, restorable) when the firmware
+  /// keeps bringing them back: Android TV / Leanback launchers and Xiaomi PatchWall
+  /// (it opens itself at every power-on, CleanYourTV xiaomi-mi-tv-4a). Never Google TV's
+  /// launcherx (Home falls to a recovery screen), never Yandex/Sber homes (their apps live there).
+  static const _removableHomes = [
+    'com.google.android.tvlauncher',
+    'com.google.android.leanbacklauncher',
+    'com.mitv.tvhome.atv',
+  ];
+
+  static String? _pkgOf(String comp) => comp.contains('/') ? comp.split('/').first : null;
+
+  Future<String> _resolvedHome(AdbClient adb) async {
+    final out = await adb.shell('cmd package resolve-activity --brief '
+        '-a android.intent.action.MAIN -c android.intent.category.HOME 2>/dev/null');
+    return out.split('\n').map((l) => l.trim()).lastWhere((l) => l.contains('/'), orElse: () => '');
+  }
+
+  Future<String?> _frontPackage(AdbClient adb) async {
+    final out = await adb.shell('dumpsys activity activities 2>/dev/null | grep -m2 -E "mResumedActivity|topResumedActivity"');
+    final m = RegExp(r'\s([A-Za-z0-9_.]+)/[A-Za-z0-9_.$]+').firstMatch(out);
+    return m?.group(1);
+  }
+
+  /// Home key -> is our launcher in front? Two tries (some TVs take a moment).
+  Future<bool> _homeOpensOurs(AdbClient adb) async {
+    for (var i = 0; i < 2; i++) {
+      await adb.shell('input keyevent 3');
+      await Future<void>.delayed(const Duration(milliseconds: 2500));
+      if (await _frontPackage(adb) == launcherPkg) return true;
+    }
+    return false;
+  }
+
+  /// Makes our launcher the home screen and checks it with a real Home press:
+  ///  1. HOME role / preferred home + our Home-key service;
+  ///  2. still not ours: take the stock Android TV launcher or PatchWall off the TV
+  ///     (restorable; only after our launcher is confirmed to open), then check again.
+  Future<LauncherBind> _bind(AdbClient adb, int sdk, {void Function(String step)? onStep}) async {
+    onStep?.call(tr('Делаем главным экраном…'));
+    if (sdk >= 29) {
+      final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
+      if (r.toLowerCase().contains('exception')) await adb.shell('cmd package set-home-activity $launcherHome');
+    } else {
+      await adb.shell('cmd package set-home-activity $launcherHome');
+    }
+    // Firmwares that force their own launcher on Home: our accessibility
+    // service catches the Home key. Re-adding it rebinds after an update.
+    await _setHomeKeyService(adb, enabled: false);
+    await _setHomeKeyService(adb, enabled: true);
+    await Future<void>.delayed(const Duration(seconds: 1));
+
+    onStep?.call(tr('Проверяем кнопку «Домой»…'));
+    final resolved = _pkgOf(await _resolvedHome(adb));
+    if (await _homeOpensOurs(adb) && resolved == launcherPkg) return LauncherBind.role;
+
+    // Our launcher must open at all before anything is taken away.
+    await adb.shell('am start -n $launcherHome');
+    await Future<void>.delayed(const Duration(milliseconds: 2500));
+    if (await _frontPackage(adb) != launcherPkg) return LauncherBind.failed;
+
+    final installed = _parsePackageList(await adb.shell('pm list packages')).toSet();
+    final stock = _removableHomes.where(installed.contains).toList();
+    final googleTv = installed.contains('com.google.android.apps.tv.launcherx');
+    if (stock.isNotEmpty && !googleTv) {
+      onStep?.call(tr('Закрепляем лаунчер…'));
+      final viaDisable = usesDisable(installed);
+      final removed = <String>[];
+      for (final p in stock) {
+        final out = viaDisable
+            ? await adb.shell('pm disable-user --user 0 $p')
+            : await adb.shell('pm uninstall -k --user 0 $p');
+        if (out.toLowerCase().contains('success') || out.contains('new state: disabled')) removed.add(p);
+      }
       if (sdk >= 29) {
-        final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
-        if (r.toLowerCase().contains('exception')) {
-          await adb.shell('cmd package set-home-activity $launcherHome');
-        }
+        await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
       } else {
         await adb.shell('cmd package set-home-activity $launcherHome');
       }
-      // Firmwares that force their own launcher on Home: our accessibility
-      // service catches the Home key. Re-adding it rebinds after an update.
-      await _setHomeKeyService(adb, enabled: false);
-      await _setHomeKeyService(adb, enabled: true);
-      await adb.shell(_applyCommand(skin, look));
-      await adb.shell('input keyevent 3');
-    } finally {
-      adb.close();
+      if (await _homeOpensOurs(adb)) return LauncherBind.hard;
+      // Did not help: never leave the TV without its own launcher.
+      for (final p in removed) {
+        await adb.shell('pm install-existing $p');
+        await adb.shell('pm enable $p');
+      }
+    }
+    // Google TV, Yandex, Sber…: the stock home stays; our service sends Home to us.
+    await adb.shell('input keyevent 3');
+    await Future<void>.delayed(const Duration(milliseconds: 2500));
+    return await _frontPackage(adb) == launcherPkg ? LauncherBind.service : LauncherBind.failed;
+  }
+
+  /// Puts back stock home screens taken off by [_bind] (when our launcher is removed).
+  Future<void> _restoreStockHomes(AdbClient adb) async {
+    final all = _parsePackageList(await adb.shell('pm list packages -u 2>/dev/null')).toSet();
+    final now = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
+    for (final p in _removableHomes) {
+      if (!all.contains(p) || now.contains(p)) continue;
+      await adb.shell('pm install-existing $p');
+      await adb.shell('pm enable $p');
     }
   }
 
@@ -477,6 +576,7 @@ class AdbPackageManager {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
+      await _restoreStockHomes(adb);
       await _setHomeKeyService(adb, enabled: false);
       await adb.shell('pm uninstall $launcherPkg');
       await adb.shell('input keyevent 3');
@@ -509,8 +609,8 @@ class AdbPackageManager {
         throw AdbException(tr('Лаунчер не ответил. Обновите его на ТВ кнопкой «Обновить лаунчер».'));
       }
       final kv = <String, String>{};
-      for (final m in RegExp(r'key=(\w+), value=(\S+)').allMatches(set)) {
-        kv[m.group(1)!] = m.group(2)!;
+      for (final m in RegExp(r'key=(\w+), value=(.*)$', multiLine: true).allMatches(set)) {
+        kv[m.group(1)!] = m.group(2)!.trim();
       }
       return LauncherState(
         apps: apps,
@@ -629,6 +729,35 @@ class AdbPackageManager {
   static String _applyCommand(String skin, [LauncherLook? look]) =>
       'am broadcast -n $launcherPkg/.ConfigReceiver '
       '-a com.tvcleanzer.launcher.APPLY --es skin $skin${look == null ? '' : ' ${look.extras}'}';
+
+  /// «Close ADB» when the work is done: debugging off (USB and wireless). The connection
+  /// drops right away, so errors are expected and ignored. Turning it back on is done
+  /// on the TV (Developer options), as the first time.
+  Future<void> disableAdb(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('settings put global adb_wifi_enabled 0; settings put global adb_enabled 0',
+          timeout: const Duration(seconds: 5));
+    } catch (_) {
+      // the TV closed the connection: that is the point
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// App opened when the TV is switched on ('' = the launcher itself). Launcher 0.6+.
+  Future<void> setLauncherAutostart(TvDevice device, String pkg) async {
+    if (pkg.isNotEmpty && !RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(pkg)) return;
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
+          '-a com.tvcleanzer.launcher.APPLY --es autostart ${pkg.isEmpty ? '""' : pkg}');
+    } finally {
+      adb.close();
+    }
+  }
 
   /// Animations, tile size, focus ring, photo dimming… (launcher 0.4+; older ones ignore them).
   Future<void> applyLauncherLook(TvDevice device, LauncherLook look) async {

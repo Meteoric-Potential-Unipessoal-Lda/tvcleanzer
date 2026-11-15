@@ -17,7 +17,22 @@ final class Prefs {
             FAVORITES = "favorites", HIDDEN = "hidden",
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
-            AMBIENT = "ambient";
+            AMBIENT = "ambient", INPUTS_POS = "inputsPos", AUTOSTART = "autostart",
+            ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
+            STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
+            W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
+            W_TEMP = "weatherTemp", W_CODE = "weatherCode", W_TS = "weatherTs";
+
+    /** Home screen look: tiles (clock on top, rows of apps) or a big clock with a dock. */
+    static final int STYLE_TILES = 0, STYLE_CLOCK = 1;
+    static final int CLOCK_LEFT = 0, CLOCK_CENTER = 1;
+    /** System font families for the clock: thin, light, regular, condensed, bold. */
+    static final String[] CLOCK_FONTS = {"sans-serif-thin", "sans-serif-light", "sans-serif",
+            "sans-serif-condensed", "sans-serif-medium"};
+    static final String[] CLOCK_FONT_NAMES = {"Тонкий", "Лёгкий", "Обычный", "Узкий", "Жирный"};
+
+    /** Where the HDMI/tuner row goes: above favourites, under all apps, or nowhere. */
+    static final int INPUTS_TOP = 0, INPUTS_BOTTOM = 1, INPUTS_HIDDEN = 2;
 
     /** Animation level: full, soft (smaller and slower), off (instant, for weak TVs). */
     static final int ANIM_FULL = 0, ANIM_SOFT = 1, ANIM_OFF = 2;
@@ -49,6 +64,45 @@ final class Prefs {
     /** Slowly drifting accent glow behind the home screen (skins without a photo). */
     boolean ambient()        { return sp.getBoolean(AMBIENT, true); }
     void setAmbient(boolean v) { sp.edit().putBoolean(AMBIENT, v).apply(); }
+    int inputsPos()          { return clamp(sp.getInt(INPUTS_POS, INPUTS_TOP), 0, 2); }
+    void setInputsPos(int v) { sp.edit().putInt(INPUTS_POS, clamp(v, 0, 2)).apply(); }
+    /** App opened when the TV is switched on ("" = just this home screen). */
+    String autostart()       { return sp.getString(AUTOSTART, ""); }
+    void setAutostart(String pkg) { sp.edit().putString(AUTOSTART, pkg == null ? "" : pkg).apply(); }
+    int autostartBoot()      { return sp.getInt(AUTOSTART_BOOT, -1); }
+    void setAutostartBoot(int boot) { sp.edit().putInt(AUTOSTART_BOOT, boot).apply(); }
+    /** Own order of the "Apps" grid (packages; the rest follow alphabetically). */
+    List<String> order() {
+        String s = sp.getString(ORDER, "");
+        return s.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(s.split(",")));
+    }
+    void setOrder(List<String> keys) { sp.edit().putString(ORDER, TextUtils.join(",", keys)).apply(); }
+
+    int style()              { return clamp(sp.getInt(STYLE, STYLE_TILES), 0, 1); }
+    void setStyle(int v)     { sp.edit().putInt(STYLE, clamp(v, 0, 1)).apply(); }
+    int clockPos()           { return clamp(sp.getInt(CLOCK_POS, CLOCK_CENTER), 0, 1); }
+    void setClockPos(int v)  { sp.edit().putInt(CLOCK_POS, clamp(v, 0, 1)).apply(); }
+    /** Clock size, percent of the standard size (60–180). */
+    int clockSize()          { return clamp(sp.getInt(CLOCK_SIZE, 100), 60, 180); }
+    void setClockSize(int v) { sp.edit().putInt(CLOCK_SIZE, clamp(v, 60, 180)).apply(); }
+    int clockFont()          { return clamp(sp.getInt(CLOCK_FONT, 0), 0, CLOCK_FONTS.length - 1); }
+    void setClockFont(int v) { sp.edit().putInt(CLOCK_FONT, clamp(v, 0, CLOCK_FONTS.length - 1)).apply(); }
+
+    boolean hasWeather()     { return !weatherCity().isEmpty(); }
+    String weatherCity()     { return sp.getString(W_CITY, ""); }
+    float weatherLat()       { return sp.getFloat(W_LAT, 0f); }
+    float weatherLon()       { return sp.getFloat(W_LON, 0f); }
+    int weatherTemp()        { return sp.getInt(W_TEMP, 0); }
+    int weatherCode()        { return sp.getInt(W_CODE, 0); }
+    long weatherTs()         { return sp.getLong(W_TS, 0); }
+    /** A new city (or "" to switch weather off); the old reading is dropped. */
+    void setWeatherPlace(String city, float lat, float lon) {
+        sp.edit().putString(W_CITY, city == null ? "" : city).putFloat(W_LAT, lat).putFloat(W_LON, lon)
+                .putLong(W_TS, 0).apply();
+    }
+    void setWeatherNow(int temp, int code) {
+        sp.edit().putInt(W_TEMP, temp).putInt(W_CODE, code).putLong(W_TS, System.currentTimeMillis()).apply();
+    }
 
     private static int clamp(int v, int lo, int hi) { return Math.max(lo, Math.min(hi, v)); }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
+import '../services/adb_package_manager.dart';
 import '../theme/app_theme.dart';
 import '../screens/home_screen.dart';
 import '../screens/scan_screen.dart';
@@ -57,7 +58,40 @@ class TvCard extends ConsumerWidget {
                   style: TextStyle(fontSize: 12,
                       color: device.isDemo ? AppColors.accent : AppColors.fgMuted)),
               ])),
-              const Icon(Icons.chevron_right_rounded, color: AppColors.fgMuted),
+              if (device.isDemo)
+                const Icon(Icons.chevron_right_rounded, color: AppColors.fgMuted)
+              else
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert_rounded, color: AppColors.fgMuted),
+                  tooltip: tr('Ещё'),
+                  onSelected: (v) async {
+                    if (v == 'remove') ref.read(discoveryProvider.notifier).remove(device);
+                    if (v == 'adb_off') {
+                      final yes = await showDialog<bool>(
+                        context: context,
+                        builder: (c) => AlertDialog(
+                          title: Text(tr('Выключить отладку на телевизоре?')),
+                          content: Text(tr('Так безопаснее: к телевизору больше никто не подключится по сети. Чтобы снова пользоваться TVCleanzer, включите отладку на ТВ так же, как в первый раз.')),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(c, false), child: Text(tr('Отмена'))),
+                            TextButton(onPressed: () => Navigator.pop(c, true), child: Text(tr('Выключить'))),
+                          ],
+                        ),
+                      );
+                      if (yes != true) return;
+                      await ref.read(adbServiceProvider).disableAdb(device);
+                      await ref.read(discoveryProvider.notifier).remove(device);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(tr('Отладка на телевизоре выключена'))));
+                      }
+                    }
+                  },
+                  itemBuilder: (_) => [
+                    PopupMenuItem(value: 'adb_off', child: Text(tr('Выключить отладку на ТВ'))),
+                    PopupMenuItem(value: 'remove', child: Text(tr('Убрать из списка'))),
+                  ],
+                ),
             ]),
 
             const Gap(14),

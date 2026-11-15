@@ -9,7 +9,7 @@ class AppColors {
   static const accentDim= Color(0x1A00CFA8);
   static const fg       = Color(0xFFE2E8F0);
   static const fgMid    = Color(0xFF94A3B8);
-  static const fgMuted  = Color(0xFF4B5563);
+  static const fgMuted  = Color(0xFF718096); // ≥4:1 on bgCard: owners could not read the old grey
   static const danger   = Color(0xFFEF4444);
   static const warn     = Color(0xFFF59E0B);
   static const ok       = Color(0xFF22C55E);

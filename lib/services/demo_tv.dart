@@ -250,6 +250,7 @@ class DemoAdbClient extends AdbClient {
       return b.toString();
     }
     if (c.startsWith('pm list packages -d')) return ''; // nothing disabled on the demo TV
+    if (c.startsWith('settings put global adb_wifi_enabled 0')) return '';
     if (c.startsWith('pm list packages -3')) {
       return ['org.videolan.vlc', 'com.spotify.tv.android', ...s.sideloaded]
           .where((p) => !s.removed.contains(p))
@@ -356,7 +357,14 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=5 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=7 minSdk=21 targetSdk=34\n' : '';
+    }
+    if (c.startsWith('dumpsys activity activities')) {
+      // Home on the demo TV opens whatever is the home screen.
+      return '  mResumedActivity: ActivityRecord{1 u0 ${s.home} t1}\n';
+    }
+    if (c.startsWith('pm list packages -e') || c.startsWith('pm list packages -u')) {
+      return s.installed.map((p) => 'package:$p').join('\n');
     }
     // input keyevent / input text / getprop … — a TV just does it
     return '';
@@ -389,7 +397,14 @@ class DemoAdbClient extends AdbClient {
     if (k != null) _s.kids = k.group(1) == 'true' && _s.pin;
     if (c.contains('--es wallpaper none')) _s.wallpaper = false;
     if (c.contains('--es wallpaper set')) _s.wallpaper = true;
-    for (final m in RegExp(r'--e[iz] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels) (\S+)').allMatches(c)) {
+    final wc = RegExp(r"--es weatherCity ('[^']*'|\S+)").firstMatch(c);
+    if (wc != null) {
+      final v = wc.group(1)!.replaceAll("'", '');
+      _s.look['weatherCity'] = v == '""' || v.isEmpty ? '-' : v;
+    }
+    final au = RegExp(r'--es autostart (\S+)').firstMatch(c);
+    if (au != null) _s.look['autostart'] = au.group(1) == '""' ? '-' : au.group(1)!;
+    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|style|clockPos|clockSize|clockFont|lat|lon) (\S+)').allMatches(c)) {
       final v = m.group(2)!;
       _s.look[m.group(1)!] = v == 'true' ? '1' : v == 'false' ? '0' : v;
     }

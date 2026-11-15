@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import '../models/tv_device.dart';
 import '../theme/app_theme.dart';
@@ -28,8 +29,13 @@ class PackageTile extends StatelessWidget {
       PackageVerdict.system  => Icons.shield_outlined,
     };
 
+    final lines = (pkg.reason ?? '').split('\n');
+    final about = lines.first;
+    final count = lines.length > 1 ? lines[1] : null;
+
     return GestureDetector(
       onTap: onTap,
+      onLongPress: () => showPackageInfo(context, pkg),
       behavior: HitTestBehavior.opaque,
       child: Opacity(
       opacity: dimmed ? .5 : 1,
@@ -44,14 +50,18 @@ class PackageTile extends StatelessWidget {
               color: selected == true ? color.withValues(alpha: .55) : AppColors.cardBd),
         ),
         child: Row(children: [
-          // Icon badge
-          Container(
-            width: 36, height: 36,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: .12),
-              borderRadius: BorderRadius.circular(8),
+          // Icon badge: tap = what is this app
+          GestureDetector(
+            onTap: () => showPackageInfo(context, pkg),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              width: 36, height: 36,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: .12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: color, size: 18),
             ),
-            child: Icon(icon, color: color, size: 18),
           ),
           const Gap(12),
 
@@ -60,11 +70,15 @@ class PackageTile extends StatelessWidget {
             Text(pkg.displayName,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.fg),
               maxLines: 1, overflow: TextOverflow.ellipsis),
-            if (pkg.reason != null) ...[
+            if (about.isNotEmpty) ...[
+              const Gap(3),
+              Text(about,
+                style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.3),
+                maxLines: 4, overflow: TextOverflow.ellipsis),
+            ],
+            if (count != null) ...[
               const Gap(2),
-              Text(pkg.reason!,
-                style: const TextStyle(fontSize: 12, color: AppColors.fgMuted),
-                maxLines: 2, overflow: TextOverflow.ellipsis),
+              Text(count, style: const TextStyle(fontSize: 11, color: AppColors.fgMuted)),
             ],
           ])),
 
@@ -99,4 +113,63 @@ class PackageTile extends StatelessWidget {
     ),
     );
   }
+}
+
+/// What the app is, what happens if it goes, and how to get it back.
+void showPackageInfo(BuildContext context, TvPackage pkg) {
+  final (color, verdict) = switch (pkg.verdict) {
+    PackageVerdict.remove  => (AppColors.danger, tr('Можно убрать: телевизор без этого работает')),
+    PackageVerdict.caution => (AppColors.warn, tr('На ваше усмотрение: уберите, только если не пользуетесь этой функцией')),
+    PackageVerdict.keep    => (AppColors.ok, tr('Лучше оставить')),
+    PackageVerdict.system  => (AppColors.fgMid, tr('Системное: TVCleanzer его не трогает')),
+  };
+  final lines = (pkg.reason ?? '').split('\n');
+  showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: AppColors.bgCard,
+    builder: (c) => SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(pkg.displayName,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          const Gap(4),
+          GestureDetector(
+            onLongPress: () => Clipboard.setData(ClipboardData(text: pkg.packageName)),
+            child: SelectableText(pkg.packageName,
+                style: const TextStyle(fontSize: 12, color: AppColors.fgMuted, fontFamily: 'monospace')),
+          ),
+          const Gap(14),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+                color: color.withValues(alpha: .12), borderRadius: BorderRadius.circular(8)),
+            child: Text(verdict, style: TextStyle(fontSize: 13, color: color, fontWeight: FontWeight.w600)),
+          ),
+          if (lines.first.isNotEmpty) ...[
+            const Gap(12),
+            Text(lines.first, style: const TextStyle(fontSize: 15, color: AppColors.fg, height: 1.4)),
+          ],
+          if (lines.length > 1) ...[
+            const Gap(8),
+            Text(lines[1], style: const TextStyle(fontSize: 12, color: AppColors.fgMid)),
+          ],
+          if (pkg.sizeMb > 0) ...[
+            const Gap(4),
+            Text(tr('Занимает {0} МБ', [pkg.sizeMb]), style: const TextStyle(fontSize: 12, color: AppColors.fgMid)),
+          ],
+          if (pkg.verdict == PackageVerdict.remove || pkg.verdict == PackageVerdict.caution) ...[
+            const Gap(12),
+            Text(tr('Всё скрытое можно вернуть из «Истории»'),
+                style: const TextStyle(fontSize: 12, color: AppColors.fgMid)),
+          ],
+          const Gap(8),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(onPressed: () => Navigator.pop(c), child: Text(tr('Понятно'))),
+          ),
+        ]),
+      ),
+    ),
+  );
 }

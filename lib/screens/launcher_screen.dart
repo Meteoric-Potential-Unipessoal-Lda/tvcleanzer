@@ -9,9 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../models/launcher_look.dart';
 import '../models/launcher_skin.dart';
+import '../models/tv_device.dart';
 import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
+import '../services/geo.dart';
 import '../state/current_tv.dart';
 import '../state/launcher_look_state.dart';
 import '../state/launcher_skin_state.dart';
@@ -46,6 +48,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   String? _step;        // install/uninstall progress text
   String? _installError;
   int? _version;        // launcher versionCode on the TV
+  String? _bindMsg;     // result of the last «make it the home screen»
+  bool _bindOk = true;
   Timer? _lookDebounce;
 
   @override
@@ -98,15 +102,14 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       } catch (_) {
         throw AdbException(tr('Лаунчер ещё не собран: запустите launcher/build.sh и пересоберите приложение.'));
       }
-      await ref.read(adbServiceProvider).installLauncher(
+      final bind = await ref.read(adbServiceProvider).installLauncher(
             tv, apk, ref.read(selectedSkinProvider).id,
             look: ref.read(launcherLookProvider),
             onStep: (s) { if (mounted) setState(() => _step = s); },
           );
       _installed = true;
       _version = AdbPackageManager.bundledLauncherVersion;
-      _launcher = AdbPackageManager.launcherPkg;
-      _checked = true;
+      _showBind(bind);
     } on AdbException catch (e) {
       AppLog.error('launcher install', e);
       _installError = e.message;
@@ -115,6 +118,32 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       _installError = _offline;
     }
     if (mounted) setState(() => _step = null);
+    _check(silent: true);
+  }
+
+  void _showBind(LauncherBind b) {
+    _bindOk = b != LauncherBind.failed;
+    _bindMsg = switch (b) {
+      LauncherBind.role => tr('Готово: кнопка «Домой» открывает TVCleanzer Launcher.'),
+      LauncherBind.hard => tr('Готово: прошивка возвращала свой лаунчер, поэтому он убран (вернётся кнопкой «Вернуть стандартный лаунчер»). Кнопка «Домой» открывает TVCleanzer Launcher.'),
+      LauncherBind.service => tr('Готово: свой лаунчер прошивки остаётся, но кнопку «Домой» и экран при включении перехватывает TVCleanzer Launcher.'),
+      LauncherBind.failed => tr('Лаунчер стоит, но телевизор не даёт сделать его главным: «Домой» открывает свой экран. Нажмите «Сделать главным ещё раз»; если не поможет — откройте лаунчер из списка приложений ТВ и пришлите отчёт через «?».'),
+    };
+  }
+
+  /// Installed but Home opens something else (firmware took it back): bind again.
+  Future<void> _rebind() async {
+    final tv = ref.read(currentTvProvider);
+    if (tv == null) return;
+    setState(() { _installError = null; _bindMsg = null; _step = tr('Делаем главным экраном…'); });
+    try {
+      _showBind(await ref.read(adbServiceProvider).rebindLauncher(tv,
+          onStep: (s) { if (mounted) setState(() => _step = s); }));
+    } catch (_) {
+      _installError = _offline;
+    }
+    if (mounted) setState(() => _step = null);
+    _check(silent: true);
   }
 
   Future<void> _uninstall() async {
@@ -151,6 +180,19 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         }
       });
     });
+  }
+
+  Future<void> _pickCity(LauncherLook look) async {
+    final picked = await showModalBottomSheet<GeoPlace?>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.bgCard,
+      builder: (_) => const _CitySheet(),
+    );
+    if (picked == null) return;
+    _setLook(picked.name.isEmpty
+        ? look.copyWith(weatherCity: '', lat: 0, lon: 0)
+        : look.copyWith(weatherCity: picked.name, lat: picked.lat, lon: picked.lon));
   }
 
   bool get _outdated =>
@@ -264,11 +306,40 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         );
     return _card(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        seg(tr('Вид главного экрана'), [tr('Плитки'), tr('Часы и док')], look.style,
+            (v) => _setLook(look.copyWith(style: v))),
+        const Gap(14),
+        seg(tr('Размер часов'), [tr('Меньше'), tr('Обычные'), tr('Крупнее'), tr('Огромные')],
+            const [80, 100, 130, 160].indexOf(look.clockSize).clamp(0, 3),
+            (v) => _setLook(look.copyWith(clockSize: const [80, 100, 130, 160][v]))),
+        const Gap(14),
+        seg(tr('Шрифт часов'), [tr('Тонкий'), tr('Лёгкий'), tr('Обычный'), tr('Узкий'), tr('Жирный')], look.clockFont,
+            (v) => _setLook(look.copyWith(clockFont: v))),
+        if (look.style == 1) ...[
+          const Gap(14),
+          seg(tr('Часы на экране'), [tr('Слева'), tr('По центру')], look.clockPos,
+              (v) => _setLook(look.copyWith(clockPos: v))),
+        ],
+        const Gap(6),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          dense: true,
+          leading: const Icon(Icons.wb_cloudy_rounded, color: AppColors.accent),
+          title: Text(tr('Погода на главном экране'), style: const TextStyle(fontSize: 14, color: AppColors.fg)),
+          subtitle: Text(look.weatherCity.isEmpty ? tr('Выключена — нажмите, чтобы выбрать город') : look.weatherCity,
+              style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+          trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.fgMuted),
+          onTap: () => _pickCity(look),
+        ),
+        const Gap(8),
         seg(tr('Анимации'), [tr('Полные'), tr('Мягкие'), tr('Выкл.')], look.anim,
             (v) => _setLook(look.copyWith(anim: v))),
         const Gap(14),
         seg(tr('Размер плиток'), [tr('Мелкие'), tr('Обычные'), tr('Крупные')], look.tiles,
             (v) => _setLook(look.copyWith(tiles: v))),
+        const Gap(14),
+        seg(tr('Источники (HDMI)'), [tr('Вверху'), tr('Внизу'), tr('Скрыты')], look.inputs,
+            (v) => _setLook(look.copyWith(inputs: v))),
         const Gap(14),
         seg(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет шкурки')], look.ringAccent ? 1 : 0,
             (v) => _setLook(look.copyWith(ringAccent: v == 1))),
@@ -382,6 +453,21 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           Text(_installError!,
               style: const TextStyle(fontSize: 13, color: AppColors.danger, height: 1.4)),
         ],
+        if (_bindMsg != null) ...[
+          const Gap(10),
+          Text(_bindMsg!,
+              style: TextStyle(fontSize: 13, height: 1.4, color: _bindOk ? AppColors.ok : AppColors.warn)),
+        ] else if (installed && _checked && _launcher != null && _launcher != AdbPackageManager.launcherPkg) ...[
+          const Gap(10),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Icon(Icons.warning_amber_rounded, size: 18, color: AppColors.warn),
+            const Gap(8),
+            Expanded(
+              child: Text(tr('Лаунчер установлен, но главный экран сейчас другой — прошивка его вернула. Нажмите «Сделать главным ещё раз».'),
+                  style: const TextStyle(fontSize: 13, color: AppColors.warn, height: 1.4)),
+            ),
+          ]),
+        ],
         const Gap(12),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
@@ -406,6 +492,20 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                               label: Text(tr('Настроить: избранное, детям, обои')),
                               onPressed: tv == null ? null : () => Navigator.push(context,
                                   MaterialPageRoute(builder: (_) => LauncherEditScreen(tv: tv))),
+                            ),
+                          ),
+                          const Gap(10),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.fg,
+                                side: const BorderSide(color: AppColors.cardBd),
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                              icon: const Icon(Icons.home_rounded),
+                              label: Text(tr('Сделать главным ещё раз')),
+                              onPressed: tv == null ? null : _rebind,
                             ),
                           ),
                           const Gap(10),
@@ -621,4 +721,99 @@ class _SkinChip extends StatelessWidget {
       ]),
     );
   }
+}
+
+
+/// City search for the weather (Open-Meteo geocoding). Returns a place, an empty
+/// place for «switch off», or null when closed.
+class _CitySheet extends StatefulWidget {
+  const _CitySheet();
+  @override
+  State<_CitySheet> createState() => _CitySheetState();
+}
+
+class _CitySheetState extends State<_CitySheet> {
+  final _q = TextEditingController();
+  List<GeoPlace> _found = const [];
+  bool _busy = false;
+  String? _msg;
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _q.dispose();
+    super.dispose();
+  }
+
+  void _changed(String v) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 450), () => _search(v));
+  }
+
+  Future<void> _search(String v) async {
+    if (v.trim().length < 2) {
+      setState(() { _found = const []; _msg = null; });
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      final r = await Geo.search(v, lang: Localizations.localeOf(context).languageCode);
+      if (!mounted) return;
+      setState(() { _found = r; _msg = r.isEmpty ? tr('Ничего не нашлось') : null; });
+    } catch (_) {
+      if (mounted) setState(() => _msg = tr('Нет интернета на телефоне'));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(tr('Город для погоды'),
+                  style: GoogleFonts.syne(fontSize: 17, fontWeight: FontWeight.w700, color: AppColors.fg)),
+              const Gap(12),
+              TextField(
+                controller: _q,
+                autofocus: true,
+                onChanged: _changed,
+                decoration: InputDecoration(
+                  hintText: tr('Например, Оренбург'),
+                  suffixIcon: _busy
+                      ? const Padding(padding: EdgeInsets.all(12), child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)))
+                      : null,
+                ),
+              ),
+              if (_msg != null) ...[
+                const Gap(8),
+                Text(_msg!, style: const TextStyle(color: AppColors.fgMuted, fontSize: 13)),
+              ],
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 280),
+                child: ListView(shrinkWrap: true, children: [
+                  for (final p in _found)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(p.name, style: const TextStyle(color: AppColors.fg)),
+                      subtitle: Text(p.region, style: const TextStyle(color: AppColors.fgMuted, fontSize: 12)),
+                      onTap: () => Navigator.pop(context, p),
+                    ),
+                ]),
+              ),
+              TextButton.icon(
+                icon: const Icon(Icons.cloud_off_rounded),
+                label: Text(tr('Не показывать погоду')),
+                onPressed: () => Navigator.pop(context, const GeoPlace('', '', 0, 0)),
+              ),
+              Text(tr('Погоду телевизор берёт с Open-Meteo раз в полчаса; о вас туда ничего не отправляется.'),
+                  style: const TextStyle(color: AppColors.fgMuted, fontSize: 11, height: 1.4)),
+            ]),
+          ),
+        ),
+      );
 }

@@ -47,10 +47,18 @@ String tr(String ru, [List<Object?> args = const []]) {
 
 final _countRe = RegExp(r'^скрывают в (\d+) из (\d+) проверенных списков$');
 
-/// Package database reasons are "category · скрывают в N из M проверенных списков".
-String trReason(String reason) => reason.split(' · ').map((part) {
-      final m = _countRe.firstMatch(part);
-      return m == null
-          ? tr(part)
-          : tr('скрывают в {0} из {1} проверенных списков', [m.group(1), m.group(2)]);
-    }).join(' · ');
+/// Package database reasons are "what it is · скрывают в N из M проверенных списков".
+/// The count goes on its own line ("\n"), so the description stays readable.
+String trReason(String reason) {
+  final text = <String>[];
+  String? count;
+  for (final part in reason.split(' · ')) {
+    final m = _countRe.firstMatch(part);
+    if (m == null) {
+      text.add(tr(part));
+    } else {
+      count = tr('Убирают в {0} из {1} списков чистки ТВ', [m.group(1), m.group(2)]);
+    }
+  }
+  return [text.join(' · '), if (count != null) count].join('\n');
+}

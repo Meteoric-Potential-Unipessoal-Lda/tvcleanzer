@@ -24,6 +24,25 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.hasExtra("tiles")) p.setTileSize(intent.getIntExtra("tiles", Prefs.TILES_NORMAL));
         if (intent.hasExtra("wallDim")) p.setWallDim(intent.getIntExtra("wallDim", 40));
         if (intent.hasExtra("ambient")) p.setAmbient(intent.getBooleanExtra("ambient", true));
+        if (intent.hasExtra("inputs")) p.setInputsPos(intent.getIntExtra("inputs", Prefs.INPUTS_TOP));
+        if (intent.hasExtra("style")) p.setStyle(intent.getIntExtra("style", Prefs.STYLE_TILES));
+        if (intent.hasExtra("clockPos")) p.setClockPos(intent.getIntExtra("clockPos", Prefs.CLOCK_CENTER));
+        if (intent.hasExtra("clockSize")) p.setClockSize(intent.getIntExtra("clockSize", 100));
+        if (intent.hasExtra("clockFont")) p.setClockFont(intent.getIntExtra("clockFont", 0));
+        if (intent.hasExtra("weatherCity")) {
+            String city = intent.getStringExtra("weatherCity");
+            city = city == null ? "" : city.trim();
+            if (city.length() > 40) city = city.substring(0, 40);
+            float lat = intent.getFloatExtra("lat", 0f), lon = intent.getFloatExtra("lon", 0f);
+            if (!city.equals(p.weatherCity()) || Math.abs(lat - p.weatherLat()) > 0.01f
+                    || Math.abs(lon - p.weatherLon()) > 0.01f) {
+                p.setWeatherPlace(city, lat, lon);
+            }
+        }
+        if (intent.hasExtra("autostart")) {
+            String a = intent.getStringExtra("autostart");
+            p.setAutostart(a != null && a.matches("[A-Za-z0-9_.]+") ? a : "");
+        }
 
         String[] fav = intent.getStringArrayExtra("favorites");
         if (fav != null) p.setFavorites(clean(fav));

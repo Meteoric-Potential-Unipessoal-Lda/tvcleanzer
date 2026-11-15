@@ -213,3 +213,15 @@ class TvApp {
   final bool launchable;
   const TvApp({required this.pkg, required this.label, required this.user, required this.launchable});
 }
+
+/// How our launcher ended up as the home screen.
+enum LauncherBind {
+  /// Home role / preferred home: the system itself opens it.
+  role,
+  /// The stock launcher was taken off the TV (restorable) — firmware kept bringing it back.
+  hard,
+  /// The stock home stays (Google TV, Yandex, Sber); our Home-key service opens ours.
+  service,
+  /// Home still opens the TV's own launcher.
+  failed,
+}

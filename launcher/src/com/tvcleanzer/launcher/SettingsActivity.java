@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashSet;
+import java.util.List;
 
 /** Launcher settings: theme, clock, labels, hidden apps, favourites. */
 public class SettingsActivity extends Activity {
@@ -88,6 +89,22 @@ public class SettingsActivity extends Activity {
         addRow(skin, "Подсветка выбора", prefs.ringAccent() ? "Цвет темы" : "Белая",
                 () -> prefs.setRingAccent(!prefs.ringAccent()));
         addRow(skin, "Живой фон", prefs.ambient() ? "Включён" : "Выключен", () -> prefs.setAmbient(!prefs.ambient()));
+        addRow(skin, "Вид главного экрана", prefs.style() == Prefs.STYLE_CLOCK ? "Часы и док" : "Плитки",
+                () -> prefs.setStyle(prefs.style() == Prefs.STYLE_CLOCK ? Prefs.STYLE_TILES : Prefs.STYLE_CLOCK));
+        addRow(skin, "Часы: шрифт", Prefs.CLOCK_FONT_NAMES[prefs.clockFont()],
+                () -> prefs.setClockFont((prefs.clockFont() + 1) % Prefs.CLOCK_FONTS.length));
+        addRow(skin, "Часы: размер", prefs.clockSize() + "%",
+                () -> prefs.setClockSize(prefs.clockSize() >= 160 ? 80 : prefs.clockSize() + 20));
+        if (prefs.style() == Prefs.STYLE_CLOCK) {
+            addRow(skin, "Часы: положение", prefs.clockPos() == Prefs.CLOCK_CENTER ? "По центру" : "Слева",
+                    () -> prefs.setClockPos(prefs.clockPos() == Prefs.CLOCK_CENTER ? Prefs.CLOCK_LEFT : Prefs.CLOCK_CENTER));
+        }
+        addRow(skin, "Погода", prefs.hasWeather() ? prefs.weatherCity() : "Город задаётся с телефона", null);
+        String[] inputsNames = {"Вверху", "Внизу", "Скрыты"};
+        addRow(skin, "Источники (HDMI)", inputsNames[prefs.inputsPos()],
+                () -> prefs.setInputsPos((prefs.inputsPos() + 1) % 3));
+        addRow(skin, "При включении ТВ", autostartName(),
+                () -> prefs.setAutostart(nextAutostart()));
         boolean hasWall = Wallpaper.exists(this);
         if (hasWall) {
             addRow(skin, "Затемнение фото", prefs.wallDim() + "%",
@@ -182,6 +199,25 @@ public class SettingsActivity extends Activity {
             return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    /** Cycle: nothing -> each favourite -> nothing. */
+    private String nextAutostart() {
+        List<String> favs = prefs.favorites();
+        String cur = prefs.autostart();
+        int i = favs.indexOf(cur);
+        if (cur.isEmpty()) return favs.isEmpty() ? "" : favs.get(0);
+        return i >= 0 && i + 1 < favs.size() ? favs.get(i + 1) : "";
+    }
+
+    private String autostartName() {
+        String pkg = prefs.autostart();
+        if (pkg.isEmpty()) return "Главный экран";
+        try {
+            return "Открыть " + getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg, 0));
+        } catch (Exception e) {
+            return pkg;
         }
     }
 

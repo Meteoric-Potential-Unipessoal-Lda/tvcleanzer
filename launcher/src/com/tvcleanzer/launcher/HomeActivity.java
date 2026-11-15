@@ -55,6 +55,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private final Map<String, Drawable> artCache = new HashMap<>();
     private final Map<String, Boolean> bannerCache = new HashMap<>();
     private List<AppEntry> apps = new ArrayList<>();
+    /** The "Apps" grid as shown (own order first), for moving tiles left/right. */
+    private List<AppEntry> gridOrder = new ArrayList<>();
     private List<AppEntry> favorites = new ArrayList<>();
     private final Set<String> homeApps = new java.util.HashSet<>();
     private List<Inputs.Item> inputs = new ArrayList<>();
@@ -65,6 +67,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private ScrollView scroll;
     private boolean resumed, dirty;
     private boolean entered;                       // entrance animation played
+    /** Clock style: the full app grid is open ("All apps"); Back or Home returns to the clock. */
+    private boolean showGrid;
+    private TextView weatherView;
     private final List<View> ambientGlows = new ArrayList<>();
     private android.animation.ValueAnimator ambientAnim;
 
@@ -113,17 +118,204 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         super.onResume();
         resumed = true;
         if (dirty) { dirty = false; build(); } else startAmbient();
+        maybeAutostart();
+        main.removeCallbacks(weatherTick);
+        main.post(weatherTick);
+    }
+
+    /** The home screen can stay open for hours: re-check the weather every 10 minutes while visible. */
+    private final Runnable weatherTick = new Runnable() {
+        @Override public void run() {
+            refreshWeather();
+            if (resumed) main.postDelayed(this, 10 * 60 * 1000L);
+        }
+    };
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (showGrid) { showGrid = false; build(); }
+    }
+
+    private void refreshWeather() {
+        if (!prefs.hasWeather()) return;
+        io.execute(() -> {
+            if (Weather.refreshIfStale(prefs)) main.post(this::updateWeatherView);
+        });
+    }
+
+    private void updateWeatherView() {
+        if (weatherView == null) return;
+        String w = Weather.line(prefs);
+        weatherView.setText(w == null ? "" : w);
+        weatherView.setVisibility(w == null ? View.GONE : View.VISIBLE);
+    }
+
+    private TextClock bigClock(float sizeSp) {
+        TextClock clock = new TextClock(this);
+        String fmt = prefs.clock24() ? "HH:mm" : "h:mm";
+        clock.setFormat24Hour(fmt);
+        clock.setFormat12Hour(fmt);
+        clock.setTextSize(sizeSp * prefs.clockSize() / 100f);
+        clock.setTextColor(0xFFFFFFFF);
+        clock.setIncludeFontPadding(false);
+        clock.setLetterSpacing(-0.02f);
+        clock.setShadowLayer(Ui.dp(this, 12), 0, Ui.dp(this, 2), 0x66000000);
+        clock.setTypeface(android.graphics.Typeface.create(Prefs.CLOCK_FONTS[prefs.clockFont()],
+                android.graphics.Typeface.NORMAL));
+        return clock;
+    }
+
+    /** Clock style: date, a big clock and the weather in the middle; a glass dock below. */
+    private void buildClockHome(Skin skin, int screenW, int padH, int padV, int anim, int ringColor, String focusPkg) {
+        boolean center = prefs.clockPos() == Prefs.CLOCK_CENTER;
+        LinearLayout mid = new LinearLayout(this);
+        mid.setOrientation(LinearLayout.VERTICAL);
+        mid.setGravity(center ? Gravity.CENTER_HORIZONTAL : Gravity.START);
+
+        TextClock date = new TextClock(this);
+        date.setFormat12Hour("EEEE, d MMMM");
+        date.setFormat24Hour("EEEE, d MMMM");
+        date.setTextSize(20);
+        date.setTextColor(0xD9FFFFFF);
+        date.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
+        date.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
+        mid.addView(date);
+        mid.addView(bigClock(150));
+
+        weatherView = Ui.text(this, 20, 0xD9FFFFFF, "sans-serif-medium");
+        weatherView.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
+        LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        wlp.topMargin = Ui.dp(this, 6);
+        mid.addView(weatherView, wlp);
+        updateWeatherView();
+
+        FrameLayout.LayoutParams mlp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                center ? Gravity.CENTER_HORIZONTAL | Gravity.TOP : Gravity.START | Gravity.TOP);
+        mlp.topMargin = Math.round(getResources().getDisplayMetrics().heightPixels * 0.16f);
+        if (!center) mlp.leftMargin = padH;
+        root.addView(mid, mlp);
+
+        // Dock: inputs, favourites (icons), settings, all apps
+        LinearLayout dock = row();
+        dock.setGravity(Gravity.CENTER_VERTICAL);
+        dock.setBackground(Ui.glass(Ui.dp(this, 34)));
+        int dp18 = Ui.dp(this, 18);
+        dock.setPadding(dp18, dp18, dp18, Ui.dp(this, 8));
+        int icon = Math.max(Ui.dp(this, 64), Math.round(screenW * 0.05f));
+        int gap = Ui.dp(this, 16);
+        List<AppTile> tiles = new ArrayList<>();
+        List<View> order = new ArrayList<>();
+
+        if (!inputs.isEmpty() && prefs.inputsPos() != Prefs.INPUTS_HIDDEN) {
+            Pill in = new Pill(this, "Источник");
+            in.setOnClickListener(v -> chooseInput());
+            order.add(in);
+        }
+        int max = 8;
+        for (AppEntry a : favorites) {
+            if (tiles.size() >= max) break;
+            AppTile t = tile(a, icon, icon, skin, false, 12, 1.12f, anim, ringColor);
+            tiles.add(t);
+            order.add(t);
+        }
+        GearButton gear = new GearButton(this, skin.accent);
+        gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+        order.add(gear);
+        Pill all = new Pill(this, "Все приложения");
+        all.setOnClickListener(v -> { showGrid = true; build(); });
+        order.add(all);
+
+        for (int i = 0; i < order.size(); i++) {
+            View v = order.get(i);
+            LinearLayout.LayoutParams lp = v instanceof GearButton
+                    ? new LinearLayout.LayoutParams(Ui.dp(this, 46), Ui.dp(this, 46))
+                    : new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (i > 0) lp.leftMargin = gap;
+            lp.gravity = Gravity.CENTER_VERTICAL;
+            dock.addView(v, lp);
+        }
+        FrameLayout.LayoutParams dlp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+        dlp.bottomMargin = Math.max(padV, Math.round(getResources().getDisplayMetrics().heightPixels * 0.07f));
+        HorizontalScrollView hs = new HorizontalScrollView(this);
+        hs.setHorizontalScrollBarEnabled(false);
+        hs.setClipChildren(false);
+        hs.setClipToPadding(false);
+        hs.addView(dock);
+        root.addView(hs, dlp);
+
+        View target = null;
+        for (AppTile t : tiles) if (t.app.pkg.equals(focusPkg)) { target = t; break; }
+        if (target == null) target = tiles.isEmpty() ? all : tiles.get(0);
+        target.requestFocus();
+        if (!entered) {
+            entered = true;
+            for (int i = 0; i < tiles.size(); i++) tiles.get(i).enter(i);
+        }
+        loadArt(tiles);
+        if (resumed) startAmbient();
+    }
+
+    private void chooseInput() {
+        if (inputs.size() == 1) { openInput(inputs.get(0)); return; }
+        String[] names = new String[inputs.size()];
+        for (int i = 0; i < names.length; i++) names[i] = inputs.get(i).label;
+        new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                .setTitle("Источник")
+                .setItems(names, (d, which) -> openInput(inputs.get(which)))
+                .show();
+    }
+
+    private void openInput(Inputs.Item it) {
+        try { startActivity(Inputs.intent(it)); }
+        catch (Exception e) { Toast.makeText(this, "Не удалось открыть " + it.label, Toast.LENGTH_SHORT).show(); }
+    }
+
+    /** First Home after a boot: open the app chosen to start with the TV (once per boot). */
+    private void maybeAutostart() {
+        String pkg = prefs.autostart();
+        if (pkg.isEmpty() || prefs.kids() || android.os.SystemClock.elapsedRealtime() > 5 * 60 * 1000L) return;
+        int boot = Settings.Global.getInt(getContentResolver(), "boot_count", -1);
+        if (boot < 0 || boot == prefs.autostartBoot()) return;
+        prefs.setAutostartBoot(boot);
+        openAutostart(this, pkg);
+    }
+
+    static boolean openAutostart(android.content.Context c, String pkg) {
+        android.content.pm.PackageManager pm = c.getPackageManager();
+        Intent i = pm.getLeanbackLaunchIntentForPackage(pkg);
+        if (i == null) i = pm.getLaunchIntentForPackage(pkg);
+        if (i == null) return false;
+        try {
+            c.startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     protected void onPause() {
         resumed = false;
+        main.removeCallbacks(weatherTick);
         stopAmbient();
         super.onPause();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
+        // Fresh weather or the once-per-boot marker: no need to redraw the whole screen.
+        if (key != null && (key.equals(Prefs.W_TEMP) || key.equals(Prefs.W_CODE) || key.equals(Prefs.W_TS)
+                || key.equals(Prefs.AUTOSTART_BOOT))) {
+            main.post(this::updateWeatherView);
+            return;
+        }
+        // A new city: fetch its weather right away.
+        if (Prefs.W_CITY.equals(key) && resumed) main.post(this::refreshWeather);
         // Settings screen or the phone app changed something.
         if (resumed) main.post(this::build); else dirty = true;
     }
@@ -131,6 +323,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** Home must never close itself; Back jumps to the top instead. */
     @Override
     public void onBackPressed() {
+        if (showGrid) { showGrid = false; build(); return; }
         if (scroll != null && scroll.getScrollY() > 0) {
             scroll.smoothScrollTo(0, 0);
             focusFirst();
@@ -191,6 +384,25 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             if (a.leanback && !out.contains(a) && !hidden.contains(a.pkg) && !homeApps.contains(a.pkg)) out.add(a);
         }
         return out;
+    }
+
+    /** Own order first (Prefs.order), then the rest in their usual (alphabetical) order. */
+    private List<AppEntry> ordered(List<AppEntry> in) {
+        Map<String, AppEntry> byPkg = new HashMap<>();
+        for (AppEntry a : in) byPkg.put(a.pkg, a);
+        List<AppEntry> out = new ArrayList<>();
+        for (String k : prefs.order()) {
+            AppEntry a = byPkg.remove(k);
+            if (a != null) out.add(a);
+        }
+        for (AppEntry a : in) if (byPkg.containsKey(a.pkg)) out.add(a);
+        return out;
+    }
+
+    private void saveOrder(List<AppEntry> list) {
+        List<String> keys = new ArrayList<>();
+        for (AppEntry a : list) keys.add(a.pkg);
+        prefs.setOrder(keys);
     }
 
     private void saveFavorites(List<AppEntry> list) {
@@ -281,6 +493,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         root.addView(vig, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
+        if (!kids && prefs.style() == Prefs.STYLE_CLOCK && !showGrid) {
+            buildClockHome(skin, screenW, padH, padV, anim, ringColor, focusPkg);
+            return;
+        }
+
         scroll = new ScrollView(this);
         scroll.setClipChildren(false);
         scroll.setClipToPadding(false);
@@ -296,29 +513,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
         page.addView(kids ? kidsBar() : topBar(skin));
 
-        if (!kids && !inputs.isEmpty()) {
-            page.addView(sectionTitle("Источники", Ui.dp(this, 26)));
-            HorizontalScrollView ins = new HorizontalScrollView(this);
-            ins.setHorizontalScrollBarEnabled(false);
-            ins.setClipChildren(false);
-            ins.setClipToPadding(false);
-            ins.setPadding(Ui.dp(this, 4), Ui.dp(this, 10), Ui.dp(this, 4), Ui.dp(this, 4));
-            LinearLayout irow = row();
-            for (int i = 0; i < inputs.size(); i++) {
-                final Inputs.Item it = inputs.get(i);
-                Pill pill = new Pill(this, it.label);
-                pill.setOnClickListener(v -> {
-                    try { startActivity(Inputs.intent(it)); }
-                    catch (Exception e) { Toast.makeText(this, "Не удалось открыть " + it.label, Toast.LENGTH_SHORT).show(); }
-                });
-                LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (i > 0) ip.leftMargin = Ui.dp(this, 12);
-                irow.addView(pill, ip);
-            }
-            ins.addView(irow);
-            page.addView(ins);
-        }
+        final int inputsPos = prefs.inputsPos();
+        if (!kids && inputsPos == Prefs.INPUTS_TOP) addInputs(page);
 
         List<AppTile> tiles = new ArrayList<>();
         if (!favorites.isEmpty()) {
@@ -335,7 +531,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.setHorizontalScrollBarEnabled(false);
             hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
             int inset = Ui.dp(this, 22);
-            hs.setPadding(inset, Ui.dp(this, 18), inset, Ui.dp(this, 10));
+            // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
+            int zoomPad = Math.round(favH * 0.06f);
+            hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
             LinearLayout row = row();
             for (int i = 0; i < favorites.size(); i++) {
                 AppTile t = tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f, anim, ringColor);
@@ -355,6 +553,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         for (AppEntry a : apps) {
             if (kids ? allowed.contains(a.pkg) : (!favorites.contains(a) && !hidden.contains(a.pkg))) rest.add(a);
         }
+        if (!kids) rest = ordered(rest);
+        gridOrder = rest;
         if (kids && rest.isEmpty() && !apps.isEmpty()) {
             TextView none = Ui.text(this, 18, 0x99FFFFFF, "sans-serif");
             none.setSingleLine(false);
@@ -370,7 +570,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             for (int i = 0; i < rest.size(); i++) {
                 if (i % cols == 0) {
                     row = row();
-                    row.setPadding(0, Ui.dp(this, 12), 0, Ui.dp(this, 4));
+                    row.setPadding(0, Ui.dp(this, 12) + Math.round(tileH * 0.05f), 0, Ui.dp(this, 4));
                     page.addView(row);
                 }
                 AppTile t = tile(rest.get(i), tileW, tileH, skin, kids || labelsAlways,
@@ -382,6 +582,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 tiles.add(t);
             }
         }
+
+        if (!kids && inputsPos == Prefs.INPUTS_BOTTOM) addInputs(page);
 
         if (apps.isEmpty()) {
             TextView empty = Ui.text(this, 18, 0x99FFFFFF, "sans-serif");
@@ -421,16 +623,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         LinearLayout timeRow = new LinearLayout(this);
         timeRow.setOrientation(LinearLayout.HORIZONTAL);
         timeRow.setGravity(Gravity.CENTER_VERTICAL);
-        TextClock clock = new TextClock(this);
-        String fmt = prefs.clock24() ? "HH:mm" : "h:mm";
-        clock.setFormat24Hour(fmt);
-        clock.setFormat12Hour(fmt);
-        clock.setTextSize(64);
-        clock.setTextColor(0xFFFFFFFF);
-        clock.setIncludeFontPadding(false);
-        clock.setLetterSpacing(-0.02f);
-        clock.setTypeface(android.graphics.Typeface.create("sans-serif-thin", android.graphics.Typeface.NORMAL));
-        timeRow.addView(clock);
+        timeRow.addView(bigClock(64));
 
         View divider = new View(this);
         divider.setBackgroundColor(0x40FFFFFF);
@@ -447,7 +640,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         date.setTextSize(15);
         date.setLineSpacing(Ui.dp(this, 4), 1f);
         date.setTextColor(0xB3FFFFFF);
-        timeRow.addView(date);
+        LinearLayout dateCol = new LinearLayout(this);
+        dateCol.setOrientation(LinearLayout.VERTICAL);
+        dateCol.addView(date);
+        weatherView = Ui.text(this, 15, 0xB3FFFFFF, "sans-serif-medium");
+        LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        wl.topMargin = Ui.dp(this, 4);
+        dateCol.addView(weatherView, wl);
+        updateWeatherView();
+        timeRow.addView(dateCol);
         LinearLayout.LayoutParams trp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         trp.topMargin = Ui.dp(this, 4);
@@ -532,6 +734,33 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (h < 12) return "Доброе утро";
         if (h < 18) return "Добрый день";
         return "Добрый вечер";
+    }
+
+    private void addInputs(LinearLayout page) {
+        if (inputs.isEmpty()) return;
+        {
+            page.addView(sectionTitle("Источники", Ui.dp(this, 26)));
+            HorizontalScrollView ins = new HorizontalScrollView(this);
+            ins.setHorizontalScrollBarEnabled(false);
+            ins.setClipChildren(false);
+            ins.setClipToPadding(false);
+            ins.setPadding(Ui.dp(this, 4), Ui.dp(this, 10), Ui.dp(this, 4), Ui.dp(this, 4));
+            LinearLayout irow = row();
+            for (int i = 0; i < inputs.size(); i++) {
+                final Inputs.Item it = inputs.get(i);
+                Pill pill = new Pill(this, it.label);
+                pill.setOnClickListener(v -> {
+                    try { startActivity(Inputs.intent(it)); }
+                    catch (Exception e) { Toast.makeText(this, "Не удалось открыть " + it.label, Toast.LENGTH_SHORT).show(); }
+                });
+                LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (i > 0) ip.leftMargin = Ui.dp(this, 12);
+                irow.addView(pill, ip);
+            }
+            ins.addView(irow);
+            page.addView(ins);
+        }
     }
 
     private TextView sectionTitle(String s, int topMargin) {
@@ -638,7 +867,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final boolean fav = favorites.contains(a);
         final List<String> items = new ArrayList<>();
         items.add(fav ? "Убрать из избранного" : "Добавить в избранное");
-        if (fav) { items.add("Переместить левее"); items.add("Переместить правее"); }
+        items.add("Переместить левее");
+        items.add("Переместить правее");
+        final boolean auto = a.pkg.equals(prefs.autostart());
+        items.add(auto ? "Не открывать при включении ТВ" : "Открывать при включении ТВ");
         items.add("Скрыть с главного экрана");
         items.add("О приложении");
 
@@ -652,10 +884,23 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                         case "Убрать из избранного": favs.remove(a); saveFavorites(favs); break;
                         case "Добавить в избранное": favs.add(a); saveFavorites(favs); break;
                         case "Переместить левее":
-                            if (i > 0) { favs.remove(i); favs.add(i - 1, a); saveFavorites(favs); }
+                        case "Переместить правее": {
+                            int dir = choice.endsWith("левее") ? -1 : 1;
+                            if (fav) {
+                                if (i + dir >= 0 && i + dir < favs.size()) { favs.remove(i); favs.add(i + dir, a); saveFavorites(favs); }
+                            } else {
+                                List<AppEntry> g = new ArrayList<>(gridOrder);
+                                int j = g.indexOf(a);
+                                if (j >= 0 && j + dir >= 0 && j + dir < g.size()) { g.remove(j); g.add(j + dir, a); saveOrder(g); }
+                            }
                             break;
-                        case "Переместить правее":
-                            if (i >= 0 && i < favs.size() - 1) { favs.remove(i); favs.add(i + 1, a); saveFavorites(favs); }
+                        }
+                        case "Открывать при включении ТВ":
+                            prefs.setAutostart(a.pkg);
+                            Toast.makeText(this, a.label + " будет открываться при включении телевизора", Toast.LENGTH_LONG).show();
+                            break;
+                        case "Не открывать при включении ТВ":
+                            prefs.setAutostart("");
                             break;
                         case "Скрыть с главного экрана": {
                             Set<String> h = prefs.hidden();

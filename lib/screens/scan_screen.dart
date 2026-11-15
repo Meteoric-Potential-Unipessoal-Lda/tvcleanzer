@@ -154,6 +154,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
         const Gap(20),
         if (toRemove.isNotEmpty) ...[
           _sectionHeader(tr('Рекомендуем убрать'), AppColors.danger, '${toRemove.length}'),
+          const Gap(4),
+          Text(tr('Не знаете, что это? Нажмите на значок слева или удерживайте строку.'),
+              style: const TextStyle(fontSize: 12, color: AppColors.fgMid, height: 1.4)),
           const Gap(8),
           ...toRemove.asMap().entries.map((e) =>
             PackageTile(
@@ -170,7 +173,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
           _sectionHeader(tr('На ваше усмотрение'), AppColors.warn, '${toCaution.length}'),
           const Gap(4),
           Text(tr('Функции и приложения: голос, трансляция, сервисы видео. Отметьте, только если точно не пользуетесь.'),
-              style: const TextStyle(fontSize: 12, color: AppColors.fgMuted, height: 1.4)),
+              style: const TextStyle(fontSize: 12, color: AppColors.fgMid, height: 1.4)),
           const Gap(8),
           ...toCaution.map((p) => PackageTile(
                 pkg: p,

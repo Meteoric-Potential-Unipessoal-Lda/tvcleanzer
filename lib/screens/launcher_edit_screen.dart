@@ -34,6 +34,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   List<String> _favs = [];
   Set<String> _kidsApps = {};
   bool _kids = false;
+  String _autostart = '';  // app opened when the TV is switched on ('' = home screen)
   final _pin = TextEditingController();
   File? _preview;     // copy of the photo sent to this TV, for the preview
   double? _dim;       // slider value while dragging
@@ -79,6 +80,8 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
         _favs = favs.map((a) => a.pkg).toList();
         _kidsApps = st.apps.where((a) => a.kids).map((a) => a.pkg).toSet();
         _kids = st.kids;
+        final a = st.settings['autostart'] ?? '-';
+        _autostart = a == '-' ? '' : a;
       });
     } on AdbException catch (e) {
       AppLog.error('launcher state', e);
@@ -174,7 +177,10 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             header: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: Row(children: [
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                _autostartRow(),
+                const Gap(8),
+                Row(children: [
                 Expanded(
                   child: Text(tr('Потяните за ручку, чтобы поменять порядок. Первые четыре видны сразу.'),
                       style: const TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
@@ -184,6 +190,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
                   label: Text(tr('Добавить')),
                   onPressed: _addFav,
                 ),
+              ]),
               ]),
             ),
             itemCount: _favs.length,
@@ -220,6 +227,47 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
         _saveBar(tr('Применить на ТВ'), () => _run(tr('Избранное обновлено на телевизоре'),
             () => ref.read(adbServiceProvider).applyLauncher(widget.tv, favorites: _favs))),
       ]);
+
+  /// «When the TV is switched on, open …» (launcher 0.6+).
+  Widget _autostartRow() {
+    final st = _state!;
+    final newEnough = st.version >= 6;
+    final apps = [...st.apps]..sort((a, b) => a.label.toLowerCase().compareTo(b.label.toLowerCase()));
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
+      decoration: BoxDecoration(
+        color: AppColors.bgCard,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.cardBd),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        DropdownButtonFormField<String>(
+          initialValue: apps.any((a) => a.pkg == _autostart) ? _autostart : '',
+          isExpanded: true,
+          decoration: InputDecoration(labelText: tr('При включении ТВ открывать'), border: InputBorder.none),
+          items: [
+            DropdownMenuItem(value: '', child: Text(tr('Главный экран (лаунчер)'))),
+            for (final a in apps)
+              DropdownMenuItem(value: a.pkg, child: Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis)),
+          ],
+          onChanged: !newEnough || _saving
+              ? null
+              : (v) {
+                  final pkg = v ?? '';
+                  setState(() => _autostart = pkg);
+                  _run(pkg.isEmpty ? tr('При включении откроется главный экран') : tr('При включении откроется «{0}»', [_label(pkg)]),
+                      () => ref.read(adbServiceProvider).setLauncherAutostart(widget.tv, pkg));
+                },
+        ),
+        Text(
+          newEnough
+              ? tr('Например, YouTube или онлайн-кинотеатр: включили телевизор — и сразу в нём. Кнопка «Домой» по-прежнему ведёт в лаунчер.')
+              : tr('Эта настройка появилась в новой версии лаунчера: обновите его на вкладке «Лаунчер».'),
+          style: const TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4),
+        ),
+      ]),
+    );
+  }
 
   void _addFav() {
     final rest = _state!.apps.where((a) => !_favs.contains(a.pkg)).toList();

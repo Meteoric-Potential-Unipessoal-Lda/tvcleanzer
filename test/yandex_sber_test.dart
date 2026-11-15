@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tvcleanzer/services/adb_package_manager.dart';
 import 'package:tvcleanzer/services/protection.dart';
+import 'package:tvcleanzer/l10n/l10n.dart';
 
 void main() {
   test('Yandex TV and Sber core packages are never removed', () {
@@ -13,7 +14,7 @@ void main() {
       'ru.sberdevices.tvinputs', 'ru.sberdevices.app.starkeyboard', 'ru.sberdevices.webview',
       'ru.sberdevices.starlauncher', 'ru.sberdevices.starmarket', 'ru.sberdevices.updater',
       'com.sberbank.settings', 'com.cvte.fac.menu', 'com.cvte.factory.at', 'com.stb.factorymenu',
-      'com.cvte.tv.setting', 'com.example.upgrad',
+      'com.cvte.tv.setting', 'com.example.upgrad', 'com.google.android.tv',
     ]) {
       expect(Protection.isProtected(p), isTrue, reason: p);
     }
@@ -34,5 +35,13 @@ void main() {
     expect(AdbPackageManager.usesDisable(['android', 'ru.sberdevices.services']), isTrue);
     expect(AdbPackageManager.usesDisable(['com.yandex.tv.services']), isTrue);
     expect(AdbPackageManager.usesDisable(['com.google.android.tvlauncher']), isFalse);
+  });
+
+  test('package reason: description first, list count on its own line', () {
+    final r = trReason('Браузер: уберите, если не открываете сайты на телевизоре · скрывают в 2 из 472 проверенных списков');
+    final lines = r.split('\n');
+    expect(lines.length, 2);
+    expect(lines[1], contains('472'));
+    expect(trReason('Обычное приложение: уберите, если не пользуетесь').contains('\n'), isFalse);
   });
 }

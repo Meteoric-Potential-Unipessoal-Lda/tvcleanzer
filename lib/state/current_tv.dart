@@ -41,6 +41,15 @@ class CurrentTvNotifier extends StateNotifier<TvDevice?> {
     }
   }
 
+  /// «Remove from the list»: no saved TV any more.
+  Future<void> forget() async {
+    state = null;
+    try {
+      final sp = await SharedPreferences.getInstance();
+      await sp.remove(_key);
+    } catch (_) {}
+  }
+
   Future<void> select(TvDevice d) async {
     state = d;
     if (d.isDemo) return; // the demo TV never outlives the app session
