@@ -22,16 +22,35 @@ final class Weather {
     static boolean refreshIfStale(Prefs p) {
         if (!p.hasWeather()) return false;
         if (System.currentTimeMillis() - p.weatherTs() < MAX_AGE_MS) return false;
-        HttpURLConnection c = null;
+        String q = String.format(Locale.US,
+                "api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f"
+                        + "&current=temperature_2m,weather_code&timezone=auto",
+                p.weatherLat(), p.weatherLon());
+        String err;
         try {
-            URL u = new URL(String.format(Locale.US,
-                    "https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f"
-                            + "&current=temperature_2m,weather_code&timezone=auto",
-                    p.weatherLat(), p.weatherLon()));
-            c = (HttpURLConnection) u.openConnection();
+            fetch("https://" + q, p);
+            return true;
+        } catch (Exception e) {
+            err = name(e);
+        }
+        // Old TVs: no fresh root certificates or a broken clock, so HTTPS fails. The request
+        // carries only the city coordinates, so plain HTTP is an acceptable fallback.
+        try {
+            fetch("http://" + q, p);
+            return true;
+        } catch (Exception e) {
+            p.setWeatherError(err + " / " + name(e));
+            return false;
+        }
+    }
+
+    private static void fetch(String url, Prefs p) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
+        try {
             c.setConnectTimeout(8000);
             c.setReadTimeout(8000);
-            if (c.getResponseCode() != 200) return false;
+            int code = c.getResponseCode();
+            if (code != 200) throw new java.io.IOException("HTTP " + code);
             InputStream in = c.getInputStream();
             ByteArrayOutputStream b = new ByteArrayOutputStream();
             byte[] buf = new byte[4096];
@@ -39,17 +58,21 @@ final class Weather {
             while ((n = in.read(buf)) > 0) b.write(buf, 0, n);
             JSONObject cur = new JSONObject(b.toString("UTF-8")).getJSONObject("current");
             p.setWeatherNow((int) Math.round(cur.getDouble("temperature_2m")), cur.getInt("weather_code"));
-            return true;
-        } catch (Exception e) {
-            return false;
         } finally {
-            if (c != null) c.disconnect();
+            c.disconnect();
         }
+    }
+
+    private static String name(Exception e) {
+        String m = e.getMessage();
+        String s = e.getClass().getSimpleName() + (m == null ? "" : ": " + m);
+        return s.length() > 120 ? s.substring(0, 120) : s;
     }
 
     /** "6° · облачно · Оренбург", or null when there is nothing (yet) to show. */
     static String line(Prefs p) {
-        if (!p.hasWeather() || p.weatherTs() == 0) return null;
+        if (!p.hasWeather()) return null;
+        if (p.weatherTs() == 0) return p.weatherError().isEmpty() ? null : p.weatherCity() + " · погода недоступна";
         if (System.currentTimeMillis() - p.weatherTs() > 6 * 60 * 60 * 1000L) return null; // too old
         int t = p.weatherTemp();
         return (t > 0 ? "+" : "") + t + "° · " + describe(p.weatherCode()) + " · " + p.weatherCity();

@@ -3,6 +3,8 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Убираем PatchWall…': 'Removing PatchWall…',
+    'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'the TV can’t get the weather: check that it has internet',
     'Обычное приложение: уберите, если не пользуетесь': 'A regular app: remove it if you don’t use it',
     'Онлайн-кинотеатр: уберите, если нет подписки и не смотрите': 'Streaming service: remove it if you have no subscription and don’t watch it',
     'Музыка: уберите, если не слушаете музыку на телевизоре': 'Music: remove it if you don’t listen to music on the TV',
@@ -541,6 +543,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Убираем PatchWall…': 'Прибираємо PatchWall…',
+    'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'телевізор не може отримати погоду: перевірте, що на ньому є інтернет',
     'Обычное приложение: уберите, если не пользуетесь': 'Звичайний застосунок: приберіть, якщо не користуєтеся',
     'Онлайн-кинотеатр: уберите, если нет подписки и не смотрите': 'Онлайн-кінотеатр: приберіть, якщо немає підписки й не дивитеся',
     'Музыка: уберите, если не слушаете музыку на телевизоре': 'Музика: приберіть, якщо не слухаєте музику на телевізорі',
@@ -1079,6 +1083,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Убираем PatchWall…': 'Quitando PatchWall…',
+    'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV no puede obtener el tiempo: comprueba que tenga internet',
     'Обычное приложение: уберите, если не пользуетесь': 'App normal: quítala si no la usas',
     'Онлайн-кинотеатр: уберите, если нет подписки и не смотрите': 'Servicio de streaming: quítalo si no tienes suscripción ni lo ves',
     'Музыка: уберите, если не слушаете музыку на телевизоре': 'Música: quítala si no escuchas música en la TV',
@@ -1617,6 +1623,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Убираем PatchWall…': 'A remover o PatchWall…',
+    'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'a TV não consegue obter a meteorologia: verifique se tem internet',
     'Обычное приложение: уберите, если не пользуетесь': 'App normal: remova-a se não a usa',
     'Онлайн-кинотеатр: уберите, если нет подписки и не смотрите': 'Serviço de streaming: remova-o se não tem subscrição nem o vê',
     'Музыка: уберите, если не слушаете музыку на телевизоре': 'Música: remova-a se não ouve música na TV',
@@ -2155,6 +2163,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Убираем PatchWall…': 'PatchWall wird entfernt…',
+    'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'der TV bekommt kein Wetter: prüfen Sie, ob er Internet hat',
     'Обычное приложение: уберите, если не пользуетесь': 'Normale App: entfernen, wenn Sie sie nicht nutzen',
     'Онлайн-кинотеатр: уберите, если нет подписки и не смотрите': 'Streamingdienst: entfernen, wenn Sie kein Abo haben und nicht schauen',
     'Музыка: уберите, если не слушаете музыку на телевизоре': 'Musik: entfernen, wenn Sie am TV keine Musik hören',
@@ -2693,6 +2703,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Убираем PatchWall…': 'Retrait de PatchWall…',
+    'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV n’arrive pas à obtenir la météo : vérifiez qu’elle a internet',
     'Обычное приложение: уберите, если не пользуетесь': 'Appli ordinaire : retirez-la si vous ne l’utilisez pas',
     'Онлайн-кинотеатр: уберите, если нет подписки и не смотрите': 'Service de streaming : retirez-le si vous n’avez pas d’abonnement et ne le regardez pas',
     'Музыка: уберите, если не слушаете музыку на телевизоре': 'Musique : retirez-la si vous n’écoutez pas de musique sur la TV',
@@ -3231,6 +3243,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Убираем PatchWall…': 'Rimozione di PatchWall…',
+    'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV non riesce a ottenere il meteo: verifica che abbia internet',
     'Обычное приложение: уберите, если не пользуетесь': 'App normale: rimuovila se non la usi',
     'Онлайн-кинотеатр: уберите, если нет подписки и не смотрите': 'Servizio di streaming: rimuovilo se non hai l’abbonamento e non lo guardi',
     'Музыка: уберите, если не слушаете музыку на телевизоре': 'Musica: rimuovila se non ascolti musica sulla TV',

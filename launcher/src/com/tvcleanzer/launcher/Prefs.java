@@ -21,7 +21,7 @@ final class Prefs {
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
-            W_TEMP = "weatherTemp", W_CODE = "weatherCode", W_TS = "weatherTs";
+            W_TEMP = "weatherTemp", W_CODE = "weatherCode", W_TS = "weatherTs", W_ERR = "weatherErr";
 
     /** Home screen look: tiles (clock on top, rows of apps) or a big clock with a dock. */
     static final int STYLE_TILES = 0, STYLE_CLOCK = 1;
@@ -95,13 +95,17 @@ final class Prefs {
     int weatherTemp()        { return sp.getInt(W_TEMP, 0); }
     int weatherCode()        { return sp.getInt(W_CODE, 0); }
     long weatherTs()         { return sp.getLong(W_TS, 0); }
+    /** Last failed fetch ("" = fine): shown in Settings and sent to the phone app. */
+    String weatherError()    { return sp.getString(W_ERR, ""); }
+    void setWeatherError(String e) { sp.edit().putString(W_ERR, e == null ? "" : e).apply(); }
     /** A new city (or "" to switch weather off); the old reading is dropped. */
     void setWeatherPlace(String city, float lat, float lon) {
         sp.edit().putString(W_CITY, city == null ? "" : city).putFloat(W_LAT, lat).putFloat(W_LON, lon)
-                .putLong(W_TS, 0).apply();
+                .putLong(W_TS, 0).remove(W_ERR).apply();
     }
     void setWeatherNow(int temp, int code) {
-        sp.edit().putInt(W_TEMP, temp).putInt(W_CODE, code).putLong(W_TS, System.currentTimeMillis()).apply();
+        sp.edit().putInt(W_TEMP, temp).putInt(W_CODE, code).putLong(W_TS, System.currentTimeMillis())
+                .remove(W_ERR).apply();
     }
 
     private static int clamp(int v, int lo, int hi) { return Math.max(lo, Math.min(hi, v)); }

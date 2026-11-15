@@ -127,7 +127,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private final Runnable weatherTick = new Runnable() {
         @Override public void run() {
             refreshWeather();
-            if (resumed) main.postDelayed(this, 10 * 60 * 1000L);
+            // No reading yet (new city, network not up after boot): try again in a minute.
+            long next = prefs.hasWeather() && prefs.weatherTs() == 0 ? 60 * 1000L : 10 * 60 * 1000L;
+            if (resumed) main.postDelayed(this, next);
         }
     };
 
@@ -310,6 +312,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         // Fresh weather or the once-per-boot marker: no need to redraw the whole screen.
         if (key != null && (key.equals(Prefs.W_TEMP) || key.equals(Prefs.W_CODE) || key.equals(Prefs.W_TS)
+                || key.equals(Prefs.W_ERR)
                 || key.equals(Prefs.AUTOSTART_BOOT))) {
             main.post(this::updateWeatherView);
             return;

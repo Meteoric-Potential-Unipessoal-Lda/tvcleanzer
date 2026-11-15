@@ -99,7 +99,14 @@ public class SettingsActivity extends Activity {
             addRow(skin, "Часы: положение", prefs.clockPos() == Prefs.CLOCK_CENTER ? "По центру" : "Слева",
                     () -> prefs.setClockPos(prefs.clockPos() == Prefs.CLOCK_CENTER ? Prefs.CLOCK_LEFT : Prefs.CLOCK_CENTER));
         }
-        addRow(skin, "Погода", prefs.hasWeather() ? prefs.weatherCity() : "Город задаётся с телефона", null);
+        String w = "Город задаётся с телефона";
+        if (prefs.hasWeather()) {
+            String now = Weather.line(prefs);
+            w = !prefs.weatherError().isEmpty() && prefs.weatherTs() == 0
+                    ? prefs.weatherCity() + ": нет связи (" + prefs.weatherError() + ")"
+                    : now != null ? now : prefs.weatherCity() + ": загружается…";
+        }
+        addRow(skin, "Погода", w, null);
         String[] inputsNames = {"Вверху", "Внизу", "Скрыты"};
         addRow(skin, "Источники (HDMI)", inputsNames[prefs.inputsPos()],
                 () -> prefs.setInputsPos((prefs.inputsPos() + 1) % 3));

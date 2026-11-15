@@ -388,7 +388,7 @@ class AdbPackageManager {
       final comp = out
           .split('\n')
           .map((l) => l.trim())
-          .lastWhere((l) => l.contains('/'), orElse: () => '');
+          .lastWhere((l) => _component.hasMatch(l), orElse: () => '');
       if (comp.isEmpty || comp.startsWith('android/')) return null; // chooser
       return comp.split('/').first;
     } finally {
@@ -401,7 +401,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 7;
+  static const bundledLauncherVersion = 8;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -433,9 +433,7 @@ class AdbPackageManager {
       }
 
       onStep?.call(tr('Устанавливаем лаунчер…'));
-      final res = await adb.execWithInput(
-          'cmd package install -r -S ${apk.length}', apk,
-          timeout: const Duration(seconds: 90));
+      final res = await _installOne(adb, apk, const Duration(seconds: 90), flags: '-r');
       if (!res.contains('Success')) throw AdbException(_installError(res));
 
       await adb.shell(_applyCommand(skin, look));
@@ -467,12 +465,15 @@ class AdbPackageManager {
     'com.mitv.tvhome.atv',
   ];
 
+  /// "pkg/.Activity" and nothing else (some firmwares print errors with slashes).
+  static final _component = RegExp(r'^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z0-9_]+)+/[A-Za-z0-9_.$]+$');
+
   static String? _pkgOf(String comp) => comp.contains('/') ? comp.split('/').first : null;
 
   Future<String> _resolvedHome(AdbClient adb) async {
     final out = await adb.shell('cmd package resolve-activity --brief '
         '-a android.intent.action.MAIN -c android.intent.category.HOME 2>/dev/null');
-    return out.split('\n').map((l) => l.trim()).lastWhere((l) => l.contains('/'), orElse: () => '');
+    return out.split('\n').map((l) => l.trim()).lastWhere((l) => _component.hasMatch(l), orElse: () => '');
   }
 
   Future<String?> _frontPackage(AdbClient adb) async {
@@ -511,7 +512,11 @@ class AdbPackageManager {
 
     onStep?.call(tr('Проверяем кнопку «Домой»…'));
     final resolved = _pkgOf(await _resolvedHome(adb));
-    if (await _homeOpensOurs(adb) && resolved == launcherPkg) return LauncherBind.role;
+    if (await _homeOpensOurs(adb) && resolved == launcherPkg) {
+      // Xiaomi: Home is ours now, but PatchWall still opens itself at every power-on
+      // (past the HOME role). Take it off too; checked, and put back if Home breaks.
+      return await _dropPatchWall(adb, sdk, onStep) ? LauncherBind.hard : LauncherBind.role;
+    }
 
     // Our launcher must open at all before anything is taken away.
     await adb.shell('am start -n $launcherHome');
@@ -547,6 +552,24 @@ class AdbPackageManager {
     await adb.shell('input keyevent 3');
     await Future<void>.delayed(const Duration(milliseconds: 2500));
     return await _frontPackage(adb) == launcherPkg ? LauncherBind.service : LauncherBind.failed;
+  }
+
+  static const _patchWall = 'com.mitv.tvhome.atv';
+
+  Future<bool> _dropPatchWall(AdbClient adb, int sdk, void Function(String step)? onStep) async {
+    final installed = _parsePackageList(await adb.shell('pm list packages')).toSet();
+    if (!installed.contains(_patchWall) || installed.contains('com.google.android.apps.tv.launcherx')) return false;
+    onStep?.call(tr('Убираем PatchWall…'));
+    final out = await adb.shell('pm uninstall -k --user 0 $_patchWall');
+    if (!out.toLowerCase().contains('success')) return false;
+    if (sdk >= 29) {
+      await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
+    } else {
+      await adb.shell('cmd package set-home-activity $launcherHome');
+    }
+    if (await _homeOpensOurs(adb)) return true;
+    await adb.shell('pm install-existing $_patchWall');
+    return false;
   }
 
   /// Puts back stock home screens taken off by [_bind] (when our launcher is removed).
@@ -912,7 +935,7 @@ class AdbPackageManager {
       onStep?.call(tr('Отправляем на телевизор {0} МБ…', [(total / 1048576).toStringAsFixed(1)]));
       String res;
       if (apks.length == 1) {
-        res = await adb.execWithInput('cmd package install -r -t -S ${apks.first.$2.length}', apks.first.$2, timeout: t);
+        res = await _installOne(adb, apks.first.$2, t);
       } else {
         final created = await adb.shell('cmd package install-create -r -t -S $total');
         final id = RegExp(r'\[(\d+)\]').firstMatch(created)?.group(1);
@@ -938,6 +961,28 @@ class AdbPackageManager {
       adb.close();
     }
   }
+
+  /// One APK: streamed straight into the package manager; when the TV refuses that
+  /// (some firmwares: "-116: Failed to prepare for install"), the old way, like
+  /// `adb install` on a computer: copy to /data/local/tmp, then `pm install` the file.
+  Future<String> _installOne(AdbClient adb, Uint8List apk, Duration t, {String flags = '-r -t'}) async {
+    final res = await adb.execWithInput('cmd package install $flags -S ${apk.length}', apk, timeout: t);
+    if (res.contains('Success') || _definite.hasMatch(res)) return res;
+    const tmp = '/data/local/tmp/tvcleanzer_install.apk';
+    try {
+      await adb.execIn('cat > $tmp', apk);
+      final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first);
+      if (size != apk.length) return res;
+      final viaFile = await adb.shell('pm install $flags $tmp', timeout: t);
+      return viaFile.contains('Success') ? viaFile : '$res\n$viaFile';
+    } finally {
+      await adb.shell('rm -f $tmp');
+    }
+  }
+
+  /// Answers that the second way would not change.
+  static final _definite = RegExp(
+      'UPDATE_INCOMPATIBLE|NO_MATCHING_ABIS|OLDER_SDK|VERSION_DOWNGRADE|INSUFFICIENT_STORAGE|INVALID_APK|PARSE_FAILED');
 
   static String _installError(String out) {
     final o = out.trim();

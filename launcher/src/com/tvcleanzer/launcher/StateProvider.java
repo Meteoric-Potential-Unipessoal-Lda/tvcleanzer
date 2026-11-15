@@ -49,6 +49,8 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"weatherCity", p.hasWeather() ? p.weatherCity() : "-"});
             c.addRow(new Object[]{"lat", p.weatherLat()});
             c.addRow(new Object[]{"lon", p.weatherLon()});
+            c.addRow(new Object[]{"weatherErr", p.weatherError().isEmpty() ? "-" : p.weatherError()});
+            c.addRow(new Object[]{"weatherAt", p.weatherTs()});
             c.addRow(new Object[]{"autostart", p.autostart().isEmpty() ? "-" : p.autostart()});
             return c;
         }

@@ -50,6 +50,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   int? _version;        // launcher versionCode on the TV
   String? _bindMsg;     // result of the last «make it the home screen»
   bool _bindOk = true;
+  String? _weatherErr;  // launcher 0.8+: why the TV could not get the weather
   Timer? _lookDebounce;
 
   @override
@@ -80,6 +81,14 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       _launcher = pkg;
       _installed = pkg == AdbPackageManager.launcherPkg || await api.isLauncherInstalled(tv);
       _version = _installed == true ? await api.launcherVersion(tv) : null;
+      _weatherErr = null;
+      if ((_version ?? 0) >= 8) {
+        final e = (await api.launcherState(tv)).settings['weatherErr']?.toString() ?? '-';
+        if (e != '-' && e.isNotEmpty) {
+          _weatherErr = e;
+          AppLog.error('launcher weather', e);
+        }
+      }
       _checked = true;
     } catch (_) {
       if (!silent) _error = _offline;
@@ -193,6 +202,10 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     _setLook(picked.name.isEmpty
         ? look.copyWith(weatherCity: '', lat: 0, lon: 0)
         : look.copyWith(weatherCity: picked.name, lat: picked.lat, lon: picked.lon));
+    // The TV fetches it right away; ask it how that went.
+    if (picked.name.isNotEmpty) {
+      Future<void>.delayed(const Duration(seconds: 15), () { if (mounted) _check(silent: true); });
+    }
   }
 
   bool get _outdated =>
@@ -326,8 +339,13 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           dense: true,
           leading: const Icon(Icons.wb_cloudy_rounded, color: AppColors.accent),
           title: Text(tr('Погода на главном экране'), style: const TextStyle(fontSize: 14, color: AppColors.fg)),
-          subtitle: Text(look.weatherCity.isEmpty ? tr('Выключена — нажмите, чтобы выбрать город') : look.weatherCity,
-              style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+          subtitle: Text(
+              look.weatherCity.isEmpty
+                  ? tr('Выключена — нажмите, чтобы выбрать город')
+                  : _weatherErr == null
+                      ? look.weatherCity
+                      : '${look.weatherCity} — ${tr('телевизор не может получить погоду: проверьте, что на нём есть интернет')}',
+              style: TextStyle(fontSize: 12, color: _weatherErr == null || look.weatherCity.isEmpty ? AppColors.fgMuted : AppColors.warn)),
           trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.fgMuted),
           onTap: () => _pickCity(look),
         ),
