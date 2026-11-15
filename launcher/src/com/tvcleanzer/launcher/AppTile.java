@@ -18,6 +18,8 @@ import android.widget.TextView;
 final class AppTile extends LinearLayout {
     final AppEntry app;
     private final FrameLayout card;
+    private final FrameLayout holder; // card + ring, scaled together on focus
+    private final android.view.View ringView;
     private final ImageView art;
     private final TextView inner;   // name inside the card when there is no banner
     private final TextView label;   // name under the card
@@ -56,7 +58,12 @@ final class AppTile extends LinearLayout {
         card.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         card.setClipToOutline(true);
         card.setElevation(Ui.dp(c, 2));
-        addView(card, new LayoutParams(w, h));
+        holder = new FrameLayout(c);
+        holder.setClipChildren(false);
+        holder.setClipToPadding(false);
+        holder.addView(card, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        addView(holder, new LayoutParams(w, h));
 
         art = new ImageView(c);
         card.addView(art, new FrameLayout.LayoutParams(
@@ -72,7 +79,19 @@ final class AppTile extends LinearLayout {
         inner.setPadding(pad, 0, pad, Math.round(h * 0.1f));
         card.addView(inner, ilp);
 
-        ring = Ui.ring(ringColor, Ui.dp(c, 3), radius);
+        // The ring is its own view just outside the card, above it: drawn on the card
+        // itself it was cut by the card's rounded clip (owners: "выделение отрезано").
+        int stroke = Ui.dp(c, 3);
+        ring = Ui.ring(ringColor, stroke, radius + stroke);
+        ringView = new android.view.View(c);
+        ringView.setBackground(ring);
+        ringView.setOutlineProvider(null); // no shadow of its own
+        ringView.setTranslationZ(Ui.dp(c, 40)); // above the lifted card
+        ringView.setVisibility(INVISIBLE);
+        FrameLayout.LayoutParams rlp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        rlp.setMargins(-stroke, -stroke, -stroke, -stroke);
+        holder.addView(ringView, rlp);
 
         label = Ui.text(c, textSp, 0xFFFFFFFF, "sans-serif-medium");
         label.setGravity(Gravity.CENTER);
@@ -118,16 +137,23 @@ final class AppTile extends LinearLayout {
         setTranslationZ(has ? 1f : 0f);
         float s = has ? focusScale : 1f;
         float z = anim == Prefs.ANIM_OFF ? 0 : Ui.dp(getContext(), anim == Prefs.ANIM_SOFT ? 10 : 20);
-        card.animate().scaleX(s).scaleY(s)
-                .translationZ(has ? z : 0)
-                .setDuration(duration).setInterpolator(EASE).start();
-        card.setForeground(has ? ring : null);
+        holder.animate().scaleX(s).scaleY(s).setDuration(duration).setInterpolator(EASE).start();
+        card.animate().translationZ(has ? z : 0).setDuration(duration).setInterpolator(EASE).start();
+        ringView.setVisibility(has ? VISIBLE : INVISIBLE);
         if (labelsAlways) {
             label.animate().alpha(has ? 1f : .75f).setDuration(Math.min(duration, 150)).start();
         } else {
             label.setTranslationY(has && duration > 0 ? -Ui.dp(getContext(), 4) : 0);
             label.animate().alpha(has ? 1f : 0f).translationY(0).setDuration(duration).start();
         }
+    }
+
+    /** Move mode: arrows around the name, name always visible. */
+    void setMoving(boolean on) {
+        label.setText(on ? "◀  " + app.label + "  ▶" : app.label);
+        label.animate().cancel();
+        label.setAlpha(on ? 1f : (labelsAlways ? .75f : (isFocused() ? 1f : 0f)));
+        ringView.setAlpha(on ? 0.6f : 1f);
     }
 
     /** First appearance of the home screen: tiles rise in one after another. */

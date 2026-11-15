@@ -102,6 +102,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         f.addAction(Intent.ACTION_PACKAGE_CHANGED);
         f.addDataScheme("package");
         registerReceiver(packages, f);
+        // after a reboot Wi-Fi comes up after the home screen: keep the pill (and weather) current
+        try { registerReceiver(netChanged, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")); } catch (Exception ignored) {}
         reloadApps();
     }
 
@@ -109,6 +111,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onDestroy() {
         prefs.sp.unregisterOnSharedPreferenceChangeListener(this);
         try { unregisterReceiver(packages); } catch (Exception ignored) {}
+        try { unregisterReceiver(netChanged); } catch (Exception ignored) {}
         io.shutdownNow();
         super.onDestroy();
     }
@@ -254,6 +257,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         for (AppTile t : tiles) if (t.app.pkg.equals(focusPkg)) { target = t; break; }
         if (target == null) target = tiles.isEmpty() ? all : tiles.get(0);
         target.requestFocus();
+        if (target instanceof AppTile && ((AppTile) target).app.pkg.equals(movingPkg)) ((AppTile) target).setMoving(true);
         if (!entered) {
             entered = true;
             for (int i = 0; i < tiles.size(); i++) tiles.get(i).enter(i);
@@ -331,6 +335,64 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             scroll.smoothScrollTo(0, 0);
             focusFirst();
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent e) {
+        if (movingPkg != null && handleMoveKey(e)) return true;
+        return super.dispatchKeyEvent(e);
+    }
+
+    // ── Move mode: ◀ ▶ (and ▲ ▼ in the grid) carry the tile, OK / Back put it down ──
+
+    private String movingPkg;
+    private boolean movingFav;
+    private int gridCols = 4;
+
+    private void startMove(AppEntry a, boolean fav, AppTile t) {
+        movingPkg = a.pkg;
+        movingFav = fav;
+        t.setMoving(true);
+        t.requestFocus();
+        Toast.makeText(this, "Двигайте стрелками, ОК — готово", Toast.LENGTH_SHORT).show();
+    }
+
+    private void stopMove() {
+        movingPkg = null;
+        View f = getCurrentFocus();
+        if (f instanceof AppTile) ((AppTile) f).setMoving(false);
+    }
+
+    private boolean handleMoveKey(KeyEvent e) {
+        int code = e.getKeyCode();
+        if (code == KeyEvent.KEYCODE_HOME) { stopMove(); return false; }
+        if (e.getAction() != KeyEvent.ACTION_DOWN) return true; // the whole press is ours
+        int step;
+        switch (code) {
+            case KeyEvent.KEYCODE_DPAD_LEFT: step = -1; break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT: step = 1; break;
+            case KeyEvent.KEYCODE_DPAD_UP: step = movingFav ? 0 : -gridCols; break;
+            case KeyEvent.KEYCODE_DPAD_DOWN: step = movingFav ? 0 : gridCols; break;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+            case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_BACK:
+            case KeyEvent.KEYCODE_ESCAPE:
+                stopMove();
+                return true;
+            default:
+                return true;
+        }
+        if (step == 0) return true;
+        List<AppEntry> list = new ArrayList<>(movingFav ? favorites : gridOrder);
+        int j = -1;
+        for (int k = 0; k < list.size(); k++) if (list.get(k).pkg.equals(movingPkg)) { j = k; break; }
+        if (j < 0) { stopMove(); return true; }
+        int to = Math.max(0, Math.min(list.size() - 1, j + step));
+        if (to == j) return true;
+        AppEntry a = list.remove(j);
+        list.add(to, a);
+        if (movingFav) saveFavorites(list); else saveOrder(list); // the screen redraws, focus follows the app
+        return true;
     }
 
     @Override
@@ -430,6 +492,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final int anim = prefs.anim();
         final int ringColor = prefs.ringAccent() ? skin.accent : 0xF2FFFFFF;
         final int cols = kids ? 4 : GRID_COLUMNS[size];
+        gridCols = cols;
         final int favVisible = FAV_VISIBLE[size];
 
         // Own photo as background: decode off the UI thread, then redraw.
@@ -535,7 +598,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
             int inset = Ui.dp(this, 22);
             // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
-            int zoomPad = Math.round(favH * 0.06f);
+            int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
             hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
             LinearLayout row = row();
             for (int i = 0; i < favorites.size(); i++) {
@@ -601,7 +664,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         AppTile target = null;
         for (AppTile t : tiles) if (t.app.pkg.equals(focusPkg)) { target = t; break; }
         if (target == null && !tiles.isEmpty()) target = tiles.get(0);
-        if (target != null) target.requestFocus();
+        if (target != null) {
+            target.requestFocus();
+            if (target.app.pkg.equals(movingPkg)) target.setMoving(true);
+        }
 
         if (!entered) {
             entered = true;
@@ -660,6 +726,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         bar.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
         Pill net = new Pill(this, networkLabel());
+        netPill = net;
         net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
         bar.addView(net);
 
@@ -707,6 +774,17 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         bar.addView(exit);
         return bar;
     }
+
+    private Pill netPill;
+
+    private final BroadcastReceiver netChanged = new BroadcastReceiver() {
+        @Override public void onReceive(Context c, Intent i) {
+            main.postDelayed(() -> {
+                if (netPill != null) netPill.setText(networkLabel());
+                refreshWeather();
+            }, 1500);
+        }
+    };
 
     @SuppressWarnings("deprecation")
     private String networkLabel() {
@@ -870,8 +948,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final boolean fav = favorites.contains(a);
         final List<String> items = new ArrayList<>();
         items.add(fav ? "Убрать из избранного" : "Добавить в избранное");
-        items.add("Переместить левее");
-        items.add("Переместить правее");
+        items.add("Переместить");
         final boolean auto = a.pkg.equals(prefs.autostart());
         items.add(auto ? "Не открывать при включении ТВ" : "Открывать при включении ТВ");
         items.add("Скрыть с главного экрана");
@@ -886,18 +963,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     switch (choice) {
                         case "Убрать из избранного": favs.remove(a); saveFavorites(favs); break;
                         case "Добавить в избранное": favs.add(a); saveFavorites(favs); break;
-                        case "Переместить левее":
-                        case "Переместить правее": {
-                            int dir = choice.endsWith("левее") ? -1 : 1;
-                            if (fav) {
-                                if (i + dir >= 0 && i + dir < favs.size()) { favs.remove(i); favs.add(i + dir, a); saveFavorites(favs); }
-                            } else {
-                                List<AppEntry> g = new ArrayList<>(gridOrder);
-                                int j = g.indexOf(a);
-                                if (j >= 0 && j + dir >= 0 && j + dir < g.size()) { g.remove(j); g.add(j + dir, a); saveOrder(g); }
-                            }
+                        case "Переместить":
+                            startMove(a, fav, t);
                             break;
-                        }
                         case "Открывать при включении ТВ":
                             prefs.setAutostart(a.pkg);
                             Toast.makeText(this, a.label + " будет открываться при включении телевизора", Toast.LENGTH_LONG).show();
