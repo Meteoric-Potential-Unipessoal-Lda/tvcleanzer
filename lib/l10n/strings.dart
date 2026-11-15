@@ -3,6 +3,8 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).': 'A light, beautiful launcher: clock, favourites, all apps, skins. Under 100 KB, runs even on low-end TVs (Android 7+; Android 5–6 experimental).',
+    'Нужен Android 5 или новее на телевизоре (сейчас SDK {0}).': 'The TV needs Android 5 or newer (now SDK {0}).',
     'Избранное на главном экране': 'Favourites on the home screen',
     'Один ряд': 'One row',
     'По 4': '4 per row',
@@ -549,6 +551,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).': 'Легкий і гарний лаунчер: годинник, обране, усі застосунки, скіни. Менше 100 КБ, працює навіть на слабких телевізорах (Android 7+; на Android 5–6 — пробна підтримка).',
+    'Нужен Android 5 или новее на телевизоре (сейчас SDK {0}).': 'Потрібен Android 5 або новіший на телевізорі (зараз SDK {0}).',
     'Избранное на главном экране': 'Обране на головному екрані',
     'Один ряд': 'Один ряд',
     'По 4': 'По 4',
@@ -1095,6 +1099,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).': 'Un launcher ligero y bonito: reloj, favoritos, todas las apps, temas. Menos de 100 KB, funciona incluso en TVs modestas (Android 7+; Android 5–6 en pruebas).',
+    'Нужен Android 5 или новее на телевизоре (сейчас SDK {0}).': 'La TV necesita Android 5 o posterior (ahora SDK {0}).',
     'Избранное на главном экране': 'Favoritos en la pantalla principal',
     'Один ряд': 'Una fila',
     'По 4': '4 por fila',
@@ -1641,6 +1647,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).': 'Um launcher leve e bonito: relógio, favoritos, todas as apps, temas. Menos de 100 KB, funciona até em TVs fracas (Android 7+; Android 5–6 experimental).',
+    'Нужен Android 5 или новее на телевизоре (сейчас SDK {0}).': 'A TV precisa do Android 5 ou mais recente (agora SDK {0}).',
     'Избранное на главном экране': 'Favoritos no ecrã principal',
     'Один ряд': 'Uma fila',
     'По 4': '4 por fila',
@@ -2187,6 +2195,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).': 'Ein leichter, schöner Launcher: Uhr, Favoriten, alle Apps, Designs. Unter 100 KB, läuft sogar auf schwachen Fernsehern (Android 7+; Android 5–6 experimentell).',
+    'Нужен Android 5 или новее на телевизоре (сейчас SDK {0}).': 'Der TV braucht Android 5 oder neuer (jetzt SDK {0}).',
     'Избранное на главном экране': 'Favoriten auf dem Startbildschirm',
     'Один ряд': 'Eine Reihe',
     'По 4': '4 pro Reihe',
@@ -2733,6 +2743,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).': 'Un launcher léger et élégant : horloge, favoris, toutes les applis, thèmes. Moins de 100 Ko, fonctionne même sur les téléviseurs modestes (Android 7+ ; Android 5–6 en test).',
+    'Нужен Android 5 или новее на телевизоре (сейчас SDK {0}).': 'La TV doit avoir Android 5 ou plus récent (actuellement SDK {0}).',
     'Избранное на главном экране': 'Favoris sur l’écran d’accueil',
     'Один ряд': 'Une rangée',
     'По 4': '4 par rangée',
@@ -3279,6 +3291,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).': 'Un launcher leggero ed elegante: orologio, preferiti, tutte le app, temi. Meno di 100 KB, funziona anche sulle TV meno potenti (Android 7+; Android 5–6 sperimentale).',
+    'Нужен Android 5 или новее на телевизоре (сейчас SDK {0}).': 'La TV richiede Android 5 o successivo (ora SDK {0}).',
     'Избранное на главном экране': 'Preferiti nella schermata principale',
     'Один ряд': 'Una fila',
     'По 4': '4 per fila',

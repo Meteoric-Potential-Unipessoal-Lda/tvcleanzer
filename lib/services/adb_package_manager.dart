@@ -402,7 +402,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 13;
+  static const bundledLauncherVersion = 14;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -417,7 +417,7 @@ class AdbPackageManager {
   }
 
   /// Installs [apk] on the TV, makes it the home screen, applies [skin] and
-  /// presses Home so the user sees it. Needs Android 7+ on the TV.
+  /// presses Home so the user sees it. Android 7+; Android 5–6 experimental.
   /// [onStep] reports progress for the UI.
   Future<LauncherBind> installLauncher(TvDevice device, Uint8List apk, String skin,
       {LauncherLook? look, void Function(String step)? onStep}) async {
@@ -428,9 +428,11 @@ class AdbPackageManager {
       final sdk = int.tryParse(
               (await adb.shell('getprop ro.build.version.sdk')).trim()) ??
           device.sdkVersion;
-      if (sdk > 0 && sdk < 24) {
+      // Android 5–6 (SDK 21–23): experimental. No `cmd package` there, so the APK goes the
+      // old way (copy + pm install) and Home is held only by our Home-key service.
+      if (sdk > 0 && sdk < 21) {
         throw AdbException(
-            tr('Нужен Android 7 или новее на телевизоре (сейчас SDK {0}).', [sdk]));
+            tr('Нужен Android 5 или новее на телевизоре (сейчас SDK {0}).', [sdk]));
       }
 
       onStep?.call(tr('Устанавливаем лаунчер…'));

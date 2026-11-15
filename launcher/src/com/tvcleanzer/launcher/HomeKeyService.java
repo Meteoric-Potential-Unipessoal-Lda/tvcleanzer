@@ -41,7 +41,7 @@ public class HomeKeyService extends AccessibilityService {
     static final Set<String> HIJACKERS = new HashSet<>(Arrays.asList(
             "com.mitv.tvhome.atv", "com.mitv.tvhome", "com.google.android.tvlauncher",
             "com.google.android.apps.tv.launcherx", "com.google.android.leanbacklauncher",
-            "com.yandex.tv.home", "ru.sberdevices.starlauncher"));
+            "com.yandex.tv.home", "ru.sberdevices.starlauncher", "com.tcl.waterfall.overseas"));
 
     /** Homes that also host the TV's own features (Alice search, Sber assistant, Google TV
      *  search): replaced only right after Home / power-on / wake, never while the owner uses them.
