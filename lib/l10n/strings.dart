@@ -3,6 +3,7 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'The TV gets the weather from Open-Meteo or met.no every half hour; nothing about you is sent there.',
     'Убираем PatchWall…': 'Removing PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'the TV can’t get the weather: check that it has internet',
     'Обычное приложение: уберите, если не пользуетесь': 'A regular app: remove it if you don’t use it',
@@ -543,6 +544,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'Погоду телевізор бере з Open-Meteo або met.no раз на пів години; про вас туди нічого не надсилається.',
     'Убираем PatchWall…': 'Прибираємо PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'телевізор не може отримати погоду: перевірте, що на ньому є інтернет',
     'Обычное приложение: уберите, если не пользуетесь': 'Звичайний застосунок: приберіть, якщо не користуєтеся',
@@ -1083,6 +1085,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'La TV obtiene el tiempo de Open-Meteo o met.no cada media hora; no se envía nada sobre ti.',
     'Убираем PatchWall…': 'Quitando PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV no puede obtener el tiempo: comprueba que tenga internet',
     'Обычное приложение: уберите, если не пользуетесь': 'App normal: quítala si no la usas',
@@ -1623,6 +1626,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'A TV obtém a meteorologia do Open-Meteo ou do met.no a cada meia hora; nada sobre si é enviado.',
     'Убираем PatchWall…': 'A remover o PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'a TV não consegue obter a meteorologia: verifique se tem internet',
     'Обычное приложение: уберите, если не пользуетесь': 'App normal: remova-a se não a usa',
@@ -2163,6 +2167,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'Der TV holt das Wetter alle halbe Stunde von Open-Meteo oder met.no; über Sie wird nichts gesendet.',
     'Убираем PatchWall…': 'PatchWall wird entfernt…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'der TV bekommt kein Wetter: prüfen Sie, ob er Internet hat',
     'Обычное приложение: уберите, если не пользуетесь': 'Normale App: entfernen, wenn Sie sie nicht nutzen',
@@ -2703,6 +2708,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'La TV récupère la météo sur Open-Meteo ou met.no toutes les demi-heures ; rien sur vous n’y est envoyé.',
     'Убираем PatchWall…': 'Retrait de PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV n’arrive pas à obtenir la météo : vérifiez qu’elle a internet',
     'Обычное приложение: уберите, если не пользуетесь': 'Appli ordinaire : retirez-la si vous ne l’utilisez pas',
@@ -3243,6 +3249,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.': 'La TV prende il meteo da Open-Meteo o met.no ogni mezz’ora; nulla su di te viene inviato.',
     'Убираем PatchWall…': 'Rimozione di PatchWall…',
     'телевизор не может получить погоду: проверьте, что на нём есть интернет': 'la TV non riesce a ottenere il meteo: verifica che abbia internet',
     'Обычное приложение: уберите, если не пользуетесь': 'App normale: rimuovila se non la usi',

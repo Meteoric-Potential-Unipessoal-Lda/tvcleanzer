@@ -219,18 +219,27 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             in.setOnClickListener(v -> chooseInput());
             order.add(in);
         }
-        int max = 8;
-        for (AppEntry a : favorites) {
-            if (tiles.size() >= max) break;
-            AppTile t = tile(a, icon, icon, skin, false, 12, 1.12f, anim, ringColor);
+        GearButton gear = new GearButton(this, skin.accent);
+        gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+        Pill all = new Pill(this, "Все приложения");
+        all.setOnClickListener(v -> { showGrid = true; build(); });
+
+        // The whole dock must fit the screen (a centred dock wider than the screen loses both
+        // ends): shrink the icons, then show fewer favourites, if needed.
+        int unspecified = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        all.measure(unspecified, unspecified);
+        int fixed = 2 * dp18 + all.getMeasuredWidth() + Ui.dp(this, 46) + gap;
+        if (!order.isEmpty()) { order.get(0).measure(unspecified, unspecified); fixed += order.get(0).getMeasuredWidth() + gap; }
+        int avail = screenW - 2 * padH - fixed;
+        int n = Math.min(8, favorites.size());
+        while (n > 0 && (avail - gap * n) / n < Ui.dp(this, 44)) n--;
+        if (n > 0) icon = Math.min(icon, (avail - gap * n) / n);
+        for (int k = 0; k < n; k++) {
+            AppTile t = tile(favorites.get(k), icon, icon, skin, false, 12, 1.12f, anim, ringColor);
             tiles.add(t);
             order.add(t);
         }
-        GearButton gear = new GearButton(this, skin.accent);
-        gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
         order.add(gear);
-        Pill all = new Pill(this, "Все приложения");
-        all.setOnClickListener(v -> { showGrid = true; build(); });
         order.add(all);
 
         for (int i = 0; i < order.size(); i++) {

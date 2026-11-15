@@ -536,5 +536,6 @@
 "Got it",
 "Not sure what it is? Tap the icon on the left or long-press the row.",
 "Removing PatchWall…",
-"the TV can’t get the weather: check that it has internet"
+"the TV can’t get the weather: check that it has internet",
+"The TV gets the weather from Open-Meteo or met.no every half hour; nothing about you is sent there."
 ]

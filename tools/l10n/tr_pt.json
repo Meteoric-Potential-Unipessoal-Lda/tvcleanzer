@@ -536,5 +536,6 @@
 "Entendido",
 "Não sabe o que é? Toque no ícone à esquerda ou mantenha a linha premida.",
 "A remover o PatchWall…",
-"a TV não consegue obter a meteorologia: verifique se tem internet"
+"a TV não consegue obter a meteorologia: verifique se tem internet",
+"A TV obtém a meteorologia do Open-Meteo ou do met.no a cada meia hora; nada sobre si é enviado."
 ]

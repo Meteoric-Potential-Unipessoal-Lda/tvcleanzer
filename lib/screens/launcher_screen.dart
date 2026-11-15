@@ -828,7 +828,7 @@ class _CitySheetState extends State<_CitySheet> {
                 label: Text(tr('Не показывать погоду')),
                 onPressed: () => Navigator.pop(context, const GeoPlace('', '', 0, 0)),
               ),
-              Text(tr('Погоду телевизор берёт с Open-Meteo раз в полчаса; о вас туда ничего не отправляется.'),
+              Text(tr('Погоду телевизор берёт с Open-Meteo или met.no раз в полчаса; о вас туда ничего не отправляется.'),
                   style: const TextStyle(color: AppColors.fgMuted, fontSize: 11, height: 1.4)),
             ]),
           ),
