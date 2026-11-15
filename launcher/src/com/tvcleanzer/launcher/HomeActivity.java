@@ -172,6 +172,22 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         return clock;
     }
 
+    private TextClock dateLine(String fmt) {
+        TextClock t = new TextClock(this);
+        t.setFormat12Hour(fmt);
+        t.setFormat24Hour(fmt);
+        t.setAllCaps(true);
+        t.setLetterSpacing(0.12f);
+        t.setTextSize(15);
+        t.setTextColor(0xB3FFFFFF);
+        t.setSingleLine(true);
+        t.setEllipsize(null);
+        t.setIncludeFontPadding(false);
+        // the last letter's spacing is not counted in the measured width: give it room
+        t.setPadding(0, 0, Ui.dp(this, 6), 0);
+        return t;
+    }
+
     /** Big clock never wider than the screen or taller than a third of it ("Огромные" on 720p TVs). */
     private static void fitClock(TextClock c, int maxW, int maxH) {
         android.graphics.Paint p = new android.graphics.Paint(c.getPaint());
@@ -751,6 +767,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         TextView greet = Ui.text(this, 15, 0xB3FFFFFF, "sans-serif-medium");
         greet.setText(greeting().toUpperCase());
         greet.setLetterSpacing(0.16f);
+        greet.setPadding(0, 0, Ui.dp(this, 8), 0);
         left.addView(greet);
 
         LinearLayout timeRow = new LinearLayout(this);
@@ -765,17 +782,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         dvp.rightMargin = Ui.dp(this, 20);
         timeRow.addView(divider, dvp);
 
-        TextClock date = new TextClock(this);
-        date.setFormat12Hour("EEEE\nd MMMM");
-        date.setFormat24Hour("EEEE\nd MMMM");
-        date.setAllCaps(true);
-        date.setLetterSpacing(0.12f);
-        date.setTextSize(15);
-        date.setLineSpacing(Ui.dp(this, 4), 1f);
-        date.setTextColor(0xB3FFFFFF);
+        // Day and date as two one-line clocks: one two-line clock with letter spacing was measured
+        // a few pixels short on some TVs and broke «ВОСКРЕСЕНЬЕ» into «ВОСКРЕСЕНЬ / Е».
         LinearLayout dateCol = new LinearLayout(this);
         dateCol.setOrientation(LinearLayout.VERTICAL);
-        dateCol.addView(date);
+        dateCol.addView(dateLine("EEEE"));
+        TextClock dayMonth = dateLine("d MMMM");
+        LinearLayout.LayoutParams dml = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dml.topMargin = Ui.dp(this, 3);
+        dateCol.addView(dayMonth, dml);
         weatherView = Ui.text(this, 15, 0xB3FFFFFF, "sans-serif-medium");
         LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
