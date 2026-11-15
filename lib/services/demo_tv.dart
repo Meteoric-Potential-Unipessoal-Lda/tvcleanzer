@@ -311,6 +311,12 @@ class DemoAdbClient extends AdbClient {
       final on = (s.secure['enabled_accessibility_services'] ?? '').contains('tvcleanzer');
       return on ? '  Bound services:{Service[label=TVCleanzer: кнопка Домой]}\n' : '  Bound services:{}\n';
     }
+    if (c == 'settings get system screen_off_timeout') return '${s.settings['screen_off_timeout'] ?? '900000'}\n';
+    if (c.startsWith('settings put system screen_off_timeout ')) {
+      s.settings['screen_off_timeout'] = c.split(' ').last;
+      return '';
+    }
+    if (c.startsWith('am start -n com.android.systemui/.Somnambulator')) return 'Starting: Intent { cmp=com.android.systemui/.Somnambulator }\n';
     if (c.startsWith('settings get secure ')) return '${s.secure[c.split(' ').last] ?? 'null'}\n';
     if (c.startsWith('settings put secure ')) {
       final p = c.split(' ');
@@ -367,7 +373,7 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=16 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=17 minSdk=21 targetSdk=34\n' : '';
     }
     if (c.startsWith('dumpsys activity activities')) {
       // Home on the demo TV opens whatever is the home screen.

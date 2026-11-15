@@ -402,7 +402,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 16;
+  static const bundledLauncherVersion = 17;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -841,6 +841,40 @@ class AdbPackageManager {
       }
       await adb.shell('settings put secure screensaver_components $photoDream');
       await adb.shell('settings put secure screensaver_enabled 1');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// When the screensaver starts, in minutes (Android TV: system screen_off_timeout); 0 = unknown.
+  Future<int> screensaverDelayMin(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final ms = int.tryParse((await adb.shell('settings get system screen_off_timeout')).trim()) ?? 0;
+      return ms <= 0 ? 0 : (ms / 60000).round();
+    } finally {
+      adb.close();
+    }
+  }
+
+  Future<void> setScreensaverDelayMin(TvDevice device, int minutes) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('settings put system screen_off_timeout ${minutes * 60000}');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Starts the screensaver right now (SystemUI's "start now"). False if the TV refused.
+  Future<bool> startScreensaverNow(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell('am start -n com.android.systemui/.Somnambulator 2>&1');
+      return !out.contains('Error') && !out.contains('Exception');
     } finally {
       adb.close();
     }

@@ -57,7 +57,7 @@ final class Weather {
             c.setConnectTimeout(8000);
             c.setReadTimeout(8000);
             // api.met.no asks every client to name itself
-            c.setRequestProperty("User-Agent", "TVCleanzerLauncher/0.16 (dayavacorp@gmail.com)");
+            c.setRequestProperty("User-Agent", "TVCleanzerLauncher/0.17 (dayavacorp@gmail.com)");
             int code = c.getResponseCode();
             if (code != 200) throw new java.io.IOException("HTTP " + code);
             InputStream in = c.getInputStream();

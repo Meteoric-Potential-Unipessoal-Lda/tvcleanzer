@@ -146,17 +146,31 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                         final android.widget.ImageView v = wallView;
                         if (b == null || v == null) return;
                         wallBitmap = b;
-                        if (prefs.anim() == Prefs.ANIM_OFF) { v.setImageBitmap(b); return; }
-                        v.animate().alpha(0f).setDuration(500).withEndAction(() -> {
+                        // frame-by-frame, like the photo frame: View animations follow the TV's
+                        // animation scale (often 0) and the photos would just "click"
+                        fade(v, 1f, 0f, 700, () -> {
                             v.setImageBitmap(b);
-                            v.animate().alpha(1f).setDuration(700).start();
-                        }).start();
+                            fade(v, 0f, 1f, 900, null);
+                        });
                     });
                 });
             }
             main.postDelayed(this, every);
         }
     };
+
+    private void fade(final View v, final float from, final float to, final long ms, final Runnable end) {
+        final long start = android.os.SystemClock.uptimeMillis();
+        main.post(new Runnable() {
+            @Override public void run() {
+                float t = Math.min(1f, (android.os.SystemClock.uptimeMillis() - start) / (float) ms);
+                float e = t * t * (3f - 2f * t);
+                v.setAlpha(from + (to - from) * e);
+                if (t < 1f) main.postDelayed(this, 16);
+                else if (end != null) end.run();
+            }
+        });
+    }
 
     /** The home screen can stay open for hours: re-check the weather every 10 minutes while visible. */
     private final Runnable weatherTick = new Runnable() {

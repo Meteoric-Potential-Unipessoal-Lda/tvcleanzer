@@ -23,6 +23,11 @@ void main() {
     expect(st.settings['photoSec'], '60');
     expect(st.settings['homePhotos'], '1');
 
+    expect(await api.screensaverDelayMin(tv), 15);
+    await api.setScreensaverDelayMin(tv, 5);
+    expect(await api.screensaverDelayMin(tv), 5);
+    expect(await api.startScreensaverNow(tv), isTrue);
+
     await api.enablePhotoFrame(tv);
     expect(await api.currentDream(tv), AdbPackageManager.photoDream);
     st = await api.launcherState(tv);

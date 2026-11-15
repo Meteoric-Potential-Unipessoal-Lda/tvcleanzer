@@ -3,6 +3,10 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Включать, когда телевизор простоит': 'Start when the TV has been idle for',
+    'Показать сейчас': 'Show now',
+    'Фоторамка запущена на телевизоре': 'The photo frame is running on the TV',
+    'Телевизор не дал запустить заставку сразу: она включится сама, когда ТВ постоит без дела.': 'The TV did not let us start the screensaver right away: it will start by itself when the TV is idle.',
     'Автор — {0} · {1}': 'Made by {0} · {1}',
     'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer is free and has no ads. If it helped you, you can support the author.',
     'Поддержать автора': 'Support the author',
@@ -576,6 +580,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Включать, когда телевизор простоит': 'Вмикати, коли телевізор простоїть',
+    'Показать сейчас': 'Показати зараз',
+    'Фоторамка запущена на телевизоре': 'Фоторамку запущено на телевізорі',
+    'Телевизор не дал запустить заставку сразу: она включится сама, когда ТВ постоит без дела.': 'Телевізор не дав запустити заставку одразу: вона ввімкнеться сама, коли ТБ постоїть без діла.',
     'Автор — {0} · {1}': 'Автор — {0} · {1}',
     'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer безкоштовний і без реклами. Якщо він вам допоміг — можна підтримати автора.',
     'Поддержать автора': 'Підтримати автора',
@@ -1149,6 +1157,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Включать, когда телевизор простоит': 'Activar cuando la TV lleve inactiva',
+    'Показать сейчас': 'Mostrar ahora',
+    'Фоторамка запущена на телевизоре': 'El marco de fotos se está mostrando en la TV',
+    'Телевизор не дал запустить заставку сразу: она включится сама, когда ТВ постоит без дела.': 'La TV no permitió iniciar el salvapantallas ahora: se iniciará solo cuando la TV esté inactiva.',
     'Автор — {0} · {1}': 'Autor: {0} · {1}',
     'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer es gratis y sin anuncios. Si te ha ayudado, puedes apoyar al autor.',
     'Поддержать автора': 'Apoyar al autor',
@@ -1722,6 +1734,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Включать, когда телевизор простоит': 'Ligar quando a TV estiver parada há',
+    'Показать сейчас': 'Mostrar agora',
+    'Фоторамка запущена на телевизоре': 'A moldura de fotos está a correr na TV',
+    'Телевизор не дал запустить заставку сразу: она включится сама, когда ТВ постоит без дела.': 'A TV não deixou iniciar a proteção de ecrã já: vai iniciar sozinha quando a TV estiver parada.',
     'Автор — {0} · {1}': 'Autor: {0} · {1}',
     'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'O TVCleanzer é gratuito e sem anúncios. Se ajudou, pode apoiar o autor.',
     'Поддержать автора': 'Apoiar o autor',
@@ -2295,6 +2311,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Включать, когда телевизор простоит': 'Starten, wenn der TV ruht seit',
+    'Показать сейчас': 'Jetzt zeigen',
+    'Фоторамка запущена на телевизоре': 'Der Bilderrahmen läuft auf dem TV',
+    'Телевизор не дал запустить заставку сразу: она включится сама, когда ТВ постоит без дела.': 'Der TV hat den sofortigen Start verweigert: Der Bildschirmschoner startet von selbst, wenn der TV ruht.',
     'Автор — {0} · {1}': 'Autor: {0} · {1}',
     'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer ist kostenlos und werbefrei. Wenn er Ihnen geholfen hat, können Sie den Autor unterstützen.',
     'Поддержать автора': 'Autor unterstützen',
@@ -2868,6 +2888,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Включать, когда телевизор простоит': 'Démarrer quand la TV est inactive depuis',
+    'Показать сейчас': 'Afficher maintenant',
+    'Фоторамка запущена на телевизоре': 'Le cadre photo s’affiche sur la TV',
+    'Телевизор не дал запустить заставку сразу: она включится сама, когда ТВ постоит без дела.': 'La TV a refusé de lancer l’économiseur tout de suite : il démarrera tout seul quand la TV sera inactive.',
     'Автор — {0} · {1}': 'Auteur : {0} · {1}',
     'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer est gratuit et sans publicité. S’il vous a aidé, vous pouvez soutenir l’auteur.',
     'Поддержать автора': 'Soutenir l’auteur',
@@ -3441,6 +3465,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Включать, когда телевизор простоит': 'Avvia quando la TV è inattiva da',
+    'Показать сейчас': 'Mostra ora',
+    'Фоторамка запущена на телевизоре': 'La cornice foto è attiva sulla TV',
+    'Телевизор не дал запустить заставку сразу: она включится сама, когда ТВ постоит без дела.': 'La TV non ha permesso di avviare subito il salvaschermo: partirà da solo quando la TV sarà inattiva.',
     'Автор — {0} · {1}': 'Autore: {0} · {1}',
     'TVCleanzer бесплатный и без рекламы. Если он вам помог — можно поддержать автора.': 'TVCleanzer è gratuito e senza pubblicità. Se ti è stato utile, puoi sostenere l’autore.',
     'Поддержать автора': 'Sostieni l’autore',

@@ -38,6 +38,7 @@ public class PhotoDream extends DreamService {
     private int index;
     private LinearLayout info;
     private TextView weather;
+    private View shade;
     private boolean clockOnly;
 
     private final Runnable next = new Runnable() {
@@ -90,7 +91,7 @@ public class PhotoDream extends DreamService {
         int screenH = getResources().getDisplayMetrics().heightPixels;
         if (!clockOnly) {
             // a soft shade at the bottom keeps the time readable on bright photos
-            View shade = new View(this);
+            shade = new View(this);
             shade.setBackground(new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
                     new int[]{0x99000000, 0x00000000}));
             root.addView(shade, new FrameLayout.LayoutParams(
@@ -158,6 +159,41 @@ public class PhotoDream extends DreamService {
         });
     }
 
+    // Our own frame-by-frame fade and zoom: View animations obey the TV's "animation scale",
+    // which TVCleanzer's boost halves and many owners turn off, so the photos "clicked".
+    private static final long FADE_MS = 2500;
+    private ImageView fadeIn, fadeOut, zoomView;
+    private long fadeStart, zoomStart, zoomMs;
+    private boolean zoom;
+
+    private final Runnable tick = new Runnable() {
+        @Override public void run() {
+            long now = android.os.SystemClock.uptimeMillis();
+            boolean more = false;
+            if (fadeIn != null) {
+                float t = Math.min(1f, (now - fadeStart) / (float) FADE_MS);
+                float e = t * t * (3f - 2f * t); // smoothstep: soft start and end
+                fadeIn.setAlpha(e);
+                if (fadeOut != null) fadeOut.setAlpha(1f - e);
+                if (t >= 1f) {
+                    if (fadeOut != null) fadeOut.setImageDrawable(null); // only one photo in memory
+                    fadeIn = null;
+                    fadeOut = null;
+                } else {
+                    more = true;
+                }
+            }
+            if (zoom && zoomView != null) {
+                float t = Math.min(1f, (now - zoomStart) / (float) zoomMs);
+                float sc = 1f + 0.08f * t;
+                zoomView.setScaleX(sc);
+                zoomView.setScaleY(sc);
+                if (t < 1f) more = true;
+            }
+            if (more) handler.postDelayed(this, 16);
+        }
+    };
+
     /** Decodes the next photo off the UI thread, then cross-fades to it. */
     private void showNext() {
         if (photos.isEmpty()) return;
@@ -165,24 +201,28 @@ public class PhotoDream extends DreamService {
         index++;
         io.execute(() -> {
             final Bitmap b = Photos.load(this, f);
+            if (b != null) b.prepareToDraw(); // upload ahead, so the fade does not stutter
             handler.post(() -> {
                 if (b == null || views == null) return;
                 ImageView in = views[1 - front], out = views[front];
                 front = 1 - front;
-                in.animate().cancel();
+                if (fadeOut != null) fadeOut.setImageDrawable(null); // a fade still running: drop it
                 in.setImageBitmap(b);
+                in.setAlpha(0f);
                 in.setScaleX(1f);
                 in.setScaleY(1f);
-                boolean move = prefs.anim() != Prefs.ANIM_OFF;
-                in.animate().alpha(1f).setDuration(move ? 1500 : 0).start();
-                out.animate().alpha(0f).setDuration(move ? 1500 : 0).withEndAction(() -> {
-                    out.setImageDrawable(null); // only one photo in memory
-                }).start();
-                if (move) {
-                    // slow zoom across the photo's time on screen ("Ken Burns")
-                    in.animate().scaleX(1.08f).scaleY(1.08f).setDuration(prefs.photoSec() * 1000L)
-                            .setStartDelay(0).start();
-                }
+                in.bringToFront();
+                fadeIn = in;
+                fadeOut = out.getDrawable() == null ? null : out;
+                fadeStart = android.os.SystemClock.uptimeMillis();
+                zoom = prefs.anim() != Prefs.ANIM_OFF;
+                zoomView = in;
+                zoomStart = fadeStart;
+                zoomMs = prefs.photoSec() * 1000L + FADE_MS;
+                if (shade != null) shade.bringToFront();
+                if (info != null) info.bringToFront();
+                handler.removeCallbacks(tick);
+                handler.post(tick);
             });
         });
     }

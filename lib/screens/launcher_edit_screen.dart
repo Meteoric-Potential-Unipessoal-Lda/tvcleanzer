@@ -39,6 +39,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   File? _preview;     // copy of the photo sent to this TV, for the preview
   double? _dim;       // slider value while dragging
   String _dream = ''; // the TV's screensaver component
+  int _dreamDelay = 0; // minutes before the screensaver starts (0 = unknown)
   String? _photoStep; // photo upload progress
 
   @override
@@ -74,6 +75,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
       if (st.version >= 15) {
         try {
           _dream = await ref.read(adbServiceProvider).currentDream(widget.tv);
+          _dreamDelay = await ref.read(adbServiceProvider).screensaverDelayMin(widget.tv);
         } catch (_) {}
       }
       final favs = st.apps.where((a) => a.fav >= 0).toList()..sort((a, b) => a.fav.compareTo(b.fav));
@@ -592,6 +594,37 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             Expanded(child: Text(tr('Сейчас заставка телевизора — фоторамка'),
                 style: const TextStyle(color: AppColors.ok, fontSize: 13))),
           ]),
+          const Gap(12),
+          Text(tr('Включать, когда телевизор простоит'), style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
+          const Gap(6),
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<int>(
+              showSelectedIcon: false,
+              emptySelectionAllowed: true,
+              segments: [
+                for (final m in const [5, 10, 15, 30]) ButtonSegment(value: m, label: Text(tr('{0} мин', [m]))),
+              ],
+              selected: {if (const [5, 10, 15, 30].contains(_dreamDelay)) _dreamDelay},
+              onSelectionChanged: busy ? null : (v) {
+                if (v.isEmpty) return;
+                _run(tr('Сохранено'), () async {
+                  await ref.read(adbServiceProvider).setScreensaverDelayMin(widget.tv, v.first);
+                  if (mounted) setState(() => _dreamDelay = v.first);
+                });
+              },
+            ),
+          ),
+          const Gap(8),
+          FilledButton.icon(
+            icon: const Icon(Icons.play_arrow_rounded),
+            label: Text(tr('Показать сейчас')),
+            onPressed: busy ? null : () async {
+              final ok = await ref.read(adbServiceProvider).startScreensaverNow(widget.tv).catchError((_) => false);
+              _snack(ok ? tr('Фоторамка запущена на телевизоре')
+                  : tr('Телевизор не дал запустить заставку сразу: она включится сама, когда ТВ постоит без дела.'));
+            },
+          ),
           const Gap(8),
           OutlinedButton.icon(
             icon: const Icon(Icons.undo_rounded, size: 18),
