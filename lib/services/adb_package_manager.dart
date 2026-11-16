@@ -508,13 +508,66 @@ class AdbPackageManager {
     for (var i = 0; i < 2; i++) {
       await adb.shell('input keyevent 3');
       await Future<void>.delayed(const Duration(milliseconds: 2500));
-      if (await _frontPackage(adb) != launcherPkg) continue;
+      var front = await _frontPackage(adb);
+      // Android's "open with" list instead of a home screen (Haier MatrixTV: the HOME
+      // role did not stick): pick our launcher there with "Always", like the owner would.
+      if (front == 'android' && await _pickHomeInChooser(adb)) front = await _frontPackage(adb);
+      if (front != launcherPkg) continue;
       // Yandex TV puts its own home over ours a few seconds later: look again.
       await Future<void>.delayed(const Duration(milliseconds: 4000));
       if (await _frontPackage(adb) == launcherPkg) return true;
     }
     await _logHomeState(adb);
     return false;
+  }
+
+  /// Words of the chooser's "Always" button, when the firmware renamed its id.
+  static final _alwaysWord = RegExp(r'^(всегда|завжди|always|siempre|sempre|immer|toujours)$', caseSensitive: false);
+
+  /// Centre of the first on-screen element (uiautomator dump) whose text or
+  /// resource-id passes [match]; null when there is none.
+  static (int, int)? uiPoint(String xml, bool Function(String text, String id) match) {
+    final node = RegExp(r'<node\b[^>]*>');
+    String attr(String n, String a) => RegExp('\\b$a="([^"]*)"').firstMatch(n)?.group(1) ?? '';
+    for (final m in node.allMatches(xml)) {
+      final n = m.group(0)!;
+      if (!match(attr(n, 'text').trim(), attr(n, 'resource-id'))) continue;
+      final b = RegExp(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]').firstMatch(attr(n, 'bounds'));
+      if (b == null) continue;
+      final x1 = int.parse(b.group(1)!), y1 = int.parse(b.group(2)!);
+      final x2 = int.parse(b.group(3)!), y2 = int.parse(b.group(4)!);
+      if (x2 <= x1 || y2 <= y1) continue;
+      return ((x1 + x2) ~/ 2, (y1 + y2) ~/ 2);
+    }
+    return null;
+  }
+
+  /// In Android's home chooser: our launcher, then "Always". True when it was tapped.
+  Future<bool> _pickHomeInChooser(AdbClient adb) async {
+    Future<String> dump() => adb.shell('uiautomator dump /data/local/tmp/tvc_ui.xml >/dev/null 2>&1; '
+        'cat /data/local/tmp/tvc_ui.xml 2>/dev/null; rm -f /data/local/tmp/tvc_ui.xml');
+    try {
+      final item = uiPoint(await dump(), (t, _) => t == 'TVCleanzer');
+      if (item == null) {
+        AppLog.error('home chooser', 'no TVCleanzer in the list');
+        return false;
+      }
+      await adb.shell('input tap ${item.$1} ${item.$2}');
+      await Future<void>.delayed(const Duration(milliseconds: 1200));
+      if (await _frontPackage(adb) != 'android') return true; // that tap already opened it
+      final always = uiPoint(await dump(),
+          (t, id) => id == 'android:id/button_always' || _alwaysWord.hasMatch(t));
+      if (always == null) {
+        AppLog.error('home chooser', 'no "Always" button');
+        return false;
+      }
+      await adb.shell('input tap ${always.$1} ${always.$2}');
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
+      return true;
+    } catch (e) {
+      AppLog.error('home chooser', e);
+      return false;
+    }
   }
 
   /// For «?» reports: what the TV did with Home and whether our Home-key service runs.
@@ -525,7 +578,8 @@ class AdbPackageManager {
       final bound = (await adb.shell(
               'dumpsys accessibility 2>/dev/null | grep -iE "bound services|enabled services|crashed" | head -4'))
           .replaceAll(RegExp(r'\s+'), ' ');
-      AppLog.error('home', 'front=$front; acc=$acc; $bound');
+      final res = await _resolvedHome(adb);
+      AppLog.error('home', 'front=$front; resolves=${res.isEmpty ? '-' : res}; acc=$acc; $bound');
     } catch (_) {}
   }
 
@@ -536,7 +590,8 @@ class AdbPackageManager {
   Future<LauncherBind> _bind(AdbClient adb, int sdk, {void Function(String step)? onStep}) async {
     onStep?.call(tr('Делаем главным экраном…'));
     if (sdk >= 29) {
-      final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
+      final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg 2>&1');
+      if (r.trim().isNotEmpty) AppLog.error('home role', r.trim());
       if (r.toLowerCase().contains('exception')) await adb.shell('cmd package set-home-activity $launcherHome');
     } else {
       await adb.shell('cmd package set-home-activity $launcherHome');

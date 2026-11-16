@@ -357,7 +357,7 @@ class DemoAdbClient extends AdbClient {
     }
     if (c.startsWith('cmd role add-role-holder android.app.role.HOME ') ||
         c.startsWith('cmd package set-home-activity ')) {
-      final p = c.split(' ').last.split('/').first;
+      final p = c.replaceAll(' 2>&1', '').split(' ').last.split('/').first;
       if (p == 'com.tvcleanzer.launcher' && s.launcherInstalled) {
         s.home = 'com.tvcleanzer.launcher/.HomeActivity';
       }
