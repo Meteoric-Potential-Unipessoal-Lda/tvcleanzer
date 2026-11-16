@@ -40,13 +40,29 @@ class RemoteController extends StateNotifier<RemoteState> {
   AdbClient? _client;
   String? _ip;
   Future<void> _chain = Future.value();
-  int _pending = 0;
 
-  /// Fire-and-forget key press. Extra presses are dropped while the TV is
-  /// still busy with several earlier ones, so the remote never "runs away".
+  /// Presses waiting for the TV. They all go, none is dropped: while the TV is
+  /// still busy with the previous command they pile up here and then leave
+  /// together as one `input keyevent 22 22 22` (one start of the TV's key tool
+  /// instead of three — on older TVs each start takes about a second).
+  final List<int> _keys = [];
+  bool _keysQueued = false;
+
+  /// `cmd input` (Android 12+, no app start on the TV: fast) or the old `input`.
+  bool? _cmdInput;
+
+  /// Fire-and-forget key press.
   void key(String ip, int code) {
-    if (_pending >= 3) return;
-    _enqueue(ip, 'input keyevent $code').catchError((_) {}); // shown via state
+    if (_keys.length >= 20) return; // a stuck TV: don't build an endless queue
+    _keys.add(code);
+    if (_keysQueued) return;
+    _keysQueued = true;
+    _enqueue(ip, () {
+      _keysQueued = false;
+      final batch = List<int>.of(_keys);
+      _keys.clear();
+      return batch.isEmpty ? null : 'keyevent ${batch.join(' ')}';
+    }, input: true).catchError((_) {}); // shown via state
   }
 
   /// Types ASCII text into the focused field on the TV.
@@ -54,17 +70,21 @@ class RemoteController extends StateNotifier<RemoteState> {
     final escaped = value
         .replaceAll("'", "'\\''")
         .replaceAll(' ', '%s');
-    return _enqueue(ip, "input text '$escaped'");
+    return _enqueue(ip, () => "text '$escaped'", input: true);
   }
 
-  Future<void> _enqueue(String ip, String cmd) {
-    _pending++;
-    final f = _chain.then((_) => _run(ip, cmd)).whenComplete(() => _pending--);
+  /// Runs commands one after another (ADB shell commands must not overlap).
+  /// [cmd] is built when its turn comes, so key presses that arrive meanwhile join it.
+  Future<void> _enqueue(String ip, String? Function() cmd, {bool input = false}) {
+    final f = _chain.then((_) async {
+      final c = cmd();
+      if (c != null) await _run(ip, c, input: input);
+    });
     _chain = f.catchError((_) {});
     return f;
   }
 
-  Future<void> _run(String ip, String cmd) async {
+  Future<void> _run(String ip, String cmd, {bool input = false}) async {
     for (var attempt = 0; attempt < 2; attempt++) {
       try {
         if (_client == null || _ip != ip) {
@@ -80,7 +100,20 @@ class RemoteController extends StateNotifier<RemoteState> {
           _ip = ip;
           _set(const RemoteState(RemoteStatus.ready));
         }
-        await _client!.shell(cmd, timeout: const Duration(seconds: 8));
+        if (!input) {
+          await _client!.shell(cmd, timeout: const Duration(seconds: 8));
+          return;
+        }
+        if (_cmdInput != false) {
+          // Android 12+ runs `cmd input` inside the system: no tool to start, no delay.
+          // Older TVs answer with an error (and do nothing): use `input` from then on.
+          final out = await _client!.shell('cmd input $cmd 2>&1', timeout: const Duration(seconds: 8));
+          final ok = !RegExp(r'unknown|error|exception|not found|can.t find|usage|no shell command', caseSensitive: false)
+              .hasMatch(out);
+          _cmdInput = ok;
+          if (ok) return;
+        }
+        await _client!.shell('input $cmd', timeout: const Duration(seconds: 10));
         return;
       } catch (e) {
         _drop(); // stale connection (TV slept, Wi-Fi changed) — retry once
@@ -105,6 +138,7 @@ class RemoteController extends StateNotifier<RemoteState> {
     _client?.close();
     _client = null;
     _ip = null;
+    _cmdInput = null; // another TV (or the same after an update) may differ
   }
 
   void _set(RemoteState s) {

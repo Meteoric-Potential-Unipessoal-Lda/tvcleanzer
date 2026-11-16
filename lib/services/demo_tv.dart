@@ -11,6 +11,9 @@ import 'adb_package_manager.dart';
 class DemoTv {
   static const host = 'demo.tv';
 
+  /// Key presses and text the remote sent (for tests).
+  static final inputLog = <String>[];
+
   static TvDevice device() => TvDevice.fromAdb(
         ip: host,
         brand: 'Demo',
@@ -95,7 +98,10 @@ class DemoTv {
   static final _state = _DemoState();
 
   /// Starts the demo TV over from scratch (nothing removed, stock launcher).
-  static void reset() => _state.reset();
+  static void reset() {
+    _state.reset();
+    inputLog.clear();
+  }
 }
 
 class _DemoState {
@@ -215,6 +221,7 @@ class DemoAdbClient extends AdbClient {
     await _lag();
     final c = command.trim();
     final s = _s;
+    if (c.startsWith('cmd input ') || c.startsWith('input ')) DemoTv.inputLog.add(c);
 
     String meminfo() =>
         'MemTotal:        ${DemoTv._memTotalKb} kB\n'
