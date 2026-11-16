@@ -14,5 +14,6 @@ void main() {
     expect(r.failedPackages, isEmpty);
     expect(r.removedCount, 1);
     expect(await api.rollback(tv, r.backupId), isTrue);
+    expect(await api.openAppSettings(tv, 'com.xiaomi.floatingframe'), isTrue);
   });
 }

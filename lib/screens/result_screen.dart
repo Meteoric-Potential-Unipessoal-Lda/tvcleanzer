@@ -23,6 +23,17 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
   bool _rolling = false;      // rollback in progress
   bool _rollbackDone = false; // rollback succeeded
 
+  Future<void> _openOnTv(String pkg) async {
+    final messenger = ScaffoldMessenger.of(context);
+    var ok = false;
+    try {
+      ok = await ref.read(adbServiceProvider).openAppSettings(widget.device, pkg);
+    } catch (_) {}
+    messenger.showSnackBar(SnackBar(content: Text(ok
+        ? tr('На телевизоре открылись настройки приложения: выберите «Отключить».')
+        : tr('Не получилось открыть настройки на ТВ'))));
+  }
+
   @override
   Widget build(BuildContext context) {
     final result = widget.result;
@@ -117,7 +128,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
             Text(tr('НЕ УДАЛОСЬ УБРАТЬ').toUpperCase(), style: const TextStyle(
               fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.fgMuted, letterSpacing: .08)),
           ]),
-          const Gap(8),
+          const Gap(6),
+          Text(tr('Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».'),
+              style: const TextStyle(fontSize: 13, height: 1.4, color: AppColors.fgMid)),
+          const Gap(10),
           ...result.failedPackages.map((pkg) => Container(
             margin: const EdgeInsets.only(bottom: 6),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -130,6 +144,10 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               const Icon(Icons.warning_amber_rounded, color: AppColors.warn, size: 16),
               const Gap(10),
               Expanded(child: Text(pkg, style: const TextStyle(fontSize: 13, color: AppColors.fg))),
+              TextButton(
+                onPressed: () => _openOnTv(pkg),
+                child: Text(tr('Открыть на ТВ')),
+              ),
             ]),
           )),
         ],

@@ -3,6 +3,10 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Открыть на ТВ': 'Open on TV',
+    'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'The firmware won’t let the phone remove these. Tap “Open on TV” and choose “Disable” on the TV.',
+    'На телевизоре открылись настройки приложения: выберите «Отключить».': 'The app’s settings are open on the TV: choose “Disable”.',
+    'Не получилось открыть настройки на ТВ': 'Couldn’t open the settings on the TV',
     'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Thank you! This really helps keep TVCleanzer going.',
     'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'A tip for the developer: it unlocks nothing and does not renew — just a thank-you for the app.',
     'Включать, когда телевизор простоит': 'Start when the TV has been idle for',
@@ -583,6 +587,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Открыть на ТВ': 'Відкрити на ТВ',
+    'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'Прошивка не дає прибрати їх з телефона. Натисніть «Відкрити на ТВ» і на телевізорі виберіть «Вимкнути».',
+    'На телевизоре открылись настройки приложения: выберите «Отключить».': 'На телевізорі відкрилися налаштування застосунку: виберіть «Вимкнути».',
+    'Не получилось открыть настройки на ТВ': 'Не вдалося відкрити налаштування на ТВ',
     'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Дякуємо! Це дуже допомагає розвивати TVCleanzer.',
     'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Чайові розробнику: нічого не відкривають і не продовжуються — просто дякую за застосунок.',
     'Включать, когда телевизор простоит': 'Вмикати, коли телевізор простоїть',
@@ -1163,6 +1171,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Открыть на ТВ': 'Abrir en la TV',
+    'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'El firmware no deja quitarlas desde el móvil. Pulsa «Abrir en la TV» y en el televisor elige «Desactivar».',
+    'На телевизоре открылись настройки приложения: выберите «Отключить».': 'En la TV se abrieron los ajustes de la app: elige «Desactivar».',
+    'Не получилось открыть настройки на ТВ': 'No se pudieron abrir los ajustes en la TV',
     'Спасибо! Это очень помогает делать TVCleanzer дальше.': '¡Gracias! Esto ayuda mucho a seguir con TVCleanzer.',
     'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Una propina para el desarrollador: no desbloquea nada ni se renueva, solo es un agradecimiento por la app.',
     'Включать, когда телевизор простоит': 'Activar cuando la TV lleve inactiva',
@@ -1743,6 +1755,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Открыть на ТВ': 'Abrir na TV',
+    'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'O firmware não deixa removê-las pelo telemóvel. Toque em «Abrir na TV» e, na TV, escolha «Desativar».',
+    'На телевизоре открылись настройки приложения: выберите «Отключить».': 'Na TV abriram-se as definições da app: escolha «Desativar».',
+    'Не получилось открыть настройки на ТВ': 'Não foi possível abrir as definições na TV',
     'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Obrigado! Isto ajuda muito a continuar o TVCleanzer.',
     'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Uma gorjeta para o programador: não desbloqueia nada nem se renova — é só um obrigado pela app.',
     'Включать, когда телевизор простоит': 'Ligar quando a TV estiver parada há',
@@ -2323,6 +2339,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Открыть на ТВ': 'Auf dem TV öffnen',
+    'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'Die Firmware lässt sie nicht vom Handy entfernen. Tippe auf „Auf dem TV öffnen“ und wähle am Fernseher „Deaktivieren“.',
+    'На телевизоре открылись настройки приложения: выберите «Отключить».': 'Am Fernseher sind die App-Einstellungen offen: wähle „Deaktivieren“.',
+    'Не получилось открыть настройки на ТВ': 'Die Einstellungen am TV ließen sich nicht öffnen',
     'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Danke! Das hilft sehr, TVCleanzer weiterzuentwickeln.',
     'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Ein Trinkgeld für den Entwickler: schaltet nichts frei und verlängert sich nicht – einfach ein Dankeschön für die App.',
     'Включать, когда телевизор простоит': 'Starten, wenn der TV ruht seit',
@@ -2903,6 +2923,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Открыть на ТВ': 'Ouvrir sur la TV',
+    'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'Le firmware empêche de les retirer depuis le téléphone. Touchez « Ouvrir sur la TV » puis choisissez « Désactiver » sur le téléviseur.',
+    'На телевизоре открылись настройки приложения: выберите «Отключить».': 'Les paramètres de l’appli sont ouverts sur la TV : choisissez « Désactiver ».',
+    'Не получилось открыть настройки на ТВ': 'Impossible d’ouvrir les paramètres sur la TV',
     'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Merci ! Cela aide beaucoup à faire avancer TVCleanzer.',
     'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Un pourboire pour le développeur : il ne débloque rien et ne se renouvelle pas — juste un merci pour l’appli.',
     'Включать, когда телевизор простоит': 'Démarrer quand la TV est inactive depuis',
@@ -3483,6 +3507,10 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Открыть на ТВ': 'Apri sulla TV',
+    'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'Il firmware non permette di rimuoverle dal telefono. Tocca «Apri sulla TV» e sul televisore scegli «Disattiva».',
+    'На телевизоре открылись настройки приложения: выберите «Отключить».': 'Sulla TV si sono aperte le impostazioni dell’app: scegli «Disattiva».',
+    'Не получилось открыть настройки на ТВ': 'Impossibile aprire le impostazioni sulla TV',
     'Спасибо! Это очень помогает делать TVCleanzer дальше.': 'Grazie! Aiuta molto a portare avanti TVCleanzer.',
     'Чаевые разработчику: ничего не открывают и не продлеваются — просто спасибо за приложение.': 'Una mancia per lo sviluppatore: non sblocca nulla e non si rinnova, è solo un grazie per l’app.',
     'Включать, когда телевизор простоит': 'Avvia quando la TV è inattiva da',

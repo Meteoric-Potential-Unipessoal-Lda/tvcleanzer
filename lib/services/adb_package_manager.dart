@@ -1084,6 +1084,23 @@ class AdbPackageManager {
     }
   }
 
+  /// Open [pkg]'s page in the TV's own settings, for apps the firmware won't let ADB
+  /// remove (Xiaomi's ad window answers "not installed" / stays enabled) but lets the
+  /// owner disable there with the remote.
+  Future<bool> openAppSettings(TvDevice device, String pkg) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell(
+          'am start -a android.settings.APPLICATION_DETAILS_SETTINGS -d package:$pkg 2>&1');
+      final ok = out.contains('Starting') && !out.contains('Error');
+      if (!ok) AppLog.error('settings $pkg', out.trim());
+      return ok;
+    } finally {
+      adb.close();
+    }
+  }
+
   /// Start [pkg] on the TV (its TV icon first, then the phone-style one).
   Future<bool> openApp(TvDevice device, String pkg) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);

@@ -575,5 +575,9 @@
 "The photo frame is running on the TV",
 "The TV did not let us start the screensaver right away: it will start by itself when the TV is idle.",
 "Thank you! This really helps keep TVCleanzer going.",
-"A tip for the developer: it unlocks nothing and does not renew — just a thank-you for the app."
+"A tip for the developer: it unlocks nothing and does not renew — just a thank-you for the app.",
+"Open on TV",
+"The firmware won’t let the phone remove these. Tap “Open on TV” and choose “Disable” on the TV.",
+"The app’s settings are open on the TV: choose “Disable”.",
+"Couldn’t open the settings on the TV"
 ]

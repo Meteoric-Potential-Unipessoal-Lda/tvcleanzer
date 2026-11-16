@@ -271,6 +271,9 @@ class DemoAdbClient extends AdbClient {
     }
     if (c.startsWith('cmd package install-abandon')) return 'Success\n';
     if (c.startsWith('monkey -p ')) return 'Events injected: 1\n';
+    if (c.startsWith('am start -a android.settings.APPLICATION_DETAILS_SETTINGS')) {
+      return 'Starting: Intent { act=android.settings.APPLICATION_DETAILS_SETTINGS }\n';
+    }
     if (c.startsWith('pm uninstall ') && !c.startsWith('pm uninstall -k') && c != 'pm uninstall com.tvcleanzer.launcher') {
       final p = c.split(' ').last;
       if (!s.sideloaded.remove(p)) s.removed.add(p);
