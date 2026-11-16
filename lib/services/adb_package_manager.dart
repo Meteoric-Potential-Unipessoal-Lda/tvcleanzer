@@ -1170,6 +1170,45 @@ class AdbPackageManager {
     }
   }
 
+  /// Google Play and the services it needs. Some firmwares (and some "debloat" guides) keep
+  /// them on the TV but switched off or hidden for the user: then it can simply be turned back
+  /// on instead of being installed from a file (installing over the firmware's copy fails).
+  static const _googlePlay = ['com.google.android.gsf', 'com.google.android.gms', 'com.android.vending'];
+
+  /// Google Play is in the firmware but switched off or hidden.
+  Future<bool> googlePlayHidden(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final all = _parsePackageList(await adb.shell('pm list packages -u 2>/dev/null')).toSet();
+      final on = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
+      return all.contains('com.android.vending') &&
+          _googlePlay.any((p) => all.contains(p) && !on.contains(p));
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Turns the firmware's Google Play (and its services) back on. True when Play is on now.
+  Future<bool> restoreGooglePlay(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final all = _parsePackageList(await adb.shell('pm list packages -u 2>/dev/null')).toSet();
+      for (final p in _googlePlay.where(all.contains)) {
+        final a = await adb.shell('pm install-existing $p 2>&1');
+        final b = await adb.shell('pm enable $p 2>&1');
+        if (!'$a$b'.toLowerCase().contains('installed') && !b.contains('enabled')) {
+          AppLog.error('google play $p', '$a $b'.trim());
+        }
+      }
+      final on = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
+      return on.contains('com.android.vending');
+    } finally {
+      adb.close();
+    }
+  }
+
   /// Open [pkg]'s page in the TV's own settings, for apps the firmware won't let ADB
   /// remove (Xiaomi's ad window answers "not installed" / stays enabled) but lets the
   /// owner disable there with the remote.

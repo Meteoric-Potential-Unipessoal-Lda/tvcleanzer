@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
+import '../services/app_log.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 
@@ -34,6 +37,8 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
   String? _installMsg;    // last install result
   bool _installOk = false;
   final Set<String> _busy = {};
+  bool _playHidden = false; // Google Play is in the firmware but switched off
+  bool _playBusy = false;
 
   AdbPackageManager get _api => ref.read(adbServiceProvider);
 
@@ -44,6 +49,8 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
     try {
       final apps = await _api.listApps(tv);
       if (mounted) setState(() => _apps = apps);
+      final hidden = await _api.googlePlayHidden(tv).catchError((_) => false);
+      if (mounted) setState(() => _playHidden = hidden);
     } catch (e) {
       if (mounted) setState(() => _error = e is AdbException ? e.message : tr('Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.'));
     } finally {
@@ -56,13 +63,23 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
     if (tv == null) return;
     FilePickerResult? res;
     try {
-      res = await FilePicker.platform.pickFiles(type: FileType.any, withData: true);
-    } catch (_) {
+      // Only the path: with withData the picker copies the whole file through the Java side,
+      // and a big .xapk (Play Market, Kinopoisk: 100+ MB) crashed the app there.
+      res = await FilePicker.platform.pickFiles(type: FileType.any, withData: false);
+    } catch (e) {
+      AppLog.error('pick apk', e);
       res = null;
     }
     final f = res?.files.single;
     if (f == null) return;
-    final Uint8List? data = f.bytes;
+    Uint8List? data = f.bytes;
+    if (data == null && f.path != null) {
+      try {
+        data = await File(f.path!).readAsBytes();
+      } catch (e) {
+        AppLog.error('read apk', e);
+      }
+    }
     if (data == null) {
       setState(() { _installOk = false; _installMsg = tr('Не удалось прочитать файл. Сохраните его в «Файлы» и попробуйте снова.'); });
       return;
@@ -186,6 +203,7 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
+                  if (_playHidden) ...[_playCard(), const Gap(14)],
                   _installCard(),
                   const Gap(20),
                   Text(tr('НА ТЕЛЕВИЗОРЕ'),
@@ -225,6 +243,56 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
             Text(text, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.fgMid, height: 1.5)),
           ]),
         ),
+      );
+
+  Future<void> _restorePlay() async {
+    final tv = ref.read(currentTvProvider);
+    if (tv == null) return;
+    setState(() => _playBusy = true);
+    var ok = false;
+    try {
+      ok = await _api.restoreGooglePlay(tv);
+    } catch (e) {
+      AppLog.error('google play', e);
+    }
+    if (!mounted) return;
+    setState(() {
+      _playBusy = false;
+      if (ok) _playHidden = false;
+    });
+    _snack(ok
+        ? tr('Google Play снова включён на телевизоре.')
+        : tr('Не получилось включить Google Play: прошивка не даёт. Подробности — в отчёте «?».'));
+    if (ok) await _load();
+  }
+
+  Widget _playCard() => Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.bgCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.accent.withValues(alpha: .4)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(tr('Google Play выключен'),
+              style: GoogleFonts.syne(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          const Gap(8),
+          Text(
+            tr('Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.'),
+            style: const TextStyle(fontSize: 13, height: 1.45, color: AppColors.fgMid),
+          ),
+          const Gap(12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: _playBusy ? null : _restorePlay,
+              icon: _playBusy
+                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Icon(Icons.shop_rounded),
+              label: Text(tr('Включить Google Play')),
+            ),
+          ),
+        ]),
       );
 
   Widget _installCard() {

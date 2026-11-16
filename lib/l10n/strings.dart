@@ -3,6 +3,11 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Google Play выключен': 'Google Play is off',
+    'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play is in the TV’s firmware but switched off or hidden. No need to install it from a file: just turn it on.',
+    'Включить Google Play': 'Turn on Google Play',
+    'Google Play снова включён на телевизоре.': 'Google Play is on again on the TV.',
+    'Не получилось включить Google Play: прошивка не даёт. Подробности — в отчёте «?».': 'Couldn’t turn on Google Play: the firmware won’t allow it. Details are in the “?” report.',
     'Терминал': 'Terminal',
     'терминал': 'terminal',
     'Терминал (для разработчиков)': 'Terminal (for developers)',
@@ -631,6 +636,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Google Play выключен': 'Google Play вимкнено',
+    'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play є в прошивці телевізора, але вимкнений або прихований. Його не потрібно ставити з файлу: достатньо увімкнути.',
+    'Включить Google Play': 'Увімкнути Google Play',
+    'Google Play снова включён на телевизоре.': 'Google Play знову увімкнено на телевізорі.',
+    'Не получилось включить Google Play: прошивка не даёт. Подробности — в отчёте «?».': 'Не вдалося увімкнути Google Play: прошивка не дає. Подробиці — у звіті «?».',
     'Терминал': 'Термінал',
     'терминал': 'термінал',
     'Терминал (для разработчиков)': 'Термінал (для розробників)',
@@ -1259,6 +1269,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Google Play выключен': 'Google Play está desactivado',
+    'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play está en el firmware de la TV, pero desactivado u oculto. No hace falta instalarlo desde un archivo: basta con activarlo.',
+    'Включить Google Play': 'Activar Google Play',
+    'Google Play снова включён на телевизоре.': 'Google Play vuelve a estar activado en la TV.',
+    'Не получилось включить Google Play: прошивка не даёт. Подробности — в отчёте «?».': 'No se pudo activar Google Play: el firmware no lo permite. Detalles en el informe «?».',
     'Терминал': 'Terminal',
     'терминал': 'terminal',
     'Терминал (для разработчиков)': 'Terminal (para desarrolladores)',
@@ -1887,6 +1902,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Google Play выключен': 'O Google Play está desativado',
+    'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'O Google Play está no firmware da TV, mas desativado ou oculto. Não é preciso instalá-lo de um ficheiro: basta ativá-lo.',
+    'Включить Google Play': 'Ativar o Google Play',
+    'Google Play снова включён на телевизоре.': 'O Google Play voltou a estar ativo na TV.',
+    'Не получилось включить Google Play: прошивка не даёт. Подробности — в отчёте «?».': 'Não foi possível ativar o Google Play: o firmware não deixa. Detalhes no relatório «?».',
     'Терминал': 'Terminal',
     'терминал': 'terminal',
     'Терминал (для разработчиков)': 'Terminal (para programadores)',
@@ -2515,6 +2535,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Google Play выключен': 'Google Play ist ausgeschaltet',
+    'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play ist in der Firmware des Fernsehers, aber aus- oder ausgeblendet. Keine Installation aus einer Datei nötig: einfach einschalten.',
+    'Включить Google Play': 'Google Play einschalten',
+    'Google Play снова включён на телевизоре.': 'Google Play ist auf dem Fernseher wieder an.',
+    'Не получилось включить Google Play: прошивка не даёт. Подробности — в отчёте «?».': 'Google Play ließ sich nicht einschalten: die Firmware erlaubt es nicht. Details im „?“-Bericht.',
     'Терминал': 'Terminal',
     'терминал': 'Terminal',
     'Терминал (для разработчиков)': 'Terminal (für Entwickler)',
@@ -3143,6 +3168,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Google Play выключен': 'Google Play est désactivé',
+    'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play est dans le firmware de la TV, mais désactivé ou masqué. Inutile de l’installer depuis un fichier : il suffit de l’activer.',
+    'Включить Google Play': 'Activer Google Play',
+    'Google Play снова включён на телевизоре.': 'Google Play est de nouveau activé sur la TV.',
+    'Не получилось включить Google Play: прошивка не даёт. Подробности — в отчёте «?».': 'Impossible d’activer Google Play : le firmware l’empêche. Détails dans le rapport « ? ».',
     'Терминал': 'Terminal',
     'терминал': 'terminal',
     'Терминал (для разработчиков)': 'Terminal (pour développeurs)',
@@ -3771,6 +3801,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Google Play выключен': 'Google Play è disattivato',
+    'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play è nel firmware della TV, ma disattivato o nascosto. Non serve installarlo da un file: basta attivarlo.',
+    'Включить Google Play': 'Attiva Google Play',
+    'Google Play снова включён на телевизоре.': 'Google Play è di nuovo attivo sulla TV.',
+    'Не получилось включить Google Play: прошивка не даёт. Подробности — в отчёте «?».': 'Impossibile attivare Google Play: il firmware non lo consente. Dettagli nel rapporto «?».',
     'Терминал': 'Terminale',
     'терминал': 'terminale',
     'Терминал (для разработчиков)': 'Terminale (per sviluppatori)',

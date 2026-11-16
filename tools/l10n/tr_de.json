@@ -623,5 +623,10 @@
 "Speicherplatz",
 "Speicherfresser",
 "Temperatur",
-"Fehler (logcat)"
+"Fehler (logcat)",
+"Google Play ist ausgeschaltet",
+"Google Play ist in der Firmware des Fernsehers, aber aus- oder ausgeblendet. Keine Installation aus einer Datei nötig: einfach einschalten.",
+"Google Play einschalten",
+"Google Play ist auf dem Fernseher wieder an.",
+"Google Play ließ sich nicht einschalten: die Firmware erlaubt es nicht. Details im „?“-Bericht."
 ]

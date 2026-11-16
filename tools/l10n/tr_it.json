@@ -623,5 +623,10 @@
 "Spazio",
 "Chi usa la memoria",
 "Temperatura",
-"Errori (logcat)"
+"Errori (logcat)",
+"Google Play è disattivato",
+"Google Play è nel firmware della TV, ma disattivato o nascosto. Non serve installarlo da un file: basta attivarlo.",
+"Attiva Google Play",
+"Google Play è di nuovo attivo sulla TV.",
+"Impossibile attivare Google Play: il firmware non lo consente. Dettagli nel rapporto «?»."
 ]
