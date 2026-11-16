@@ -57,6 +57,7 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"photoSec", p.photoSec()});
             c.addRow(new Object[]{"homePhotos", p.homePhotos() ? 1 : 0});
             c.addRow(new Object[]{"splash", p.splash() ? 1 : 0});
+            c.addRow(new Object[]{"appsBelow", p.appsBelow() ? 1 : 0});
             c.addRow(new Object[]{"prevDream", p.prevDream().isEmpty() ? "-" : p.prevDream()});
             return c;
         }

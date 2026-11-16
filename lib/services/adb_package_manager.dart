@@ -420,7 +420,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 19;
+  static const bundledLauncherVersion = 20;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -638,6 +638,30 @@ class AdbPackageManager {
         await adb.shell('pm enable $p');
       }
     }
+    // Google TV whose firmware never starts our Home-key service (TCL Android 11/12 reports:
+    // "enabled" but not "bound", even after off/on) keeps its launcherx on Home and after
+    // every power-on. The owner asked for ours: switch launcherx off together with the setup
+    // screen that would take Home after it (restorable; what CleanYourTV google-tv lists do),
+    // and keep that only if Home really opens ours.
+    if (googleTv && !await _homeKeyBound(adb)) {
+      onStep?.call(tr('Закрепляем лаунчер…'));
+      final off = <String>[];
+      for (final p in _googleTvHomes.where(installed.contains)) {
+        final out = await adb.shell('pm disable-user --user 0 $p 2>&1');
+        if (out.contains('new state: disabled')) {
+          off.add(p);
+        } else {
+          AppLog.error('google tv home $p', out.trim());
+        }
+      }
+      if (off.isNotEmpty) {
+        await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
+        if (await _homeOpensOurs(adb)) return LauncherBind.hard;
+        for (final p in off) {
+          await adb.shell('pm enable $p');
+        }
+      }
+    }
     // Google TV, Yandex, Sber…: the stock home stays; our service sends Home to us.
     await adb.shell('input keyevent 3');
     await Future<void>.delayed(const Duration(milliseconds: 2500));
@@ -645,6 +669,13 @@ class AdbPackageManager {
   }
 
   static const _patchWall = 'com.mitv.tvhome.atv';
+
+  /// Google TV's home and its setup screen: switched off only when nothing else keeps
+  /// Home on our launcher (see [_bind]); always switched back on with our launcher removed.
+  static const _googleTvHomes = [
+    'com.google.android.apps.tv.launcherx',
+    'com.google.android.tungsten.setupwraith',
+  ];
 
   Future<bool> _dropPatchWall(AdbClient adb, int sdk, void Function(String step)? onStep) async {
     final installed = _parsePackageList(await adb.shell('pm list packages')).toSet();
@@ -666,7 +697,7 @@ class AdbPackageManager {
   Future<void> _restoreStockHomes(AdbClient adb) async {
     final all = _parsePackageList(await adb.shell('pm list packages -u 2>/dev/null')).toSet();
     final now = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
-    for (final p in _removableHomes) {
+    for (final p in [..._removableHomes, ..._googleTvHomes]) {
       if (!all.contains(p) || now.contains(p)) continue;
       await adb.shell('pm install-existing $p');
       await adb.shell('pm enable $p');

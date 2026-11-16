@@ -30,6 +30,8 @@ class LauncherLook {
   final String weatherCity;
   final double lat;
   final double lon;
+  /// Tiles style: the app grid starts on the second screen (launcher 0.20+).
+  final bool appsBelow;
 
   const LauncherLook({
     this.anim = 0,
@@ -48,11 +50,12 @@ class LauncherLook {
     this.weatherCity = '',
     this.lat = 0,
     this.lon = 0,
+    this.appsBelow = false,
   });
 
   LauncherLook copyWith({int? anim, bool? ringAccent, int? tiles, int? wallDim,
           bool? ambient, bool? clock24, bool? labels, int? inputs, int? favCols, int? style, int? clockPos,
-          int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon}) =>
+          int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon, bool? appsBelow}) =>
       LauncherLook(
         anim: anim ?? this.anim,
         ringAccent: ringAccent ?? this.ringAccent,
@@ -70,13 +73,14 @@ class LauncherLook {
         weatherCity: weatherCity ?? this.weatherCity,
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
+        appsBelow: appsBelow ?? this.appsBelow,
       );
 
   /// Extras for `am broadcast … com.tvcleanzer.launcher.APPLY`.
   String get extras => '--ei anim $anim --ez ringAccent $ringAccent --ei tiles $tiles '
       '--ei wallDim $wallDim --ez ambient $ambient --ez clock24 $clock24 --ez labels $labels '
       '--ei inputs $inputs --ei favCols $favCols --ei style $style --ei clockPos $clockPos --ei clockSize $clockSize '
-      '--ei clockFont $clockFont --es weatherCity ${_q(weatherCity)}'
+      '--ei clockFont $clockFont --ez appsBelow $appsBelow --es weatherCity ${_q(weatherCity)}'
       '${weatherCity.isEmpty ? '' : ' --ef lat ${lat.toStringAsFixed(4)} --ef lon ${lon.toStringAsFixed(4)}'}';
 
   /// Single-quoted for the TV's shell (city names may have spaces or apostrophes).
@@ -86,7 +90,7 @@ class LauncherLook {
         'anim': anim, 'ringAccent': ringAccent, 'tiles': tiles, 'wallDim': wallDim,
         'ambient': ambient, 'clock24': clock24, 'labels': labels, 'inputs': inputs, 'favCols': favCols,
         'style': style, 'clockPos': clockPos, 'clockSize': clockSize, 'clockFont': clockFont,
-        'weatherCity': weatherCity, 'lat': lat, 'lon': lon,
+        'weatherCity': weatherCity, 'lat': lat, 'lon': lon, 'appsBelow': appsBelow,
       };
 
   static int _i(Object? v, int def, int lo, int hi) =>
@@ -112,5 +116,6 @@ class LauncherLook {
         weatherCity: m['weatherCity'] == null || '${m['weatherCity']}' == '-' ? '' : '${m['weatherCity']}',
         lat: double.tryParse('${m['lat'] ?? ''}') ?? 0,
         lon: double.tryParse('${m['lon'] ?? ''}') ?? 0,
+        appsBelow: _b(m['appsBelow'], false),
       );
 }

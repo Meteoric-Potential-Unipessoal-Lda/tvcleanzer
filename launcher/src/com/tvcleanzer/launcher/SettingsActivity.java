@@ -123,6 +123,10 @@ public class SettingsActivity extends Activity {
         }
         addRow(skin, "Заставка при запуске", prefs.splash() ? "Логотип, пока лаунчер загружается" : "Выключена",
                 () -> prefs.setSplash(!prefs.splash()));
+        if (prefs.style() == Prefs.STYLE_TILES) {
+            addRow(skin, "Приложения на главном", prefs.appsBelow() ? "На втором экране (кнопка ▼)" : "Сразу под избранным",
+                    () -> prefs.setAppsBelow(!prefs.appsBelow()));
+        }
         final int[] favSteps = {0, 4, 5, 6};
         int fc = prefs.favCols();
         addRow(skin, "Избранное", fc == 0 ? "Один ряд" : "Сетка по " + fc, () -> {

@@ -330,7 +330,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         dock.setBackground(Ui.glass(Ui.dp(this, 34)));
         int dp18 = Ui.dp(this, 18);
         dock.setPadding(dp18, dp18, dp18, Ui.dp(this, 8));
-        int icon = Math.max(Ui.dp(this, 64), Math.round(screenW * 0.05f));
+        // the tile size setting works here too: compact / normal / large dock icons
+        final float[] dockScale = {0.85f, 1f, 1.35f};
+        int icon = Math.round(Math.max(Ui.dp(this, 64), Math.round(screenW * 0.05f)) * dockScale[prefs.tileSize()]);
         int gap = Ui.dp(this, 16);
         List<AppTile> tiles = new ArrayList<>();
         List<View> order = new ArrayList<>();
@@ -806,7 +808,28 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             page.addView(none, nlp);
         }
         if (!rest.isEmpty()) {
-            page.addView(sectionTitle(kids ? "Можно смотреть" : "Приложения", Ui.dp(this, 26)));
+            final TextView appsTitle = sectionTitle(kids ? "Можно смотреть" : "Приложения", Ui.dp(this, 26));
+            page.addView(appsTitle);
+            // "Apps on the second screen": the first screen shows only the top and favourites,
+            // the grid starts just below it (▼ scrolls down to it).
+            if (!kids && prefs.appsBelow()) {
+                final int screenH = getResources().getDisplayMetrics().heightPixels;
+                appsTitle.getViewTreeObserver().addOnGlobalLayoutListener(
+                        new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override public void onGlobalLayout() {
+                        appsTitle.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int[] at = new int[2];
+                        appsTitle.getLocationOnScreen(at);
+                        int top = at[1] + (scroll != null ? scroll.getScrollY() : 0);
+                        int push = screenH - top + Ui.dp(HomeActivity.this, 26);
+                        if (push > 0) {
+                            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) appsTitle.getLayoutParams();
+                            lp.topMargin += push;
+                            appsTitle.setLayoutParams(lp);
+                        }
+                    }
+                });
+            }
             LinearLayout row = null;
             for (int i = 0; i < rest.size(); i++) {
                 if (i % cols == 0) {

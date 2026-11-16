@@ -3,6 +3,8 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Приложения на втором экране': 'Apps on the second screen',
+    'На главном только избранное, приложения — ниже по кнопке ▼': 'Only favourites on the home screen; apps are below, press ▼',
     'Открыть на ТВ': 'Open on TV',
     'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'The firmware won’t let the phone remove these. Tap “Open on TV” and choose “Disable” on the TV.',
     'На телевизоре открылись настройки приложения: выберите «Отключить».': 'The app’s settings are open on the TV: choose “Disable”.',
@@ -587,6 +589,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Приложения на втором экране': 'Застосунки на другому екрані',
+    'На главном только избранное, приложения — ниже по кнопке ▼': 'На головному лише обране, застосунки — нижче кнопкою ▼',
     'Открыть на ТВ': 'Відкрити на ТВ',
     'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'Прошивка не дає прибрати їх з телефона. Натисніть «Відкрити на ТВ» і на телевізорі виберіть «Вимкнути».',
     'На телевизоре открылись настройки приложения: выберите «Отключить».': 'На телевізорі відкрилися налаштування застосунку: виберіть «Вимкнути».',
@@ -1171,6 +1175,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Приложения на втором экране': 'Apps en la segunda pantalla',
+    'На главном только избранное, приложения — ниже по кнопке ▼': 'En el inicio solo los favoritos; las apps están debajo, pulsa ▼',
     'Открыть на ТВ': 'Abrir en la TV',
     'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'El firmware no deja quitarlas desde el móvil. Pulsa «Abrir en la TV» y en el televisor elige «Desactivar».',
     'На телевизоре открылись настройки приложения: выберите «Отключить».': 'En la TV se abrieron los ajustes de la app: elige «Desactivar».',
@@ -1755,6 +1761,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Приложения на втором экране': 'Apps no segundo ecrã',
+    'На главном только избранное, приложения — ниже по кнопке ▼': 'No início só os favoritos; as apps ficam abaixo, prima ▼',
     'Открыть на ТВ': 'Abrir na TV',
     'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'O firmware não deixa removê-las pelo telemóvel. Toque em «Abrir na TV» e, na TV, escolha «Desativar».',
     'На телевизоре открылись настройки приложения: выберите «Отключить».': 'Na TV abriram-se as definições da app: escolha «Desativar».',
@@ -2339,6 +2347,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Приложения на втором экране': 'Apps auf dem zweiten Bildschirm',
+    'На главном только избранное, приложения — ниже по кнопке ▼': 'Auf dem Startbildschirm nur Favoriten, Apps darunter mit ▼',
     'Открыть на ТВ': 'Auf dem TV öffnen',
     'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'Die Firmware lässt sie nicht vom Handy entfernen. Tippe auf „Auf dem TV öffnen“ und wähle am Fernseher „Deaktivieren“.',
     'На телевизоре открылись настройки приложения: выберите «Отключить».': 'Am Fernseher sind die App-Einstellungen offen: wähle „Deaktivieren“.',
@@ -2923,6 +2933,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Приложения на втором экране': 'Applis sur le deuxième écran',
+    'На главном только избранное, приложения — ниже по кнопке ▼': 'Seulement les favoris à l’accueil ; les applis sont en dessous, appuyez sur ▼',
     'Открыть на ТВ': 'Ouvrir sur la TV',
     'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'Le firmware empêche de les retirer depuis le téléphone. Touchez « Ouvrir sur la TV » puis choisissez « Désactiver » sur le téléviseur.',
     'На телевизоре открылись настройки приложения: выберите «Отключить».': 'Les paramètres de l’appli sont ouverts sur la TV : choisissez « Désactiver ».',
@@ -3507,6 +3519,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Приложения на втором экране': 'App nella seconda schermata',
+    'На главном только избранное, приложения — ниже по кнопке ▼': 'Nella home solo i preferiti; le app sono sotto, premi ▼',
     'Открыть на ТВ': 'Apri sulla TV',
     'Прошивка не даёт убрать их с телефона. Нажмите «Открыть на ТВ» и на телевизоре выберите «Отключить».': 'Il firmware non permette di rimuoverle dal telefono. Tocca «Apri sulla TV» e sul televisore scegli «Disattiva».',
     'На телевизоре открылись настройки приложения: выберите «Отключить».': 'Sulla TV si sono aperte le impostazioni dell’app: scegli «Disattiva».',

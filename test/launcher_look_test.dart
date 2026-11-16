@@ -38,6 +38,8 @@ void main() {
     expect(LauncherLook.fromMap({'favCols': '5'}).favCols, 5);
     expect(LauncherLook.fromMap({'favCols': '3'}).favCols, 0);
     expect(const LauncherLook(favCols: 6).extras, contains('--ei favCols 6'));
+    expect(const LauncherLook(appsBelow: true).extras, contains('--ez appsBelow true'));
+    expect(LauncherLook.fromMap({'appsBelow': '1'}).appsBelow, isTrue);
     final off = LauncherLook.fromMap({'weatherCity': '-'});
     expect(off.weatherCity, '');
     expect(off.clockPos, 1);

@@ -18,7 +18,7 @@ final class Prefs {
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
             AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
-            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash",
+            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
@@ -135,6 +135,9 @@ final class Prefs {
     /** Loading screen with the logo while the launcher starts. */
     boolean splash()         { return sp.getBoolean(SPLASH, true); }
     void setSplash(boolean v) { sp.edit().putBoolean(SPLASH, v).apply(); }
+    /** Tiles style: the app grid starts on the second screen (only favourites on the first). */
+    boolean appsBelow()      { return sp.getBoolean(APPS_BELOW, false); }
+    void setAppsBelow(boolean v) { sp.edit().putBoolean(APPS_BELOW, v).apply(); }
     void setHomePhotos(boolean v) { sp.edit().putBoolean(HOME_PHOTOS, v).apply(); }
     long photoRev()          { return sp.getLong(PHOTO_REV, 0); }
     void bumpPhotos()        { sp.edit().putLong(PHOTO_REV, System.currentTimeMillis()).apply(); }
