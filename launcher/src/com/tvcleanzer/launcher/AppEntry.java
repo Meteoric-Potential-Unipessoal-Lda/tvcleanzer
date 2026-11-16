@@ -20,12 +20,29 @@ final class AppEntry {
     final String pkg, cls, label;
     final boolean leanback;
     final ActivityInfo info;
+    /** A firmware app without a menu icon, started by its exact screen (see FIRMWARE_APPS). */
+    boolean plain;
 
     private AppEntry(String pkg, String cls, String label, boolean leanback, ActivityInfo info) {
         this.pkg = pkg; this.cls = cls; this.label = label; this.leanback = leanback; this.info = info;
     }
 
+    /**
+     * Apps of TV shells that have no icon of their own in the app list: their shell opens them
+     * itself. Found on Yandex TV (Tuvio TD32FFBCV1, YaOS): YouTube (Cobalt), the Yandex app
+     * store and the browser answer a plain MAIN intent, so they can sit in our launcher too.
+     */
+    private static final String[][] FIRMWARE_APPS = {
+            {"com.yandex.tv.ytplayer", "dev.cobalt.app.MainActivity", "YouTube"},
+            {"com.yandex.devices.appstore", "com.yandex.devices.feature.appstore.ui.presentation.main.MainActivity", "Магазин приложений"},
+            {"com.yandex.browser.tv", "com.yandex.browser.tv.tvactivity.TvActivity", "Яндекс Браузер"},
+    };
+
     Intent launchIntent() {
+        if (plain) {
+            return new Intent(Intent.ACTION_MAIN).setClassName(pkg, cls)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        }
         return new Intent(Intent.ACTION_MAIN)
                 .addCategory(leanback ? Intent.CATEGORY_LEANBACK_LAUNCHER : Intent.CATEGORY_LAUNCHER)
                 .setClassName(pkg, cls)
@@ -57,6 +74,18 @@ final class AppEntry {
         Map<String, AppEntry> byPkg = new LinkedHashMap<>();
         collect(pm, byPkg, Intent.CATEGORY_LEANBACK_LAUNCHER, true);
         collect(pm, byPkg, Intent.CATEGORY_LAUNCHER, false);
+        for (String[] f : FIRMWARE_APPS) {
+            if (byPkg.containsKey(f[0])) continue;
+            try {
+                ResolveInfo ri = pm.resolveActivity(new Intent(Intent.ACTION_MAIN).setClassName(f[0], f[1]), 0);
+                if (ri == null || ri.activityInfo == null || !ri.activityInfo.exported || !ri.activityInfo.enabled) continue;
+                CharSequence l = ri.loadLabel(pm);
+                String label = l == null || l.toString().trim().isEmpty() || l.toString().equals(f[0]) ? f[2] : l.toString();
+                AppEntry e = new AppEntry(f[0], f[1], label, false, ri.activityInfo);
+                e.plain = true;
+                byPkg.put(f[0], e);
+            } catch (Throwable ignored) {}
+        }
         byPkg.remove(c.getPackageName());
         List<AppEntry> out = new ArrayList<>(byPkg.values());
         final Collator col = Collator.getInstance(Locale.getDefault());
