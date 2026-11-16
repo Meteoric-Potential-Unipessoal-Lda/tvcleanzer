@@ -7,6 +7,7 @@ import '../services/adb_package_manager.dart';
 import '../theme/app_theme.dart';
 import '../screens/home_screen.dart';
 import '../screens/scan_screen.dart';
+import '../screens/terminal_screen.dart';
 import '../state/current_tv.dart';
 
 import '../l10n/l10n.dart';
@@ -66,6 +67,10 @@ class TvCard extends ConsumerWidget {
                   tooltip: tr('Ещё'),
                   onSelected: (v) async {
                     if (v == 'remove') ref.read(discoveryProvider.notifier).remove(device);
+                    if (v == 'terminal') {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => TerminalScreen(device: device)));
+                    }
                     if (v == 'adb_off') {
                       final yes = await showDialog<bool>(
                         context: context,
@@ -88,6 +93,7 @@ class TvCard extends ConsumerWidget {
                     }
                   },
                   itemBuilder: (_) => [
+                    PopupMenuItem(value: 'terminal', child: Text(tr('Терминал (для разработчиков)'))),
                     PopupMenuItem(value: 'adb_off', child: Text(tr('Выключить отладку на ТВ'))),
                     PopupMenuItem(value: 'remove', child: Text(tr('Убрать из списка'))),
                   ],

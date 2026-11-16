@@ -351,6 +351,28 @@ class AdbClient {
     }
   }
 
+  /// Opens a long-lived stream to [service] (e.g. `shell:` for an interactive shell with a
+  /// terminal on the TV, like `adb shell`). Use a separate client for it: the stream reads
+  /// every message of this connection.
+  Future<AdbStream> openStream(String service,
+      {Duration timeout = const Duration(seconds: 10)}) async {
+    final localId = _nextLocalId++;
+    _send(_Msg(_cmdOpen, localId, 0, _cString(service)));
+    int? remoteId;
+    while (remoteId == null) {
+      final m = await _read(timeout, 'The TV did not open $service');
+      if (m.arg1 != localId) continue;
+      if (m.cmd == _cmdOkay) {
+        remoteId = m.arg0;
+      } else if (m.cmd == _cmdClse) {
+        throw AdbException('TV refused: $service');
+      }
+    }
+    final st = AdbStream._(this, localId, remoteId);
+    st._pump();
+    return st;
+  }
+
   void close() {
     _sockSub?.cancel();
     _sock?.destroy();
@@ -577,4 +599,82 @@ class AdbIdentity {
     required this.certPem,
     required this.keyPem,
   });
+}
+
+
+/// A long-lived ADB stream ([AdbClient.openStream]): bytes from the TV arrive on [data],
+/// [write] sends bytes (one packet at a time, each acknowledged by the TV).
+class AdbStream {
+  AdbStream._(this._c, this._local, this._remote);
+
+  final AdbClient _c;
+  final int _local;
+  final int _remote;
+  final _data = StreamController<Uint8List>();
+  final Queue<Uint8List> _pending = Queue<Uint8List>();
+  Completer<void>? _ack;
+  bool _closed = false;
+
+  Stream<Uint8List> get data => _data.stream;
+  bool get isClosed => _closed;
+
+  void _pump() async {
+    try {
+      while (!_closed) {
+        final m = await _c._read(const Duration(days: 1), 'idle');
+        if (m.arg1 != _local) continue;
+        if (m.cmd == _cmdWrte) {
+          _data.add(m.data);
+          _c._send(_Msg(_cmdOkay, _local, _remote));
+        } else if (m.cmd == _cmdOkay) {
+          _ack?.complete();
+          _ack = null;
+        } else if (m.cmd == _cmdClse) {
+          break;
+        }
+      }
+    } catch (e) {
+      if (!_closed) _data.addError(e);
+    }
+    _finish();
+  }
+
+  /// Sends [bytes]; resolves when the TV has taken them.
+  Future<void> write(List<int> bytes) async {
+    if (_closed) throw AdbException('TV closed the connection.');
+    final max = min(_c._peerMaxData, 4096);
+    for (var off = 0; off < bytes.length; off += max) {
+      _pending.add(Uint8List.fromList(bytes.sublist(off, min(off + max, bytes.length))));
+    }
+    while (_pending.isNotEmpty) {
+      while (_ack != null) {
+        await _ack!.future;
+      }
+      if (_closed) throw AdbException('TV closed the connection.');
+      final a = _ack = Completer<void>();
+      _c._send(_Msg(_cmdWrte, _local, _remote, _pending.removeFirst()));
+      await a.future.timeout(const Duration(seconds: 15), onTimeout: () {
+        _ack = null;
+      });
+    }
+  }
+
+  void _finish() {
+    if (_closed) return;
+    _closed = true;
+    _ack?.complete();
+    _ack = null;
+    _data.close();
+  }
+
+  /// Ends the stream and the connection under it.
+  void close() {
+    if (!_closed) {
+      try {
+        _c._send(_Msg(_cmdClse, _local, _remote));
+      } catch (_) {}
+    }
+    _finish();
+    _c.close();
+  }
 }
