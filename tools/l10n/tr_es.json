@@ -635,5 +635,11 @@
 "Ninguna TV seleccionada",
 "¿Con qué TV trabajar?",
 "Sin una TV real",
-"Toca para elegir otra TV"
+"Toca para elegir otra TV",
+"El launcher está instalado, pero Google TV se queda con el botón Inicio.",
+"¿Fijar el launcher de forma segura?",
+"Este Google TV no deja que otra app tome el botón Inicio. TVCleanzer Launcher solo se puede fijar desactivando la pantalla de inicio de Google TV.\n\nImportante: después, quita nuestro launcher SOLO desde TVCleanzer (botón «Restaurar el launcher estándar»). Si lo desinstalas en los ajustes de la TV, quedará una pantalla negra y tendrás que reactivar a mano la pantalla de inicio de Google TV en los ajustes.",
+"No, gracias",
+"Fijar",
+"Listo: el firmware volvía a poner su launcher, así que se ha quitado («Restaurar el launcher estándar» lo devuelve). El botón Inicio abre TVCleanzer Launcher. Quita nuestro launcher solo con ese botón, no en los ajustes de la TV."
 ]

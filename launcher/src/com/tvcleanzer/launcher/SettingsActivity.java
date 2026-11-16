@@ -54,6 +54,19 @@ public class SettingsActivity extends Activity {
         slp.topMargin = Ui.dp(this, 12);
         left.addView(title);
         left.addView(sub, slp);
+        if (prefs.stockOff()) {
+            // Google TV Home was switched off to keep this launcher: removing the launcher in the
+            // TV's own settings would leave a black screen (a Philips owner did exactly that).
+            TextView warn = Ui.text(this, 16, 0xFFFFB547, "sans-serif-medium");
+            warn.setSingleLine(false);
+            warn.setText("Родной экран Google TV выключен, чтобы этот лаунчер оставался главным.\n"
+                    + "Удаляйте лаунчер только в приложении TVCleanzer на телефоне\n"
+                    + "(«Вернуть стандартный лаунчер»), не в настройках телевизора.");
+            LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            wlp.topMargin = Ui.dp(this, 16);
+            left.addView(warn, wlp);
+        }
         left.addView(authorBlock());
         root.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f));
 

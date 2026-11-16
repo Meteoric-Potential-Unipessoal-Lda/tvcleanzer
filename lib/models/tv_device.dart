@@ -224,4 +224,7 @@ enum LauncherBind {
   service,
   /// Home still opens the TV's own launcher.
   failed,
+  /// Google TV keeps Home and our Home-key service is not allowed to run: ours can be pinned
+  /// only by switching Google TV Home off, which the owner must agree to (warning first).
+  needsGoogleTvHard,
 }

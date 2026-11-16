@@ -420,7 +420,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 21;
+  static const bundledLauncherVersion = 22;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -465,12 +465,14 @@ class AdbPackageManager {
   }
 
   /// "Make it the home screen again" without reinstalling (Launcher tab).
-  Future<LauncherBind> rebindLauncher(TvDevice device, {void Function(String step)? onStep}) async {
+  /// [googleTvHard]: the owner said "yes" to switching Google TV Home off (see [_bind]).
+  Future<LauncherBind> rebindLauncher(TvDevice device,
+      {void Function(String step)? onStep, bool googleTvHard = false}) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       final sdk = int.tryParse((await adb.shell('getprop ro.build.version.sdk')).trim()) ?? device.sdkVersion;
-      return await _bind(adb, sdk, onStep: onStep);
+      return await _bind(adb, sdk, onStep: onStep, googleTvHard: googleTvHard);
     } finally {
       adb.close();
     }
@@ -587,7 +589,31 @@ class AdbPackageManager {
   ///  1. HOME role / preferred home + our Home-key service;
   ///  2. still not ours: take the stock Android TV launcher or PatchWall off the TV
   ///     (restorable; only after our launcher is confirmed to open), then check again.
-  Future<LauncherBind> _bind(AdbClient adb, int sdk, {void Function(String step)? onStep}) async {
+  Future<LauncherBind> _bind(AdbClient adb, int sdk,
+      {void Function(String step)? onStep, bool googleTvHard = false}) async {
+    final b = await _bindOnce(adb, sdk, onStep: onStep, googleTvHard: googleTvHard);
+    if (b != LauncherBind.failed && b != LauncherBind.needsGoogleTvHard) await _syncStockOff(adb);
+    return b;
+  }
+
+  /// Tells our launcher whether the TV's own home screen is switched off (also on TVs
+  /// pinned by 1.3.17–1.3.22, which did it without asking): then its settings warn to
+  /// remove it only with TVCleanzer, never in the TV's settings (black screen otherwise).
+  Future<void> _syncStockOff(AdbClient adb) async {
+    try {
+      final disabled = _parsePackageList(await adb.shell('pm list packages -d')).toSet();
+      final present = _parsePackageList(await adb.shell('pm list packages')).toSet();
+      final all = _parsePackageList(await adb.shell('pm list packages -u')).toSet();
+      final off = [..._removableHomes, ..._googleTvHomes]
+          .any((p) => disabled.contains(p) || (all.contains(p) && !present.contains(p)));
+      await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver -a com.tvcleanzer.launcher.APPLY --ez stockOff $off');
+    } catch (e) {
+      AppLog.error('stockOff', e);
+    }
+  }
+
+  Future<LauncherBind> _bindOnce(AdbClient adb, int sdk,
+      {void Function(String step)? onStep, bool googleTvHard = false}) async {
     onStep?.call(tr('Делаем главным экраном…'));
     if (sdk >= 29) {
       final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg 2>&1');
@@ -640,10 +666,13 @@ class AdbPackageManager {
     }
     // Google TV whose firmware never starts our Home-key service (TCL Android 11/12 reports:
     // "enabled" but not "bound", even after off/on) keeps its launcherx on Home and after
-    // every power-on. The owner asked for ours: switch launcherx off together with the setup
-    // screen that would take Home after it (restorable; what CleanYourTV google-tv lists do),
-    // and keep that only if Home really opens ours.
-    if (googleTv && !await _homeKeyBound(adb)) {
+    // every power-on. Only with the owner's explicit "yes" ([googleTvHard], after a warning):
+    // switch launcherx off together with the setup screen that would take Home after it
+    // (restorable; what CleanYourTV google-tv lists do), kept only if Home really opens ours.
+    // Never on its own: a Philips owner removed our launcher in the TV's settings afterwards
+    // and was left with a black screen (nothing turned Google TV Home back on).
+    final unbound = googleTv && !await _homeKeyBound(adb);
+    if (unbound && googleTvHard) {
       onStep?.call(tr('Закрепляем лаунчер…'));
       final off = <String>[];
       for (final p in _googleTvHomes.where(installed.contains)) {
@@ -656,6 +685,7 @@ class AdbPackageManager {
       }
       if (off.isNotEmpty) {
         await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
+        // the launcher then warns in its settings: remove it only with TVCleanzer ([_syncStockOff])
         if (await _homeOpensOurs(adb)) return LauncherBind.hard;
         for (final p in off) {
           await adb.shell('pm enable $p');
@@ -665,7 +695,8 @@ class AdbPackageManager {
     // Google TV, Yandex, Sber…: the stock home stays; our service sends Home to us.
     await adb.shell('input keyevent 3');
     await Future<void>.delayed(const Duration(milliseconds: 2500));
-    return await _frontPackage(adb) == launcherPkg ? LauncherBind.service : LauncherBind.failed;
+    if (await _frontPackage(adb) == launcherPkg) return LauncherBind.service;
+    return unbound && !googleTvHard ? LauncherBind.needsGoogleTvHard : LauncherBind.failed;
   }
 
   static const _patchWall = 'com.mitv.tvhome.atv';

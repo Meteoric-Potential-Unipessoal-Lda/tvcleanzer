@@ -635,5 +635,11 @@
 "Aucune TV sélectionnée",
 "Avec quelle TV travailler ?",
 "Sans vraie TV",
-"Touchez pour choisir une autre TV"
+"Touchez pour choisir une autre TV",
+"Le launcher est installé, mais Google TV garde le bouton Accueil pour lui.",
+"Épingler le launcher pour de bon ?",
+"Ce Google TV ne laisse aucune autre app prendre le bouton Accueil. TVCleanzer Launcher ne peut être épinglé qu’en désactivant l’écran d’accueil Google TV.\n\nImportant : ensuite, supprimez notre launcher UNIQUEMENT via TVCleanzer (bouton « Rétablir le launcher standard »). Si vous le désinstallez dans les paramètres de la TV, l’écran restera noir et il faudra réactiver à la main l’écran d’accueil Google TV dans les paramètres.",
+"Non merci",
+"Épingler",
+"Terminé : le firmware remettait son launcher, il a donc été retiré (« Rétablir le launcher standard » le remet). Le bouton Accueil ouvre TVCleanzer Launcher. Supprimez notre launcher uniquement avec ce bouton, pas dans les paramètres de la TV."
 ]

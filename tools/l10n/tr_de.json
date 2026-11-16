@@ -635,5 +635,11 @@
 "Kein Fernseher gewählt",
 "Mit welchem Fernseher arbeiten?",
 "Ohne echten Fernseher",
-"Tippen, um einen anderen Fernseher zu wählen"
+"Tippen, um einen anderen Fernseher zu wählen",
+"Der Launcher ist installiert, aber Google TV behält die Home-Taste für sich.",
+"Launcher fest einrichten?",
+"Dieses Google TV lässt keine andere App die Home-Taste übernehmen. TVCleanzer Launcher lässt sich nur festlegen, indem der Google-TV-Startbildschirm abgeschaltet wird.\n\nWichtig: Entfernen Sie unseren Launcher später NUR über TVCleanzer (Schaltfläche „Standard-Launcher wiederherstellen“). Wenn Sie ihn in den TV-Einstellungen deinstallieren, bleibt der Bildschirm schwarz und der Google-TV-Startbildschirm muss in den Einstellungen von Hand wieder eingeschaltet werden.",
+"Nein, danke",
+"Festlegen",
+"Fertig: Die Firmware hat ihren Launcher immer wieder zurückgeholt, daher wurde er entfernt („Standard-Launcher wiederherstellen“ holt ihn zurück). Die Home-Taste öffnet TVCleanzer Launcher. Entfernen Sie unseren Launcher nur über diese Schaltfläche, nicht in den TV-Einstellungen."
 ]

@@ -133,22 +133,48 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   }
 
   void _showBind(LauncherBind b) {
+    if (b == LauncherBind.needsGoogleTvHard) {
+      _bindOk = false;
+      _bindMsg = tr('Лаунчер стоит, но Google TV забирает кнопку «Домой» себе.');
+      WidgetsBinding.instance.addPostFrameCallback((_) => _askGoogleTvHard());
+      return;
+    }
     _bindOk = b != LauncherBind.failed;
     _bindMsg = switch (b) {
+      LauncherBind.needsGoogleTvHard => '',
       LauncherBind.role => tr('Готово: кнопка «Домой» открывает TVCleanzer Launcher.'),
-      LauncherBind.hard => tr('Готово: прошивка возвращала свой лаунчер, поэтому он убран (вернётся кнопкой «Вернуть стандартный лаунчер»). Кнопка «Домой» открывает TVCleanzer Launcher.'),
+      LauncherBind.hard => tr('Готово: прошивка возвращала свой лаунчер, поэтому он убран (вернётся кнопкой «Вернуть стандартный лаунчер»). Кнопка «Домой» открывает TVCleanzer Launcher. Удаляйте наш лаунчер только этой кнопкой, не в настройках телевизора.'),
       LauncherBind.service => tr('Готово: свой лаунчер прошивки остаётся, но кнопку «Домой» и экран при включении перехватывает TVCleanzer Launcher.'),
       LauncherBind.failed => tr('Лаунчер стоит, но телевизор не даёт сделать его главным: «Домой» открывает свой экран. Нажмите «Сделать главным ещё раз»; если не поможет — откройте лаунчер из списка приложений ТВ и пришлите отчёт через «?».'),
     };
   }
 
+  /// Google TV that keeps Home: the only way left is to switch Google TV Home off. Asked,
+  /// with the one thing to remember: remove our launcher only with TVCleanzer.
+  Future<void> _askGoogleTvHard() async {
+    if (!mounted) return;
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(tr('Закрепить лаунчер надёжно?')),
+        content: Text(tr('Этот Google TV не даёт перехватить кнопку «Домой». Закрепить TVCleanzer Launcher можно, только выключив родной экран Google TV.\n\nВажно: потом удаляйте наш лаунчер ТОЛЬКО через TVCleanzer (кнопка «Вернуть стандартный лаунчер»). Если удалить его в настройках телевизора, останется чёрный экран — родной экран придётся включать вручную в настройках.')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c, false), child: Text(tr('Не надо'))),
+          FilledButton(onPressed: () => Navigator.pop(c, true), child: Text(tr('Закрепить'))),
+        ],
+      ),
+    );
+    if (yes == true) await _rebind(googleTvHard: true);
+  }
+
   /// Installed but Home opens something else (firmware took it back): bind again.
-  Future<void> _rebind() async {
+  Future<void> _rebind({bool googleTvHard = false}) async {
     final tv = ref.read(currentTvProvider);
     if (tv == null) return;
     setState(() { _installError = null; _bindMsg = null; _step = tr('Делаем главным экраном…'); });
     try {
       _showBind(await ref.read(adbServiceProvider).rebindLauncher(tv,
+          googleTvHard: googleTvHard,
           onStep: (s) { if (mounted) setState(() => _step = s); }));
     } catch (_) {
       _installError = _offline;
