@@ -39,10 +39,12 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
   DiscoveryNotifier(this._ref) : super(const DiscoveryState());
   final Ref _ref;
 
-  /// Adds a TV connected another way (wireless debugging by code).
+  /// Adds a TV connected another way (wireless debugging by code). The same TV paired again
+  /// gets a new port each time: it replaces its old card instead of adding another one
+  /// (a chat report: "one device, one IP, a new device after every new code").
   void add(TvDevice d) {
     state = DiscoveryState(
-      devices: [d, ...state.devices.where((e) => e.id != d.id)],
+      devices: [d, ...state.devices.where((e) => e.id != d.id && e.ipAddress != d.ipAddress)],
       scanning: state.scanning,
       error: state.error,
     );

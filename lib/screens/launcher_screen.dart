@@ -22,6 +22,7 @@ import 'launcher_edit_screen.dart';
 import '../widgets/support_card.dart';
 
 import '../l10n/l10n.dart';
+import '../widgets/tv_switcher.dart';
 final _knownLaunchers = {
   'com.google.android.tvlauncher': tr('Стандартный Android TV'),
   'com.google.android.apps.tv.launcherx': 'Google TV',
@@ -230,11 +231,28 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   Widget build(BuildContext context) {
     final skin = ref.watch(selectedSkinProvider);
     final look = ref.watch(launcherLookProvider);
+    // another TV chosen (switcher in the title, or on the Cleaning tab): look at that one
+    ref.listen<TvDevice?>(currentTvProvider, (prev, next) {
+      if (prev?.id == next?.id) return;
+      setState(() {
+        _checked = false;
+        _launcher = null;
+        _installed = null;
+        _version = null;
+        _error = null;
+        _bindMsg = null;
+        _installError = null;
+        _weatherErr = null;
+      });
+      _check(silent: true);
+    });
     return Scaffold(
       appBar: AppBar(title: Text(tr('Лаунчер'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
+          const TvBanner(),
+          if (ref.watch(currentTvProvider) != null) const Gap(16),
           _SkinPreview(skin: skin, look: look),
           const Gap(20),
           _label(tr('Шкурки')),

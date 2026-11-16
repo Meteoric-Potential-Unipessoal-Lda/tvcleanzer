@@ -3,6 +3,11 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Нажмите, чтобы выбрать другой телевизор': 'Tap to choose another TV',
+    'Демо-телевизор': 'Demo TV',
+    'Телевизор не выбран': 'No TV selected',
+    'С каким телевизором работать?': 'Which TV to work with?',
+    'Без настоящего телевизора': 'Without a real TV',
     'связь восстановлена': 'reconnected',
     'Связь прервалась. Подключаемся снова…': 'Connection lost. Reconnecting…',
     'Google Play выключен': 'Google Play is off',
@@ -638,6 +643,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Нажмите, чтобы выбрать другой телевизор': 'Натисніть, щоб вибрати інший телевізор',
+    'Демо-телевизор': 'Демо-телевізор',
+    'Телевизор не выбран': 'Телевізор не вибрано',
+    'С каким телевизором работать?': 'З яким телевізором працювати?',
+    'Без настоящего телевизора': 'Без справжнього телевізора',
     'связь восстановлена': 'зв’язок відновлено',
     'Связь прервалась. Подключаемся снова…': 'Зв’язок перервався. Підключаємося знову…',
     'Google Play выключен': 'Google Play вимкнено',
@@ -1273,6 +1283,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Нажмите, чтобы выбрать другой телевизор': 'Toca para elegir otra TV',
+    'Демо-телевизор': 'TV de demostración',
+    'Телевизор не выбран': 'Ninguna TV seleccionada',
+    'С каким телевизором работать?': '¿Con qué TV trabajar?',
+    'Без настоящего телевизора': 'Sin una TV real',
     'связь восстановлена': 'conexión restablecida',
     'Связь прервалась. Подключаемся снова…': 'Se perdió la conexión. Reconectando…',
     'Google Play выключен': 'Google Play está desactivado',
@@ -1908,6 +1923,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Нажмите, чтобы выбрать другой телевизор': 'Toque para escolher outra TV',
+    'Демо-телевизор': 'TV de demonstração',
+    'Телевизор не выбран': 'Nenhuma TV selecionada',
+    'С каким телевизором работать?': 'Com que TV trabalhar?',
+    'Без настоящего телевизора': 'Sem uma TV real',
     'связь восстановлена': 'ligação restabelecida',
     'Связь прервалась. Подключаемся снова…': 'A ligação caiu. A ligar de novo…',
     'Google Play выключен': 'O Google Play está desativado',
@@ -2543,6 +2563,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Нажмите, чтобы выбрать другой телевизор': 'Tippen, um einen anderen Fernseher zu wählen',
+    'Демо-телевизор': 'Demo-Fernseher',
+    'Телевизор не выбран': 'Kein Fernseher gewählt',
+    'С каким телевизором работать?': 'Mit welchem Fernseher arbeiten?',
+    'Без настоящего телевизора': 'Ohne echten Fernseher',
     'связь восстановлена': 'Verbindung wiederhergestellt',
     'Связь прервалась. Подключаемся снова…': 'Verbindung unterbrochen. Verbinde erneut…',
     'Google Play выключен': 'Google Play ist ausgeschaltet',
@@ -3178,6 +3203,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Нажмите, чтобы выбрать другой телевизор': 'Touchez pour choisir une autre TV',
+    'Демо-телевизор': 'TV de démo',
+    'Телевизор не выбран': 'Aucune TV sélectionnée',
+    'С каким телевизором работать?': 'Avec quelle TV travailler ?',
+    'Без настоящего телевизора': 'Sans vraie TV',
     'связь восстановлена': 'connexion rétablie',
     'Связь прервалась. Подключаемся снова…': 'Connexion perdue. Reconnexion…',
     'Google Play выключен': 'Google Play est désactivé',
@@ -3813,6 +3843,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Нажмите, чтобы выбрать другой телевизор': 'Tocca per scegliere un’altra TV',
+    'Демо-телевизор': 'TV demo',
+    'Телевизор не выбран': 'Nessuna TV selezionata',
+    'С каким телевизором работать?': 'Con quale TV lavorare?',
+    'Без настоящего телевизора': 'Senza una TV vera',
     'связь восстановлена': 'connessione ripristinata',
     'Связь прервалась. Подключаемся снова…': 'Connessione persa. Riconnessione…',
     'Google Play выключен': 'Google Play è disattivato',

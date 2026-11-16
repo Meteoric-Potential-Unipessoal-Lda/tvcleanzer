@@ -16,6 +16,7 @@ import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 
 import '../l10n/l10n.dart';
+import '../widgets/tv_switcher.dart';
 
 /// Apps on the TV: install an APK from the phone (Yandex TV, Sber and other
 /// firmwares without Google Play), open any app on the TV, uninstall apps
@@ -203,6 +204,8 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
                 children: [
+                  const TvBanner(),
+                  const Gap(14),
                   if (_playHidden) ...[_playCard(), const Gap(14)],
                   _installCard(),
                   const Gap(20),

@@ -11,6 +11,7 @@ import '../theme/app_theme.dart';
 import '../widgets/pressable.dart';
 
 import '../l10n/l10n.dart';
+import '../widgets/tv_switcher.dart';
 class RemoteScreen extends ConsumerStatefulWidget {
   const RemoteScreen({super.key});
   @override
@@ -99,10 +100,10 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       RemoteStatus.ready => (AppColors.ok, tr('Подключено')),
       RemoteStatus.error => (AppColors.danger, rs.message ?? tr('Нет связи')),
     };
-    return Container(
+    final sw = TvBanner.canSwitch(ref);
+    final card = Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.cardBd),
       ),
@@ -129,7 +130,15 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
           height: 10,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
+        // several TVs: tap the card to send the keys to another one
+        if (sw) ...[const Gap(10), const Icon(Icons.unfold_more_rounded, color: AppColors.fgMid)],
       ]),
+    );
+    return Material(
+      color: AppColors.bgCard,
+      borderRadius: BorderRadius.circular(16),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(onTap: sw ? () => TvBanner.pick(context, ref) : null, child: card),
     );
   }
 

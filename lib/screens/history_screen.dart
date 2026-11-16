@@ -6,7 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
+import '../state/current_tv.dart';
 import '../state/history.dart';
+import 'home_screen.dart';
 import '../theme/app_theme.dart';
 
 import '../l10n/l10n.dart';
@@ -204,12 +206,19 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     String message;
     try {
       final sep = r.tvIp.lastIndexOf(':');
-      final tv = sep < 0
+      // Wireless debugging gives the TV a new port after every new pairing code: the port saved
+      // with the record is dead by then. Use the same TV as it is connected now (same address).
+      final host = sep < 0 ? r.tvIp : r.tvIp.substring(0, sep);
+      final cur = ref.read(currentTvProvider);
+      final now = [if (cur != null) cur, ...ref.read(discoveryProvider).devices]
+          .where((d) => d.ipAddress == host)
+          .firstOrNull;
+      final tv = now ?? (sep < 0
           ? TvDevice.fromAdb(ip: r.tvIp, brand: '', model: '', androidVer: '')
           : TvDevice.fromAdb(
               ip: r.tvIp.substring(0, sep),
               port: int.tryParse(r.tvIp.substring(sep + 1)) ?? 5555,
-              brand: '', model: '', androidVer: '');
+              brand: '', model: '', androidVer: ''));
       final api = ref.read(adbServiceProvider);
       bool ok;
       if (r.isBoost) {
