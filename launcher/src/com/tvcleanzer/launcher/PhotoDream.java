@@ -119,6 +119,9 @@ public class PhotoDream extends DreamService {
         date.setSingleLine(true);
         date.setShadowLayer(10, 0, 0, 0x99000000);
         date.setPadding(0, 0, Ui.dp(this, 6), 0);
+        // The corner is sized before TextClock fills in its text, so the date got cut
+        // ("понедельник, 16 ноя"): reserve room for the longest day name of the week ahead.
+        date.setMinWidth(longestDate(date) + Ui.dp(this, 12));
         info.addView(date);
         weather = Ui.text(this, 18, 0xD9FFFFFF, "sans-serif-medium");
         weather.setShadowLayer(10, 0, 0, 0x99000000);
@@ -137,6 +140,17 @@ public class PhotoDream extends DreamService {
         }
         root.addView(info, ilp);
         setContentView(root);
+    }
+
+    private static int longestDate(TextView v) {
+        java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("EEEE, d MMMM", java.util.Locale.getDefault());
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        float max = 0;
+        for (int i = 0; i < 7; i++) {
+            max = Math.max(max, v.getPaint().measureText(f.format(c.getTime())));
+            c.add(java.util.Calendar.DAY_OF_MONTH, 1);
+        }
+        return Math.round(max * 1.1f);
     }
 
     private void updateWeather() {
