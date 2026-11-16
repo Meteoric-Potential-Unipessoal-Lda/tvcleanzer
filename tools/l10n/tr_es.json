@@ -628,5 +628,7 @@
 "Google Play está en el firmware de la TV, pero desactivado u oculto. No hace falta instalarlo desde un archivo: basta con activarlo.",
 "Activar Google Play",
 "Google Play vuelve a estar activado en la TV.",
-"No se pudo activar Google Play: el firmware no lo permite. Detalles en el informe «?»."
+"No se pudo activar Google Play: el firmware no lo permite. Detalles en el informe «?».",
+"conexión restablecida",
+"Se perdió la conexión. Reconectando…"
 ]

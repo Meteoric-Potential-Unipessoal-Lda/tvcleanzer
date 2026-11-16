@@ -3,6 +3,8 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'связь восстановлена': 'reconnected',
+    'Связь прервалась. Подключаемся снова…': 'Connection lost. Reconnecting…',
     'Google Play выключен': 'Google Play is off',
     'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play is in the TV’s firmware but switched off or hidden. No need to install it from a file: just turn it on.',
     'Включить Google Play': 'Turn on Google Play',
@@ -636,6 +638,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'связь восстановлена': 'зв’язок відновлено',
+    'Связь прервалась. Подключаемся снова…': 'Зв’язок перервався. Підключаємося знову…',
     'Google Play выключен': 'Google Play вимкнено',
     'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play є в прошивці телевізора, але вимкнений або прихований. Його не потрібно ставити з файлу: достатньо увімкнути.',
     'Включить Google Play': 'Увімкнути Google Play',
@@ -1269,6 +1273,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'связь восстановлена': 'conexión restablecida',
+    'Связь прервалась. Подключаемся снова…': 'Se perdió la conexión. Reconectando…',
     'Google Play выключен': 'Google Play está desactivado',
     'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play está en el firmware de la TV, pero desactivado u oculto. No hace falta instalarlo desde un archivo: basta con activarlo.',
     'Включить Google Play': 'Activar Google Play',
@@ -1902,6 +1908,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'связь восстановлена': 'ligação restabelecida',
+    'Связь прервалась. Подключаемся снова…': 'A ligação caiu. A ligar de novo…',
     'Google Play выключен': 'O Google Play está desativado',
     'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'O Google Play está no firmware da TV, mas desativado ou oculto. Não é preciso instalá-lo de um ficheiro: basta ativá-lo.',
     'Включить Google Play': 'Ativar o Google Play',
@@ -2535,6 +2543,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'связь восстановлена': 'Verbindung wiederhergestellt',
+    'Связь прервалась. Подключаемся снова…': 'Verbindung unterbrochen. Verbinde erneut…',
     'Google Play выключен': 'Google Play ist ausgeschaltet',
     'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play ist in der Firmware des Fernsehers, aber aus- oder ausgeblendet. Keine Installation aus einer Datei nötig: einfach einschalten.',
     'Включить Google Play': 'Google Play einschalten',
@@ -3168,6 +3178,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'связь восстановлена': 'connexion rétablie',
+    'Связь прервалась. Подключаемся снова…': 'Connexion perdue. Reconnexion…',
     'Google Play выключен': 'Google Play est désactivé',
     'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play est dans le firmware de la TV, mais désactivé ou masqué. Inutile de l’installer depuis un fichier : il suffit de l’activer.',
     'Включить Google Play': 'Activer Google Play',
@@ -3801,6 +3813,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'связь восстановлена': 'connessione ripristinata',
+    'Связь прервалась. Подключаемся снова…': 'Connessione persa. Riconnessione…',
     'Google Play выключен': 'Google Play è disattivato',
     'Google Play есть в прошивке телевизора, но выключен или скрыт. Его не нужно ставить из файла: достаточно включить.': 'Google Play è nel firmware della TV, ma disattivato o nascosto. Non serve installarlo da un file: basta attivarlo.',
     'Включить Google Play': 'Attiva Google Play',

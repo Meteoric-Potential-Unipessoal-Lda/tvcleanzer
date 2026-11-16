@@ -628,5 +628,7 @@
 "Google Play is in the TV’s firmware but switched off or hidden. No need to install it from a file: just turn it on.",
 "Turn on Google Play",
 "Google Play is on again on the TV.",
-"Couldn’t turn on Google Play: the firmware won’t allow it. Details are in the “?” report."
+"Couldn’t turn on Google Play: the firmware won’t allow it. Details are in the “?” report.",
+"reconnected",
+"Connection lost. Reconnecting…"
 ]

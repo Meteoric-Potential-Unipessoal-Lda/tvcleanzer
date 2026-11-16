@@ -22,7 +22,7 @@ class TerminalScreen extends StatefulWidget {
 
 enum _St { gate, connecting, ready, error }
 
-class _TerminalScreenState extends State<TerminalScreen> {
+class _TerminalScreenState extends State<TerminalScreen> with WidgetsBindingObserver {
   static const _ackKey = 'terminal_ack';
   static const _maxChars = 120000;
   static const _bg = Color(0xFF05080F);
@@ -52,7 +52,38 @@ class _TerminalScreenState extends State<TerminalScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _start();
+  }
+
+  /// Folder the shell was in (from its prompt "host:/path $"), kept across reconnects.
+  String? _cwd;
+  bool _foreground = true;
+  int _retries = 0;
+
+  /// The phone drops the connection when the app goes to the background (HyperOS, iOS…):
+  /// coming back reconnects on its own, in the same folder, with the screen kept.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _foreground = state == AppLifecycleState.resumed;
+    if (_foreground && _st == _St.error && _session == null) _connect(quiet: true);
+  }
+
+  void _lost() {
+    _sub?.cancel();
+    _sub = null;
+    final s = _session;
+    _session = null;
+    s?.close();
+    if (!mounted) return;
+    setState(() => _st = _St.error);
+    // still on screen: try again right away (a couple of times), otherwise on return
+    if (_foreground && _retries < 2) {
+      _retries++;
+      Future<void>.delayed(const Duration(milliseconds: 800), () {
+        if (mounted && _session == null && _foreground) _connect(quiet: true);
+      });
+    }
   }
 
   Future<void> _start() async {
@@ -65,24 +96,24 @@ class _TerminalScreenState extends State<TerminalScreen> {
     await _connect();
   }
 
-  Future<void> _connect() async {
+  bool _connecting = false;
+  Future<void> _connect({bool quiet = false}) async {
+    if (_connecting) return;
+    _connecting = true;
     setState(() {
       _st = _St.connecting;
       _error = null;
     });
     try {
-      final s = await TerminalSession.open(widget.device);
+      final s = await TerminalSession.open(widget.device, cwd: _cwd);
       if (!mounted) {
         await s.close();
         return;
       }
       _session = s;
-      _sub = s.output.listen(_append, onError: (Object e) {
-        _append('\n[${tr('связь с телевизором потеряна')}]\n');
-        if (mounted) setState(() => _st = _St.error);
-      }, onDone: () {
-        if (mounted) setState(() => _st = _St.error);
-      });
+      _retries = 0;
+      if (quiet && _text.isNotEmpty) _append('\n[${tr('связь восстановлена')}]\n');
+      _sub = s.output.listen(_append, onError: (Object e) => _lost(), onDone: _lost);
       setState(() => _st = _St.ready);
       _focus.requestFocus();
     } catch (e) {
@@ -93,11 +124,17 @@ class _TerminalScreenState extends State<TerminalScreen> {
           _error = e.toString();
         });
       }
+    } finally {
+      _connecting = false;
     }
   }
 
+  static final _prompt = RegExp(r'[\w.-]+:(/[^\s$#]*) ?[$#] ?$');
+
   void _append(String s) {
     if (s.isEmpty) return;
+    final p = _prompt.firstMatch(s.trimRight().split('\n').last);
+    if (p != null) _cwd = p.group(1);
     _buf.write(s);
     var t = _buf.toString();
     if (t.length > _maxChars) {
@@ -133,9 +170,26 @@ class _TerminalScreenState extends State<TerminalScreen> {
       await s.run(line);
     } catch (e) {
       _append('\n[${tr('связь с телевизором потеряна')}]\n');
-      if (mounted) setState(() => _st = _St.error);
+      _lost();
     }
     _focus.requestFocus();
+  }
+
+  /// Enter (or a pasted block with line breaks) sends every finished line, one after another.
+  bool _sending = false;
+  Future<void> _onInput(String v) async {
+    if (!v.contains('\n') || _sending) return;
+    final parts = v.replaceAll('\r', '').split('\n');
+    final rest = parts.removeLast();
+    _input.value = TextEditingValue(text: rest, selection: TextSelection.collapsed(offset: rest.length));
+    _sending = true;
+    try {
+      for (final line in parts) {
+        await _send(line);
+      }
+    } finally {
+      _sending = false;
+    }
   }
 
   Future<bool> _confirm(String line, String why) async {
@@ -184,6 +238,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _sub?.cancel();
     _session?.close();
     _input.dispose();
@@ -283,7 +338,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
                 child: Row(children: [
                   Expanded(
                     child: Text(
-                      _error == null ? tr('Сессия закрыта.') : tr('Не удалось подключиться к телевизору.'),
+                      _error == null ? tr('Связь прервалась. Подключаемся снова…') : tr('Не удалось подключиться к телевизору.'),
                       style: const TextStyle(fontSize: 13, color: AppColors.fg),
                     ),
                   ),
@@ -333,9 +388,13 @@ class _TerminalScreenState extends State<TerminalScreen> {
               smartQuotesType: SmartQuotesType.disabled,
               smartDashesType: SmartDashesType.disabled,
               textCapitalization: TextCapitalization.none,
-              keyboardType: TextInputType.visiblePassword,
-              textInputAction: TextInputAction.send,
-              onSubmitted: (_) => _send(),
+              // several lines may be pasted at once: each one goes as its own command
+              // (a one-line field glued them into one, and grep got "--brief" as its option)
+              minLines: 1,
+              maxLines: 4,
+              keyboardType: TextInputType.multiline,
+              textInputAction: TextInputAction.newline,
+              onChanged: _onInput,
               decoration: InputDecoration(
                 isDense: true,
                 hintText: tr('команда, например: pm list packages'),

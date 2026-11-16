@@ -22,13 +22,16 @@ abstract class TerminalSession {
 
   Future<void> close();
 
-  static Future<TerminalSession> open(TvDevice tv) async {
+  /// [cwd]: the folder to start in (after a reconnect).
+  static Future<TerminalSession> open(TvDevice tv, {String? cwd}) async {
     if (tv.isDemo || tv.ipAddress == DemoTv.host) return _DemoSession();
     final c = AdbClient.open(host: tv.ipAddress, port: tv.port);
     try {
       await c.connect();
       final st = await c.openStream('shell:');
-      return _PtySession(st);
+      final s = _PtySession(st);
+      await s._setup(cwd);
+      return s;
     } catch (_) {
       c.close();
       rethrow;
@@ -51,7 +54,9 @@ class _PtySession implements TerminalSession {
   _PtySession(this._st) {
     // a UTF-8 character can be split between two packets: decode as one stream
     _st.data.cast<List<int>>().transform(const Utf8Decoder(allowMalformed: true)).listen(
-      (t) => _out.add(cleanTerminal(t)),
+      (t) {
+        if (!_mute) _out.add(cleanTerminal(t));
+      },
       onError: (Object e) => _out.addError(e),
       onDone: () {
         _out.add('\n[${tr('сессия закрыта')}]\n');
@@ -61,7 +66,24 @@ class _PtySession implements TerminalSession {
   }
 
   final AdbStream _st;
-  final _out = StreamController<String>.broadcast();
+  // single-subscription: what the TV says before the screen listens is kept, not lost
+  final _out = StreamController<String>();
+  bool _mute = false;
+
+  /// A wide terminal: otherwise the TV's shell folds long commands at 80 columns and marks
+  /// the folds with "<", which looked like garbage. The setup line itself is not shown.
+  Future<void> _setup(String? cwd) async {
+    _mute = true;
+    final cd = cwd == null || cwd == '/' ? '' : "; cd '${cwd.replaceAll("'", "'\\''")}' 2>/dev/null";
+    try {
+      await _st.write(utf8.encode('stty cols 4000 2>/dev/null$cd\n'));
+      await Future<void>.delayed(const Duration(milliseconds: 600));
+    } catch (_) {}
+    _mute = false;
+    try {
+      await _st.write(utf8.encode('\n')); // a fresh prompt
+    } catch (_) {}
+  }
 
   @override
   Stream<String> get output => _out.stream;
@@ -79,10 +101,10 @@ class _PtySession implements TerminalSession {
 /// The built-in demo TV: answers each command like the real one would.
 class _DemoSession implements TerminalSession {
   _DemoSession() {
-    scheduleMicrotask(() => _out.add('demo:/ \$ '));
+    _out.add('demo:/ \$ ');
   }
 
-  final _out = StreamController<String>.broadcast();
+  final _out = StreamController<String>();
   final _c = DemoAdbClient();
 
   @override
