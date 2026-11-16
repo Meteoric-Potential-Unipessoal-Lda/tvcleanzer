@@ -290,10 +290,26 @@ class AdbPackageManager {
     final failed  = <String>[];
     final removed = <String>[];
 
-    Future<bool> uninstall(String p) async =>
-        (await adb.shell('pm uninstall -k --user 0 $p')).toLowerCase().contains('success');
-    Future<bool> disable(String p) async =>
-        (await adb.shell('pm disable-user --user 0 $p')).toLowerCase().contains('new state: disabled');
+    // Every refusal goes to the log, so a problem report says why.
+    Future<bool> uninstall(String p) async {
+      final out = (await adb.shell('pm uninstall -k --user 0 $p')).trim();
+      if (out.toLowerCase().contains('success')) return true;
+      AppLog.error('uninstall $p', out.isEmpty ? 'no answer' : out);
+      return false;
+    }
+    // Some firmwares answer "disabled-user" and quietly keep the app enabled,
+    // so the state is read back before it counts.
+    Future<bool> disable(String p) async {
+      final out = (await adb.shell('pm disable-user --user 0 $p')).trim();
+      if (out.toLowerCase().contains('new state: disabled')) {
+        final st = await adb.shell('pm list packages -d $p');
+        if (_parsePackageList(st).contains(p)) return true;
+        AppLog.error('disable $p', 'reported disabled, still enabled');
+        return false;
+      }
+      AppLog.error('disable $p', out.isEmpty ? 'no answer' : out);
+      return false;
+    }
 
     try {
       await adb.connect();
@@ -303,9 +319,11 @@ class AdbPackageManager {
       for (final pkg in packages) {
         final name = pkg.packageName;
         try {
+          // One method refused (Xiaomi keeps some ad apps from being
+          // uninstalled, but lets them be disabled): try the other one.
           final ok = viaDisable
               ? (await disable(name) || await uninstall(name))
-              : await uninstall(name);
+              : (await uninstall(name) || await disable(name));
           (ok ? removed : failed).add(name);
         } catch (_) {
           failed.add(name);
@@ -402,7 +420,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 17;
+  static const bundledLauncherVersion = 18;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {

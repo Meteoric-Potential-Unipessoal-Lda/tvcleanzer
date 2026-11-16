@@ -102,6 +102,7 @@ class _DemoState {
   _DemoState() { reset(); }
 
   final removed = <String>{};
+  final disabled = <String>{};
   final settings = <String, String>{};
   final secure = <String, String>{};
   bool launcherInstalled = false;
@@ -121,6 +122,7 @@ class _DemoState {
 
   void reset() {
     removed.clear();
+    disabled.clear();
     settings
       ..clear()
       ..addAll({'window_animation_scale': '1.0', 'transition_animation_scale': '1.0'});
@@ -251,7 +253,10 @@ class DemoAdbClient extends AdbClient {
       });
       return b.toString();
     }
-    if (c.startsWith('pm list packages -d')) return ''; // nothing disabled on the demo TV
+    if (c.startsWith('pm list packages -d')) {
+      final only = c.split(' ').length > 4 ? c.split(' ').last : null;
+      return s.disabled.where((p) => only == null || p == only).map((p) => 'package:$p').join('\n');
+    }
     if (c.startsWith('settings put global adb_wifi_enabled 0')) return '';
     if (c.startsWith('pm list packages -3')) {
       return ['org.videolan.vlc', 'com.spotify.tv.android', ...s.sideloaded]
@@ -275,12 +280,18 @@ class DemoAdbClient extends AdbClient {
       await _lag(150);
       final p = c.split(' ').last;
       s.removed.add(p);
+      s.disabled.add(p);
       return 'Package $p new state: disabled-user\n';
     }
     if (c.startsWith('pm enable ')) {
       final p = c.split(' ').last;
       s.removed.remove(p);
+      s.disabled.remove(p);
       return 'Package $p new state: enabled\n';
+    }
+    // Xiaomi keeps its ad window from being uninstalled, but lets it be disabled.
+    if (c == 'pm uninstall -k --user 0 com.xiaomi.floatingframe') {
+      return 'Failure [DELETE_FAILED_INTERNAL_ERROR]\n';
     }
     if (c.startsWith('pm uninstall -k --user 0 ')) {
       await _lag(150);
@@ -373,7 +384,7 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=17 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=18 minSdk=21 targetSdk=34\n' : '';
     }
     if (c.startsWith('dumpsys activity activities')) {
       // Home on the demo TV opens whatever is the home screen.

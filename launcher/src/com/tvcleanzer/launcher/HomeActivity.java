@@ -66,6 +66,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private int homePhotoIdx;
 
     private FrameLayout root;
+    /** Holds [root] and, on top while the launcher starts, the loading screen. */
+    private FrameLayout frame;
+    private SplashView splash;
+    private boolean appsLoaded, wallPending;
     private ScrollView scroll;
     private boolean resumed, dirty;
     private boolean entered;                       // entrance animation played
@@ -94,8 +98,17 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         pm = getPackageManager();
         root = new FrameLayout(this);
         root.setClipChildren(false);
-        setContentView(root);
         root.setBackground(Ui.background(prefs.skin()));
+        frame = new FrameLayout(this);
+        frame.addView(root, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        if (prefs.splash()) {
+            splash = new SplashView(this, prefs.skin());
+            frame.addView(splash, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            main.postDelayed(hideSplash, 7000);     // never stay longer than this
+        }
+        setContentView(frame);
 
         prefs.sp.registerOnSharedPreferenceChangeListener(this);
         IntentFilter f = new IntentFilter();
@@ -129,6 +142,28 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         main.removeCallbacks(homePhotoTick);
         main.postDelayed(homePhotoTick, Math.max(30, prefs.photoSec()) * 1000L);
     }
+
+    /** The home screen is drawn (apps listed, photo decoded): let the loading screen go,
+     *  after it has been up for at least a moment so it doesn't just flash. */
+    private void maybeHideSplash() {
+        if (splash == null || splash.leaving() || !appsLoaded || wallPending) return;
+        main.removeCallbacks(hideSplash);
+        main.postDelayed(hideSplash, Math.max(0, 1600 - splash.age()));
+    }
+
+    private final Runnable hideSplash = new Runnable() {
+        @Override public void run() {
+            final SplashView s = splash;
+            if (s == null || s.leaving()) return;
+            main.removeCallbacks(this);
+            s.dismiss(() -> {
+                frame.removeView(s);
+                if (splash == s) splash = null;
+                View f = getCurrentFocus();
+                if (f == null) root.requestFocus();
+            });
+        }
+    };
 
     /** Home background through the photo-frame photos, one every photoSec (at least 30 s). */
     private final Runnable homePhotoTick = new Runnable() {
@@ -435,6 +470,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
+        // a key while loading: skip the loading screen, the press only does that
+        if (splash != null && !splash.leaving()) {
+            if (e.getAction() == KeyEvent.ACTION_DOWN) hideSplash.run();
+            return true;
+        }
         if (movingPkg != null && handleMoveKey(e)) return true;
         return super.dispatchKeyEvent(e);
     }
@@ -521,6 +561,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 homeApps.clear();
                 homeApps.addAll(homes);
                 build();
+                appsLoaded = true;
+                maybeHideSplash();
             });
         });
     }
@@ -598,10 +640,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         String key = photoList.isEmpty() ? "w" + prefs.wallpaperRev() : "p" + prefs.photoRev();
         if (!key.equals(wallKey)) {
             wallKey = key;
+            wallPending = true;
             io.execute(() -> {
                 final android.graphics.Bitmap b = photoList.isEmpty() ? Wallpaper.load(this)
                         : Photos.load(this, photoList.get(homePhotoIdx % photoList.size()));
-                main.post(() -> { wallBitmap = b; build(); });
+                main.post(() -> { wallBitmap = b; wallPending = false; build(); maybeHideSplash(); });
             });
         }
 

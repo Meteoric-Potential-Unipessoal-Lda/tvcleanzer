@@ -233,7 +233,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       const Text('🧹', style: TextStyle(fontSize: 32)),
       const Gap(14),
       Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(remove > 0 ? tr('{0} лишних приложений', [remove]) : tr('Явного мусора нет'),
+        Text(remove > 0 ? tr('Лишних приложений: {0}', [remove]) : tr('Явного мусора нет'),
           style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
         const Gap(2),
         Text(caution > 0 ? tr('Ещё {0} — на ваше усмотрение', [caution]) : tr('Всё скрытое можно вернуть из «Истории»'),

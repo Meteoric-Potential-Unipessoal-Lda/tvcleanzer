@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The home screen's window is dark from the very first frame: no white or black
+         flash before the loading screen draws (cold start after a TV reboot). -->
+    <style name="HomeTheme" parent="@android:style/Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@color/home_bg</item>
+    </style>
+    <color name="home_bg">#FF070B14</color>
+</resources>

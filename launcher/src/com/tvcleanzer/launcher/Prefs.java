@@ -18,7 +18,7 @@ final class Prefs {
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
             AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
-            PREV_DREAM = "prevDream", AUTOSTART = "autostart",
+            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
@@ -132,6 +132,9 @@ final class Prefs {
     void setPhotoSec(int v)  { sp.edit().putInt(PHOTO_SEC, clamp(v, 10, 600)).apply(); }
     /** The home background changes through the photos too (off by default). */
     boolean homePhotos()     { return sp.getBoolean(HOME_PHOTOS, false); }
+    /** Loading screen with the logo while the launcher starts. */
+    boolean splash()         { return sp.getBoolean(SPLASH, true); }
+    void setSplash(boolean v) { sp.edit().putBoolean(SPLASH, v).apply(); }
     void setHomePhotos(boolean v) { sp.edit().putBoolean(HOME_PHOTOS, v).apply(); }
     long photoRev()          { return sp.getLong(PHOTO_REV, 0); }
     void bumpPhotos()        { sp.edit().putLong(PHOTO_REV, System.currentTimeMillis()).apply(); }

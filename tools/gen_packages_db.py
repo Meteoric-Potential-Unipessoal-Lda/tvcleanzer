@@ -151,6 +151,7 @@ OVERRIDES = {
  'com.android.health.connect.backuprestore': ('Health Connect (резерв)', 'Сервис здоровья для телефонов, на ТВ не нужен'),
  'com.android.healthconnect.controller': ('Health Connect', 'Сервис здоровья для телефонов, на ТВ не нужен'),
  'com.xiaomi.statistic': ('Статистика Xiaomi', T),
+ 'com.xiaomi.floatingframe': ('Рекламное окно Xiaomi', A),
  'com.netflix.ninja': ('Netflix', F),
  'tv.anoki.acr.anokiacroptin': ('Anoki ACR', R),
  'tv.anoki.acr.controller': ('Anoki ACR', R),

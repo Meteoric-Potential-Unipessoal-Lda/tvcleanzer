@@ -121,6 +121,8 @@ public class SettingsActivity extends Activity {
                 prefs.setPhotoSec(secs[(k + 1) % secs.length]);
             });
         }
+        addRow(skin, "Заставка при запуске", prefs.splash() ? "Логотип, пока лаунчер загружается" : "Выключена",
+                () -> prefs.setSplash(!prefs.splash()));
         final int[] favSteps = {0, 4, 5, 6};
         int fc = prefs.favCols();
         addRow(skin, "Избранное", fc == 0 ? "Один ряд" : "Сетка по " + fc, () -> {
