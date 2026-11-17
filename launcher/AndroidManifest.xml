@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="22"
-    android:versionName="0.22">
+    android:versionCode="23"
+    android:versionName="0.23">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -27,6 +27,19 @@
         <package android:name="com.yandex.tv.ytplayer" />
         <package android:name="com.yandex.devices.appstore" />
         <package android:name="com.yandex.browser.tv" />
+        <!-- the TV's own live TV (antenna / cable / satellite) for the «ТВ» source (Inputs.tv) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="vnd.android.cursor.item/channel" />
+        </intent>
+        <package android:name="com.mediatek.wwtv.tvcenter" />
+        <package android:name="com.google.android.tv" />
+        <package android:name="com.android.tv" />
+        <package android:name="com.sony.dtv.tvx" />
+        <package android:name="org.droidtv.playtv" />
+        <package android:name="com.xiaomi.mitv.tvplayer" />
+        <package android:name="com.droidlogic.tvsource" />
+        <package android:name="com.tcl.tv" />
     </queries>
 
     <application

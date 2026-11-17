@@ -148,7 +148,7 @@ public class SettingsActivity extends Activity {
             prefs.setFavCols(favSteps[(k + 1) % favSteps.length]);
         });
         String[] inputsNames = {"Вверху", "Внизу", "Скрыты"};
-        addRow(skin, "Источники (HDMI)", inputsNames[prefs.inputsPos()],
+        addRow(skin, "Источники (ТВ, HDMI)", inputsNames[prefs.inputsPos()],
                 () -> prefs.setInputsPos((prefs.inputsPos() + 1) % 3));
         addRow(skin, "При включении ТВ", autostartName(),
                 () -> prefs.setAutostart(nextAutostart()));
