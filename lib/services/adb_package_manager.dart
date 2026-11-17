@@ -644,7 +644,7 @@ class AdbPackageManager {
       final disabled = _parsePackageList(await adb.shell('pm list packages -d')).toSet();
       final present = _parsePackageList(await adb.shell('pm list packages')).toSet();
       final all = _parsePackageList(await adb.shell('pm list packages -u')).toSet();
-      final off = _stockHomesOf(all)
+      final off = (await _stockHomes(adb, all))
           .any((p) => disabled.contains(p) || (all.contains(p) && !present.contains(p)));
       await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver -a com.tvcleanzer.launcher.APPLY --ez stockOff $off');
     } catch (e) {
@@ -682,16 +682,26 @@ class AdbPackageManager {
     final installed = _parsePackageList(await adb.shell('pm list packages')).toSet();
     final stock = _removableHomes.where(installed.contains).toList();
     final googleTv = installed.contains('com.google.android.apps.tv.launcherx');
+    // The firmware's own home that Home opens whatever the HOME setting says (a be311 box,
+    // Android 13: HOME resolved to ours, Home opened com.master.t972 every time).
+    final fw = googleTv ? null : await _firmwareHome(adb);
+    if (fw != null && !stock.contains(fw)) stock.add(fw);
     if (stock.isNotEmpty && !googleTv) {
       onStep?.call(tr('Закрепляем лаунчер…'));
       final viaDisable = usesDisable(installed);
       final removed = <String>[];
       for (final p in stock) {
-        final out = viaDisable
-            ? await adb.shell('pm disable-user --user 0 $p')
-            : await adb.shell('pm uninstall -k --user 0 $p');
-        if (out.toLowerCase().contains('success') || out.contains('new state: disabled')) removed.add(p);
+        final out = viaDisable || p == fw
+            ? await adb.shell('pm disable-user --user 0 $p 2>&1')
+            : await adb.shell('pm uninstall -k --user 0 $p 2>&1');
+        if (out.toLowerCase().contains('success') || out.contains('new state: disabled')) {
+          removed.add(p);
+        } else {
+          AppLog.error('stock home $p', out.trim());
+        }
       }
+      // remembered on the TV: put back with «Вернуть стандартный лаунчер» ([_stockHomes])
+      if (fw != null && removed.contains(fw)) await adb.shell("echo '$fw' > $_firmwareHomesFile");
       if (sdk >= 29) {
         await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
       } else {
@@ -703,6 +713,7 @@ class AdbPackageManager {
         await adb.shell('pm install-existing $p');
         await adb.shell('pm enable $p');
       }
+      if (fw != null) await adb.shell('rm -f $_firmwareHomesFile');
     }
     // Google TV whose firmware never starts our Home-key service (TCL Android 11/12 reports:
     // "enabled" but not "bound", even after off/on), or runs it but still lets launcherx
@@ -747,6 +758,49 @@ class AdbPackageManager {
 
   static const _patchWall = 'com.mitv.tvhome.atv';
 
+  /// Firmware homes TVCleanzer switched off on this TV (see [_firmwareHome]), one per line.
+  static const _firmwareHomesFile = '/data/local/tmp/tvcleanzer_homes';
+
+  /// Firmware homes known to be started by Home directly, without declaring HOME.
+  static const _knownFirmwareHomes = {'com.master.t972'};
+
+  /// Homes that are never switched off this way: Google TV (Home falls to a recovery screen),
+  /// Yandex and Sber (their apps live there), settings and the system itself.
+  static bool _neverOff(String p) =>
+      p == launcherPkg || p == 'android' || p == 'com.android.systemui' ||
+      p == 'com.android.tv.settings' || p == 'com.android.settings' ||
+      _googleTvHomes.contains(p) || p.startsWith('com.yandex.') || p.startsWith('ru.sberdevices.');
+
+  /// What Home really opens when it is not ours: the firmware's own home, when it looks like
+  /// one (declares HOME or is known). Null otherwise.
+  Future<String?> _firmwareHome(AdbClient adb) async {
+    try {
+      await adb.shell('input keyevent 3');
+      await Future<void>.delayed(const Duration(milliseconds: 2500));
+      final front = await _frontPackage(adb);
+      if (front == null || _neverOff(front)) return null;
+      final homes = _parseComponents(await adb.shell(
+          'cmd package query-activities --brief -a android.intent.action.MAIN '
+          '-c android.intent.category.HOME 2>/dev/null'));
+      final ok = homes.contains(front) || _knownFirmwareHomes.contains(front);
+      AppLog.error('firmware home', '$front (declares HOME: ${homes.contains(front)}) ${ok ? 'switching off' : 'left'}');
+      return ok ? front : null;
+    } catch (e) {
+      AppLog.error('firmware home', e);
+      return null;
+    }
+  }
+
+  /// [_stockHomesOf] plus the firmware homes this TV remembers ([_firmwareHomesFile]).
+  Future<List<String>> _stockHomes(AdbClient adb, Set<String> all) async {
+    final saved = (await adb.shell('cat $_firmwareHomesFile 2>/dev/null'))
+        .split(RegExp(r'\s+'))
+        .where((p) => _pkgName.hasMatch(p) && all.contains(p) && !_neverOff(p));
+    return {..._stockHomesOf(all), ...saved}.toList();
+  }
+
+  static final _pkgName = RegExp(r'^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z0-9_]+)+$');
+
   /// Google TV's home and its setup screen: switched off only when nothing else keeps
   /// Home on our launcher (see [_bind]); always switched back on with our launcher removed.
   static const _googleTvHomes = [
@@ -774,7 +828,7 @@ class AdbPackageManager {
   Future<void> _restoreStockHomes(AdbClient adb) async {
     final all = _parsePackageList(await adb.shell('pm list packages -u 2>/dev/null')).toSet();
     final now = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
-    for (final p in _stockHomesOf(all)) {
+    for (final p in await _stockHomes(adb, all)) {
       if (!all.contains(p) || now.contains(p)) continue;
       AppLog.error('restore home', p);
       await adb.shell('pm install-existing $p');
@@ -813,13 +867,16 @@ class AdbPackageManager {
           'cmd package query-activities --brief -a android.intent.action.MAIN '
           '-c android.intent.category.HOME 2>/dev/null'));
       final enabled = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
-      final others = homes.where((p) => p != launcherPkg && enabled.contains(p)
-          && p != 'com.android.tv.settings' && p != 'com.android.settings').toList();
+      final saved = (await adb.shell('cat $_firmwareHomesFile 2>/dev/null')).split(RegExp(r'\s+'));
+      final others = {...homes, ...saved.where(_knownFirmwareHomes.contains)}
+          .where((p) => p != launcherPkg && enabled.contains(p)
+              && p != 'com.android.tv.settings' && p != 'com.android.settings').toList();
       if (others.isEmpty) {
         AppLog.error('uninstall launcher', 'no other home: ${homes.join(', ')}');
         throw AdbException(tr('Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».'));
       }
       await _setHomeKeyService(adb, enabled: false);
+      await adb.shell('rm -f $_firmwareHomesFile');
       await adb.shell('pm uninstall $launcherPkg');
       await adb.shell('input keyevent 3');
     } finally {
@@ -1124,6 +1181,10 @@ class AdbPackageManager {
       await Future<void>.delayed(const Duration(milliseconds: 2500));
       if (await _homeKeyBound(adb)) return;
     }
+    // For «?» reports: did the setting stick at all (a be311 box: it read back null)?
+    final back = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
+    final declared = (await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -c HomeKeyService')).trim();
+    AppLog.error('home key service', 'not running; setting=$back; declared=$declared');
   }
 
   /// Adds/removes our service in `enabled_accessibility_services`, keeping
@@ -1137,8 +1198,9 @@ class AdbPackageManager {
     if (list.isEmpty) {
       await adb.shell('settings delete secure enabled_accessibility_services');
     } else {
-      await adb.shell("settings put secure enabled_accessibility_services '${list.join(':')}'");
-      await adb.shell('settings put secure accessibility_enabled 1');
+      final out = await adb.shell("settings put secure enabled_accessibility_services '${list.join(':')}' 2>&1; "
+          'settings put secure accessibility_enabled 1 2>&1');
+      if (out.trim().isNotEmpty) AppLog.error('home key service', out.trim());
     }
   }
 
