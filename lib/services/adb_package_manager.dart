@@ -106,6 +106,16 @@ class AdbPackageManager {
       final pkgs = _parsePackageList(raw).where((p) => !disabled.contains(p)).toList();
       // Installed by the owner (or a store), not part of the firmware.
       final userApps = _parsePackageList(await adb.shell('pm list packages -3')).toSet();
+      // Real app names from our launcher, when it is on the TV ("Цифровое ТВ", not the
+      // database's "Limehd ctv" from another model).
+      final realNames = <String, String>{};
+      if (pkgs.contains(launcherPkg)) {
+        final out = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/apps 2>/dev/null');
+        for (final m in RegExp(r'pkg=([^,]+),.*label=(.*)$', multiLine: true).allMatches(out)) {
+          final l = m.group(2)!.trim();
+          if (l.isNotEmpty) realNames[m.group(1)!] = l;
+        }
+      }
 
       // What the TV itself says: its home screens (never touched) and the
       // apps visible in its menu (owner's apps: never pre-selected).
@@ -131,17 +141,22 @@ class AdbPackageManager {
         // An app the owner installed: a list that saw it preinstalled on another model does
         // not make it junk here («Цифровое ТВ» from an APK was offered as "preinstalled").
         String? reason = entry == null ? null : trReason(entry.reason);
+        String? label = entry == null ? null : tr(entry.label);
         if (userApps.contains(name) && verdict != PackageVerdict.system) {
+          label = realNames[name] ?? label;
           if (verdict == PackageVerdict.remove) {
             verdict = PackageVerdict.caution;
             reason = tr('Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.');
-          } else if (verdict == PackageVerdict.caution) {
-            verdict = PackageVerdict.keep;
+          } else {
+            if (verdict == PackageVerdict.caution) verdict = PackageVerdict.keep;
+            if (entry != null) reason = tr('Ваше приложение: TVCleanzer его не трогает.');
           }
+        } else if (entry == null) {
+          label = realNames[name];
         }
         return TvPackage(
           packageName: name,
-          label:   entry == null ? null : tr(entry.label),
+          label:   label,
           sizeMb:  (ramKb[name] ?? 0) ~/ 1024,
           verdict: verdict,
           reason:  reason,
