@@ -791,6 +791,19 @@ class AdbPackageManager {
     try {
       await adb.connect();
       await _restoreStockHomes(adb);
+      // Never leave the TV without a home screen: our launcher goes only when another one is
+      // there to take Home (a Xiaomi Box 4K 2nd Gen ended up restarting in a loop with its
+      // Google TV Home switched off and our launcher removed).
+      final homes = _parseComponents(await adb.shell(
+          'cmd package query-activities --brief -a android.intent.action.MAIN '
+          '-c android.intent.category.HOME 2>/dev/null'));
+      final enabled = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
+      final others = homes.where((p) => p != launcherPkg && enabled.contains(p)
+          && p != 'com.android.tv.settings' && p != 'com.android.settings').toList();
+      if (others.isEmpty) {
+        AppLog.error('uninstall launcher', 'no other home: ${homes.join(', ')}');
+        throw AdbException(tr('Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».'));
+      }
       await _setHomeKeyService(adb, enabled: false);
       await adb.shell('pm uninstall $launcherPkg');
       await adb.shell('input keyevent 3');

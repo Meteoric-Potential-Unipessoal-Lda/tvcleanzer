@@ -658,5 +658,6 @@
 "Téléphone et TV sur le même réseau, VPN du téléphone coupé.",
 "Installation sur la TV… Les grosses applis peuvent prendre quelques minutes.",
 "Envoi vers la TV : {0} % de {1} Mo. Ne verrouillez pas le téléphone.",
-"Installée par vous ou par une boutique, pas par le firmware. Retirez-la seulement si vous ne l’utilisez vraiment pas."
+"Installée par vous ou par une boutique, pas par le firmware. Retirez-la seulement si vous ne l’utilisez vraiment pas.",
+"Impossible de réactiver l’écran d’accueil de la TV, notre launcher reste donc en place (sinon l’écran serait noir). Envoyez un rapport via « ? »."
 ]

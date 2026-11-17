@@ -3,6 +3,7 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».': 'Could not switch the TV’s own home screen back on, so our launcher stays (otherwise the screen would be black). Please send a report via “?”.',
     'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Installed by you or a store, not by the firmware. Remove it only if you really don’t use it.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installing on the TV… Big apps can take a few minutes.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Sending to the TV: {0}% of {1} MB. Keep the phone unlocked.',
@@ -666,6 +667,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».': 'Не вдалося ввімкнути рідний головний екран телевізора, тому наш лаунчер залишено (інакше був би чорний екран). Надішліть звіт через «?».',
     'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Встановлено не прошивкою, а вами або магазином. Приберіть, лише якщо точно не користуєтеся.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Встановлюємо на телевізорі… Великі застосунки ставляться до кількох хвилин.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Надсилаємо на телевізор: {0}% з {1} МБ. Не блокуйте телефон.',
@@ -1329,6 +1331,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».': 'No se pudo reactivar la pantalla de inicio de la tele, así que nuestro launcher se queda (si no, la pantalla quedaría en negro). Envía un informe desde «?».',
     'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Instalada por ti o por una tienda, no por el firmware. Quítala solo si de verdad no la usas.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Instalando en la tele… Las apps grandes pueden tardar unos minutos.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Enviando a la tele: {0}% de {1} MB. No bloquees el móvil.',
@@ -1992,6 +1995,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».': 'Não foi possível voltar a ligar o ecrã inicial da TV, por isso o nosso launcher fica (senão o ecrã ficaria preto). Envie um relatório em «?».',
     'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Instalada por si ou por uma loja, não pelo firmware. Remova só se tiver a certeza de que não usa.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'A instalar na TV… As apps grandes podem demorar alguns minutos.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'A enviar para a TV: {0}% de {1} MB. Não bloqueie o telemóvel.',
@@ -2655,6 +2659,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».': 'Der eigene Startbildschirm des Fernsehers ließ sich nicht wieder einschalten, deshalb bleibt unser Launcher (sonst wäre der Bildschirm schwarz). Bitte sende einen Bericht über „?“.',
     'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Von dir oder einem Store installiert, nicht von der Firmware. Nur entfernen, wenn du sie wirklich nicht nutzt.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Wird auf dem Fernseher installiert… Große Apps brauchen bis zu einigen Minuten.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Wird an den Fernseher gesendet: {0} % von {1} MB. Handy nicht sperren.',
@@ -3318,6 +3323,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».': 'Impossible de réactiver l’écran d’accueil de la TV, notre launcher reste donc en place (sinon l’écran serait noir). Envoyez un rapport via « ? ».',
     'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Installée par vous ou par une boutique, pas par le firmware. Retirez-la seulement si vous ne l’utilisez vraiment pas.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installation sur la TV… Les grosses applis peuvent prendre quelques minutes.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Envoi vers la TV : {0} % de {1} Mo. Ne verrouillez pas le téléphone.',
@@ -3981,6 +3987,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Не удалось включить родной главный экран телевизора, поэтому наш лаунчер оставлен (иначе остался бы чёрный экран). Пришлите отчёт через «?».': 'Non è stato possibile riattivare la schermata Home della TV, quindi il nostro launcher resta (altrimenti lo schermo sarebbe nero). Invia una segnalazione da «?».',
     'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Installata da te o da uno store, non dal firmware. Rimuovila solo se davvero non la usi.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installazione sulla TV… Le app grandi possono richiedere qualche minuto.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Invio alla TV: {0}% di {1} MB. Non bloccare il telefono.',

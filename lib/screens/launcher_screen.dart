@@ -195,6 +195,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       _installed = false;
       _checked = false;
       _launcher = null;
+    } on AdbException catch (e) {
+      _installError = e.message;
     } catch (_) {
       _installError = _offline;
     }
