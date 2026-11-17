@@ -40,6 +40,22 @@ final class Ui {
         return g;
     }
 
+    /** The favourites shelf in the owner's chosen look ([Prefs.shelf]). */
+    static GradientDrawable shelf(float radiusPx, int look) {
+        GradientDrawable g = new GradientDrawable();
+        g.setCornerRadius(radiusPx);
+        if (look == Prefs.SHELF_CLEAR) {
+            g.setColor(0x00000000);
+        } else if (look == Prefs.SHELF_DARK) {
+            g.setColor(0x73000000);
+            g.setStroke(1, 0x1FFFFFFF);
+        } else {
+            g.setColor(0x1AFFFFFF);
+            g.setStroke(1, 0x26FFFFFF);
+        }
+        return g;
+    }
+
     /** Darkens the bottom of the screen for depth (keeps any skin calm on bright TVs). */
     static GradientDrawable vignette() {
         return new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,

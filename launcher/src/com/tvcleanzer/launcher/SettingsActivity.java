@@ -137,8 +137,17 @@ public class SettingsActivity extends Activity {
         addRow(skin, "Заставка при запуске", prefs.splash() ? "Логотип, пока лаунчер загружается" : "Выключена",
                 () -> prefs.setSplash(!prefs.splash()));
         if (prefs.style() == Prefs.STYLE_TILES) {
-            addRow(skin, "Приложения на главном", prefs.appsBelow() ? "На втором экране (кнопка ▼)" : "Сразу под избранным",
-                    () -> prefs.setAppsBelow(!prefs.appsBelow()));
+            // three steps: under favourites → second screen → second screen with favourites low
+            String place = !prefs.appsBelow() ? "Сразу под избранным"
+                    : prefs.favBottom() ? "На втором экране, избранное внизу" : "На втором экране (кнопка ▼)";
+            addRow(skin, "Приложения на главном", place, () -> {
+                if (!prefs.appsBelow()) { prefs.setAppsBelow(true); prefs.setFavBottom(false); }
+                else if (!prefs.favBottom()) prefs.setFavBottom(true);
+                else { prefs.setAppsBelow(false); prefs.setFavBottom(false); }
+            });
+            final String[] shelfNames = {"Стекло", "Прозрачная", "Тёмная"};
+            addRow(skin, "Подложка избранного", shelfNames[prefs.shelf()],
+                    () -> prefs.setShelf((prefs.shelf() + 1) % 3));
         }
         final int[] favSteps = {0, 4, 5, 6};
         int fc = prefs.favCols();

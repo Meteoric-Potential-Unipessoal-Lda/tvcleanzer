@@ -18,7 +18,7 @@ final class Prefs {
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
             AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
-            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", STOCK_OFF = "stockOff",
+            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", STOCK_OFF = "stockOff", FAV_BOTTOM = "favBottom", SHELF = "shelf",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
@@ -138,6 +138,13 @@ final class Prefs {
     /** Tiles style: the app grid starts on the second screen (only favourites on the first). */
     boolean appsBelow()      { return sp.getBoolean(APPS_BELOW, false); }
     void setAppsBelow(boolean v) { sp.edit().putBoolean(APPS_BELOW, v).apply(); }
+    /** With appsBelow: favourites sit at the bottom of the first screen, over the photo. */
+    boolean favBottom()      { return sp.getBoolean(FAV_BOTTOM, false); }
+    void setFavBottom(boolean v) { sp.edit().putBoolean(FAV_BOTTOM, v).apply(); }
+    /** Favourites shelf: 0 glass (default), 1 transparent, 2 dark. */
+    static final int SHELF_GLASS = 0, SHELF_CLEAR = 1, SHELF_DARK = 2;
+    int shelf()              { return clamp(sp.getInt(SHELF, SHELF_GLASS), 0, 2); }
+    void setShelf(int v)     { sp.edit().putInt(SHELF, clamp(v, 0, 2)).apply(); }
     /** The TV's own home (Google TV) was switched off by TVCleanzer to keep this launcher. */
     boolean stockOff()       { return sp.getBoolean(STOCK_OFF, false); }
     void setStockOff(boolean v) { sp.edit().putBoolean(STOCK_OFF, v).apply(); }

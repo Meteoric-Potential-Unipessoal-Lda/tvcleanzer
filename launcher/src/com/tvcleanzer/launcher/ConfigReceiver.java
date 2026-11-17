@@ -49,6 +49,8 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.hasExtra("homePhotos")) p.setHomePhotos(intent.getBooleanExtra("homePhotos", false));
         if (intent.hasExtra("splash")) p.setSplash(intent.getBooleanExtra("splash", true));
         if (intent.hasExtra("appsBelow")) p.setAppsBelow(intent.getBooleanExtra("appsBelow", false));
+        if (intent.hasExtra("favBottom")) p.setFavBottom(intent.getBooleanExtra("favBottom", false));
+        if (intent.hasExtra("shelf")) p.setShelf(intent.getIntExtra("shelf", Prefs.SHELF_GLASS));
         if (intent.hasExtra("stockOff")) p.setStockOff(intent.getBooleanExtra("stockOff", false));
         if (intent.hasExtra("prevDream")) {
             String d = intent.getStringExtra("prevDream");

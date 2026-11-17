@@ -71,6 +71,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private SplashView splash;
     private boolean appsLoaded, wallPending;
     private ScrollView scroll;
+    private View favTitle, favShelf;   // the favourites block of the tiles home (null without one)
+    private boolean focusHooked;
     private boolean resumed, dirty;
     private boolean entered;                       // entrance animation played
     /** Clock style: the full app grid is open ("All apps"); Back or Home returns to the clock. */
@@ -711,7 +713,21 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             return;
         }
 
+        favTitle = null;
+        favShelf = null;
         scroll = new ScrollView(this);
+        // Back up to a favourite from the apps below: show the clock and the top bar too
+        // (owners had to press Up three more times to see them). Hooked once per window.
+        if (!focusHooked) {
+            focusHooked = true;
+            getWindow().getDecorView().getViewTreeObserver().addOnGlobalFocusChangeListener((was, now) -> {
+                final ScrollView sc = scroll;
+                if (now != null && sc != null && favShelf != null && sc.getScrollY() > 0
+                        && isInside(now, favShelf) && (was == null || !isInside(was, favShelf))) {
+                    sc.post(() -> sc.smoothScrollTo(0, 0));
+                }
+            });
+        }
         scroll.setClipChildren(false);
         scroll.setClipToPadding(false);
         scroll.setVerticalScrollBarEnabled(false);
@@ -731,9 +747,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
         List<AppTile> tiles = new ArrayList<>();
         if (!favorites.isEmpty()) {
-            page.addView(sectionTitle("Избранное", Ui.dp(this, 30)));
+            favTitle = sectionTitle("Избранное", Ui.dp(this, 30));
+            page.addView(favTitle);
             FrameLayout shelf = new FrameLayout(this);
-            shelf.setBackground(Ui.glass(Ui.dp(this, 30)));
+            favShelf = shelf;
+            shelf.setBackground(Ui.shelf(Ui.dp(this, 30), prefs.shelf()));
             shelf.setClipChildren(true);
             LinearLayout.LayoutParams shp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -818,9 +836,23 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                         new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override public void onGlobalLayout() {
                         appsTitle.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int sy = scroll != null ? scroll.getScrollY() : 0;
+                        // favourites low on the first screen, over the photo (an owner's wish)
+                        int favPush = 0;
+                        if (prefs.favBottom() && favShelf != null && favTitle != null) {
+                            int[] s = new int[2];
+                            favShelf.getLocationOnScreen(s);
+                            int bottom = s[1] + sy + favShelf.getHeight();
+                            favPush = Math.max(0, screenH - Ui.dp(HomeActivity.this, 40) - bottom);
+                            if (favPush > 0) {
+                                LinearLayout.LayoutParams fl = (LinearLayout.LayoutParams) favTitle.getLayoutParams();
+                                fl.topMargin += favPush;
+                                favTitle.setLayoutParams(fl);
+                            }
+                        }
                         int[] at = new int[2];
                         appsTitle.getLocationOnScreen(at);
-                        int top = at[1] + (scroll != null ? scroll.getScrollY() : 0);
+                        int top = at[1] + sy + favPush;
                         int push = screenH - top + Ui.dp(HomeActivity.this, 26);
                         if (push > 0) {
                             LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) appsTitle.getLayoutParams();
@@ -1121,6 +1153,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 });
             });
         }
+    }
+
+    private static boolean isInside(View v, View parent) {
+        for (View p = v; p != null; p = p.getParent() instanceof View ? (View) p.getParent() : null) {
+            if (p == parent) return true;
+        }
+        return false;
     }
 
     private void focusFirst() {
