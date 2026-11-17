@@ -604,7 +604,7 @@ class AdbPackageManager {
       final disabled = _parsePackageList(await adb.shell('pm list packages -d')).toSet();
       final present = _parsePackageList(await adb.shell('pm list packages')).toSet();
       final all = _parsePackageList(await adb.shell('pm list packages -u')).toSet();
-      final off = [..._removableHomes, ..._googleTvHomes]
+      final off = _stockHomesOf(all)
           .any((p) => disabled.contains(p) || (all.contains(p) && !present.contains(p)));
       await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver -a com.tvcleanzer.launcher.APPLY --ez stockOff $off');
     } catch (e) {
@@ -665,14 +665,16 @@ class AdbPackageManager {
       }
     }
     // Google TV whose firmware never starts our Home-key service (TCL Android 11/12 reports:
-    // "enabled" but not "bound", even after off/on) keeps its launcherx on Home and after
+    // "enabled" but not "bound", even after off/on), or runs it but still lets launcherx
+    // take Home, keeps its launcherx on Home and after
     // every power-on. Only with the owner's explicit "yes" ([googleTvHard], after a warning):
     // switch launcherx off together with the setup screen that would take Home after it
     // (restorable; what CleanYourTV google-tv lists do), kept only if Home really opens ours.
     // Never on its own: a Philips owner removed our launcher in the TV's settings afterwards
     // and was left with a black screen (nothing turned Google TV Home back on).
-    final unbound = googleTv && !await _homeKeyBound(adb);
-    if (unbound && googleTvHard) {
+    // Also when the service IS running but Google TV still takes Home (a TCL Smart TV Pro,
+    // Android 11 report: service bound, Home opened launcherx every time): offer the same.
+    if (googleTv && googleTvHard) {
       onStep?.call(tr('Закрепляем лаунчер…'));
       final off = <String>[];
       for (final p in _googleTvHomes.where(installed.contains)) {
@@ -696,7 +698,11 @@ class AdbPackageManager {
     await adb.shell('input keyevent 3');
     await Future<void>.delayed(const Duration(milliseconds: 2500));
     if (await _frontPackage(adb) == launcherPkg) return LauncherBind.service;
-    return unbound && !googleTvHard ? LauncherBind.needsGoogleTvHard : LauncherBind.failed;
+    if (googleTv && !googleTvHard) {
+      AppLog.error('google tv home', 'Home stays on launcherx (service bound: ${await _homeKeyBound(adb)})');
+      return LauncherBind.needsGoogleTvHard;
+    }
+    return LauncherBind.failed;
   }
 
   static const _patchWall = 'com.mitv.tvhome.atv';
@@ -728,12 +734,20 @@ class AdbPackageManager {
   Future<void> _restoreStockHomes(AdbClient adb) async {
     final all = _parsePackageList(await adb.shell('pm list packages -u 2>/dev/null')).toSet();
     final now = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
-    for (final p in [..._removableHomes, ..._googleTvHomes]) {
+    for (final p in _stockHomesOf(all)) {
       if (!all.contains(p) || now.contains(p)) continue;
+      AppLog.error('restore home', p);
       await adb.shell('pm install-existing $p');
       await adb.shell('pm enable $p');
     }
   }
+
+  /// The stock homes TVCleanzer may have switched off on this TV, and so may switch back on.
+  /// Google TV: only launcherx and its setup screen. Its old Android TV home (tvlauncher,
+  /// leanback) comes switched off from the factory there and must stay off: turning it on
+  /// with «Вернуть стандартный лаунчер» left a Google TV box restarting in a loop.
+  static List<String> _stockHomesOf(Set<String> installed) =>
+      installed.contains('com.google.android.apps.tv.launcherx') ? _googleTvHomes : _removableHomes;
 
   /// Sends settings to the installed launcher (it redraws immediately).
   Future<void> applyLauncherSkin(TvDevice device, String skin) async {
