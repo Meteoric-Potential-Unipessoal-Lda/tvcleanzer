@@ -101,6 +101,7 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
         if (app != null && app.launchable) _open(app);
       }
     } catch (e) {
+      AppLog.error('install ${f.name} ${data.length}', e);
       if (mounted) {
         setState(() {
           _installOk = false;

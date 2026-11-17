@@ -115,6 +115,11 @@ class AdbClient {
   int _nextLocalId = 1;
   int _peerMaxData = 4096; // from the TV's CNXN; safe default for old adbd
 
+  /// Bytes per WRTE when uploading: every packet waits for the TV's OKAY, so bigger packets
+  /// mean far fewer round trips (a 100 MB APK in 64 KB packets was 1,600 waits; with old
+  /// adbd's 4 KB, 25,000). Never more than the TV accepts.
+  int get _uploadChunk => min(_peerMaxData, 256 * 1024);
+
   // ── Public API ──────────────────────────────────────────────────────────────
 
   /// Connects and authenticates; returns the device banner properties.
@@ -250,8 +255,13 @@ class AdbClient {
   /// Runs [command] via the `exec:` service and streams [input] to its stdin,
   /// e.g. `cmd package install -S <size>` with the APK bytes (Android 7+).
   /// Returns everything the command printed.
+  /// [onProgress] gets the bytes sent so far (throttled); [answerTimeout] is how long the
+  /// command may stay silent after the upload (an install of a big app: verification and
+  /// dex compilation on a slow TV can take minutes).
   Future<String> execWithInput(String command, Uint8List input,
-      {Duration timeout = const Duration(seconds: 60)}) async {
+      {Duration timeout = const Duration(seconds: 60),
+      Duration? answerTimeout,
+      void Function(int sent)? onProgress}) async {
     final localId = _nextLocalId++;
     _send(_Msg(_cmdOpen, localId, 0, _cString('exec:$command')));
     final out = BytesBuilder(copy: false);
@@ -269,8 +279,9 @@ class AdbClient {
     }
 
     // Send the data chunk by chunk; every WRTE must be acknowledged with OKAY.
-    final chunk = min(_peerMaxData, 64 * 1024);
+    final chunk = _uploadChunk;
     var off = 0;
+    var told = 0;
     while (off < input.length) {
       final end = min(off + chunk, input.length);
       _send(_Msg(_cmdWrte, localId, remoteId, Uint8List.sublistView(input, off, end)));
@@ -286,11 +297,15 @@ class AdbClient {
           return utf8.decode(out.takeBytes(), allowMalformed: true); // ended early
         }
       }
+      if (onProgress != null && (off - told >= 512 * 1024 || off == input.length)) {
+        told = off;
+        onProgress(off);
+      }
     }
 
     // Read the command's answer until the TV closes the stream.
     while (true) {
-      final m = await _read(timeout, 'Command timed out: $command');
+      final m = await _read(answerTimeout ?? timeout, 'Command timed out: $command');
       if (m.arg1 != localId) continue;
       if (m.cmd == _cmdWrte) {
         out.add(m.data);
@@ -306,7 +321,7 @@ class AdbClient {
   /// (`cat > file` would otherwise wait forever). No output is returned —
   /// check the result with a separate command (e.g. the file size).
   Future<void> execIn(String command, Uint8List input,
-      {Duration timeout = const Duration(seconds: 90)}) async {
+      {Duration timeout = const Duration(seconds: 90), void Function(int sent)? onProgress}) async {
     final localId = _nextLocalId++;
     _send(_Msg(_cmdOpen, localId, 0, _cString('exec:$command')));
 
@@ -321,7 +336,8 @@ class AdbClient {
       }
     }
 
-    final chunk = min(_peerMaxData, 64 * 1024);
+    final chunk = _uploadChunk;
+    var told = 0;
     var off = 0;
     while (off < input.length) {
       final end = min(off + chunk, input.length);
@@ -336,6 +352,10 @@ class AdbClient {
         } else if (m.cmd == _cmdClse) {
           throw AdbException('The TV closed the upload early: $command');
         }
+      }
+      if (onProgress != null && (off - told >= 512 * 1024 || off == input.length)) {
+        told = off;
+        onProgress(off);
       }
     }
 

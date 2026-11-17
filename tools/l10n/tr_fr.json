@@ -655,5 +655,7 @@
 "Le port 5555 est ajouté tout seul. Pour un autre port : adresse:port",
 "La TV peut afficher « Autoriser le débogage ? » : cochez « Toujours autoriser » puis « Autoriser ».",
 "Votre TV n’apparaît pas ? Saisir son IP",
-"Téléphone et TV sur le même réseau, VPN du téléphone coupé."
+"Téléphone et TV sur le même réseau, VPN du téléphone coupé.",
+"Installation sur la TV… Les grosses applis peuvent prendre quelques minutes.",
+"Envoi vers la TV : {0} % de {1} Mo. Ne verrouillez pas le téléphone."
 ]

@@ -655,5 +655,7 @@
 "Port 5555 is added automatically. For another port: address:port",
 "The TV may show “Allow debugging?”: tick “Always allow” and press “Allow”.",
 "TV not listed? Enter its IP",
-"Phone and TV on the same network, VPN on the phone turned off."
+"Phone and TV on the same network, VPN on the phone turned off.",
+"Installing on the TV… Big apps can take a few minutes.",
+"Sending to the TV: {0}% of {1} MB. Keep the phone unlocked."
 ]

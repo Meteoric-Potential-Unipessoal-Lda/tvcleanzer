@@ -655,5 +655,7 @@
 "A porta 5555 é adicionada sozinha. Para outra porta: endereço:porta",
 "A TV pode mostrar «Permitir depuração?»: marque «Permitir sempre» e carregue em «Permitir».",
 "A sua TV não aparece? Introduza o IP",
-"Telemóvel e TV na mesma rede, com a VPN do telemóvel desligada."
+"Telemóvel e TV na mesma rede, com a VPN do telemóvel desligada.",
+"A instalar na TV… As apps grandes podem demorar alguns minutos.",
+"A enviar para a TV: {0}% de {1} MB. Não bloqueie o telemóvel."
 ]

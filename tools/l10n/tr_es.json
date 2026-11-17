@@ -655,5 +655,7 @@
 "El puerto 5555 se añade solo. Para otro puerto: dirección:puerto",
 "La tele puede mostrar «¿Permitir depuración?»: marca «Permitir siempre» y pulsa «Permitir».",
 "¿No está tu tele? Introduce su IP",
-"Móvil y tele en la misma red, con la VPN del móvil desactivada."
+"Móvil y tele en la misma red, con la VPN del móvil desactivada.",
+"Instalando en la tele… Las apps grandes pueden tardar unos minutos.",
+"Enviando a la tele: {0}% de {1} MB. No bloquees el móvil."
 ]

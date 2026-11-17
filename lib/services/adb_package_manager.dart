@@ -1283,6 +1283,10 @@ class AdbPackageManager {
     }
   }
 
+  /// A zip entry's bytes without the per-byte copy (List<int>.from on a 100 MB split took
+  /// 8 bytes per byte on the phone).
+  static Uint8List _bytesOf(List<int> b) => b is Uint8List ? b : Uint8List.fromList(b);
+
   /// APKs inside a file: a plain .apk, or the split APKs of an .apks / .xapk
   /// / .apkm bundle (a zip). Throws [AdbException] when there are none.
   static List<(String, Uint8List)> apksIn(String fileName, Uint8List data) {
@@ -1294,7 +1298,7 @@ class AdbPackageManager {
     final apks = [
       for (final f in zip.files)
         if (f.isFile && f.name.toLowerCase().endsWith('.apk') && !f.name.contains('/'))
-          (f.name, Uint8List.fromList(List<int>.from(f.content))),
+          (f.name, _bytesOf(f.content)),
     ];
     if (apks.isEmpty) throw AdbException(tr('В этом файле нет приложения Android (.apk).'));
     // base.apk first: some firmwares want it before the splits.
@@ -1314,26 +1318,35 @@ class AdbPackageManager {
       before.addAll(_parsePackageList(await adb.shell('pm list packages -3')));
       const t = Duration(minutes: 5);
       final total = apks.fold<int>(0, (s, a) => s + a.$2.length);
-      onStep?.call(tr('Отправляем на телевизор {0} МБ…', [(total / 1048576).toStringAsFixed(1)]));
+      final mb = (total / 1048576).toStringAsFixed(1);
+      // Big files take a while over Wi-Fi: show how far it got, then that the TV is installing.
+      var base = 0;
+      void progress(int sent) {
+        final pct = ((base + sent) * 100 / total).floor().clamp(0, 100);
+        onStep?.call(base + sent >= total
+            ? tr('Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.')
+            : tr('Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.', [pct, mb]));
+      }
+      onStep?.call(tr('Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.', [0, mb]));
       String res;
       if (apks.length == 1) {
-        res = await _installOne(adb, apks.first.$2, t);
+        res = await _installOne(adb, apks.first.$2, t, onProgress: progress);
       } else {
         final created = await adb.shell('cmd package install-create -r -t -S $total');
         final id = RegExp(r'\[(\d+)\]').firstMatch(created)?.group(1);
         if (id == null) throw AdbException(_installError(created));
-        var i = 0;
         for (final (name, bytes) in apks) {
-          onStep?.call(tr('Отправляем часть {0} из {1}…', [++i, apks.length]));
           final w = await adb.execWithInput(
-              'cmd package install-write -S ${bytes.length} $id ${name.replaceAll(RegExp(r'[^\w.-]'), '_')} -', bytes, timeout: t);
+              'cmd package install-write -S ${bytes.length} $id ${name.replaceAll(RegExp(r'[^\w.-]'), '_')} -', bytes,
+              timeout: t, onProgress: progress);
+          base += bytes.length;
           if (!w.contains('Success')) {
             await adb.shell('cmd package install-abandon $id');
             throw AdbException(_installError(w));
           }
         }
-        onStep?.call(tr('Устанавливаем…'));
-        res = await adb.shell('cmd package install-commit $id', timeout: t);
+        onStep?.call(tr('Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.'));
+        res = await adb.shell('cmd package install-commit $id', timeout: const Duration(minutes: 10));
       }
       if (!res.contains('Success')) throw AdbException(_installError(res));
       final after = _parsePackageList(await adb.shell('pm list packages -3')).toSet();
@@ -1347,15 +1360,17 @@ class AdbPackageManager {
   /// One APK: streamed straight into the package manager; when the TV refuses that
   /// (some firmwares: "-116: Failed to prepare for install"), the old way, like
   /// `adb install` on a computer: copy to /data/local/tmp, then `pm install` the file.
-  Future<String> _installOne(AdbClient adb, Uint8List apk, Duration t, {String flags = '-r -t'}) async {
-    final res = await adb.execWithInput('cmd package install $flags -S ${apk.length}', apk, timeout: t);
+  Future<String> _installOne(AdbClient adb, Uint8List apk, Duration t,
+      {String flags = '-r -t', void Function(int sent)? onProgress}) async {
+    final res = await adb.execWithInput('cmd package install $flags -S ${apk.length}', apk,
+        timeout: t, answerTimeout: const Duration(minutes: 10), onProgress: onProgress);
     if (res.contains('Success') || _definite.hasMatch(res)) return res;
     const tmp = '/data/local/tmp/tvcleanzer_install.apk';
     try {
-      await adb.execIn('cat > $tmp', apk);
+      await adb.execIn('cat > $tmp', apk, timeout: t, onProgress: onProgress);
       final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first);
       if (size != apk.length) return res;
-      final viaFile = await adb.shell('pm install $flags $tmp', timeout: t);
+      final viaFile = await adb.shell('pm install $flags $tmp', timeout: const Duration(minutes: 10));
       return viaFile.contains('Success') ? viaFile : '$res\n$viaFile';
     } finally {
       await adb.shell('rm -f $tmp');

@@ -193,8 +193,11 @@ class DemoAdbClient extends AdbClient {
 
   @override
   Future<String> execWithInput(String command, Uint8List input,
-      {Duration timeout = const Duration(seconds: 60)}) async {
+      {Duration timeout = const Duration(seconds: 60),
+      Duration? answerTimeout,
+      void Function(int sent)? onProgress}) async {
     await _lag(600);
+    onProgress?.call(input.length);
     if (command.startsWith('cmd package install -r -t ')) {
       _s.sideloaded.add('org.smarttube.stable'); // an APK from the Apps tab
       return 'Success\n';
@@ -210,8 +213,9 @@ class DemoAdbClient extends AdbClient {
 
   @override
   Future<void> execIn(String command, Uint8List input,
-      {Duration timeout = const Duration(seconds: 90)}) async {
+      {Duration timeout = const Duration(seconds: 90), void Function(int sent)? onProgress}) async {
     await _lag(500);
+    onProgress?.call(input.length);
     if (command.startsWith('cat > ')) _s.tmpFile = input.length;
   }
 

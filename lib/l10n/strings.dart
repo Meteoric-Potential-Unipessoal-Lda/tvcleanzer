@@ -3,6 +3,8 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installing on the TV… Big apps can take a few minutes.',
+    'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Sending to the TV: {0}% of {1} MB. Keep the phone unlocked.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Enter the TV’s IP address, for example 192.168.1.50',
     'Не удалось подключиться к {0}. Проверьте адрес, что отладка включена и что на экране телевизора нажали «Разрешить».': 'Could not connect to {0}. Check the address, that debugging is on and that “Allow” was pressed on the TV screen.',
     'Ввести IP телевизора': 'Enter the TV’s IP',
@@ -663,6 +665,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Встановлюємо на телевізорі… Великі застосунки ставляться до кількох хвилин.',
+    'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Надсилаємо на телевізор: {0}% з {1} МБ. Не блокуйте телефон.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Введіть IP-адресу телевізора, наприклад 192.168.1.50',
     'Не удалось подключиться к {0}. Проверьте адрес, что отладка включена и что на экране телевизора нажали «Разрешить».': 'Не вдалося підключитися до {0}. Перевірте адресу, що налагодження ввімкнене і що на екрані телевізора натиснули «Дозволити».',
     'Ввести IP телевизора': 'Ввести IP телевізора',
@@ -1323,6 +1327,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Instalando en la tele… Las apps grandes pueden tardar unos minutos.',
+    'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Enviando a la tele: {0}% de {1} MB. No bloquees el móvil.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Introduce la IP de la tele, por ejemplo 192.168.1.50',
     'Не удалось подключиться к {0}. Проверьте адрес, что отладка включена и что на экране телевизора нажали «Разрешить».': 'No se pudo conectar con {0}. Revisa la dirección, que la depuración esté activada y que se pulsó «Permitir» en la tele.',
     'Ввести IP телевизора': 'Introducir la IP de la tele',
@@ -1983,6 +1989,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'A instalar na TV… As apps grandes podem demorar alguns minutos.',
+    'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'A enviar para a TV: {0}% de {1} MB. Não bloqueie o telemóvel.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Introduza o IP da TV, por exemplo 192.168.1.50',
     'Не удалось подключиться к {0}. Проверьте адрес, что отладка включена и что на экране телевизора нажали «Разрешить».': 'Não foi possível ligar a {0}. Verifique o endereço, se a depuração está ativa e se carregou em «Permitir» na TV.',
     'Ввести IP телевизора': 'Introduzir o IP da TV',
@@ -2643,6 +2651,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Wird auf dem Fernseher installiert… Große Apps brauchen bis zu einigen Minuten.',
+    'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Wird an den Fernseher gesendet: {0} % von {1} MB. Handy nicht sperren.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Gib die IP-Adresse des Fernsehers ein, z. B. 192.168.1.50',
     'Не удалось подключиться к {0}. Проверьте адрес, что отладка включена и что на экране телевизора нажали «Разрешить».': 'Keine Verbindung zu {0}. Prüfe die Adresse, ob Debugging an ist und ob am Fernseher „Zulassen“ gedrückt wurde.',
     'Ввести IP телевизора': 'IP des Fernsehers eingeben',
@@ -3303,6 +3313,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installation sur la TV… Les grosses applis peuvent prendre quelques minutes.',
+    'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Envoi vers la TV : {0} % de {1} Mo. Ne verrouillez pas le téléphone.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Saisissez l’adresse IP de la TV, par exemple 192.168.1.50',
     'Не удалось подключиться к {0}. Проверьте адрес, что отладка включена и что на экране телевизора нажали «Разрешить».': 'Connexion à {0} impossible. Vérifiez l’adresse, que le débogage est activé et que « Autoriser » a été pressé sur la TV.',
     'Ввести IP телевизора': 'Saisir l’IP de la TV',
@@ -3963,6 +3975,8 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installazione sulla TV… Le app grandi possono richiedere qualche minuto.',
+    'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Invio alla TV: {0}% di {1} MB. Non bloccare il telefono.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Inserisci l’IP della TV, ad esempio 192.168.1.50',
     'Не удалось подключиться к {0}. Проверьте адрес, что отладка включена и что на экране телевизора нажали «Разрешить».': 'Impossibile collegarsi a {0}. Controlla l’indirizzo, che il debug sia attivo e che sulla TV sia stato premuto «Consenti».',
     'Ввести IP телевизора': 'Inserisci l’IP della TV',

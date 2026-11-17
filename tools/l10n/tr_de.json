@@ -655,5 +655,7 @@
 "Port 5555 wird automatisch ergänzt. Für einen anderen Port: Adresse:Port",
 "Am Fernseher kann „Debugging zulassen?“ erscheinen: „Immer zulassen“ ankreuzen und „Zulassen“ drücken.",
 "Dein Fernseher fehlt? IP eingeben",
-"Handy und Fernseher im selben Netz, VPN am Handy aus."
+"Handy und Fernseher im selben Netz, VPN am Handy aus.",
+"Wird auf dem Fernseher installiert… Große Apps brauchen bis zu einigen Minuten.",
+"Wird an den Fernseher gesendet: {0} % von {1} MB. Handy nicht sperren."
 ]
