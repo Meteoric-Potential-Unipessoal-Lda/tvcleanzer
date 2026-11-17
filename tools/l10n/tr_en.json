@@ -641,5 +641,10 @@
 "This Google TV won’t let another app take the Home button. TVCleanzer Launcher can only be pinned by turning off the Google TV home screen.\n\nImportant: later, remove our launcher ONLY through TVCleanzer (the “Restore the standard launcher” button). If you uninstall it in the TV settings, you’ll get a black screen and will have to turn the Google TV home screen back on manually in the settings.",
 "No thanks",
 "Pin it",
-"Done: the firmware kept bringing its own launcher back, so it was taken off (“Restore the standard launcher” puts it back). The Home button opens TVCleanzer Launcher. Remove our launcher only with that button, not in the TV settings."
+"Done: the firmware kept bringing its own launcher back, so it was taken off (“Restore the standard launcher” puts it back). The Home button opens TVCleanzer Launcher. Remove our launcher only with that button, not in the TV settings.",
+"Guides on {0}",
+"Black screen after a clean-up?",
+"How to get the home screen and settings back",
+"Website {0}",
+"Guides, news and every version of the app"
 ]

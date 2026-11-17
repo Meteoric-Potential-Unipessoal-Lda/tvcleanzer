@@ -69,6 +69,9 @@ class SupportCard extends StatelessWidget {
     );
   }
 
+  /// Opens a link outside the app; if nothing can open it, copies it and says so.
+  static Future<void> openLink(BuildContext context, String url) => _open(context, url);
+
   static Future<void> _open(BuildContext context, String url) async {
     HapticFeedback.selectionClick();
     if (!await Support.open(url)) {

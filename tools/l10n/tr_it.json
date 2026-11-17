@@ -641,5 +641,10 @@
 "Questo Google TV non lascia che un’altra app prenda il tasto Home. TVCleanzer Launcher si può fissare solo disattivando la schermata Home di Google TV.\n\nImportante: in seguito rimuovi il nostro launcher SOLO tramite TVCleanzer (pulsante «Ripristina il launcher standard»). Se lo disinstalli dalle impostazioni della TV, resterà lo schermo nero e dovrai riattivare a mano la schermata Home di Google TV nelle impostazioni.",
 "No, grazie",
 "Fissa",
-"Fatto: il firmware rimetteva il suo launcher, quindi è stato tolto («Ripristina il launcher standard» lo rimette). Il tasto Home apre TVCleanzer Launcher. Rimuovi il nostro launcher solo con quel pulsante, non dalle impostazioni della TV."
+"Fatto: il firmware rimetteva il suo launcher, quindi è stato tolto («Ripristina il launcher standard» lo rimette). Il tasto Home apre TVCleanzer Launcher. Rimuovi il nostro launcher solo con quel pulsante, non dalle impostazioni della TV.",
+"Guide su {0}",
+"Schermo nero dopo la pulizia?",
+"Come recuperare la schermata Home e le impostazioni",
+"Sito {0}",
+"Guide, novità e tutte le versioni dell’app"
 ]

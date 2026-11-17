@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../services/app_log.dart';
 import '../services/package_db.dart';
+import '../services/support.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 
@@ -18,7 +19,9 @@ class _Guide {
   final List<String> steps;
   final String? note;
   final bool supported;
-  const _Guide(this.brand, this.hint, this.steps, {this.note, this.supported = true});
+  /// The same guide on tvcleanzer.com (an anchor there); null = the guides section.
+  final String? web;
+  const _Guide(this.brand, this.hint, this.steps, {this.note, this.supported = true, this.web});
 }
 
 final _guides = <_Guide>[
@@ -28,14 +31,14 @@ final _guides = <_Guide>[
     tr('Наведите на строку «Сборка» и нажмите ОК на пульте 7 раз подряд — появится «Вы стали разработчиком».'),
     tr('Вернитесь назад: появился пункт «Для разработчиков». Откройте его.'),
     tr('Включите «Отладка по USB». Если есть «Отладка по сети» или «ADB по сети» — включите и её.'),
-  ]),
+  ], web: '#g-debug'),
   _Guide('Google TV', tr('Новые Sony, TCL, Hisense, Chromecast'), [
     tr('Настройки → «Система» → «Об устройстве».'),
     tr('Нажмите ОК 7 раз на строке «Сборка ОС Android TV».'),
     tr('Назад в «Система» → «Для разработчиков».'),
     tr('Включите «Отладка по USB».'),
     tr('Если телевизор не находится: там же включите «Беспроводная отладка» и в TVCleanzer нажмите «Подключить по коду» (значок с цифрами вверху главного экрана).'),
-  ], note: tr('Подключение по коду нужно один раз. Работает на телефонах с Android 10 и новее (лучше 12+) и на iPhone.')),
+  ], note: tr('Подключение по коду нужно один раз. Работает на телефонах с Android 10 и новее (лучше 12+) и на iPhone.'), web: '#g-gtv'),
   _Guide('Xiaomi Mi TV', tr('Глобальная прошивка с PatchWall / Android TV'), [
     tr('Настройки → «Настройки устройства» → «Об устройстве».'),
     tr('Нажмите ОК 7 раз на строке «Сборка».'),
@@ -45,7 +48,7 @@ final _guides = <_Guide>[
     tr('Настройки → «О телевизоре».'),
     tr('Нажмите ОК 7 раз на строке «Модель продукта».'),
     tr('Назад → «Аккаунт и безопасность» → включите «Отладка ADB».'),
-  ], note: tr('На этих прошивках отладка выключается после каждой перезагрузки телевизора — включайте её перед работой с TVCleanzer.')),
+  ], note: tr('На этих прошивках отладка выключается после каждой перезагрузки телевизора — включайте её перед работой с TVCleanzer.'), web: '#g-xiaomi'),
   _Guide(tr('Яндекс ТВ'), tr('Телевизоры с Алисой: Hi, Leff, Tuvio, Haier, Hyundai, Artel, SunWind и другие (YaOS)'), [
     tr('Откройте Настройки (шестерёнка на главном экране) → «Устройство» или «Настройки устройства».'),
     tr('Зайдите в «Об устройстве».'),
@@ -58,14 +61,14 @@ final _guides = <_Guide>[
     tr('Не нашёлся? Откройте Настройки → «Изображение», наведите на «Контраст» и наберите на пульте 1147. Не открылось — попробуйте 9735.'),
     tr('В открывшемся сервисном меню зайдите в Debug (или Other) и включите ADB Enable. Перезагрузите телевизор и запустите поиск в TVCleanzer.'),
     tr('Код не сработал или в меню нет ADB: скачайте маленькое приложение FactoryMenu (com.stb.factorymenu, тема о платах CVTE на 4PDA), установите его с флешки через «Файлы», откройте → Debug → ADB Enable.'),
-  ], note: tr('В сервисном меню меняйте только ADB: там же настройки матрицы, подсветки и заводской режим. На таких телевизорах отладка может пускать любого в сети без вопроса — когда закончите, выключите ADB там же или перезагрузите ТВ.')),
+  ], note: tr('В сервисном меню меняйте только ADB: там же настройки матрицы, подсветки и заводской режим. На таких телевизорах отладка может пускать любого в сети без вопроса — когда закончите, выключите ADB там же или перезагрузите ТВ.'), web: '#g-cvte'),
   _Guide(tr('Сбер'), tr('Телевизоры Sber и SberBox с Салют ТВ (StarOS)'), [
     tr('Откройте Настройки → «Об устройстве».'),
     tr('Наведите на строку «Сборка» и нажмите ОК на пульте 7 раз подряд — появится «Вы стали разработчиком».'),
     tr('Вернитесь назад: появился пункт «Для разработчиков». Откройте его.'),
     tr('Включите «Отладка по USB». Если есть «Отладка по сети» или «ADB по сети» — включите и её.'),
     tr('Меню разработчика не появляется? У Сбера есть свой переключатель: войдите на developers.sber.ru в SmartApp Studio тем же Сбер ID, что и на телевизоре, откройте «Мои устройства», добавьте ТВ по серийному номеру из «Об устройстве» и включите ADB. Раздел SmartApp появляется, когда в личном пространстве есть хотя бы один проект — создайте пустой. Срабатывает не на всех моделях.'),
-  ], note: tr('На Салют ТВ TVCleanzer отключает приложения, а не удаляет: удалённые Сбер ставит обратно. Часть из них (СберПрайм, реклама умного дома, настройка провайдеров) прошивка включает снова после перезагрузки — просто повторите очистку. Каталог приложений Сбера, ассистент Салют и входы HDMI TVCleanzer не трогает.')),
+  ], note: tr('На Салют ТВ TVCleanzer отключает приложения, а не удаляет: удалённые Сбер ставит обратно. Часть из них (СберПрайм, реклама умного дома, настройка провайдеров) прошивка включает снова после перезагрузки — просто повторите очистку. Каталог приложений Сбера, ассистент Салют и входы HDMI TVCleanzer не трогает.'), web: '#g-sber'),
   _Guide('Fire TV', tr('Amazon Fire TV и телевизоры с Fire OS'), [
     tr('Настройки → «Моё Fire TV» → «О программе».'),
     tr('Нажмите ОК 7 раз на названии устройства.'),
@@ -161,6 +164,12 @@ class _HelpScreenState extends State<HelpScreen> {
                     AppColors.accent,
                   ),
                 ],
+                const Gap(10),
+                TextButton.icon(
+                  icon: const Icon(Icons.public_rounded, size: 18),
+                  label: Text(tr('Инструкции на сайте {0}', [Support.siteShort])),
+                  onPressed: () => SupportCard.openLink(context, Support.siteUrl(g.web ?? '#guides')),
+                ),
               ],
             ),
           ),
@@ -228,6 +237,24 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
             onTap: () {
               Navigator.pop(ctx);
               Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpScreen()));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.healing_rounded, color: AppColors.danger),
+            title: Text(tr('Чёрный экран после чистки?')),
+            subtitle: Text(tr('Как вернуть главный экран и настройки')),
+            onTap: () {
+              Navigator.pop(ctx);
+              SupportCard.openLink(context, Support.siteUrl('#g-rescue'));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.public_rounded, color: AppColors.accent),
+            title: Text(tr('Сайт {0}', [Support.siteShort])),
+            subtitle: Text(tr('Инструкции, новости и все версии приложения')),
+            onTap: () {
+              Navigator.pop(ctx);
+              SupportCard.openLink(context, Support.siteUrl());
             },
           ),
           ListTile(

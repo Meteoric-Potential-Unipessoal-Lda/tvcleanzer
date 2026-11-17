@@ -3,6 +3,11 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Инструкции на сайте {0}': 'Guides on {0}',
+    'Чёрный экран после чистки?': 'Black screen after a clean-up?',
+    'Как вернуть главный экран и настройки': 'How to get the home screen and settings back',
+    'Сайт {0}': 'Website {0}',
+    'Инструкции, новости и все версии приложения': 'Guides, news and every version of the app',
     'Лаунчер стоит, но Google TV забирает кнопку «Домой» себе.': 'The launcher is installed, but Google TV keeps the Home button for itself.',
     'Закрепить лаунчер надёжно?': 'Pin the launcher for good?',
     'Этот Google TV не даёт перехватить кнопку «Домой». Закрепить TVCleanzer Launcher можно, только выключив родной экран Google TV.\n\nВажно: потом удаляйте наш лаунчер ТОЛЬКО через TVCleanzer (кнопка «Вернуть стандартный лаунчер»). Если удалить его в настройках телевизора, останется чёрный экран — родной экран придётся включать вручную в настройках.': 'This Google TV won’t let another app take the Home button. TVCleanzer Launcher can only be pinned by turning off the Google TV home screen.\n\nImportant: later, remove our launcher ONLY through TVCleanzer (the “Restore the standard launcher” button). If you uninstall it in the TV settings, you’ll get a black screen and will have to turn the Google TV home screen back on manually in the settings.',
@@ -649,6 +654,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Инструкции на сайте {0}': 'Інструкції на сайті {0}',
+    'Чёрный экран после чистки?': 'Чорний екран після очищення?',
+    'Как вернуть главный экран и настройки': 'Як повернути головний екран і налаштування',
+    'Сайт {0}': 'Сайт {0}',
+    'Инструкции, новости и все версии приложения': 'Інструкції, новини та всі версії застосунку',
     'Лаунчер стоит, но Google TV забирает кнопку «Домой» себе.': 'Лаунчер встановлено, але Google TV забирає кнопку «Додому» собі.',
     'Закрепить лаунчер надёжно?': 'Закріпити лаунчер надійно?',
     'Этот Google TV не даёт перехватить кнопку «Домой». Закрепить TVCleanzer Launcher можно, только выключив родной экран Google TV.\n\nВажно: потом удаляйте наш лаунчер ТОЛЬКО через TVCleanzer (кнопка «Вернуть стандартный лаунчер»). Если удалить его в настройках телевизора, останется чёрный экран — родной экран придётся включать вручную в настройках.': 'Цей Google TV не дає перехопити кнопку «Додому». Закріпити TVCleanzer Launcher можна, лише вимкнувши рідний екран Google TV.\n\nВажливо: потім видаляйте наш лаунчер ТІЛЬКИ через TVCleanzer (кнопка «Повернути стандартний лаунчер»). Якщо видалити його в налаштуваннях телевізора, залишиться чорний екран — рідний екран доведеться вмикати вручну в налаштуваннях.',
@@ -1295,6 +1305,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Инструкции на сайте {0}': 'Guías en {0}',
+    'Чёрный экран после чистки?': '¿Pantalla negra tras la limpieza?',
+    'Как вернуть главный экран и настройки': 'Cómo recuperar la pantalla de inicio y los ajustes',
+    'Сайт {0}': 'Sitio web {0}',
+    'Инструкции, новости и все версии приложения': 'Guías, novedades y todas las versiones de la app',
     'Лаунчер стоит, но Google TV забирает кнопку «Домой» себе.': 'El launcher está instalado, pero Google TV se queda con el botón Inicio.',
     'Закрепить лаунчер надёжно?': '¿Fijar el launcher de forma segura?',
     'Этот Google TV не даёт перехватить кнопку «Домой». Закрепить TVCleanzer Launcher можно, только выключив родной экран Google TV.\n\nВажно: потом удаляйте наш лаунчер ТОЛЬКО через TVCleanzer (кнопка «Вернуть стандартный лаунчер»). Если удалить его в настройках телевизора, останется чёрный экран — родной экран придётся включать вручную в настройках.': 'Este Google TV no deja que otra app tome el botón Inicio. TVCleanzer Launcher solo se puede fijar desactivando la pantalla de inicio de Google TV.\n\nImportante: después, quita nuestro launcher SOLO desde TVCleanzer (botón «Restaurar el launcher estándar»). Si lo desinstalas en los ajustes de la TV, quedará una pantalla negra y tendrás que reactivar a mano la pantalla de inicio de Google TV en los ajustes.',
@@ -1941,6 +1956,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Инструкции на сайте {0}': 'Guias em {0}',
+    'Чёрный экран после чистки?': 'Ecrã preto depois da limpeza?',
+    'Как вернуть главный экран и настройки': 'Como recuperar o ecrã inicial e as definições',
+    'Сайт {0}': 'Site {0}',
+    'Инструкции, новости и все версии приложения': 'Guias, novidades e todas as versões da app',
     'Лаунчер стоит, но Google TV забирает кнопку «Домой» себе.': 'O launcher está instalado, mas o Google TV fica com o botão Início.',
     'Закрепить лаунчер надёжно?': 'Fixar o launcher de forma segura?',
     'Этот Google TV не даёт перехватить кнопку «Домой». Закрепить TVCleanzer Launcher можно, только выключив родной экран Google TV.\n\nВажно: потом удаляйте наш лаунчер ТОЛЬКО через TVCleanzer (кнопка «Вернуть стандартный лаунчер»). Если удалить его в настройках телевизора, останется чёрный экран — родной экран придётся включать вручную в настройках.': 'Esta Google TV não deixa outra app ficar com o botão Início. O TVCleanzer Launcher só pode ser fixado desligando o ecrã inicial do Google TV.\n\nImportante: depois, remova o nosso launcher SÓ através do TVCleanzer (botão «Restaurar o launcher padrão»). Se o desinstalar nas definições da TV, fica um ecrã preto e terá de voltar a ligar o ecrã inicial do Google TV manualmente nas definições.',
@@ -2587,6 +2607,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Инструкции на сайте {0}': 'Anleitungen auf {0}',
+    'Чёрный экран после чистки?': 'Schwarzer Bildschirm nach dem Aufräumen?',
+    'Как вернуть главный экран и настройки': 'So kommen Startbildschirm und Einstellungen zurück',
+    'Сайт {0}': 'Website {0}',
+    'Инструкции, новости и все версии приложения': 'Anleitungen, Neuigkeiten und alle App-Versionen',
     'Лаунчер стоит, но Google TV забирает кнопку «Домой» себе.': 'Der Launcher ist installiert, aber Google TV behält die Home-Taste für sich.',
     'Закрепить лаунчер надёжно?': 'Launcher fest einrichten?',
     'Этот Google TV не даёт перехватить кнопку «Домой». Закрепить TVCleanzer Launcher можно, только выключив родной экран Google TV.\n\nВажно: потом удаляйте наш лаунчер ТОЛЬКО через TVCleanzer (кнопка «Вернуть стандартный лаунчер»). Если удалить его в настройках телевизора, останется чёрный экран — родной экран придётся включать вручную в настройках.': 'Dieses Google TV lässt keine andere App die Home-Taste übernehmen. TVCleanzer Launcher lässt sich nur festlegen, indem der Google-TV-Startbildschirm abgeschaltet wird.\n\nWichtig: Entfernen Sie unseren Launcher später NUR über TVCleanzer (Schaltfläche „Standard-Launcher wiederherstellen“). Wenn Sie ihn in den TV-Einstellungen deinstallieren, bleibt der Bildschirm schwarz und der Google-TV-Startbildschirm muss in den Einstellungen von Hand wieder eingeschaltet werden.',
@@ -3233,6 +3258,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Инструкции на сайте {0}': 'Guides sur {0}',
+    'Чёрный экран после чистки?': 'Écran noir après le nettoyage ?',
+    'Как вернуть главный экран и настройки': 'Comment retrouver l’écran d’accueil et les paramètres',
+    'Сайт {0}': 'Site {0}',
+    'Инструкции, новости и все версии приложения': 'Guides, actualités et toutes les versions de l’appli',
     'Лаунчер стоит, но Google TV забирает кнопку «Домой» себе.': 'Le launcher est installé, mais Google TV garde le bouton Accueil pour lui.',
     'Закрепить лаунчер надёжно?': 'Épingler le launcher pour de bon ?',
     'Этот Google TV не даёт перехватить кнопку «Домой». Закрепить TVCleanzer Launcher можно, только выключив родной экран Google TV.\n\nВажно: потом удаляйте наш лаунчер ТОЛЬКО через TVCleanzer (кнопка «Вернуть стандартный лаунчер»). Если удалить его в настройках телевизора, останется чёрный экран — родной экран придётся включать вручную в настройках.': 'Ce Google TV ne laisse aucune autre app prendre le bouton Accueil. TVCleanzer Launcher ne peut être épinglé qu’en désactivant l’écran d’accueil Google TV.\n\nImportant : ensuite, supprimez notre launcher UNIQUEMENT via TVCleanzer (bouton « Rétablir le launcher standard »). Si vous le désinstallez dans les paramètres de la TV, l’écran restera noir et il faudra réactiver à la main l’écran d’accueil Google TV dans les paramètres.',
@@ -3879,6 +3909,11 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Инструкции на сайте {0}': 'Guide su {0}',
+    'Чёрный экран после чистки?': 'Schermo nero dopo la pulizia?',
+    'Как вернуть главный экран и настройки': 'Come recuperare la schermata Home e le impostazioni',
+    'Сайт {0}': 'Sito {0}',
+    'Инструкции, новости и все версии приложения': 'Guide, novità e tutte le versioni dell’app',
     'Лаунчер стоит, но Google TV забирает кнопку «Домой» себе.': 'Il launcher è installato, ma Google TV tiene per sé il tasto Home.',
     'Закрепить лаунчер надёжно?': 'Fissare il launcher in modo stabile?',
     'Этот Google TV не даёт перехватить кнопку «Домой». Закрепить TVCleanzer Launcher можно, только выключив родной экран Google TV.\n\nВажно: потом удаляйте наш лаунчер ТОЛЬКО через TVCleanzer (кнопка «Вернуть стандартный лаунчер»). Если удалить его в настройках телевизора, останется чёрный экран — родной экран придётся включать вручную в настройках.': 'Questo Google TV non lascia che un’altra app prenda il tasto Home. TVCleanzer Launcher si può fissare solo disattivando la schermata Home di Google TV.\n\nImportante: in seguito rimuovi il nostro launcher SOLO tramite TVCleanzer (pulsante «Ripristina il launcher standard»). Se lo disinstalli dalle impostazioni della TV, resterà lo schermo nero e dovrai riattivare a mano la schermata Home di Google TV nelle impostazioni.',

@@ -641,5 +641,10 @@
 "Esta Google TV não deixa outra app ficar com o botão Início. O TVCleanzer Launcher só pode ser fixado desligando o ecrã inicial do Google TV.\n\nImportante: depois, remova o nosso launcher SÓ através do TVCleanzer (botão «Restaurar o launcher padrão»). Se o desinstalar nas definições da TV, fica um ecrã preto e terá de voltar a ligar o ecrã inicial do Google TV manualmente nas definições.",
 "Não, obrigado",
 "Fixar",
-"Pronto: o firmware voltava a pôr o seu launcher, por isso foi removido («Restaurar o launcher padrão» devolve-o). O botão Início abre o TVCleanzer Launcher. Remova o nosso launcher só com esse botão, não nas definições da TV."
+"Pronto: o firmware voltava a pôr o seu launcher, por isso foi removido («Restaurar o launcher padrão» devolve-o). O botão Início abre o TVCleanzer Launcher. Remova o nosso launcher só com esse botão, não nas definições da TV.",
+"Guias em {0}",
+"Ecrã preto depois da limpeza?",
+"Como recuperar o ecrã inicial e as definições",
+"Site {0}",
+"Guias, novidades e todas as versões da app"
 ]

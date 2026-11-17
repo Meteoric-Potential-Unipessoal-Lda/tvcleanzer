@@ -14,6 +14,12 @@ class Support {
   static const telegram = 'https://t.me/zherdyevofficial';
   static const telegramShort = 't.me/zherdyevofficial';
 
+  /// The site: guides, news, every version. Store builds open it with `?app=store`, which
+  /// hides the donation section there (the stores allow tips only through their own purchases).
+  static const site = 'https://tvcleanzer.com';
+  static const siteShort = 'tvcleanzer.com';
+  static String siteUrl([String anchor = '']) => storeBuild ? '$site/?app=store$anchor' : '$site/$anchor';
+
   /// Fill in after registering (name, link). Empty = the donate button is hidden.
   static const donations = <(String, String)>[
     ('Boosty', 'https://boosty.to/zherdyevofficial/donate'),
