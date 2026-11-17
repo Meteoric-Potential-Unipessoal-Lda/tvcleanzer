@@ -106,8 +106,23 @@ final class AppEntry {
             ActivityInfo ai = ri.activityInfo;
             if (ai == null || into.containsKey(ai.packageName)) continue;
             CharSequence l = ri.loadLabel(pm);
-            into.put(ai.packageName, new AppEntry(ai.packageName, ai.name,
-                    l == null ? ai.packageName : l.toString(), leanback, ai));
+            String label = l == null ? ai.packageName : l.toString();
+            if (!leanback && serviceApp(ai, label)) continue;
+            into.put(ai.packageName, new AppEntry(ai.packageName, ai.name, label, leanback, ai));
         }
+    }
+
+    /** Firmware service screens with a phone-style icon (MStar «com.mstar.…», «Disclaimer
+     *  Customization», «Updater» on a Xiaomi): the stock home never showed them, they do not
+     *  open anything useful, and owners thought the clean-up had added them. System apps only. */
+    private static final java.util.regex.Pattern SERVICE = java.util.regex.Pattern.compile(
+            "(^com\\.mstar\\.)|disclaimer|updater|upgrade|(^|\\.)ota(\\.|$)|factory|autotest|aging",
+            java.util.regex.Pattern.CASE_INSENSITIVE);
+
+    private static boolean serviceApp(ActivityInfo ai, String label) {
+        if (ai.applicationInfo == null || (ai.applicationInfo.flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) return false;
+        String pkg = ai.packageName;
+        boolean pkgLabel = label.equals(pkg) || label.matches("^[a-z][\\w]*(\\.[\\w]+){2,}.*");
+        return pkgLabel || SERVICE.matcher(pkg).find() || SERVICE.matcher(label).find();
     }
 }
