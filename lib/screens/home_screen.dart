@@ -8,9 +8,11 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
 import '../services/demo_tv.dart';
+import '../services/manual_tvs.dart';
 import '../services/tv_discovery.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
+import '../widgets/manual_connect.dart';
 import '../widgets/tv_card.dart';
 import 'help_screen.dart';
 import 'pair_screen.dart';
@@ -57,6 +59,7 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
       scanning: state.scanning,
       error: state.error,
     );
+    await ManualTvs.forget(d.ipAddress);
     if (_ref.read(currentTvProvider)?.id == d.id) await _ref.read(currentTvProvider.notifier).forget();
   }
 
@@ -152,6 +155,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ],
               if (!state.scanning && state.devices.isEmpty)
                 _buildEmpty(state.error),
+              if (!state.scanning && state.devices.any((d) => !d.isDemo))
+                Center(child: TextButton.icon(
+                  icon: const Icon(Icons.dialpad_rounded, size: 18),
+                  label: Text(tr('Нет вашего телевизора? Ввести IP')),
+                  onPressed: () => showManualConnect(context),
+                )),
               if (!state.devices.any((d) => d.isDemo)) ...[
                 const Gap(8),
                 Center(child: TextButton.icon(
@@ -281,11 +290,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           textAlign: TextAlign.center,
           style: const TextStyle(color: AppColors.fgMid, fontSize: 14, height: 1.6),
         ),
+      const Gap(8),
+      Text(tr('Телефон и телевизор — в одной сети, VPN на телефоне выключен.'),
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: AppColors.fgMuted, fontSize: 13, height: 1.4)),
       const Gap(24),
       FilledButton.icon(
         icon: const Icon(Icons.refresh_rounded),
         label: Text(tr('Искать снова')),
         onPressed: () => ref.read(discoveryProvider.notifier).startScan(),
+      ),
+      const Gap(8),
+      OutlinedButton.icon(
+        icon: const Icon(Icons.dialpad_rounded, size: 18),
+        label: Text(tr('Ввести IP телевизора')),
+        onPressed: () => showManualConnect(context),
       ),
       if (_canPair) ...[
         const Gap(8),

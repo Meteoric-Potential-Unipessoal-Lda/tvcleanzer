@@ -646,5 +646,14 @@
 "Black screen after a clean-up?",
 "How to get the home screen and settings back",
 "Website {0}",
-"Guides, news and every version of the app"
+"Guides, news and every version of the app",
+"Enter the TV’s IP address, for example 192.168.1.50",
+"Could not connect to {0}. Check the address, that debugging is on and that “Allow” was pressed on the TV screen.",
+"Enter the TV’s IP",
+"For when the search cannot find the TV although debugging is on. The TV shows its IP in Settings → About → Status (or Network).",
+"IP address",
+"Port 5555 is added automatically. For another port: address:port",
+"The TV may show “Allow debugging?”: tick “Always allow” and press “Allow”.",
+"TV not listed? Enter its IP",
+"Phone and TV on the same network, VPN on the phone turned off."
 ]

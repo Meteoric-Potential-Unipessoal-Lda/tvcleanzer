@@ -646,5 +646,14 @@
 "¿Pantalla negra tras la limpieza?",
 "Cómo recuperar la pantalla de inicio y los ajustes",
 "Sitio web {0}",
-"Guías, novedades y todas las versiones de la app"
+"Guías, novedades y todas las versiones de la app",
+"Introduce la IP de la tele, por ejemplo 192.168.1.50",
+"No se pudo conectar con {0}. Revisa la dirección, que la depuración esté activada y que se pulsó «Permitir» en la tele.",
+"Introducir la IP de la tele",
+"Si la búsqueda no encuentra la tele aunque la depuración está activada. La IP está en la tele: Ajustes → Información → Estado (o Red).",
+"Dirección IP",
+"El puerto 5555 se añade solo. Para otro puerto: dirección:puerto",
+"La tele puede mostrar «¿Permitir depuración?»: marca «Permitir siempre» y pulsa «Permitir».",
+"¿No está tu tele? Introduce su IP",
+"Móvil y tele en la misma red, con la VPN del móvil desactivada."
 ]

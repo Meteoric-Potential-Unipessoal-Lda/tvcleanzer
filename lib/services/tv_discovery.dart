@@ -4,6 +4,7 @@ import 'dart:io';
 import '../models/tv_device.dart';
 import 'adb_package_manager.dart';
 import 'app_log.dart';
+import 'manual_tvs.dart';
 
 // ─── TV Discovery via ADB port 5555 ──────────────────────────────────────────
 
@@ -26,22 +27,27 @@ class TvDiscovery {
   /// Completes when all IPs in the subnet have been probed.
   Stream<TvDevice> discover() async* {
     final subnet = await _subnetBase();
-    if (subnet == null) return;
+    // Candidate hosts: the phone's /24 (1-254 without the router .1) plus the addresses
+    // the owner typed in by hand (another subnet, a mesh node, a wider network).
+    final cands = <(String, int)>[
+      if (subnet != null) for (var i = 2; i <= 254; i++) ('$subnet$i', _adbPort),
+    ];
+    for (final m in await ManualTvs.load()) {
+      if (!cands.contains(m)) cands.add(m);
+    }
+    if (cands.isEmpty) return;
 
-    // Build list of candidate IPs (1-254), excluding the router (.1)
-    final ips = List.generate(253, (i) => '$subnet${i + 2}');
-
-    // ── Phase 1: parallel port-5555 check ───────────────────────────────────
-    final open = <String>[];
-    await _inBatches(ips, _concurrency, (ip) async {
-      if (await _isPortOpen(ip)) open.add(ip);
+    // ── Phase 1: parallel port check ────────────────────────────────────────
+    final open = <(String, int)>[];
+    await _inBatches(cands, _concurrency, (c) async {
+      if (await _isPortOpen(c.$1, c.$2)) open.add(c);
     });
 
     // ── Phase 2: ADB connect to each responding host ─────────────────────────
-    for (final ip in open) {
+    for (final (ip, port) in open) {
       try {
         final device = await _adb
-            .getDeviceInfo(ip)
+            .getDeviceInfo(ip, port: port)
             .timeout(_adbTimeout);
         yield device;
       } catch (e) {
@@ -53,9 +59,9 @@ class TvDiscovery {
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
-  Future<bool> _isPortOpen(String ip) async {
+  Future<bool> _isPortOpen(String ip, int port) async {
     try {
-      final sock = await Socket.connect(ip, _adbPort, timeout: _portTimeout);
+      final sock = await Socket.connect(ip, port, timeout: _portTimeout);
       sock.destroy();
       return true;
     } catch (_) {

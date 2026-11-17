@@ -646,5 +646,14 @@
 "Schwarzer Bildschirm nach dem Aufräumen?",
 "So kommen Startbildschirm und Einstellungen zurück",
 "Website {0}",
-"Anleitungen, Neuigkeiten und alle App-Versionen"
+"Anleitungen, Neuigkeiten und alle App-Versionen",
+"Gib die IP-Adresse des Fernsehers ein, z. B. 192.168.1.50",
+"Keine Verbindung zu {0}. Prüfe die Adresse, ob Debugging an ist und ob am Fernseher „Zulassen“ gedrückt wurde.",
+"IP des Fernsehers eingeben",
+"Wenn die Suche den Fernseher nicht findet, obwohl Debugging an ist. Die IP steht am Fernseher unter Einstellungen → Info → Status (oder Netzwerk).",
+"IP-Adresse",
+"Port 5555 wird automatisch ergänzt. Für einen anderen Port: Adresse:Port",
+"Am Fernseher kann „Debugging zulassen?“ erscheinen: „Immer zulassen“ ankreuzen und „Zulassen“ drücken.",
+"Dein Fernseher fehlt? IP eingeben",
+"Handy und Fernseher im selben Netz, VPN am Handy aus."
 ]

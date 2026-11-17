@@ -646,5 +646,14 @@
 "Écran noir après le nettoyage ?",
 "Comment retrouver l’écran d’accueil et les paramètres",
 "Site {0}",
-"Guides, actualités et toutes les versions de l’appli"
+"Guides, actualités et toutes les versions de l’appli",
+"Saisissez l’adresse IP de la TV, par exemple 192.168.1.50",
+"Connexion à {0} impossible. Vérifiez l’adresse, que le débogage est activé et que « Autoriser » a été pressé sur la TV.",
+"Saisir l’IP de la TV",
+"Si la recherche ne trouve pas la TV alors que le débogage est activé. L’IP est sur la TV : Paramètres → À propos → État (ou Réseau).",
+"Adresse IP",
+"Le port 5555 est ajouté tout seul. Pour un autre port : adresse:port",
+"La TV peut afficher « Autoriser le débogage ? » : cochez « Toujours autoriser » puis « Autoriser ».",
+"Votre TV n’apparaît pas ? Saisir son IP",
+"Téléphone et TV sur le même réseau, VPN du téléphone coupé."
 ]

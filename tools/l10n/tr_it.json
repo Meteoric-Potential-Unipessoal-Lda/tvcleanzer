@@ -646,5 +646,14 @@
 "Schermo nero dopo la pulizia?",
 "Come recuperare la schermata Home e le impostazioni",
 "Sito {0}",
-"Guide, novità e tutte le versioni dell’app"
+"Guide, novità e tutte le versioni dell’app",
+"Inserisci l’IP della TV, ad esempio 192.168.1.50",
+"Impossibile collegarsi a {0}. Controlla l’indirizzo, che il debug sia attivo e che sulla TV sia stato premuto «Consenti».",
+"Inserisci l’IP della TV",
+"Se la ricerca non trova la TV anche con il debug attivo. L’IP è sulla TV: Impostazioni → Info → Stato (o Rete).",
+"Indirizzo IP",
+"La porta 5555 viene aggiunta da sola. Per un’altra porta: indirizzo:porta",
+"La TV può mostrare «Consentire il debug?»: spunta «Consenti sempre» e premi «Consenti».",
+"La tua TV non c’è? Inserisci l’IP",
+"Telefono e TV sulla stessa rete, VPN del telefono spenta."
 ]
