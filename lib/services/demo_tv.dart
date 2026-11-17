@@ -122,12 +122,14 @@ class _DemoState {
   int tmpFile = -1; // size of the upload in /data/local/tmp
   int photos = 0;    // photo-frame photos on the launcher
   final sideloaded = <String>{}; // APKs installed from the Apps tab
+  final touched = <String>{};    // switched off and on again (not in the base list)
   Map<String, String> look = {};
   int _extraFreeKb = 0;
   int dataFreeKb = 5120000;
 
   void reset() {
     removed.clear();
+    touched.clear();
     disabled.clear();
     settings
       ..clear()
@@ -293,6 +295,7 @@ class DemoAdbClient extends AdbClient {
     if (c.startsWith('pm disable-user --user 0 ')) {
       await _lag(150);
       final p = c.split(' ').last;
+      s.touched.add(p);
       s.removed.add(p);
       s.disabled.add(p);
       return 'Package $p new state: disabled-user\n';
@@ -405,7 +408,8 @@ class DemoAdbClient extends AdbClient {
       return '  mResumedActivity: ActivityRecord{1 u0 ${s.home} t1}\n';
     }
     if (c.startsWith('pm list packages -e') || c.startsWith('pm list packages -u')) {
-      return s.installed.map((p) => 'package:$p').join('\n');
+      return {...s.installed, ...s.touched.where((p) => !s.removed.contains(p))}
+          .map((p) => 'package:$p').join('\n');
     }
     // input keyevent / input text / getprop … — a TV just does it
     return '';

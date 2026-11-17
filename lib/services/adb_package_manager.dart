@@ -104,6 +104,8 @@ class AdbPackageManager {
       // Disabled packages are already hidden (by TVCleanzer on Sber/Yandex, or by the owner).
       final disabled = _parsePackageList(await adb.shell('pm list packages -d 2>/dev/null')).toSet();
       final pkgs = _parsePackageList(raw).where((p) => !disabled.contains(p)).toList();
+      // Installed by the owner (or a store), not part of the firmware.
+      final userApps = _parsePackageList(await adb.shell('pm list packages -3')).toSet();
 
       // What the TV itself says: its home screens (never touched) and the
       // apps visible in its menu (owner's apps: never pre-selected).
@@ -126,12 +128,23 @@ class AdbPackageManager {
         } else if (verdict == PackageVerdict.remove && launchable.contains(name)) {
           verdict = PackageVerdict.caution; // a visible app: the owner decides
         }
+        // An app the owner installed: a list that saw it preinstalled on another model does
+        // not make it junk here («Цифровое ТВ» from an APK was offered as "preinstalled").
+        String? reason = entry == null ? null : trReason(entry.reason);
+        if (userApps.contains(name) && verdict != PackageVerdict.system) {
+          if (verdict == PackageVerdict.remove) {
+            verdict = PackageVerdict.caution;
+            reason = tr('Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.');
+          } else if (verdict == PackageVerdict.caution) {
+            verdict = PackageVerdict.keep;
+          }
+        }
         return TvPackage(
           packageName: name,
           label:   entry == null ? null : tr(entry.label),
           sizeMb:  (ramKb[name] ?? 0) ~/ 1024,
           verdict: verdict,
-          reason:  entry == null ? null : trReason(entry.reason),
+          reason:  reason,
         );
       }).toList()
         ..sort((a, b) {
@@ -315,15 +328,20 @@ class AdbPackageManager {
       await adb.connect();
       final installed = _parsePackageList(await adb.shell('pm list packages'));
       final viaDisable = usesDisable(installed);
+      // Apps the owner installed: "uninstall for user 0" deletes them for good (no copy in the
+      // firmware to bring back), so they are only switched off. Undo = switch on.
+      final userApps = _parsePackageList(await adb.shell('pm list packages -3')).toSet();
       final dream = (await adb.shell('settings get secure screensaver_components')).trim();
       for (final pkg in packages) {
         final name = pkg.packageName;
         try {
           // One method refused (Xiaomi keeps some ad apps from being
           // uninstalled, but lets them be disabled): try the other one.
-          final ok = viaDisable
-              ? (await disable(name) || await uninstall(name))
-              : (await uninstall(name) || await disable(name));
+          final ok = userApps.contains(name)
+              ? await disable(name)
+              : viaDisable
+                  ? (await disable(name) || await uninstall(name))
+                  : (await uninstall(name) || await disable(name));
           (ok ? removed : failed).add(name);
         } catch (_) {
           failed.add(name);
@@ -384,6 +402,13 @@ class AdbPackageManager {
         } catch (_) {
           failures++;
         }
+      }
+      // Check what really came back: "Готово" was shown for an app that was gone for good.
+      final enabled = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
+      final missing = pkgs.where((p) => !enabled.contains(p)).toList();
+      if (missing.isNotEmpty) {
+        AppLog.error('rollback', 'not back: ${missing.join(', ')}');
+        failures = failures < missing.length ? missing.length : failures;
       }
     } finally {
       adb.close();

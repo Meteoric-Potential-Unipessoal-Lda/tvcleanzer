@@ -657,5 +657,6 @@
 "TV not listed? Enter its IP",
 "Phone and TV on the same network, VPN on the phone turned off.",
 "Installing on the TV… Big apps can take a few minutes.",
-"Sending to the TV: {0}% of {1} MB. Keep the phone unlocked."
+"Sending to the TV: {0}% of {1} MB. Keep the phone unlocked.",
+"Installed by you or a store, not by the firmware. Remove it only if you really don’t use it."
 ]

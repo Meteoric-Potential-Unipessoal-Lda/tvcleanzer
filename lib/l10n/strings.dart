@@ -3,6 +3,7 @@
 
 const Map<String, Map<String, String>> translations = {
   'en': {
+    'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Installed by you or a store, not by the firmware. Remove it only if you really don’t use it.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installing on the TV… Big apps can take a few minutes.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Sending to the TV: {0}% of {1} MB. Keep the phone unlocked.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Enter the TV’s IP address, for example 192.168.1.50',
@@ -665,6 +666,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'hidden in {0} of {1} tested lists',
   },
   'uk': {
+    'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Встановлено не прошивкою, а вами або магазином. Приберіть, лише якщо точно не користуєтеся.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Встановлюємо на телевізорі… Великі застосунки ставляться до кількох хвилин.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Надсилаємо на телевізор: {0}% з {1} МБ. Не блокуйте телефон.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Введіть IP-адресу телевізора, наприклад 192.168.1.50',
@@ -1327,6 +1329,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'приховують у {0} з {1} перевірених списків',
   },
   'es': {
+    'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Instalada por ti o por una tienda, no por el firmware. Quítala solo si de verdad no la usas.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Instalando en la tele… Las apps grandes pueden tardar unos minutos.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Enviando a la tele: {0}% de {1} MB. No bloquees el móvil.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Introduce la IP de la tele, por ejemplo 192.168.1.50',
@@ -1989,6 +1992,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada en {0} de {1} listas probadas',
   },
   'pt': {
+    'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Instalada por si ou por uma loja, não pelo firmware. Remova só se tiver a certeza de que não usa.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'A instalar na TV… As apps grandes podem demorar alguns minutos.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'A enviar para a TV: {0}% de {1} MB. Não bloqueie o telemóvel.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Introduza o IP da TV, por exemplo 192.168.1.50',
@@ -2651,6 +2655,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ocultada em {0} de {1} listas testadas',
   },
   'de': {
+    'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Von dir oder einem Store installiert, nicht von der Firmware. Nur entfernen, wenn du sie wirklich nicht nutzt.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Wird auf dem Fernseher installiert… Große Apps brauchen bis zu einigen Minuten.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Wird an den Fernseher gesendet: {0} % von {1} MB. Handy nicht sperren.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Gib die IP-Adresse des Fernsehers ein, z. B. 192.168.1.50',
@@ -3313,6 +3318,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'ausgeblendet in {0} von {1} geprüften Listen',
   },
   'fr': {
+    'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Installée par vous ou par une boutique, pas par le firmware. Retirez-la seulement si vous ne l’utilisez vraiment pas.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installation sur la TV… Les grosses applis peuvent prendre quelques minutes.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Envoi vers la TV : {0} % de {1} Mo. Ne verrouillez pas le téléphone.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Saisissez l’adresse IP de la TV, par exemple 192.168.1.50',
@@ -3975,6 +3981,7 @@ const Map<String, Map<String, String>> translations = {
     'скрывают в {0} из {1} проверенных списков': 'masqué dans {0} des {1} listes testées',
   },
   'it': {
+    'Установлено не прошивкой, а вами или магазином. Уберите, только если точно не пользуетесь.': 'Installata da te o da uno store, non dal firmware. Rimuovila solo se davvero non la usi.',
     'Устанавливаем на телевизоре… Большие приложения ставятся до нескольких минут.': 'Installazione sulla TV… Le app grandi possono richiedere qualche minuto.',
     'Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.': 'Invio alla TV: {0}% di {1} MB. Non bloccare il telefono.',
     'Введите IP-адрес телевизора, например 192.168.1.50': 'Inserisci l’IP della TV, ad esempio 192.168.1.50',
