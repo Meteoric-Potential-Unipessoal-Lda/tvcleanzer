@@ -22,10 +22,12 @@ class TvCard extends ConsumerWidget {
         ? (1 - device.ramFreeMb / device.ramMb).clamp(0.0, 1.0)
         : 0.0;
 
-    void open() {
+    Future<void> open() async {
+      final discovery = ref.read(discoveryProvider.notifier);
       ref.read(currentTvProvider.notifier).select(device);
-      Navigator.push(context,
+      await Navigator.push(context,
           MaterialPageRoute(builder: (_) => ScanScreen(device: device)));
+      await discovery.refresh(device);
     }
 
     return Material(

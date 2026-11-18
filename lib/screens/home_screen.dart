@@ -52,6 +52,30 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
     );
   }
 
+  /// Re-reads a TV's memory after the owner comes back from its screens, so the card
+  /// doesn't keep showing the free RAM measured at discovery, before any cleaning
+  /// (a chat report: «Стало 220 МБ», then the card said «197 МБ свободно»).
+  Future<void> refresh(TvDevice d) async {
+    if (d.isDemo) return;
+    try {
+      final fresh = await _ref
+          .read(adbServiceProvider)
+          .getDeviceInfo(d.ipAddress, port: d.port)
+          .timeout(const Duration(seconds: 6));
+      if (!mounted) return;
+      state = DiscoveryState(
+        devices: [for (final e in state.devices) e.id == d.id ? fresh : e],
+        scanning: state.scanning,
+        error: state.error,
+      );
+      if (_ref.read(currentTvProvider)?.id == d.id) {
+        await _ref.read(currentTvProvider.notifier).select(fresh);
+      }
+    } catch (_) {
+      // TV asleep or gone: keep the old card
+    }
+  }
+
   /// «Remove from the list» on a TV card (an old address, a TV that is gone).
   Future<void> remove(TvDevice d) async {
     state = DiscoveryState(
