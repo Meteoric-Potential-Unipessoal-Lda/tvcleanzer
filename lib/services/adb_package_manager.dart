@@ -460,7 +460,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 28;
+  static const bundledLauncherVersion = 29;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {

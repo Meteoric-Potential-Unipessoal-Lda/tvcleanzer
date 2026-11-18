@@ -197,34 +197,49 @@ public class HomeKeyService extends AccessibilityService {
         volRepeat = null;
     }
 
-    /** Keys that pass through an accessibility key filter come back without auto-repeat, so
-     *  holding Volume moved the level one step only (Xiaomi MOEU1 and Haier reports). The press
-     *  itself goes on as usual; while the key is held we keep stepping the volume. If the
-     *  system does repeat it on its own (a DOWN with repeatCount > 0 arrives), we step aside. */
-    private void volumeKey(KeyEvent e) {
+    /** Holding Volume with our key filter on moved the level one step only (Xiaomi MOEU1, Haier
+     *  FF Pro: fine while the service was not running, broken again once it was). The remote's
+     *  own repeats reach us as DOWN with repeatCount > 0 but go no further once filtered; 0.28
+     *  stepped aside for them and nothing happened. Now every repeat is a volume step made here,
+     *  and if a remote sends no repeats at all we keep stepping while the key is held.
+     *  Check on a TV: logcat -d -s TVCleanzerVol */
+    private boolean volumeKey(KeyEvent e) {
         int code = e.getKeyCode();
-        if (code != KeyEvent.KEYCODE_VOLUME_UP && code != KeyEvent.KEYCODE_VOLUME_DOWN) return;
-        if (e.getAction() == KeyEvent.ACTION_UP || e.getRepeatCount() > 0) {
-            stopVolRepeat();
-            return;
-        }
-        if (e.getAction() != KeyEvent.ACTION_DOWN) return;
-        stopVolRepeat();
+        if (code != KeyEvent.KEYCODE_VOLUME_UP && code != KeyEvent.KEYCODE_VOLUME_DOWN) return false;
         final int dir = code == KeyEvent.KEYCODE_VOLUME_UP ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER;
-        final AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
-        if (am == null) return;
+        if (e.getAction() == KeyEvent.ACTION_UP) {
+            stopVolRepeat();
+            return false;
+        }
+        if (e.getAction() != KeyEvent.ACTION_DOWN) return false;
+        if (e.getRepeatCount() > 0) {
+            stopVolRepeat(); // the remote repeats by itself: one step per repeat
+            if (e.getRepeatCount() == 1) android.util.Log.i("TVCleanzerVol", "remote repeats");
+            volumeStep(dir);
+            return true;
+        }
+        stopVolRepeat();
         volRepeat = new Runnable() {
             int steps;
             @Override public void run() {
                 if (++steps > 100) { stopVolRepeat(); return; } // the UP got lost: don't run away
-                try {
-                    am.adjustSuggestedStreamVolume(dir, AudioManager.USE_DEFAULT_STREAM_TYPE,
-                            AudioManager.FLAG_SHOW_UI);
-                } catch (Throwable ignored) {}
+                if (steps == 1) android.util.Log.i("TVCleanzerVol", "no repeats from the remote: stepping");
+                volumeStep(dir);
                 handler.postDelayed(this, 110);
             }
         };
         handler.postDelayed(volRepeat, 450);
+        return false;
+    }
+
+    private void volumeStep(int dir) {
+        try {
+            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+            if (am != null) am.adjustSuggestedStreamVolume(dir, AudioManager.USE_DEFAULT_STREAM_TYPE,
+                    AudioManager.FLAG_SHOW_UI);
+        } catch (Throwable t) {
+            android.util.Log.w("TVCleanzerVol", "step failed: " + t);
+        }
     }
 
     @Override
@@ -232,7 +247,7 @@ public class HomeKeyService extends AccessibilityService {
         int code = e.getKeyCode();
         lastKeyAt = SystemClock.uptimeMillis();
         lastKeyCode = code;
-        volumeKey(e);
+        if (volumeKey(e)) return true;
         if (stockKey(e)) return true;
         // 191 = the "Mi" button on Xiaomi remotes (elsewhere it is a gamepad key)
         boolean miKey = code == 191 && android.os.Build.MANUFACTURER.toLowerCase().contains("xiaomi");
