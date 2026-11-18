@@ -213,7 +213,7 @@
 "Sistema, ingressi HDMI, telecomando, schermata Home e le tue app",
 "Rimuovi {0} · libera ~{1} MB",
 "Rimuovi {0}",
-"{0} app superflue",
+"App superflue: {0}",
 "Nessuna spazzatura evidente",
 "Altre {0}: a tua scelta",
 "Tutto ciò che è nascosto si ripristina da «Cronologia»",
@@ -314,6 +314,7 @@
 "Guida e tutorial del produttore",
 "Installa app dei partner senza chiedere",
 "Statistiche Xiaomi",
+"Finestra pubblicitaria Xiaomi",
 "Telemetria: invia dati al produttore",
 "Trasmissione dal telefono alla TV: rimuovi solo se non trasmetti",
 "Rimuovi solo se non cerchi con la voce dal telecomando",
@@ -660,5 +661,6 @@
 "Invio alla TV: {0}% di {1} MB. Non bloccare il telefono.",
 "Installata da te o da uno store, non dal firmware. Rimuovila solo se davvero non la usi.",
 "Non è stato possibile riattivare la schermata Home della TV, quindi il nostro launcher resta (altrimenti lo schermo sarebbe nero). Invia una segnalazione da «?».",
-"La tua app: TVCleanzer non la tocca."
+"La tua app: TVCleanzer non la tocca.",
+"Andrii Zherdyev"
 ]

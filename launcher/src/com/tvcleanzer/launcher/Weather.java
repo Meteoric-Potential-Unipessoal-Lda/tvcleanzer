@@ -57,7 +57,7 @@ final class Weather {
             c.setConnectTimeout(8000);
             c.setReadTimeout(8000);
             // api.met.no asks every client to name itself
-            c.setRequestProperty("User-Agent", "TVCleanzerLauncher/0.25 (dayavacorp@gmail.com)");
+            c.setRequestProperty("User-Agent", "TVCleanzerLauncher/0.26 (dayavacorp@gmail.com)");
             int code = c.getResponseCode();
             if (code != 200) throw new java.io.IOException("HTTP " + code);
             InputStream in = c.getInputStream();
@@ -117,7 +117,7 @@ final class Weather {
     /** "6° · облачно · Оренбург", or null when there is nothing (yet) to show. */
     static String line(Prefs p) {
         if (!p.hasWeather()) return null;
-        if (p.weatherTs() == 0) return p.weatherError().isEmpty() ? null : p.weatherCity() + " · погода недоступна";
+        if (p.weatherTs() == 0) return p.weatherError().isEmpty() ? null : p.weatherCity() + " · " + T.t("погода недоступна");
         if (System.currentTimeMillis() - p.weatherTs() > 6 * 60 * 60 * 1000L) return null; // too old
         int t = p.weatherTemp();
         return (t > 0 ? "+" : "") + t + "° · " + describe(p.weatherCode()) + " · " + p.weatherCity();
@@ -125,16 +125,16 @@ final class Weather {
 
     /** WMO weather interpretation codes (Open-Meteo). */
     static String describe(int code) {
-        if (code == 0) return "ясно";
-        if (code <= 2) return "переменная облачность";
-        if (code == 3) return "пасмурно";
-        if (code == 45 || code == 48) return "туман";
-        if (code >= 51 && code <= 57) return "морось";
-        if (code >= 61 && code <= 67) return "дождь";
-        if (code >= 71 && code <= 77) return "снег";
-        if (code >= 80 && code <= 82) return "ливень";
-        if (code == 85 || code == 86) return "снегопад";
-        if (code >= 95) return "гроза";
-        return "облачно";
+        if (code == 0) return T.t("ясно");
+        if (code <= 2) return T.t("переменная облачность");
+        if (code == 3) return T.t("пасмурно");
+        if (code == 45 || code == 48) return T.t("туман");
+        if (code >= 51 && code <= 57) return T.t("морось");
+        if (code >= 61 && code <= 67) return T.t("дождь");
+        if (code >= 71 && code <= 77) return T.t("снег");
+        if (code >= 80 && code <= 82) return T.t("ливень");
+        if (code == 85 || code == 86) return T.t("снегопад");
+        if (code >= 95) return T.t("гроза");
+        return T.t("облачно");
     }
 }

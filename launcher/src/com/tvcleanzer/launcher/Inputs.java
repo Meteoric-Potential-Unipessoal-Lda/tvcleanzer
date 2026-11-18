@@ -47,7 +47,7 @@ final class Inputs {
                     CharSequence l = null;
                     if (Build.VERSION.SDK_INT >= 24) l = info.loadCustomLabel(c);
                     if (l == null || l.length() == 0) l = info.loadLabel(c);
-                    out.add(new Item(info.getId(), l == null ? "Вход" : l.toString()));
+                    out.add(new Item(info.getId(), l == null ? T.t("Вход") : l.toString()));
                 }
             }
         } catch (Throwable ignored) {}
@@ -74,7 +74,7 @@ final class Inputs {
                 Intent i = null;
                 if (Build.VERSION.SDK_INT >= 21) i = pm.getLeanbackLaunchIntentForPackage(p);
                 if (i == null) i = pm.getLaunchIntentForPackage(p);
-                if (i != null) return new Item("tv:" + p, "ТВ", i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                if (i != null) return new Item("tv:" + p, T.t("ТВ"), i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             }
         } catch (Throwable ignored) {}
         return null;

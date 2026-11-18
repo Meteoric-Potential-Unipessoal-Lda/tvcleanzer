@@ -213,7 +213,7 @@
 "System, HDMI inputs, remote, home screen and your apps",
 "Remove {0} · free ~{1} MB",
 "Remove {0}",
-"{0} unneeded apps",
+"Unneeded apps: {0}",
 "No obvious junk",
 "{0} more — your choice",
 "Everything hidden can be restored from “History”",
@@ -314,6 +314,7 @@
 "Manufacturer help and tutorials",
 "Installs partner apps without asking",
 "Xiaomi statistics",
+"Xiaomi pop-up ads",
 "Telemetry: sends data to the manufacturer",
 "Casting from phone to TV: remove only if you don’t cast",
 "Remove only if you don’t use voice search on the remote",
@@ -660,5 +661,6 @@
 "Sending to the TV: {0}% of {1} MB. Keep the phone unlocked.",
 "Installed by you or a store, not by the firmware. Remove it only if you really don’t use it.",
 "Could not switch the TV’s own home screen back on, so our launcher stays (otherwise the screen would be black). Please send a report via “?”.",
-"Your app: TVCleanzer leaves it alone."
+"Your app: TVCleanzer leaves it alone.",
+"Andrii Zherdyev"
 ]

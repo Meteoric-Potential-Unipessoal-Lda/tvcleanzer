@@ -340,13 +340,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         List<View> order = new ArrayList<>();
 
         if (!inputs.isEmpty() && prefs.inputsPos() != Prefs.INPUTS_HIDDEN) {
-            Pill in = new Pill(this, "Источник");
+            Pill in = new Pill(this, T.t("Источник"));
             in.setOnClickListener(v -> chooseInput());
             order.add(in);
         }
         GearButton gear = new GearButton(this, skin.accent);
         gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
-        Pill all = new Pill(this, "Все приложения");
+        Pill all = new Pill(this, T.t("Все приложения"));
         all.setOnClickListener(v -> { showGrid = true; build(); });
 
         // The whole dock must fit the screen (a centred dock wider than the screen loses both
@@ -405,14 +405,14 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         String[] names = new String[inputs.size()];
         for (int i = 0; i < names.length; i++) names[i] = inputs.get(i).label;
         new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-                .setTitle("Источник")
+                .setTitle(T.t("Источник"))
                 .setItems(names, (d, which) -> openInput(inputs.get(which)))
                 .show();
     }
 
     private void openInput(Inputs.Item it) {
         try { startActivity(Inputs.intent(it)); }
-        catch (Exception e) { Toast.makeText(this, "Не удалось открыть " + it.label, Toast.LENGTH_SHORT).show(); }
+        catch (Exception e) { Toast.makeText(this, T.f("Не удалось открыть {0}", it.label), Toast.LENGTH_SHORT).show(); }
     }
 
     /** First Home after a boot: open the app chosen to start with the TV (once per boot). */
@@ -495,7 +495,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         movingFav = fav;
         t.setMoving(true);
         t.requestFocus();
-        Toast.makeText(this, "Двигайте стрелками, ОК — готово", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, T.t("Двигайте стрелками, ОК — готово"), Toast.LENGTH_SHORT).show();
     }
 
     private void stopMove() {
@@ -747,7 +747,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
         List<AppTile> tiles = new ArrayList<>();
         if (!favorites.isEmpty()) {
-            favTitle = sectionTitle("Избранное", Ui.dp(this, 30));
+            favTitle = sectionTitle(T.t("Избранное"), Ui.dp(this, 30));
             page.addView(favTitle);
             FrameLayout shelf = new FrameLayout(this);
             favShelf = shelf;
@@ -819,14 +819,14 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (kids && rest.isEmpty() && !apps.isEmpty()) {
             TextView none = Ui.text(this, 18, 0x99FFFFFF, "sans-serif");
             none.setSingleLine(false);
-            none.setText("Для детского режима ещё не выбраны приложения. Выйдите по PIN и выберите их в настройках.");
+            none.setText(T.t("Для детского режима ещё не выбраны приложения. Выйдите по PIN и выберите их в настройках."));
             LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             nlp.topMargin = Ui.dp(this, 40);
             page.addView(none, nlp);
         }
         if (!rest.isEmpty()) {
-            final TextView appsTitle = sectionTitle(kids ? "Можно смотреть" : "Приложения", Ui.dp(this, 26));
+            final TextView appsTitle = sectionTitle(kids ? T.t("Можно смотреть") : T.t("Приложения"), Ui.dp(this, 26));
             page.addView(appsTitle);
             // "Apps on the second screen": the first screen shows only the top and favourites,
             // the grid starts just below it (▼ scrolls down to it).
@@ -883,7 +883,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
         if (apps.isEmpty()) {
             TextView empty = Ui.text(this, 18, 0x99FFFFFF, "sans-serif");
-            empty.setText("Загружаем приложения…");
+            empty.setText(T.t("Загружаем приложения…"));
             page.addView(empty);
         }
 
@@ -960,7 +960,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
         bar.addView(net);
 
-        Pill tvSettings = new Pill(this, "Настройки ТВ");
+        Pill tvSettings = new Pill(this, T.t("Настройки ТВ"));
         tvSettings.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
         LinearLayout.LayoutParams pp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -983,7 +983,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         LinearLayout left = new LinearLayout(this);
         left.setOrientation(LinearLayout.VERTICAL);
         TextView t = Ui.text(this, 15, prefs.skin().accent, "sans-serif-medium");
-        t.setText("ДЕТСКИЙ РЕЖИМ");
+        t.setText(T.t("ДЕТСКИЙ РЕЖИМ"));
         t.setLetterSpacing(0.16f);
         left.addView(t);
         TextClock clock = new TextClock(this);
@@ -996,10 +996,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         left.addView(clock);
         bar.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-        Pill exit = new Pill(this, "Выйти");
-        exit.setOnClickListener(v -> Pin.ask(this, "PIN, чтобы выйти из детского режима", pin -> {
+        Pill exit = new Pill(this, T.t("Выйти"));
+        exit.setOnClickListener(v -> Pin.ask(this, T.t("PIN, чтобы выйти из детского режима"), pin -> {
             if (prefs.checkPin(pin)) prefs.setKids(false);
-            else Toast.makeText(this, "Неверный PIN", Toast.LENGTH_SHORT).show();
+            else Toast.makeText(this, T.t("Неверный PIN"), Toast.LENGTH_SHORT).show();
         }));
         bar.addView(exit);
         return bar;
@@ -1022,12 +1022,12 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             android.net.ConnectivityManager cm =
                     (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
             android.net.NetworkInfo ni = cm == null ? null : cm.getActiveNetworkInfo();
-            if (ni == null || !ni.isConnected()) return "Нет сети";
+            if (ni == null || !ni.isConnected()) return T.t("Нет сети");
             if (ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET) return "Ethernet";
             if (ni.getType() == android.net.ConnectivityManager.TYPE_WIFI) return "Wi-Fi";
-            return "В сети";
+            return T.t("В сети");
         } catch (Throwable t) {
-            return "Сеть";
+            return T.t("Сеть");
         }
     }
 
@@ -1041,16 +1041,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private String greeting() {
         int h = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (h < 5) return "Доброй ночи";
-        if (h < 12) return "Доброе утро";
-        if (h < 18) return "Добрый день";
-        return "Добрый вечер";
+        if (h < 5) return T.t("Доброй ночи");
+        if (h < 12) return T.t("Доброе утро");
+        if (h < 18) return T.t("Добрый день");
+        return T.t("Добрый вечер");
     }
 
     private void addInputs(LinearLayout page) {
         if (inputs.isEmpty()) return;
         {
-            page.addView(sectionTitle("Источники", Ui.dp(this, 26)));
+            page.addView(sectionTitle(T.t("Источники"), Ui.dp(this, 26)));
             HorizontalScrollView ins = new HorizontalScrollView(this);
             ins.setHorizontalScrollBarEnabled(false);
             ins.setClipChildren(false);
@@ -1062,7 +1062,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 Pill pill = new Pill(this, it.label);
                 pill.setOnClickListener(v -> {
                     try { startActivity(Inputs.intent(it)); }
-                    catch (Exception e) { Toast.makeText(this, "Не удалось открыть " + it.label, Toast.LENGTH_SHORT).show(); }
+                    catch (Exception e) { Toast.makeText(this, T.f("Не удалось открыть {0}", it.label), Toast.LENGTH_SHORT).show(); }
                 });
                 LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1174,7 +1174,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         try {
             startActivity(a.launchIntent());
         } catch (ActivityNotFoundException | SecurityException e) {
-            Toast.makeText(this, "Не удалось открыть " + a.label, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, T.f("Не удалось открыть {0}", a.label), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1184,33 +1184,40 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final AppEntry a = t.app;
         final boolean fav = favorites.contains(a);
         final List<String> items = new ArrayList<>();
-        items.add(fav ? "Убрать из избранного" : "Добавить в избранное");
-        items.add("Переместить");
+        // actions by position: the labels are translated ([T])
+        final List<String> acts = new ArrayList<>();
+        acts.add(fav ? "unfav" : "fav");
+        acts.add("move");
         final boolean auto = a.pkg.equals(prefs.autostart());
-        items.add(auto ? "Не открывать при включении ТВ" : "Открывать при включении ТВ");
-        items.add("Скрыть с главного экрана");
-        items.add("О приложении");
+        acts.add(auto ? "noauto" : "auto");
+        acts.add("hide");
+        acts.add("info");
+        items.add(fav ? T.t("Убрать из избранного") : T.t("Добавить в избранное"));
+        items.add(T.t("Переместить"));
+        items.add(auto ? T.t("Не открывать при включении ТВ") : T.t("Открывать при включении ТВ"));
+        items.add(T.t("Скрыть с главного экрана"));
+        items.add(T.t("О приложении"));
 
         new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
                 .setTitle(a.label)
                 .setItems(items.toArray(new String[0]), (d, which) -> {
-                    String choice = items.get(which);
+                    String choice = acts.get(which);
                     List<AppEntry> favs = new ArrayList<>(favorites);
                     int i = favs.indexOf(a);
                     switch (choice) {
-                        case "Убрать из избранного": favs.remove(a); saveFavorites(favs); break;
-                        case "Добавить в избранное": favs.add(a); saveFavorites(favs); break;
-                        case "Переместить":
+                        case "unfav": favs.remove(a); saveFavorites(favs); break;
+                        case "fav": favs.add(a); saveFavorites(favs); break;
+                        case "move":
                             startMove(a, fav, t);
                             break;
-                        case "Открывать при включении ТВ":
+                        case "auto":
                             prefs.setAutostart(a.pkg);
-                            Toast.makeText(this, a.label + " будет открываться при включении телевизора", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, T.f("{0} будет открываться при включении телевизора", a.label), Toast.LENGTH_LONG).show();
                             break;
-                        case "Не открывать при включении ТВ":
+                        case "noauto":
                             prefs.setAutostart("");
                             break;
-                        case "Скрыть с главного экрана": {
+                        case "hide": {
                             Set<String> h = prefs.hidden();
                             h.add(a.pkg);
                             favs.remove(a);
@@ -1218,7 +1225,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                             prefs.setHidden(h);
                             break;
                         }
-                        case "О приложении":
+                        case "info":
                             try {
                                 startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                                         Uri.fromParts("package", a.pkg, null)));

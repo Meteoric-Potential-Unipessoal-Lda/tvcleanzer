@@ -213,7 +213,7 @@
 "Sistema, entradas HDMI, comando, ecrã inicial e as suas apps",
 "Remover {0} · libertar ~{1} MB",
 "Remover {0}",
-"{0} apps desnecessárias",
+"Apps desnecessárias: {0}",
 "Sem lixo evidente",
 "Mais {0} — à sua escolha",
 "Tudo o que foi ocultado pode ser restaurado no «Histórico»",
@@ -314,6 +314,7 @@
 "Ajuda e tutoriais do fabricante",
 "Instala apps de parceiros sem perguntar",
 "Estatísticas Xiaomi",
+"Janela de anúncios Xiaomi",
 "Telemetria: envia dados ao fabricante",
 "Transmissão do telemóvel para a TV: remova só se não transmite",
 "Remova só se não pesquisa por voz no comando",
@@ -660,5 +661,6 @@
 "A enviar para a TV: {0}% de {1} MB. Não bloqueie o telemóvel.",
 "Instalada por si ou por uma loja, não pelo firmware. Remova só se tiver a certeza de que não usa.",
 "Não foi possível voltar a ligar o ecrã inicial da TV, por isso o nosso launcher fica (senão o ecrã ficaria preto). Envie um relatório em «?».",
-"A sua app: o TVCleanzer não lhe toca."
+"A sua app: o TVCleanzer não lhe toca.",
+"Andrii Zherdyev"
 ]

@@ -30,7 +30,7 @@ final class Prefs {
     /** System font families for the clock: thin, light, regular, condensed, bold. */
     static final String[] CLOCK_FONTS = {"sans-serif-thin", "sans-serif-light", "sans-serif",
             "sans-serif-condensed", "sans-serif-medium"};
-    static final String[] CLOCK_FONT_NAMES = {"Тонкий", "Лёгкий", "Обычный", "Узкий", "Жирный"};
+    static final String[] CLOCK_FONT_NAMES = {T.t("Тонкий"), T.t("Лёгкий"), T.t("Обычный"), T.t("Узкий"), T.t("Жирный")};
 
     /** Where the HDMI/tuner row goes: above favourites, under all apps, or nowhere. */
     static final int INPUTS_TOP = 0, INPUTS_BOTTOM = 1, INPUTS_HIDDEN = 2;

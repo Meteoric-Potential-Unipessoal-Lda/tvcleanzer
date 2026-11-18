@@ -213,7 +213,7 @@
 "Sistema, entradas HDMI, mando, pantalla de inicio y tus apps",
 "Quitar {0} · liberar ~{1} MB",
 "Quitar {0}",
-"{0} apps innecesarias",
+"Apps innecesarias: {0}",
 "No hay basura evidente",
 "{0} más, a tu elección",
 "Todo lo oculto se puede restaurar desde «Historial»",
@@ -314,6 +314,7 @@
 "Ayuda y tutoriales del fabricante",
 "Instala apps de socios sin preguntar",
 "Estadísticas Xiaomi",
+"Ventana publicitaria Xiaomi",
 "Telemetría: envía datos al fabricante",
 "Transmisión del teléfono a la TV: quítalo solo si no transmites",
 "Quítalo solo si no buscas por voz con el mando",
@@ -660,5 +661,6 @@
 "Enviando a la tele: {0}% de {1} MB. No bloquees el móvil.",
 "Instalada por ti o por una tienda, no por el firmware. Quítala solo si de verdad no la usas.",
 "No se pudo reactivar la pantalla de inicio de la tele, así que nuestro launcher se queda (si no, la pantalla quedaría en negro). Envía un informe desde «?».",
-"Tu app: TVCleanzer no la toca."
+"Tu app: TVCleanzer no la toca.",
+"Andrii Zherdyev"
 ]

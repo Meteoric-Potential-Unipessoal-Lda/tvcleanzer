@@ -25,7 +25,7 @@ final class Pin {
                 .setTitle(title)
                 .setView(e)
                 .setPositiveButton("OK", (dlg, w) -> cb.onPin(e.getText().toString().trim()))
-                .setNegativeButton("Отмена", null)
+                .setNegativeButton(T.t("Отмена"), null)
                 .create();
         if (d.getWindow() != null) {
             d.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);

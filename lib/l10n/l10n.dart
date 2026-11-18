@@ -3,7 +3,11 @@ import 'dart:ui' show PlatformDispatcher;
 import 'strings.dart';
 
 /// Languages the app speaks. Russian is the source language of every string.
-const supportedLanguages = ['ru', 'en', 'uk', 'es', 'pt', 'de', 'fr', 'it'];
+const supportedLanguages = [
+  'ru', 'en', 'uk', 'es', 'pt', 'de', 'fr', 'it',
+  'be', 'kk', 'uz', 'hy', 'az', 'ka', 'ky', 'tr', 'pl', 'ro', 'zh',
+  'ja', 'ko', 'hi', 'id', 'vi', 'th', 'nl', 'cs', 'el', 'hu', 'sv',
+];
 
 String _lang = 'en';
 
@@ -25,7 +29,7 @@ void initLanguage() {
       return;
     }
     // Russian-reading regions without their own translation
-    if (const ['be', 'kk', 'ky', 'uz', 'tg', 'hy', 'az', 'ka'].contains(code)) {
+    if (const ['tg', 'tk', 'mo'].contains(code)) {
       _lang = 'ru';
       return;
     }

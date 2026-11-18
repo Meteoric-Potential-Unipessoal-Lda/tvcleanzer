@@ -45,10 +45,10 @@ public class SettingsActivity extends Activity {
         left.setOrientation(LinearLayout.VERTICAL);
         left.setGravity(Gravity.CENTER_VERTICAL);
         TextView title = Ui.text(this, 40, 0xFFFFFFFF, "sans-serif-medium");
-        title.setText("Настройки");
+        title.setText(T.t("Настройки"));
         TextView sub = Ui.text(this, 16, 0x99FFFFFF, "sans-serif");
         sub.setSingleLine(false);
-        sub.setText("Тему и другие параметры можно менять\nи с телефона в приложении TVCleanzer.");
+        sub.setText(T.t("Тему и другие параметры можно менять\nи с телефона в приложении TVCleanzer."));
         LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         slp.topMargin = Ui.dp(this, 12);
@@ -59,9 +59,9 @@ public class SettingsActivity extends Activity {
             // TV's own settings would leave a black screen (a Philips owner did exactly that).
             TextView warn = Ui.text(this, 16, 0xFFFFB547, "sans-serif-medium");
             warn.setSingleLine(false);
-            warn.setText("Родной экран Google TV выключен, чтобы этот лаунчер оставался главным.\n"
+            warn.setText(T.t("Родной экран Google TV выключен, чтобы этот лаунчер оставался главным.\n"
                     + "Удаляйте лаунчер только в приложении TVCleanzer на телефоне\n"
-                    + "(«Вернуть стандартный лаунчер»), не в настройках телевизора.");
+                    + "(«Вернуть стандартный лаунчер»), не в настройках телевизора."));
             LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             wlp.topMargin = Ui.dp(this, 16);
@@ -83,103 +83,103 @@ public class SettingsActivity extends Activity {
         root.addView(sv, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1.2f));
 
         int hidden = prefs.hidden().size();
-        addRow(skin, "Тема", skin.name, () -> prefs.setSkin(skin.next()));
-        addRow(skin, "Часы", prefs.clock24() ? "24 часа" : "12 часов",
+        addRow(skin, T.t("Тема"), skin.name, () -> prefs.setSkin(skin.next()));
+        addRow(skin, T.t("Часы"), prefs.clock24() ? T.t("24 часа") : T.t("12 часов"),
                 () -> prefs.setClock24(!prefs.clock24()));
-        addRow(skin, "Названия приложений", prefs.labelsAlways() ? "Всегда" : "При наведении",
+        addRow(skin, T.t("Названия приложений"), prefs.labelsAlways() ? T.t("Всегда") : T.t("При наведении"),
                 () -> prefs.setLabelsAlways(!prefs.labelsAlways()));
-        addRow(skin, "Скрытые приложения", hidden == 0 ? "Нет" : "Показать все (" + hidden + ")", () -> {
+        addRow(skin, T.t("Скрытые приложения"), hidden == 0 ? T.t("Нет") : T.f("Показать все ({0})", hidden), () -> {
             if (prefs.hidden().isEmpty()) return;
             prefs.setHidden(new HashSet<String>());
-            Toast.makeText(this, "Все приложения снова на главном экране", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, T.t("Все приложения снова на главном экране"), Toast.LENGTH_SHORT).show();
         });
-        addRow(skin, "Детский режим", prefs.kids() ? "Включён" : (prefs.hasPin() ? "Выключен" : "Настроить"),
+        addRow(skin, T.t("Детский режим"), prefs.kids() ? T.t("Включён") : (prefs.hasPin() ? T.t("Выключен") : T.t("Настроить")),
                 this::kidsMode);
-        if (prefs.hasPin()) addRow(skin, "PIN детского режима", "Сменить", this::changePin);
-        String[] animNames = {"Полные", "Мягкие", "Выключены"};
-        addRow(skin, "Анимации", animNames[prefs.anim()], () -> prefs.setAnim((prefs.anim() + 1) % 3));
-        String[] tileNames = {"Мелкие", "Обычные", "Крупные"};
-        addRow(skin, "Размер плиток", tileNames[prefs.tileSize()], () -> prefs.setTileSize((prefs.tileSize() + 1) % 3));
-        addRow(skin, "Подсветка выбора", prefs.ringAccent() ? "Цвет темы" : "Белая",
+        if (prefs.hasPin()) addRow(skin, T.t("PIN детского режима"), T.t("Сменить"), this::changePin);
+        String[] animNames = {T.t("Полные"), T.t("Мягкие"), T.t("Выключены")};
+        addRow(skin, T.t("Анимации"), animNames[prefs.anim()], () -> prefs.setAnim((prefs.anim() + 1) % 3));
+        String[] tileNames = {T.t("Мелкие"), T.t("Обычные"), T.t("Крупные")};
+        addRow(skin, T.t("Размер плиток"), tileNames[prefs.tileSize()], () -> prefs.setTileSize((prefs.tileSize() + 1) % 3));
+        addRow(skin, T.t("Подсветка выбора"), prefs.ringAccent() ? T.t("Цвет темы") : T.t("Белая"),
                 () -> prefs.setRingAccent(!prefs.ringAccent()));
-        addRow(skin, "Живой фон", prefs.ambient() ? "Включён" : "Выключен", () -> prefs.setAmbient(!prefs.ambient()));
-        addRow(skin, "Вид главного экрана", prefs.style() == Prefs.STYLE_CLOCK ? "Часы и док" : "Плитки",
+        addRow(skin, T.t("Живой фон"), prefs.ambient() ? T.t("Включён") : T.t("Выключен"), () -> prefs.setAmbient(!prefs.ambient()));
+        addRow(skin, T.t("Вид главного экрана"), prefs.style() == Prefs.STYLE_CLOCK ? T.t("Часы и док") : T.t("Плитки"),
                 () -> prefs.setStyle(prefs.style() == Prefs.STYLE_CLOCK ? Prefs.STYLE_TILES : Prefs.STYLE_CLOCK));
-        addRow(skin, "Часы: шрифт", Prefs.CLOCK_FONT_NAMES[prefs.clockFont()],
+        addRow(skin, T.t("Часы: шрифт"), Prefs.CLOCK_FONT_NAMES[prefs.clockFont()],
                 () -> prefs.setClockFont((prefs.clockFont() + 1) % Prefs.CLOCK_FONTS.length));
-        addRow(skin, "Часы: размер", prefs.clockSize() + "%",
+        addRow(skin, T.t("Часы: размер"), prefs.clockSize() + "%",
                 () -> prefs.setClockSize(prefs.clockSize() >= 160 ? 80 : prefs.clockSize() + 20));
         if (prefs.style() == Prefs.STYLE_CLOCK) {
-            addRow(skin, "Часы: положение", prefs.clockPos() == Prefs.CLOCK_CENTER ? "По центру" : "Слева",
+            addRow(skin, T.t("Часы: положение"), prefs.clockPos() == Prefs.CLOCK_CENTER ? T.t("По центру") : T.t("Слева"),
                     () -> prefs.setClockPos(prefs.clockPos() == Prefs.CLOCK_CENTER ? Prefs.CLOCK_LEFT : Prefs.CLOCK_CENTER));
         }
-        String w = "Город задаётся с телефона";
+        String w = T.t("Город задаётся с телефона");
         if (prefs.hasWeather()) {
             String now = Weather.line(prefs);
             w = !prefs.weatherError().isEmpty() && prefs.weatherTs() == 0
-                    ? prefs.weatherCity() + ": нет связи (" + prefs.weatherError() + ")"
-                    : now != null ? now : prefs.weatherCity() + ": загружается…";
+                    ? T.f("{0}: нет связи ({1})", prefs.weatherCity(), prefs.weatherError())
+                    : now != null ? now : T.f("{0}: загружается…", prefs.weatherCity());
         }
-        addRow(skin, "Погода", w, null);
+        addRow(skin, T.t("Погода"), w, null);
         int nPhotos = Photos.count(this);
-        addRow(skin, "Фоторамка", nPhotos == 0 ? "Фото добавляются с телефона" : "Фото: " + nPhotos, null);
+        addRow(skin, T.t("Фоторамка"), nPhotos == 0 ? T.t("Фото добавляются с телефона") : T.f("Фото: {0}", nPhotos), null);
         if (nPhotos > 0) {
-            addRow(skin, "Фон главного экрана", prefs.homePhotos() ? "Меняется по фото" : "Одно фото / шкурка",
+            addRow(skin, T.t("Фон главного экрана"), prefs.homePhotos() ? T.t("Меняется по фото") : T.t("Одно фото / шкурка"),
                     () -> prefs.setHomePhotos(!prefs.homePhotos()));
             final int[] secs = {10, 30, 60, 300};
             int cur = prefs.photoSec();
-            addRow(skin, "Смена фото", cur >= 60 ? (cur / 60) + " мин" : cur + " с", () -> {
+            addRow(skin, T.t("Смена фото"), cur >= 60 ? T.f("{0} мин", cur / 60) : T.f("{0} с", cur), () -> {
                 int k = 0;
                 for (int i = 0; i < secs.length; i++) if (secs[i] == prefs.photoSec()) k = i;
                 prefs.setPhotoSec(secs[(k + 1) % secs.length]);
             });
         }
-        addRow(skin, "Заставка при запуске", prefs.splash() ? "Логотип, пока лаунчер загружается" : "Выключена",
+        addRow(skin, T.t("Заставка при запуске"), prefs.splash() ? T.t("Логотип, пока лаунчер загружается") : T.t("Выключена"),
                 () -> prefs.setSplash(!prefs.splash()));
         if (prefs.style() == Prefs.STYLE_TILES) {
             // three steps: under favourites → second screen → second screen with favourites low
-            String place = !prefs.appsBelow() ? "Сразу под избранным"
-                    : prefs.favBottom() ? "На втором экране, избранное внизу" : "На втором экране (кнопка ▼)";
-            addRow(skin, "Приложения на главном", place, () -> {
+            String place = !prefs.appsBelow() ? T.t("Сразу под избранным")
+                    : prefs.favBottom() ? T.t("На втором экране, избранное внизу") : T.t("На втором экране (кнопка ▼)");
+            addRow(skin, T.t("Приложения на главном"), place, () -> {
                 if (!prefs.appsBelow()) { prefs.setAppsBelow(true); prefs.setFavBottom(false); }
                 else if (!prefs.favBottom()) prefs.setFavBottom(true);
                 else { prefs.setAppsBelow(false); prefs.setFavBottom(false); }
             });
-            final String[] shelfNames = {"Стекло", "Прозрачная", "Тёмная"};
-            addRow(skin, "Подложка избранного", shelfNames[prefs.shelf()],
+            final String[] shelfNames = {T.t("Стекло"), T.t("Прозрачная"), T.t("Тёмная")};
+            addRow(skin, T.t("Подложка избранного"), shelfNames[prefs.shelf()],
                     () -> prefs.setShelf((prefs.shelf() + 1) % 3));
         }
         final int[] favSteps = {0, 4, 5, 6};
         int fc = prefs.favCols();
-        addRow(skin, "Избранное", fc == 0 ? "Один ряд" : "Сетка по " + fc, () -> {
+        addRow(skin, T.t("Избранное"), fc == 0 ? T.t("Один ряд") : T.f("Сетка по {0}", fc), () -> {
             int k = 0;
             for (int i = 0; i < favSteps.length; i++) if (favSteps[i] == prefs.favCols()) k = i;
             prefs.setFavCols(favSteps[(k + 1) % favSteps.length]);
         });
-        String[] inputsNames = {"Вверху", "Внизу", "Скрыты"};
-        addRow(skin, "Источники (ТВ, HDMI)", inputsNames[prefs.inputsPos()],
+        String[] inputsNames = {T.t("Вверху"), T.t("Внизу"), T.t("Скрыты")};
+        addRow(skin, T.t("Источники (ТВ, HDMI)"), inputsNames[prefs.inputsPos()],
                 () -> prefs.setInputsPos((prefs.inputsPos() + 1) % 3));
-        addRow(skin, "При включении ТВ", autostartName(),
+        addRow(skin, T.t("При включении ТВ"), autostartName(),
                 () -> prefs.setAutostart(nextAutostart()));
         boolean hasWall = Wallpaper.exists(this);
         if (hasWall) {
-            addRow(skin, "Затемнение фото", prefs.wallDim() + "%",
+            addRow(skin, T.t("Затемнение фото"), prefs.wallDim() + "%",
                     () -> prefs.setWallDim(prefs.wallDim() >= 80 ? 0 : prefs.wallDim() + 20));
         }
-        addRow(skin, "Обои", hasWall ? "Своё фото · убрать" : "Ставятся с телефона", () -> {
+        addRow(skin, T.t("Обои"), hasWall ? T.t("Своё фото · убрать") : T.t("Ставятся с телефона"), () -> {
             if (!Wallpaper.exists(this)) return;
             Wallpaper.delete(this);
             prefs.bumpWallpaper();
-            Toast.makeText(this, "Обои убраны", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, T.t("Обои убраны"), Toast.LENGTH_SHORT).show();
         });
-        addRow(skin, "Избранное", "Сбросить", () -> {
+        addRow(skin, T.t("Избранное"), T.t("Сбросить"), () -> {
             prefs.resetFavorites();
-            Toast.makeText(this, "Избранное сброшено", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, T.t("Избранное сброшено"), Toast.LENGTH_SHORT).show();
         });
-        addRow(skin, "Настройки телевизора", "Открыть", () -> {
+        addRow(skin, T.t("Настройки телевизора"), T.t("Открыть"), () -> {
             try { startActivity(new Intent(Settings.ACTION_SETTINGS)); } catch (Exception ignored) {}
         });
-        addRow(skin, "О лаунчере", "TVCleanzer Launcher " + version() + " · " + AUTHOR_LINK, this::showAuthor);
+        addRow(skin, T.t("О лаунчере"), "TVCleanzer Launcher " + version() + " · " + AUTHOR_LINK, this::showAuthor);
 
         View v = list.getChildAt(Math.min(focusIndex, list.getChildCount() - 1));
         if (v != null) v.requestFocus();
@@ -187,7 +187,7 @@ public class SettingsActivity extends Activity {
 
     // ── Author: quietly, at the bottom of Settings ───────────────────────────
 
-    static final String AUTHOR = "Андрей Жердев";
+    static final String AUTHOR = T.t("Андрей Жердев");
     static final String AUTHOR_LINK = "t.me/zherdyevofficial";
 
     /** A small QR (opens the author's Telegram on a phone) and one muted line. */
@@ -200,7 +200,7 @@ public class SettingsActivity extends Activity {
         if (qr != null) box.addView(qr);
         TextView t = Ui.text(this, 13, 0xCCFFFFFF, "sans-serif");
         t.setSingleLine(false);
-        t.setText("Автор — " + AUTHOR + "\n" + AUTHOR_LINK);
+        t.setText(T.f("Автор — {0}", AUTHOR) + "\n" + AUTHOR_LINK);
         LinearLayout.LayoutParams tl = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tl.leftMargin = Ui.dp(this, 12);
@@ -236,15 +236,15 @@ public class SettingsActivity extends Activity {
         TextView t = Ui.text(this, 16, 0xFFFFFFFF, "sans-serif");
         t.setSingleLine(false);
         t.setGravity(Gravity.CENTER_HORIZONTAL);
-        t.setText("TVCleanzer Launcher " + version() + "\nАвтор — " + AUTHOR + " · " + AUTHOR_LINK
-                + "\nНаведите камеру телефона на код: откроется Telegram-канал.");
+        t.setText("TVCleanzer Launcher " + version() + "\n" + T.f("Автор — {0}", AUTHOR) + " · " + AUTHOR_LINK
+                + "\n" + T.t("Наведите камеру телефона на код: откроется Telegram-канал."));
         LinearLayout.LayoutParams tl = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tl.topMargin = Ui.dp(this, 14);
         v.addView(t, tl);
         new android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
                 .setView(v)
-                .setPositiveButton("Закрыть", null)
+                .setPositiveButton(T.t("Закрыть"), null)
                 .show();
     }
 
@@ -252,23 +252,23 @@ public class SettingsActivity extends Activity {
 
     private void kidsMode() {
         if (prefs.kids()) {
-            Pin.ask(this, "PIN, чтобы выключить детский режим", pin -> {
+            Pin.ask(this, T.t("PIN, чтобы выключить детский режим"), pin -> {
                 if (prefs.checkPin(pin)) { prefs.setKids(false); build(); }
-                else Toast.makeText(this, "Неверный PIN", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(this, T.t("Неверный PIN"), Toast.LENGTH_SHORT).show();
             });
         } else if (!prefs.hasPin()) {
-            Pin.ask(this, "Придумайте PIN (4–8 цифр)", pin -> {
+            Pin.ask(this, T.t("Придумайте PIN (4–8 цифр)"), pin -> {
                 if (!Pin.valid(pin)) {
-                    Toast.makeText(this, "Нужно от 4 до 8 цифр", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, T.t("Нужно от 4 до 8 цифр"), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 prefs.setPin(pin);
                 chooseKidsApps();
             });
         } else {
-            Pin.ask(this, "Введите PIN", pin -> {
+            Pin.ask(this, T.t("Введите PIN"), pin -> {
                 if (prefs.checkPin(pin)) chooseKidsApps();
-                else Toast.makeText(this, "Неверный PIN", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(this, T.t("Неверный PIN"), Toast.LENGTH_SHORT).show();
             });
         }
     }
@@ -283,31 +283,31 @@ public class SettingsActivity extends Activity {
             checked[i] = chosen.contains(all.get(i).pkg);
         }
         new android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-                .setTitle("Что можно детям")
+                .setTitle(T.t("Что можно детям"))
                 .setMultiChoiceItems(names, checked, (d, which, on) -> {
                     if (on) chosen.add(all.get(which).pkg); else chosen.remove(all.get(which).pkg);
                 })
-                .setPositiveButton("Включить детский режим", (d, w) -> {
+                .setPositiveButton(T.t("Включить детский режим"), (d, w) -> {
                     prefs.setKidsApps(chosen);
                     prefs.setKids(true);
                     finish(); // straight to the kids home screen
                 })
-                .setNegativeButton("Отмена", null)
+                .setNegativeButton(T.t("Отмена"), null)
                 .show();
     }
 
     private void changePin() {
-        Pin.ask(this, "Текущий PIN", old -> {
+        Pin.ask(this, T.t("Текущий PIN"), old -> {
             if (!prefs.checkPin(old)) {
-                Toast.makeText(this, "Неверный PIN", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, T.t("Неверный PIN"), Toast.LENGTH_SHORT).show();
                 return;
             }
-            Pin.ask(this, "Новый PIN (4–8 цифр)", pin -> {
+            Pin.ask(this, T.t("Новый PIN (4–8 цифр)"), pin -> {
                 if (Pin.valid(pin)) {
                     prefs.setPin(pin);
-                    Toast.makeText(this, "PIN изменён", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, T.t("PIN изменён"), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Нужно от 4 до 8 цифр", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, T.t("Нужно от 4 до 8 цифр"), Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -332,9 +332,9 @@ public class SettingsActivity extends Activity {
 
     private String autostartName() {
         String pkg = prefs.autostart();
-        if (pkg.isEmpty()) return "Главный экран";
+        if (pkg.isEmpty()) return T.t("Главный экран");
         try {
-            return "Открыть " + getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg, 0));
+            return T.f("Открыть {0}", getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg, 0)));
         } catch (Exception e) {
             return pkg;
         }

@@ -34,8 +34,8 @@ final class AppEntry {
      */
     private static final String[][] FIRMWARE_APPS = {
             {"com.yandex.tv.ytplayer", "dev.cobalt.app.MainActivity", "YouTube"},
-            {"com.yandex.devices.appstore", "com.yandex.devices.feature.appstore.ui.presentation.main.MainActivity", "Магазин приложений"},
-            {"com.yandex.browser.tv", "com.yandex.browser.tv.tvactivity.TvActivity", "Яндекс Браузер"},
+            {"com.yandex.devices.appstore", "com.yandex.devices.feature.appstore.ui.presentation.main.MainActivity", T.t("Магазин приложений")},
+            {"com.yandex.browser.tv", "com.yandex.browser.tv.tvactivity.TvActivity", T.t("Яндекс Браузер")},
     };
 
     Intent launchIntent() {

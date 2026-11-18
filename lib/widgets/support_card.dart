@@ -32,7 +32,7 @@ class SupportCard extends StatelessWidget {
           const Icon(Icons.send_rounded, size: 14, color: AppColors.fgMuted),
           const Gap(6),
           Flexible(
-            child: Text(tr('Автор — {0} · {1}', [Support.author, Support.telegramShort]),
+            child: Text(tr('Автор — {0} · {1}', [tr(Support.author), Support.telegramShort]),
                 style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
           ),
         ]),

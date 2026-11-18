@@ -213,7 +213,7 @@
 "Système, entrées HDMI, télécommande, écran d’accueil et vos applis",
 "Retirer {0} · libérer ~{1} Mo",
 "Retirer {0}",
-"{0} applis inutiles",
+"Applis inutiles : {0}",
 "Pas de déchets évidents",
 "Encore {0} — à votre choix",
 "Tout ce qui est masqué se restaure depuis « Historique »",
@@ -314,6 +314,7 @@
 "Aide et tutoriels du fabricant",
 "Installe des applis partenaires sans demander",
 "Statistiques Xiaomi",
+"Fenêtre publicitaire Xiaomi",
 "Télémétrie : envoie des données au fabricant",
 "Diffusion du téléphone vers le TV : retirez seulement si vous ne diffusez pas",
 "Retirez seulement si vous ne cherchez pas à la voix avec la télécommande",
@@ -660,5 +661,6 @@
 "Envoi vers la TV : {0} % de {1} Mo. Ne verrouillez pas le téléphone.",
 "Installée par vous ou par une boutique, pas par le firmware. Retirez-la seulement si vous ne l’utilisez vraiment pas.",
 "Impossible de réactiver l’écran d’accueil de la TV, notre launcher reste donc en place (sinon l’écran serait noir). Envoyez un rapport via « ? ».",
-"Votre appli : TVCleanzer n’y touche pas."
+"Votre appli : TVCleanzer n’y touche pas.",
+"Andrii Zherdyev"
 ]

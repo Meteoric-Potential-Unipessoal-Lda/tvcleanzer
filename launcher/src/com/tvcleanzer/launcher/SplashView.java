@@ -21,7 +21,7 @@ import android.view.View;
  */
 final class SplashView extends View {
 
-    static final String CREDIT = "Автор — Андрей Жердев · t.me/zherdyevofficial";
+    static final String CREDIT = T.f("Автор — {0}", T.t("Андрей Жердев")) + " · t.me/zherdyevofficial";
 
     private final Skin skin;
     private final long born = SystemClock.uptimeMillis();
