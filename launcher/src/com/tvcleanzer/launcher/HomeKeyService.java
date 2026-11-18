@@ -144,10 +144,57 @@ public class HomeKeyService extends AccessibilityService {
         } catch (Throwable ignored) {}
     }
 
+    private int lastKeyCode;
+
+    /** Keys that don't ask for a screen of their own: moving around, OK, Back, volume. Any other
+     *  key (Settings, TV, Input, Guide, the firmware's own buttons) opens something on purpose,
+     *  and on Google TV that something is often a panel of the stock home itself. */
+    private static boolean plainKey(int code) {
+        switch (code) {
+            case KeyEvent.KEYCODE_DPAD_UP: case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_LEFT: case KeyEvent.KEYCODE_DPAD_RIGHT:
+            case KeyEvent.KEYCODE_DPAD_CENTER: case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_BACK: case KeyEvent.KEYCODE_ESCAPE: case KeyEvent.KEYCODE_HOME:
+            case KeyEvent.KEYCODE_VOLUME_UP: case KeyEvent.KEYCODE_VOLUME_DOWN:
+            case KeyEvent.KEYCODE_VOLUME_MUTE: case KeyEvent.KEYCODE_MUTE:
+            case KeyEvent.KEYCODE_POWER: case KeyEvent.KEYCODE_SLEEP: case KeyEvent.KEYCODE_WAKEUP:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /** A stock screen that comes up within moments of such a key was asked for: leave it. */
+    private boolean keyAsked() {
+        return !plainKey(lastKeyCode) && SystemClock.uptimeMillis() - lastKeyAt < 2500;
+    }
+
+    /** With the stock home switched off (pinned on Google TV) nobody answers the remote's
+     *  Settings and TV keys any more: we do. */
+    private boolean stockKey(KeyEvent e) {
+        int code = e.getKeyCode();
+        if (code != KeyEvent.KEYCODE_SETTINGS && code != KeyEvent.KEYCODE_TV) return false;
+        if (!new Prefs(this).stockOff()) return false;
+        if (e.getAction() == KeyEvent.ACTION_UP) {
+            Intent i = null;
+            if (code == KeyEvent.KEYCODE_SETTINGS) {
+                i = new Intent(android.provider.Settings.ACTION_SETTINGS);
+            } else {
+                Inputs.Item tv = Inputs.tv(this, true);
+                if (tv != null) i = Inputs.intent(tv);
+            }
+            if (i == null) return false;
+            try { startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); } catch (Throwable ignored) {}
+        }
+        return true;
+    }
+
     @Override
     protected boolean onKeyEvent(KeyEvent e) {
         int code = e.getKeyCode();
         lastKeyAt = SystemClock.uptimeMillis();
+        lastKeyCode = code;
+        if (stockKey(e)) return true;
         // 191 = the "Mi" button on Xiaomi remotes (elsewhere it is a gamepad key)
         boolean miKey = code == 191 && android.os.Build.MANUFACTURER.toLowerCase().contains("xiaomi");
         if (code != KeyEvent.KEYCODE_HOME && !miKey) {
@@ -181,6 +228,9 @@ public class HomeKeyService extends AccessibilityService {
             return;
         }
         if (pkg.equals(allowedStockPkg)) return; // opened from our launcher on purpose
+        // Settings / TV / Input key: Google TV draws these panels from its own home (TCL owners
+        // lost both buttons because we kept replacing that home)
+        if (keyAsked()) return;
         if (armed()) {
             // right after Home / power-on: the firmware put its screen over ours
             if (armedRedirects >= 6) return; // it keeps fighting: give up rather than loop
