@@ -31,6 +31,25 @@ public class HomeKeyService extends AccessibilityService {
     /** Set by HomeActivity when the user starts the stock launcher from a tile. */
     static volatile String allowedStockPkg;
 
+    /** The running instance, for ConfigReceiver (key filter switched from the phone). */
+    static volatile HomeKeyService running;
+
+    /** Catch keys only where the phone app found it needed (Prefs.keyFilter): where Home opens
+     *  us by itself the filter only costs key repeat. The redirect of a stock screen that pops
+     *  up at power-on works without it. */
+    void updateKeyFilter() {
+        try {
+            android.accessibilityservice.AccessibilityServiceInfo info = getServiceInfo();
+            if (info == null) return;
+            int flag = android.accessibilityservice.AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
+            int nf = new Prefs(this).keyFilter() ? info.flags | flag : info.flags & ~flag;
+            if (nf != info.flags) {
+                info.flags = nf;
+                setServiceInfo(info);
+            }
+        } catch (Throwable ignored) {}
+    }
+
     private final Set<String> stockHomes = new HashSet<>();
     private long lastRedirect;
     private String lastPkg = "";
@@ -67,6 +86,8 @@ public class HomeKeyService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected() {
+        running = this;
+        updateKeyFilter();
         refreshStockHomes();
         if (SystemClock.elapsedRealtime() < BOOT_WINDOW_MS) { arm(90_000); checkFrontSoon(); }
         screenOn = new BroadcastReceiver() {
@@ -92,6 +113,7 @@ public class HomeKeyService extends AccessibilityService {
 
     @Override
     public void onDestroy() {
+        if (running == this) running = null;
         handler.removeCallbacksAndMessages(null);
         if (screenOn != null) try { unregisterReceiver(screenOn); } catch (Throwable ignored) {}
         super.onDestroy();

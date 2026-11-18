@@ -18,7 +18,7 @@ final class Prefs {
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
             AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
-            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", STOCK_OFF = "stockOff", FAV_BOTTOM = "favBottom", SHELF = "shelf",
+            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", STOCK_OFF = "stockOff", KEY_FILTER = "keyFilter", FAV_BOTTOM = "favBottom", SHELF = "shelf",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
@@ -148,6 +148,10 @@ final class Prefs {
     /** The TV's own home (Google TV) was switched off by TVCleanzer to keep this launcher. */
     boolean stockOff()       { return sp.getBoolean(STOCK_OFF, false); }
     void setStockOff(boolean v) { sp.edit().putBoolean(STOCK_OFF, v).apply(); }
+    /** False when the phone app found that Home opens us by itself: the service then stops
+     *  catching keys (that cost owners key repeat: Volume held moved one step). */
+    boolean keyFilter()      { return sp.getBoolean(KEY_FILTER, true); }
+    void setKeyFilter(boolean v) { sp.edit().putBoolean(KEY_FILTER, v).apply(); }
     void setHomePhotos(boolean v) { sp.edit().putBoolean(HOME_PHOTOS, v).apply(); }
     long photoRev()          { return sp.getLong(PHOTO_REV, 0); }
     void bumpPhotos()        { sp.edit().putLong(PHOTO_REV, System.currentTimeMillis()).apply(); }

@@ -460,7 +460,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 29;
+  static const bundledLauncherVersion = 30;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -662,8 +662,18 @@ class AdbPackageManager {
     } else {
       await adb.shell('cmd package set-home-activity $launcherHome');
     }
+    // Where Home already opens us through the HOME setting, the service must not catch keys:
+    // that costs key repeat (Haier FF Pro, Xiaomi MOEU1: held Volume moved one step). Tested
+    // with the filter off; Xiaomi keeps it for the Mi key.
+    await _setKeyFilter(adb, true);
+    if (_pkgOf(await _resolvedHome(adb)) == launcherPkg &&
+        !(await adb.shell('getprop ro.product.manufacturer')).toLowerCase().contains('xiaomi')) {
+      await _setKeyFilter(adb, false);
+      if (!await _homeOpensOurs(adb)) await _setKeyFilter(adb, true);
+    }
     // Firmwares that force their own launcher on Home: our accessibility service catches the
-    // Home key. It must not only be listed but really running ("bound").
+    // Home key. It must not only be listed but really running ("bound"). (Without the key
+    // filter it still puts our launcher back over a stock screen that comes up at power-on.)
     await _ensureHomeKeyService(adb);
 
     onStep?.call(tr('Проверяем кнопку «Домой»…'));
@@ -1192,6 +1202,12 @@ class AdbPackageManager {
     final back = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
     final declared = (await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -c HomeKeyService')).trim();
     AppLog.error('home key service', 'not running; setting=$back; declared=$declared');
+  }
+
+  /// Launcher 0.29+: whether its service catches remote keys (older ones ignore it).
+  Future<void> _setKeyFilter(AdbClient adb, bool on) async {
+    await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver -a com.tvcleanzer.launcher.APPLY --ez keyFilter $on');
+    await Future<void>.delayed(const Duration(milliseconds: 500));
   }
 
   /// Adds/removes our service in `enabled_accessibility_services`, keeping
