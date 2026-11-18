@@ -460,7 +460,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 27;
+  static const bundledLauncherVersion = 28;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -769,7 +769,14 @@ class AdbPackageManager {
   static bool _neverOff(String p) =>
       p == launcherPkg || p == 'android' || p == 'com.android.systemui' ||
       p == 'com.android.tv.settings' || p == 'com.android.settings' ||
-      _googleTvHomes.contains(p) || p.startsWith('com.yandex.') || p.startsWith('ru.sberdevices.');
+      _googleTvHomes.contains(p) || p.startsWith('com.yandex.') || p.startsWith('ru.sberdevices.') ||
+      _operatorHome(p);
+
+  /// Set-top boxes of TV operators: their home IS the TV service (Dom.ru com.ertelecom.domrutvstb,
+  /// Rostelecom, MTS, Beeline); switching it off would take the channels away.
+  static bool _operatorHome(String p) =>
+      p.startsWith('com.ertelecom.') || p.startsWith('ru.rt.') || p.startsWith('ru.mts.') ||
+      p.startsWith('com.mts.') || p.startsWith('ru.beeline.') || p.startsWith('ru.kion.');
 
   /// What Home really opens when it is not ours: the firmware's own home, when it looks like
   /// one (declares HOME or is known). Null otherwise.
@@ -1524,7 +1531,23 @@ class AdbPackageManager {
     }
     if (o.contains('INSUFFICIENT_STORAGE')) return tr('На телевизоре не хватает места. Сначала сделайте очистку.');
     if (o.contains('INVALID_APK') || o.contains('PARSE_FAILED')) return tr('Файл повреждён или это не приложение Android.');
-    return tr('Установка не удалась: {0}', [o.isEmpty ? '—' : o.split('\n').last]);
+    return tr('Установка не удалась: {0}', [_installReason(o)]);
+  }
+
+  /// The line that says why: «Failure [...]», else the exception line. A Java stack trace ends
+  /// with «... 13 more», which is all a MiTV-MOOQ1 report showed.
+  static String _installReason(String o) {
+    final lines = o.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
+    if (lines.isEmpty) return '—';
+    for (final l in lines) {
+      if (l.contains('Failure') || l.contains('INSTALL_FAILED')) return l;
+    }
+    for (final l in lines) {
+      if (!l.startsWith('at ') && !l.startsWith('...') && RegExp(r'Exception|Error').hasMatch(l)) {
+        return l.length > 200 ? l.substring(0, 200) : l;
+      }
+    }
+    return lines.last;
   }
 
   // ── Package DB ───────────────────────────────────────────────────────────────

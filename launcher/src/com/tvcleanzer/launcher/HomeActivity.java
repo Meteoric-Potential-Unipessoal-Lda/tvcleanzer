@@ -1016,6 +1016,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
     };
 
+    private static boolean vpnOn(android.net.ConnectivityManager cm) {
+        try {
+            for (android.net.Network n : cm.getAllNetworks()) {
+                android.net.NetworkCapabilities nc = cm.getNetworkCapabilities(n);
+                if (nc != null && nc.hasTransport(android.net.NetworkCapabilities.TRANSPORT_VPN)) return true;
+            }
+        } catch (Throwable ignored) {}
+        return false;
+    }
+
     @SuppressWarnings("deprecation")
     private String networkLabel() {
         try {
@@ -1023,9 +1033,12 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
             android.net.NetworkInfo ni = cm == null ? null : cm.getActiveNetworkInfo();
             if (ni == null || !ni.isConnected()) return T.t("Нет сети");
-            if (ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET) return "Ethernet";
-            if (ni.getType() == android.net.ConnectivityManager.TYPE_WIFI) return "Wi-Fi";
-            return T.t("В сети");
+            // The stock home showed «VPN is on» (Xiaomi, Haier owners missed it): we say it here.
+            String vpn = vpnOn(cm) ? " · VPN" : "";
+            if (ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET) return "Ethernet" + vpn;
+            if (ni.getType() == android.net.ConnectivityManager.TYPE_WIFI) return "Wi-Fi" + vpn;
+            if (ni.getType() == android.net.ConnectivityManager.TYPE_VPN) return "VPN";
+            return T.t("В сети") + vpn;
         } catch (Throwable t) {
             return T.t("Сеть");
         }

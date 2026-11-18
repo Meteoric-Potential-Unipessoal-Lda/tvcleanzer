@@ -11,6 +11,11 @@ class Protection {
     r'^com\.android\.(systemui|settings|providers\..*|shell|phone|bluetooth|packageinstaller|permissioncontroller|inputdevices|externalstorage|webview|networkstack.*|tv\.settings|tv\.remote.*|keychain|location\.fused|se|nfc|server\..*|captiveportallogin|certinstaller|documentsui|vpndialogs|wallpaperbackup|backupconfirm|proxyhandler|sharedstoragebackup|dynsystem|localtransport|statementservice|tv)$',
     r'^com\.google\.android\.(gms|gsf|gsf\.login|ext\..*|webview|packageinstaller|permissioncontroller|tv\.remote\.service|tvlauncher|apps\.tv\.launcherx|leanbacklauncher|inputmethod\..*|tts|configupdater|networkstack.*|modulemetadata|overlay\..*)$',
     r'^com\.android\.vending$',
+    // Mainline modules of Android 13–14: pm refuses them ("not installed for 0", "still enabled"),
+    // so they only cluttered the list with errors (Philips Google TV report).
+    r'^com\.(google\.)?android\.(adservices\.api|ondevicepersonalization\.services|federatedcompute|health\.connect\.backuprestore)$',
+    // Philips firmware keeps these on whatever pm says (same report).
+    r'^org\.droidtv\.(ipcontrol|control4adapterservice|matter)$',
     // Live Channels: on many Android TVs (Xiaomi Mi TV 4S and others) it is the antenna/cable player
     // behind «Live TV»; without it Live TV only shows the last HDMI input (MiTV L55M5-5ARU report).
     r'^com\.google\.android\.tv$',

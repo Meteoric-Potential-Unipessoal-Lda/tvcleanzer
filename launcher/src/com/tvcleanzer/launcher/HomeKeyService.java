@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -189,11 +190,49 @@ public class HomeKeyService extends AccessibilityService {
         return true;
     }
 
+    private Runnable volRepeat;
+
+    private void stopVolRepeat() {
+        if (volRepeat != null) handler.removeCallbacks(volRepeat);
+        volRepeat = null;
+    }
+
+    /** Keys that pass through an accessibility key filter come back without auto-repeat, so
+     *  holding Volume moved the level one step only (Xiaomi MOEU1 and Haier reports). The press
+     *  itself goes on as usual; while the key is held we keep stepping the volume. If the
+     *  system does repeat it on its own (a DOWN with repeatCount > 0 arrives), we step aside. */
+    private void volumeKey(KeyEvent e) {
+        int code = e.getKeyCode();
+        if (code != KeyEvent.KEYCODE_VOLUME_UP && code != KeyEvent.KEYCODE_VOLUME_DOWN) return;
+        if (e.getAction() == KeyEvent.ACTION_UP || e.getRepeatCount() > 0) {
+            stopVolRepeat();
+            return;
+        }
+        if (e.getAction() != KeyEvent.ACTION_DOWN) return;
+        stopVolRepeat();
+        final int dir = code == KeyEvent.KEYCODE_VOLUME_UP ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER;
+        final AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (am == null) return;
+        volRepeat = new Runnable() {
+            int steps;
+            @Override public void run() {
+                if (++steps > 100) { stopVolRepeat(); return; } // the UP got lost: don't run away
+                try {
+                    am.adjustSuggestedStreamVolume(dir, AudioManager.USE_DEFAULT_STREAM_TYPE,
+                            AudioManager.FLAG_SHOW_UI);
+                } catch (Throwable ignored) {}
+                handler.postDelayed(this, 110);
+            }
+        };
+        handler.postDelayed(volRepeat, 450);
+    }
+
     @Override
     protected boolean onKeyEvent(KeyEvent e) {
         int code = e.getKeyCode();
         lastKeyAt = SystemClock.uptimeMillis();
         lastKeyCode = code;
+        volumeKey(e);
         if (stockKey(e)) return true;
         // 191 = the "Mi" button on Xiaomi remotes (elsewhere it is a gamepad key)
         boolean miKey = code == 191 && android.os.Build.MANUFACTURER.toLowerCase().contains("xiaomi");
