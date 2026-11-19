@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 /** Capsule button for the top bar (tvOS style): glassy at rest, white when focused. */
 final class Pill extends TextView {
-    Pill(Context c, String text) {
+    Pill(Context c, CharSequence text) {
         super(c);
         setText(text);
         setTextSize(17);

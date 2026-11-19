@@ -1027,20 +1027,73 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     }
 
     @SuppressWarnings("deprecation")
-    private String networkLabel() {
+    private CharSequence networkLabel() {
         try {
             android.net.ConnectivityManager cm =
                     (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
             android.net.NetworkInfo ni = cm == null ? null : cm.getActiveNetworkInfo();
             if (ni == null || !ni.isConnected()) return T.t("Нет сети");
-            // The stock home showed «VPN is on» (Xiaomi, Haier owners missed it): we say it here.
-            String vpn = vpnOn(cm) ? " · VPN" : "";
-            if (ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET) return "Ethernet" + vpn;
-            if (ni.getType() == android.net.ConnectivityManager.TYPE_WIFI) return "Wi-Fi" + vpn;
-            if (ni.getType() == android.net.ConnectivityManager.TYPE_VPN) return "VPN";
-            return T.t("В сети") + vpn;
+            // The stock home showed «VPN is on» (Xiaomi, Haier owners missed it); ByeDPI and other
+            // local VPNs count too. Shown as a green «🔒 VPN» badge right in the network pill.
+            boolean vpn = vpnOn(cm) || ni.getType() == android.net.ConnectivityManager.TYPE_VPN;
+            String name;
+            if (ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET) name = "Ethernet";
+            else if (ni.getType() == android.net.ConnectivityManager.TYPE_WIFI) name = "Wi-Fi";
+            else name = T.t("В сети");
+            if (!vpn) return name;
+            android.text.SpannableStringBuilder sb = new android.text.SpannableStringBuilder(name);
+            int at = sb.length();
+            sb.append('\uFFFC');
+            sb.setSpan(new VpnBadge(getResources().getDisplayMetrics().density), at, at + 1,
+                    android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return sb;
         } catch (Throwable t) {
             return T.t("Сеть");
+        }
+    }
+
+    /** Green capsule with a padlock and «VPN», drawn inside the network pill's text. */
+    static final class VpnBadge extends android.text.style.ReplacementSpan {
+        private final float dp;
+        private final android.graphics.Paint p = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        VpnBadge(float density) { dp = density; }
+
+        private void prep(android.graphics.Paint base) {
+            p.set(base);
+            p.setTextSize(base.getTextSize() * 0.7f);
+            p.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.BOLD));
+        }
+        private float lockW() { return p.getTextSize() * 0.62f; }
+        private float boxW() { return 7 * dp + lockW() + 4 * dp + p.measureText("VPN") + 8 * dp; }
+
+        @Override public int getSize(android.graphics.Paint paint, CharSequence text, int start, int end,
+                                     android.graphics.Paint.FontMetricsInt fm) {
+            prep(paint);
+            return Math.round(9 * dp + boxW());
+        }
+
+        @Override public void draw(android.graphics.Canvas c, CharSequence text, int start, int end,
+                                   float x, int top, int y, int bottom, android.graphics.Paint paint) {
+            prep(paint);
+            float h = p.getTextSize() * 1.55f;
+            float cy = y + (paint.ascent() + paint.descent()) / 2f;
+            float l = x + 9 * dp, w = boxW();
+            p.setStyle(android.graphics.Paint.Style.FILL);
+            p.setColor(0xFF22B455);
+            c.drawRoundRect(new android.graphics.RectF(l, cy - h / 2, l + w, cy + h / 2), h / 2, h / 2, p);
+            // padlock: shackle arc + body
+            float lw = lockW(), lx = l + 7 * dp;
+            float bodyH = lw * 0.72f, bodyTop = cy - bodyH * 0.25f;
+            p.setColor(0xFFFFFFFF);
+            c.drawRoundRect(new android.graphics.RectF(lx, bodyTop, lx + lw, bodyTop + bodyH), lw * 0.15f, lw * 0.15f, p);
+            p.setStyle(android.graphics.Paint.Style.STROKE);
+            p.setStrokeWidth(Math.max(1.5f, lw * 0.14f));
+            float sr = lw * 0.3f, scx = lx + lw / 2;
+            c.drawArc(new android.graphics.RectF(scx - sr, bodyTop - sr * 1.6f, scx + sr, bodyTop + sr * 0.4f), 180, 180, false, p);
+            c.drawLine(scx - sr, bodyTop - sr * 0.6f, scx - sr, bodyTop, p);
+            c.drawLine(scx + sr, bodyTop - sr * 0.6f, scx + sr, bodyTop, p);
+            p.setStyle(android.graphics.Paint.Style.FILL);
+            c.drawText("VPN", lx + lw + 4 * dp, cy - (p.ascent() + p.descent()) / 2f, p);
         }
     }
 
