@@ -109,5 +109,9 @@
 "гроза": "momaqaldiroq",
 "облачно": "bulutli",
 "Показывать": "Ko‘rsatish",
-"Скрыто": "Yashirilgan"
+"Скрыто": "Yashirilgan",
+"ОЗУ {0} / {1} ГБ": "RAM {0} / {1} GB",
+"Освобождаем память…": "Xotira bo‘shatilmoqda…",
+"Освобождено {0} МБ": "{0} MB bo‘shatildi",
+"Лишнего в памяти нет": "Xotirada ortiqcha narsa yo‘q"
 }

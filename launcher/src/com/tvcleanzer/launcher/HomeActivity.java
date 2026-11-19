@@ -154,6 +154,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         maybeAutostart();
         main.removeCallbacks(weatherTick);
         main.post(weatherTick);
+        main.removeCallbacks(memTick);
+        main.postDelayed(memTick, 10 * 1000L);
         main.removeCallbacks(homePhotoTick);
         main.postDelayed(homePhotoTick, Math.max(30, prefs.photoSec()) * 1000L);
     }
@@ -693,6 +695,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onPause() {
         resumed = false;
         main.removeCallbacks(weatherTick);
+        main.removeCallbacks(memTick);
         main.removeCallbacks(homePhotoTick);
         stopAmbient();
         super.onPause();
@@ -1202,6 +1205,17 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         left.addView(timeRow, trp);
         bar.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
+        memPill = null;
+        if (prefs.memPill()) {
+            Pill mem = new Pill(this, Memory.label(this));
+            memPill = mem;
+            mem.setOnClickListener(v -> freeMemory());
+            LinearLayout.LayoutParams mp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mp.rightMargin = Ui.dp(this, 14);
+            bar.addView(mem, mp);
+        }
+
         Pill net = new Pill(this, networkLabel());
         netPill = net;
         net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
@@ -1253,6 +1267,31 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     }
 
     private Pill netPill;
+    private Pill memPill;
+    private boolean freeing;
+
+    /** RAM pill: closes background apps, then says how much came free. */
+    private void freeMemory() {
+        if (freeing) return;
+        freeing = true;
+        if (memPill != null) memPill.setText(T.t("Освобождаем память…"));
+        io.execute(() -> {
+            final long mb = Memory.free(this);
+            main.post(() -> {
+                freeing = false;
+                if (memPill != null) memPill.setText(Memory.label(this));
+                Toast.makeText(this, mb >= 10 ? T.f("Освобождено {0} МБ", String.valueOf(mb))
+                        : T.t("Лишнего в памяти нет"), Toast.LENGTH_SHORT).show();
+            });
+        });
+    }
+
+    private final Runnable memTick = new Runnable() {
+        @Override public void run() {
+            if (memPill != null && !freeing) memPill.setText(Memory.label(HomeActivity.this));
+            if (resumed) main.postDelayed(this, 10 * 1000L);
+        }
+    };
 
     private final BroadcastReceiver netChanged = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) {

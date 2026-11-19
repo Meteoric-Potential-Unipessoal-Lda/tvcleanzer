@@ -688,6 +688,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Icons',
     'ТВ-баннеры': 'TV banners',
     'Название приложения над плитками': 'App name above the tiles',
+    'Память на главном экране': 'Memory on the home screen',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Pressing it closes background apps and frees memory',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -1376,6 +1378,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Іконки',
     'ТВ-баннеры': 'ТВ-банери',
     'Название приложения над плитками': 'Назва застосунку над плитками',
+    'Память на главном экране': 'Пам’ять на головному екрані',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Натискання закриває застосунки у фоні й звільняє пам’ять',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -2064,6 +2068,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Iconos',
     'ТВ-баннеры': 'Banners de TV',
     'Название приложения над плитками': 'Nombre de la app sobre los mosaicos',
+    'Память на главном экране': 'Memoria en la pantalla de inicio',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Al pulsarlo se cierran las apps en segundo plano y se libera memoria',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -2752,6 +2758,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Ícones',
     'ТВ-баннеры': 'Banners de TV',
     'Название приложения над плитками': 'Nome da app acima dos mosaicos',
+    'Память на главном экране': 'Memória no ecrã inicial',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Ao premir, fecha as apps em segundo plano e liberta memória',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -3440,6 +3448,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Symbole',
     'ТВ-баннеры': 'TV-Banner',
     'Название приложения над плитками': 'App-Name über den Kacheln',
+    'Память на главном экране': 'Speicher auf dem Startbildschirm',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Drücken schließt Hintergrund-Apps und gibt Speicher frei',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -4128,6 +4138,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Icônes',
     'ТВ-баннеры': 'Bannières TV',
     'Название приложения над плитками': 'Nom de l\'appli au-dessus des tuiles',
+    'Память на главном экране': 'Mémoire sur l’écran d’accueil',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Appuyer ferme les applis en arrière-plan et libère la mémoire',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -4816,6 +4828,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Icone',
     'ТВ-баннеры': 'Banner TV',
     'Название приложения над плитками': 'Nome dell\'app sopra i riquadri',
+    'Память на главном экране': 'Memoria nella schermata Home',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Premendolo chiude le app in background e libera memoria',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -5504,6 +5518,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Іконкі',
     'ТВ-баннеры': 'ТБ-банеры',
     'Название приложения над плитками': 'Назва праграмы над плиткамі',
+    'Память на главном экране': 'Памяць на галоўным экране',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Націск закрывае праграмы ў фоне і вызваляе памяць',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -6192,6 +6208,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Белгішелер',
     'ТВ-баннеры': 'ТД баннерлері',
     'Название приложения над плитками': 'Плиткалар үстіндегі қолданба атауы',
+    'Память на главном экране': 'Басты экрандағы жад',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Басқанда фондағы қолданбалар жабылып, жад босайды',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -6880,6 +6898,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Belgilar',
     'ТВ-баннеры': 'TV bannerlari',
     'Название приложения над плитками': 'Plitkalar ustida ilova nomi',
+    'Память на главном экране': 'Bosh ekranda xotira',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Bosilganda fondagi ilovalar yopiladi va xotira bo‘shaydi',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -7568,6 +7588,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Պատկերակներ',
     'ТВ-баннеры': 'TV բաններներ',
     'Название приложения над плитками': 'Հավելվածի անունը սալիկների վերևում',
+    'Память на главном экране': 'Հիշողությունը գլխավոր էկրանին',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Սեղմելիս փակում է ֆոնային հավելվածները և ազատում հիշողությունը',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -8256,6 +8278,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'İkonlar',
     'ТВ-баннеры': 'TV bannerləri',
     'Название приложения над плитками': 'Plitələrin üstündə tətbiq adı',
+    'Память на главном экране': 'Əsas ekranda yaddaş',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Basanda arxa fondakı tətbiqlər bağlanır və yaddaş boşalır',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -8944,6 +8968,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'ხატულები',
     'ТВ-баннеры': 'TV ბანერები',
     'Название приложения над плитками': 'აპის სახელი ფილების ზემოთ',
+    'Память на главном экране': 'მეხსიერება მთავარ ეკრანზე',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'დაჭერა ხურავს ფონურ აპებს და ათავისუფლებს მეხსიერებას',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -9632,6 +9658,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Сүрөтчөлөр',
     'ТВ-баннеры': 'ТВ баннерлери',
     'Название приложения над плитками': 'Плиткалардын үстүндө колдонмонун аты',
+    'Память на главном экране': 'Башкы экрандагы эс',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Басканда фондогу колдонмолор жабылып, эс бошойт',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -10320,6 +10348,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Simgeler',
     'ТВ-баннеры': 'TV bannerları',
     'Название приложения над плитками': 'Kutucukların üstünde uygulama adı',
+    'Память на главном экране': 'Ana ekranda bellek',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Basınca arka plandaki uygulamaları kapatır ve bellek boşaltır',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -11008,6 +11038,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Ikony',
     'ТВ-баннеры': 'Banery TV',
     'Название приложения над плитками': 'Nazwa aplikacji nad kafelkami',
+    'Память на главном экране': 'Pamięć na ekranie głównym',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Naciśnięcie zamyka aplikacje w tle i zwalnia pamięć',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -11696,6 +11728,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Pictograme',
     'ТВ-баннеры': 'Bannere TV',
     'Название приложения над плитками': 'Numele aplicației deasupra plăcilor',
+    'Память на главном экране': 'Memoria pe ecranul principal',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Apăsarea închide aplicațiile din fundal și eliberează memorie',
   },
   'zh': {
     'Полночь': '午夜',
@@ -12384,6 +12418,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': '图标',
     'ТВ-баннеры': '电视横幅',
     'Название приложения над плитками': '磁贴上方的应用名称',
+    'Память на главном экране': '主屏幕显示内存',
+    'Нажатие закрывает приложения в фоне и освобождает память': '按下即可关闭后台应用并释放内存',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -13072,6 +13108,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'アイコン',
     'ТВ-баннеры': 'TVバナー',
     'Название приложения над плитками': 'タイルの上にアプリ名',
+    'Память на главном экране': 'ホーム画面にメモリを表示',
+    'Нажатие закрывает приложения в фоне и освобождает память': '押すとバックグラウンドのアプリを閉じてメモリを解放',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -13760,6 +13798,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': '아이콘',
     'ТВ-баннеры': 'TV 배너',
     'Название приложения над плитками': '타일 위 앱 이름',
+    'Память на главном экране': '홈 화면에 메모리 표시',
+    'Нажатие закрывает приложения в фоне и освобождает память': '누르면 백그라운드 앱을 닫고 메모리를 확보합니다',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -14448,6 +14488,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'आइकन',
     'ТВ-баннеры': 'टीवी बैनर',
     'Название приложения над плитками': 'टाइलों के ऊपर ऐप का नाम',
+    'Память на главном экране': 'होम स्क्रीन पर मेमोरी',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'दबाने पर बैकग्राउंड ऐप बंद होते हैं और मेमोरी खाली होती है',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -15136,6 +15178,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Ikon',
     'ТВ-баннеры': 'Banner TV',
     'Название приложения над плитками': 'Nama aplikasi di atas ubin',
+    'Память на главном экране': 'Memori di layar utama',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Menekannya menutup aplikasi latar belakang dan membebaskan memori',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -15824,6 +15868,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Biểu tượng',
     'ТВ-баннеры': 'Banner TV',
     'Название приложения над плитками': 'Tên ứng dụng phía trên các ô',
+    'Память на главном экране': 'Bộ nhớ trên màn hình chính',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Nhấn để đóng ứng dụng chạy nền và giải phóng bộ nhớ',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -16512,6 +16558,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'ไอคอน',
     'ТВ-баннеры': 'แบนเนอร์ทีวี',
     'Название приложения над плитками': 'ชื่อแอปเหนือไทล์',
+    'Память на главном экране': 'หน่วยความจำบนหน้าจอหลัก',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'กดเพื่อปิดแอปเบื้องหลังและคืนหน่วยความจำ',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -17200,6 +17248,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Pictogrammen',
     'ТВ-баннеры': 'Tv-banners',
     'Название приложения над плитками': 'App-naam boven de tegels',
+    'Память на главном экране': 'Geheugen op het startscherm',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Indrukken sluit apps op de achtergrond en maakt geheugen vrij',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -17888,6 +17938,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Ikony',
     'ТВ-баннеры': 'TV bannery',
     'Название приложения над плитками': 'Název aplikace nad dlaždicemi',
+    'Память на главном экране': 'Paměť na hlavní obrazovce',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Stisknutí zavře aplikace na pozadí a uvolní paměť',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -18576,6 +18628,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Εικονίδια',
     'ТВ-баннеры': 'Banner TV',
     'Название приложения над плитками': 'Όνομα εφαρμογής πάνω από τα πλακίδια',
+    'Память на главном экране': 'Μνήμη στην αρχική οθόνη',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Το πάτημα κλείνει τις εφαρμογές στο παρασκήνιο και ελευθερώνει μνήμη',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -19264,6 +19318,8 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Ikonok',
     'ТВ-баннеры': 'TV-bannerek',
     'Название приложения над плитками': 'Alkalmazásnév a csempék fölött',
+    'Память на главном экране': 'Memória a kezdőképernyőn',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Megnyomva bezárja a háttérben futó alkalmazásokat és memóriát szabadít fel',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -19952,5 +20008,7 @@ const Map<String, Map<String, String>> translations = {
     'Иконки': 'Ikoner',
     'ТВ-баннеры': 'TV-banners',
     'Название приложения над плитками': 'Appens namn ovanför rutorna',
+    'Память на главном экране': 'Minne på hemskärmen',
+    'Нажатие закрывает приложения в фоне и освобождает память': 'Ett tryck stänger appar i bakgrunden och frigör minne',
   },
 };

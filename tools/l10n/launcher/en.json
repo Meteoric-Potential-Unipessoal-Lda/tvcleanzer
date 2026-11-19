@@ -109,5 +109,9 @@
 "гроза": "thunderstorm",
 "облачно": "cloudy",
 "Показывать": "Shown",
-"Скрыто": "Hidden"
+"Скрыто": "Hidden",
+"ОЗУ {0} / {1} ГБ": "RAM {0} / {1} GB",
+"Освобождаем память…": "Freeing memory…",
+"Освобождено {0} МБ": "Freed {0} MB",
+"Лишнего в памяти нет": "Nothing extra in memory"
 }

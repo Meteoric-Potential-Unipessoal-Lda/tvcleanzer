@@ -109,5 +109,9 @@
 "гроза": "onweer",
 "облачно": "bewolkt",
 "Показывать": "Tonen",
-"Скрыто": "Verborgen"
+"Скрыто": "Verborgen",
+"ОЗУ {0} / {1} ГБ": "RAM {0} / {1} GB",
+"Освобождаем память…": "Geheugen vrijmaken…",
+"Освобождено {0} МБ": "{0} MB vrijgemaakt",
+"Лишнего в памяти нет": "Niets overbodigs in het geheugen"
 }

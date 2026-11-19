@@ -371,6 +371,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         seg(tr('Вид главного экрана'), [tr('Плитки'), tr('Часы и док'), tr('Витрина')], look.style,
             (v) => _setLook(look.copyWith(style: v))),
         const Gap(14),
+        sw(tr('Память на главном экране'), tr('Нажатие закрывает приложения в фоне и освобождает память'), look.memPill,
+            (v) => _setLook(look.copyWith(memPill: v))),
+        const Gap(8),
         if (look.style == 2) ...[
           sw(tr('Название приложения над плитками'), null, look.heroTitle,
               (v) => _setLook(look.copyWith(heroTitle: v))),

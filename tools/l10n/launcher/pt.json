@@ -109,5 +109,9 @@
 "гроза": "trovoada",
 "облачно": "nublado",
 "Показывать": "Visível",
-"Скрыто": "Oculto"
+"Скрыто": "Oculto",
+"ОЗУ {0} / {1} ГБ": "RAM {0} / {1} GB",
+"Освобождаем память…": "A libertar memória…",
+"Освобождено {0} МБ": "Libertados {0} MB",
+"Лишнего в памяти нет": "Nada a mais na memória"
 }

@@ -109,5 +109,9 @@
 "гроза": "Gewitter",
 "облачно": "bewölkt",
 "Показывать": "Anzeigen",
-"Скрыто": "Ausgeblendet"
+"Скрыто": "Ausgeblendet",
+"ОЗУ {0} / {1} ГБ": "RAM {0} / {1} GB",
+"Освобождаем память…": "Speicher wird freigegeben…",
+"Освобождено {0} МБ": "{0} MB freigegeben",
+"Лишнего в памяти нет": "Nichts Überflüssiges im Speicher"
 }

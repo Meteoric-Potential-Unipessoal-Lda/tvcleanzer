@@ -107,6 +107,8 @@ public class SettingsActivity extends Activity {
         addRow(skin, T.t("Вид главного экрана"), styleNames[prefs.style()], () -> prefs.setStyle((prefs.style() + 1) % 3));
         String[] iconNames = {T.t("Авто"), T.t("Иконки"), T.t("ТВ-баннеры")};
         addRow(skin, T.t("Иконки приложений"), iconNames[prefs.icons()], () -> prefs.setIcons((prefs.icons() + 1) % 3));
+        addRow(skin, T.t("Память на главном экране"), prefs.memPill() ? T.t("Показывать") : T.t("Скрыто"),
+                () -> prefs.setMemPill(!prefs.memPill()));
         if (prefs.style() == Prefs.STYLE_SHOWCASE) {
             addRow(skin, T.t("Название приложения над плитками"), prefs.heroTitle() ? T.t("Показывать") : T.t("Скрыто"),
                     () -> prefs.setHeroTitle(!prefs.heroTitle()));

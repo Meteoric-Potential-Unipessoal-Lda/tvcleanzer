@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="35"
-    android:versionName="0.35">
+    android:versionCode="36"
+    android:versionName="0.36">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- weather on the clock home screen (Open-Meteo); nothing else goes online -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />

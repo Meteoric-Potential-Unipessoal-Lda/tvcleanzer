@@ -109,5 +109,9 @@
 "гроза": "badai petir",
 "облачно": "berawan",
 "Показывать": "Tampilkan",
-"Скрыто": "Disembunyikan"
+"Скрыто": "Disembunyikan",
+"ОЗУ {0} / {1} ГБ": "RAM {0} / {1} GB",
+"Освобождаем память…": "Membebaskan memori…",
+"Освобождено {0} МБ": "{0} MB dibebaskan",
+"Лишнего в памяти нет": "Tidak ada yang berlebih di memori"
 }
