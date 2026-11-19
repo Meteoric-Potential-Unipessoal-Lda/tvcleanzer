@@ -381,6 +381,11 @@ class DemoAdbClient extends AdbClient {
       _applyBroadcast(c);
       return 'Broadcast completed: result=0\n';
     }
+    if (c.startsWith('content query') && c.contains('/inputs')) {
+      return 'Row: 0 id=tv:com.android.tv, label=ТВ\n'
+          'Row: 1 id=com.demo.tvinput/.HdmiService/HW1, label=HDMI 1\n'
+          'Row: 2 id=com.demo.tvinput/.HdmiService/HW2, label=HDMI 2\n';
+    }
     if (c.startsWith('content query') && c.contains('/apps')) return _appsRows();
     if (c.startsWith('content query') && c.endsWith('/settings')) {
       final rows = {'kids': s.kids ? 1 : 0, 'pin': s.pin ? 1 : 0, 'wallpaper': s.wallpaper ? 1 : 0,
@@ -451,7 +456,10 @@ class DemoAdbClient extends AdbClient {
       _s.look['weatherCity'] = v == '""' || v.isEmpty ? '-' : v;
     }
     final au = RegExp(r'--es autostart (\S+)').firstMatch(c);
-    if (au != null) _s.look['autostart'] = au.group(1) == '""' ? '-' : au.group(1)!;
+    if (au != null) {
+      final v = au.group(1)!.replaceAll("'", '');
+      _s.look['autostart'] = v == '""' || v.isEmpty ? '-' : v;
+    }
     for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon|photoSec|homePhotos|appsBelow) (\S+)').allMatches(c)) {
       final v = m.group(2)!;
       _s.look[m.group(1)!] = v == 'true' ? '1' : v == 'false' ? '0' : v;

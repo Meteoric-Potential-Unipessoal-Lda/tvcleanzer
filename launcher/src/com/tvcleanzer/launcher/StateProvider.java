@@ -16,6 +16,7 @@ import java.util.Set;
  * State for the TVCleanzer phone app, over ADB:
  *   content query --uri content://com.tvcleanzer.launcher.state/apps
  *   content query --uri content://com.tvcleanzer.launcher.state/settings
+ *   content query --uri content://com.tvcleanzer.launcher.state/inputs
  *   content write --uri content://com.tvcleanzer.launcher.state/wallpaper < photo.jpg
  * Protected by android.permission.DUMP: ADB shell has it, ordinary apps don't.
  */
@@ -61,6 +62,14 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"favBottom", p.favBottom() ? 1 : 0});
             c.addRow(new Object[]{"shelf", p.shelf()});
             c.addRow(new Object[]{"prevDream", p.prevDream().isEmpty() ? "-" : p.prevDream()});
+            return c;
+        }
+        if ("inputs".equals(path)) {
+            // HDMI/AV and «ТВ», for «when the TV is switched on, open …» on the phone (0.31+)
+            MatrixCursor c = new MatrixCursor(new String[]{"id", "label"});
+            for (Inputs.Item it : Inputs.load(getContext())) {
+                c.addRow(new Object[]{it.id, it.label.replace('\n', ' ')});
+            }
             return c;
         }
         // apps: label last, so commas in names don't break parsing on the phone

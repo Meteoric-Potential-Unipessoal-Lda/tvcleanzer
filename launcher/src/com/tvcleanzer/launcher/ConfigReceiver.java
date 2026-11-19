@@ -63,7 +63,8 @@ public class ConfigReceiver extends BroadcastReceiver {
         }
         if (intent.hasExtra("autostart")) {
             String a = intent.getStringExtra("autostart");
-            p.setAutostart(a != null && a.matches("[A-Za-z0-9_.]+") ? a : "");
+            // a package, or a TV input: «input:<TvInputInfo id>» (HDMI…) / «input:tv:<pkg>» (live TV)
+            p.setAutostart(a != null && (a.matches("[A-Za-z0-9_.]+") || a.matches("input:[A-Za-z0-9_.:/$-]+")) ? a : "");
         }
 
         String[] fav = intent.getStringArrayExtra("favorites");

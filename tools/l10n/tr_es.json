@@ -668,5 +668,14 @@
 "Primero prueba los pasos de las pestañas «Yandex TV» y «Sin depuración».",
 "En el nuevo firmware YaOS X, Yandex quitó la depuración y bloqueó el menú de fábrica. Si no hay ni sección «Depuración» ni menú de servicio, no se puede activar ADB.",
 "Sin depuración por red, ni TVCleanzer ni ninguna app parecida puede conectarse al televisor. Si Yandex devuelve la depuración en una actualización, todo funcionará.",
-"Otra forma de entrar al menú de servicio: en la pantalla de inicio mantén pulsado Menu (tres rayas) 1 segundo y luego pulsa ← ↑ ← ↑ y Atrás. Busca ADB (normalmente Other options → ADB Mode) y ponlo en On."
+"Otra forma de entrar al menú de servicio: en la pantalla de inicio mantén pulsado Menu (tres rayas) 1 segundo y luego pulsa ← ↑ ← ↑ y Atrás. Busca ADB (normalmente Other options → ADB Mode) y ponlo en On.",
+"Entrada: {0}",
+"Restaurar todo lo oculto",
+"Incluso sin historial: TVCleanzer revisa el propio televisor y vuelve a activar todo lo que pudo ocultar en él. La pantalla de inicio original se restaura en la pestaña «Launcher».",
+"¿Restaurar todo en «{0}»?",
+"Volveremos a activar todas las apps que TVCleanzer pudo ocultar en este televisor y devolveremos la velocidad normal de las animaciones. Tus apps y el launcher se quedan.",
+"Apps restauradas: {0}.",
+"Las animaciones vuelven a la velocidad normal.",
+"No hay apps ocultas: el televisor ya está como antes.",
+"No se restauraron: {0}. Detalles en el informe «?»."
 ]

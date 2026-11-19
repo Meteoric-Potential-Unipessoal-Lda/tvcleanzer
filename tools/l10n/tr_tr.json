@@ -668,5 +668,14 @@
 "Önce “Yandex TV” ve “Hata ayıklama yok” sekmelerindeki adımları deneyin.",
 "Yeni YaOS X yazılımında Yandex hata ayıklamayı kaldırdı ve fabrika menüsünü kilitledi. Ne “Hata ayıklama” bölümü ne de servis menüsü varsa ADB açılamaz.",
 "Ağ üzerinden hata ayıklama olmadan ne TVCleanzer ne de benzer bir uygulama televizyona bağlanabilir. Yandex hata ayıklamayı bir güncellemeyle geri getirirse her şey çalışır.",
-"Servis menüsüne girmenin bir yolu daha: ana ekranda Menu (üç çizgi) tuşunu 1 saniye basılı tutun, ardından ← ↑ ← ↑ ve Geri tuşlarına basın. Orada ADB’yi bulun (genelde Other options → ADB Mode) ve On yapın."
+"Servis menüsüne girmenin bir yolu daha: ana ekranda Menu (üç çizgi) tuşunu 1 saniye basılı tutun, ardından ← ↑ ← ↑ ve Geri tuşlarına basın. Orada ADB’yi bulun (genelde Other options → ADB Mode) ve On yapın.",
+"Kaynak: {0}",
+"Gizlenen her şeyi geri getir",
+"Geçmiş olmasa bile: TVCleanzer televizyonun kendisini kontrol eder ve orada gizlemiş olabileceği her şeyi yeniden açar. Orijinal ana ekran «Başlatıcı» sekmesinden geri getirilir.",
+"«{0}» üzerinde her şey geri getirilsin mi?",
+"TVCleanzer’ın bu televizyonda gizlemiş olabileceği tüm uygulamaları açacak ve animasyonları normal hıza döndüreceğiz. Kendi uygulamalarınız ve başlatıcı kalır.",
+"Geri gelen uygulamalar: {0}.",
+"Animasyonlar yeniden normal hızda.",
+"Gizli uygulama yok: televizyon zaten eskisi gibi.",
+"Geri gelmeyenler: {0}. Ayrıntılar «?» raporunda."
 ]

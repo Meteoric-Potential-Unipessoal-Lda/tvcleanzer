@@ -156,6 +156,18 @@ class CleanResult {
   }
 }
 
+/// Result of «Вернуть всё скрытое» (History): what came back on the TV, what did not,
+/// and whether the animations were put back to normal speed.
+class RestoreAllResult {
+  final List<String> restored;
+  final List<String> failed;
+  final Map<String, String> labels; // packageName -> human name (from the database)
+  final bool animations;
+  const RestoreAllResult({required this.restored, required this.failed,
+      required this.labels, required this.animations});
+  String labelOf(String p) => labels[p] ?? p;
+}
+
 /// Result of "Ускорить": free RAM before/after, cache freed, previous
 /// animation settings (for undo).
 class BoostResult {
@@ -189,8 +201,16 @@ class LauncherApp {
       required this.hidden, required this.kids});
 }
 
+/// A TV input (HDMI, AV, «ТВ») as the launcher reports it (0.31+): the autostart choice.
+class LauncherInput {
+  final String id;
+  final String label;
+  const LauncherInput(this.id, this.label);
+}
+
 class LauncherState {
   final List<LauncherApp> apps;
+  final List<LauncherInput> inputs;
   final bool kids;
   final bool hasPin;
   final bool hasWallpaper;
@@ -200,7 +220,7 @@ class LauncherState {
   final Map<String, String> settings;
   const LauncherState({required this.apps, required this.kids,
       required this.hasPin, required this.hasWallpaper,
-      this.version = 0, this.settings = const {}});
+      this.version = 0, this.settings = const {}, this.inputs = const []});
 }
 
 /// An app on the TV for the "Apps" tab: open it on the TV, uninstall it.

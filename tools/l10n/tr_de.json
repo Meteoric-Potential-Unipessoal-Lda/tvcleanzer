@@ -668,5 +668,14 @@
 "Probiere zuerst die Schritte in den Reitern „Yandex TV“ und „Kein Debugging“.",
 "In der neuen YaOS-X-Firmware hat Yandex das Debugging entfernt und das Werksmenü gesperrt. Gibt es weder einen Bereich „Debugging“ noch ein Servicemenü, lässt sich ADB nicht einschalten.",
 "Ohne Netzwerk-Debugging kann sich weder TVCleanzer noch eine ähnliche App mit dem Fernseher verbinden. Bringt Yandex das Debugging per Update zurück, funktioniert alles.",
-"Ein weiterer Weg ins Servicemenü: Auf dem Startbildschirm Menu (drei Striche) 1 Sekunde halten, dann ← ↑ ← ↑ und Zurück drücken. Dort ADB suchen (meist Other options → ADB Mode) und auf On stellen."
+"Ein weiterer Weg ins Servicemenü: Auf dem Startbildschirm Menu (drei Striche) 1 Sekunde halten, dann ← ↑ ← ↑ und Zurück drücken. Dort ADB suchen (meist Other options → ADB Mode) und auf On stellen.",
+"Eingang: {0}",
+"Alles Ausgeblendete zurückholen",
+"Auch ohne Verlauf: TVCleanzer prüft den Fernseher selbst und schaltet alles wieder ein, was es dort ausgeblendet haben könnte. Den Original-Startbildschirm holst du im Reiter „Launcher“ zurück.",
+"Alles auf „{0}“ zurückholen?",
+"Wir schalten alle Apps wieder ein, die TVCleanzer auf diesem Fernseher ausgeblendet haben könnte, und stellen die normale Animationsgeschwindigkeit her. Deine Apps und der Launcher bleiben.",
+"Zurückgeholte Apps: {0}.",
+"Animationen wieder in normaler Geschwindigkeit.",
+"Keine ausgeblendeten Apps: Der Fernseher ist schon wie vorher.",
+"Nicht zurück: {0}. Details im „?“-Bericht."
 ]

@@ -668,5 +668,14 @@
 "Najpierw spróbuj kroków z kart „Yandex TV” i „Brak debugowania”.",
 "W nowym oprogramowaniu YaOS X Yandex usunął debugowanie i zablokował menu fabryczne. Jeśli nie ma ani sekcji „Debugowanie”, ani menu serwisowego, nie da się włączyć ADB.",
 "Bez debugowania sieciowego ani TVCleanzer, ani żadna podobna aplikacja nie połączy się z telewizorem. Jeśli Yandex przywróci debugowanie w aktualizacji, wszystko zadziała.",
-"Inny sposób wejścia do menu serwisowego: na ekranie głównym przytrzymaj Menu (trzy kreski) przez 1 sekundę, potem naciśnij ← ↑ ← ↑ i Wstecz. Znajdź tam ADB (zwykle Other options → ADB Mode) i ustaw On."
+"Inny sposób wejścia do menu serwisowego: na ekranie głównym przytrzymaj Menu (trzy kreski) przez 1 sekundę, potem naciśnij ← ↑ ← ↑ i Wstecz. Znajdź tam ADB (zwykle Other options → ADB Mode) i ustaw On.",
+"Źródło: {0}",
+"Przywróć wszystko ukryte",
+"Nawet bez historii: TVCleanzer sprawdzi sam telewizor i włączy wszystko, co mógł na nim ukryć. Oryginalny ekran główny przywrócisz na karcie «Launcher».",
+"Przywrócić wszystko na «{0}»?",
+"Włączymy wszystkie aplikacje, które TVCleanzer mógł ukryć na tym telewizorze, i przywrócimy normalną szybkość animacji. Twoje aplikacje i launcher zostaną.",
+"Przywrócone aplikacje: {0}.",
+"Animacje znów mają normalną szybkość.",
+"Brak ukrytych aplikacji: telewizor jest już taki jak wcześniej.",
+"Nie wróciły: {0}. Szczegóły w raporcie «?»."
 ]

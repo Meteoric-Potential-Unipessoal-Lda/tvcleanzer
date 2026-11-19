@@ -668,5 +668,14 @@
 "Nejdřív zkuste kroky z karet „Yandex TV“ a „Bez ladění“.",
 "V novém firmwaru YaOS X Yandex odstranil ladění a zamkl tovární menu. Pokud není ani sekce „Ladění“, ani servisní menu, ADB zapnout nejde.",
 "Bez ladění po síti se k televizi nepřipojí TVCleanzer ani žádná podobná aplikace. Pokud Yandex ladění v aktualizaci vrátí, vše bude fungovat.",
-"Další způsob, jak vstoupit do servisního menu: na hlavní obrazovce podržte Menu (tři čárky) 1 sekundu, pak stiskněte ← ↑ ← ↑ a Zpět. Najděte tam ADB (obvykle Other options → ADB Mode) a nastavte On."
+"Další způsob, jak vstoupit do servisního menu: na hlavní obrazovce podržte Menu (tři čárky) 1 sekundu, pak stiskněte ← ↑ ← ↑ a Zpět. Najděte tam ADB (obvykle Other options → ADB Mode) a nastavte On.",
+"Zdroj: {0}",
+"Vrátit vše skryté",
+"I bez historie: TVCleanzer zkontroluje samotnou televizi a znovu zapne vše, co na ní mohl skrýt. Původní hlavní obrazovku vrátíte na kartě «Launcher».",
+"Vrátit vše na «{0}»?",
+"Znovu zapneme všechny aplikace, které TVCleanzer mohl na této televizi skrýt, a vrátíme normální rychlost animací. Vaše aplikace a launcher zůstanou.",
+"Vrácené aplikace: {0}.",
+"Animace mají opět normální rychlost.",
+"Žádné skryté aplikace: televize už je jako dřív.",
+"Nevrátily se: {0}. Podrobnosti v hlášení «?»."
 ]

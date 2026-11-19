@@ -668,5 +668,14 @@
 "Essayez d’abord les étapes des onglets « Yandex TV » et « Pas de débogage ».",
 "Dans le nouveau firmware YaOS X, Yandex a retiré le débogage et verrouillé le menu usine. S’il n’y a ni section « Débogage » ni menu de service, ADB ne peut pas être activé.",
 "Sans débogage réseau, ni TVCleanzer ni aucune app similaire ne peut se connecter au téléviseur. Si Yandex rétablit le débogage dans une mise à jour, tout fonctionnera.",
-"Autre moyen d’ouvrir le menu de service : sur l’écran d’accueil, maintenez Menu (trois traits) 1 seconde, puis appuyez sur ← ↑ ← ↑ et Retour. Cherchez ADB (souvent Other options → ADB Mode) et mettez-le sur On."
+"Autre moyen d’ouvrir le menu de service : sur l’écran d’accueil, maintenez Menu (trois traits) 1 seconde, puis appuyez sur ← ↑ ← ↑ et Retour. Cherchez ADB (souvent Other options → ADB Mode) et mettez-le sur On.",
+"Source : {0}",
+"Tout restaurer",
+"Même sans historique : TVCleanzer vérifie le téléviseur lui-même et réactive tout ce qu’il a pu y masquer. L’écran d’accueil d’origine se restaure dans l’onglet « Launcher ».",
+"Tout restaurer sur « {0} » ?",
+"Nous réactiverons toutes les apps que TVCleanzer a pu masquer sur ce téléviseur et remettrons les animations à vitesse normale. Vos apps et le launcher restent.",
+"Apps restaurées : {0}.",
+"Les animations sont de nouveau à vitesse normale.",
+"Aucune app masquée : le téléviseur est déjà comme avant.",
+"Non restaurées : {0}. Détails dans le rapport « ? »."
 ]

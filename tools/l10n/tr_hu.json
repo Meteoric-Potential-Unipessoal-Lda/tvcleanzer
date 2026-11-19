@@ -668,5 +668,14 @@
 "Először próbálja ki a „Yandex TV” és a „Nincs hibakeresés” fül lépéseit.",
 "Az új YaOS X szoftverben a Yandex eltávolította a hibakeresést és lezárta a gyári menüt. Ha nincs sem „Hibakeresés” rész, sem szervizmenü, az ADB nem kapcsolható be.",
 "Hálózati hibakeresés nélkül sem a TVCleanzer, sem más hasonló alkalmazás nem tud csatlakozni a tévéhez. Ha a Yandex egy frissítéssel visszahozza a hibakeresést, minden működni fog.",
-"A szervizmenü másik elérési módja: a kezdőképernyőn tartsa nyomva a Menu gombot (három vonal) 1 másodpercig, majd nyomja meg: ← ↑ ← ↑ és Vissza. Keresse meg ott az ADB-t (általában Other options → ADB Mode), és állítsa On-ra."
+"A szervizmenü másik elérési módja: a kezdőképernyőn tartsa nyomva a Menu gombot (három vonal) 1 másodpercig, majd nyomja meg: ← ↑ ← ↑ és Vissza. Keresse meg ott az ADB-t (általában Other options → ADB Mode), és állítsa On-ra.",
+"Forrás: {0}",
+"Minden elrejtett visszaállítása",
+"Előzmények nélkül is: a TVCleanzer magát a tévét ellenőrzi, és mindent visszakapcsol, amit elrejthetett rajta. Az eredeti kezdőképernyőt a «Launcher» fülön állíthatja vissza.",
+"Mindent visszaállít ezen: «{0}»?",
+"Visszakapcsolunk minden alkalmazást, amelyet a TVCleanzer elrejthetett ezen a tévén, és visszaállítjuk az animációk normál sebességét. A saját alkalmazásai és a launcher maradnak.",
+"Visszaállított alkalmazások: {0}.",
+"Az animációk ismét normál sebességűek.",
+"Nincs elrejtett alkalmazás: a tévé már olyan, mint régen.",
+"Nem tértek vissza: {0}. Részletek a «?» jelentésben."
 ]

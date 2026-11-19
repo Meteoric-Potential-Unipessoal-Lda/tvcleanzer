@@ -333,6 +333,11 @@ public class SettingsActivity extends Activity {
     private String autostartName() {
         String pkg = prefs.autostart();
         if (pkg.isEmpty()) return T.t("Главный экран");
+        if (pkg.startsWith("input:")) {
+            String id = pkg.substring(6);
+            for (Inputs.Item it : Inputs.load(this)) if (it.id.equals(id)) return T.f("Открыть {0}", it.label);
+            return T.t("Источник");
+        }
         try {
             return T.f("Открыть {0}", getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg, 0)));
         } catch (Exception e) {

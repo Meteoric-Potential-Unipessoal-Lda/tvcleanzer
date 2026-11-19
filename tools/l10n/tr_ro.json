@@ -668,5 +668,14 @@
 "Încearcă mai întâi pașii din filele „Yandex TV” și „Fără depanare”.",
 "În noul firmware YaOS X, Yandex a scos depanarea și a blocat meniul de fabrică. Dacă nu există nici secțiunea „Depanare”, nici meniul de service, ADB nu poate fi pornit.",
 "Fără depanare în rețea, nici TVCleanzer, nici altă aplicație asemănătoare nu se poate conecta la televizor. Dacă Yandex readuce depanarea printr-o actualizare, totul va funcționa.",
-"Încă o cale spre meniul de service: pe ecranul principal ține apăsat Menu (trei linii) 1 secundă, apoi apasă ← ↑ ← ↑ și Înapoi. Găsește acolo ADB (de obicei Other options → ADB Mode) și pune-l pe On."
+"Încă o cale spre meniul de service: pe ecranul principal ține apăsat Menu (trei linii) 1 secundă, apoi apasă ← ↑ ← ↑ și Înapoi. Găsește acolo ADB (de obicei Other options → ADB Mode) și pune-l pe On.",
+"Sursă: {0}",
+"Readu tot ce e ascuns",
+"Chiar și fără istoric: TVCleanzer verifică televizorul însuși și repornește tot ce ar fi putut ascunde pe el. Ecranul principal original se readuce din fila «Launcher».",
+"Readuci tot pe «{0}»?",
+"Vom reporni toate aplicațiile pe care TVCleanzer le-ar fi putut ascunde pe acest televizor și vom readuce viteza normală a animațiilor. Aplicațiile tale și launcherul rămân.",
+"Aplicații readuse: {0}.",
+"Animațiile au din nou viteza normală.",
+"Nu sunt aplicații ascunse: televizorul e deja ca înainte.",
+"Nu au revenit: {0}. Detalii — în raportul «?»."
 ]

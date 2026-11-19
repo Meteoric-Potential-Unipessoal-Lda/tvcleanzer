@@ -668,5 +668,14 @@
 "Avval «Yandex TV» va «Tuzatish yo‘q» bo‘limlaridagi qadamlarni sinab ko‘ring.",
 "Yangi YaOS X proshivkasida Yandex tuzatishni olib tashladi va zavod menyusini yopdi. «Tuzatish» bo‘limi ham, servis menyusi ham bo‘lmasa — ADB’ni yoqib bo‘lmaydi.",
 "Tarmoq orqali tuzatishsiz televizorga TVCleanzer ham, boshqa shunga o‘xshash ilova ham ulana olmaydi. Yandex yangilanishda tuzatishni qaytarsa — hammasi ishlaydi.",
-"Servis menyusiga kirishning yana bir yo‘li: bosh ekranda Menu (uch chiziq) tugmasini 1 soniya bosib turing, so‘ng ← ↑ ← ↑ va «Orqaga» ni bosing. U yerda ADB’ni toping (odatda Other options → ADB Mode) va On qiling."
+"Servis menyusiga kirishning yana bir yo‘li: bosh ekranda Menu (uch chiziq) tugmasini 1 soniya bosib turing, so‘ng ← ↑ ← ↑ va «Orqaga» ni bosing. U yerda ADB’ni toping (odatda Other options → ADB Mode) va On qiling.",
+"Manba: {0}",
+"Yashirilganlarning hammasini qaytarish",
+"Tarixsiz ham: TVCleanzer televizorning o‘zini tekshiradi va unda yashirgan bo‘lishi mumkin bo‘lgan hamma narsani qayta yoqadi. Standart bosh ekran «Launcher» bo‘limida qaytariladi.",
+"«{0}» da hammasini qaytaraylikmi?",
+"TVCleanzer bu televizorda yashirgan bo‘lishi mumkin bo‘lgan barcha ilovalarni yoqamiz va animatsiyalarning odatiy tezligini qaytaramiz. Sizning ilovalaringiz va launcher qoladi.",
+"Qaytarilgan ilovalar: {0}.",
+"Animatsiyalar yana odatiy tezlikda.",
+"Yashirilgan ilovalar yo‘q: televizor avvalgidek.",
+"Qaytmaganlari: {0}. Batafsil — «?» hisobotida."
 ]

@@ -362,6 +362,13 @@ class AdbPackageManager {
           failed.add(name);
         }
       }
+      // Remembered on the TV itself: «Вернуть всё скрытое» works from any phone, after a
+      // reinstall, without History (a chat report: history gone, the TV could not be put back).
+      if (removed.isNotEmpty) {
+        try {
+          await adb.shell("printf '%s\\n' ${removed.join(' ')} >> $_hiddenFile");
+        } catch (_) {}
+      }
       // The firmware's screensaver was removed: switch to our clock, otherwise
       // StarOS re-enables its own screensaver at boot while it stays selected.
       final dreamPkg = dream.split(',').first.split('/').first;
@@ -429,6 +436,77 @@ class AdbPackageManager {
       adb.close();
     }
     return failures == 0;
+  }
+
+  /// What TVCleanzer switched off on this TV, one package per line (see [clean]).
+  static const _hiddenFile = '/data/local/tmp/tvcleanzer_hidden';
+
+  /// «Вернуть всё скрытое»: switches back on everything TVCleanzer may have hidden on
+  /// [device] that is hidden now — the TV's own list ([_hiddenFile]), [known] (History on this
+  /// phone) and apps our database suggests hiding — and puts 0.5× animations back to 1×.
+  /// Never stock home screens (that is «Вернуть стандартный лаунчер», it also unpins ours) and
+  /// never anything else the firmware keeps off by itself (a Google TV box looped with its old
+  /// home switched back on).
+  Future<RestoreAllResult> restoreAllHidden(TvDevice device, {Iterable<String> known = const []}) async {
+    final db = await _loadDb();
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final all = _parsePackageList(await adb.shell('pm list packages -u 2>/dev/null')).toSet();
+      final present = _parsePackageList(await adb.shell('pm list packages')).toSet();
+      final disabled = _parsePackageList(await adb.shell('pm list packages -d 2>/dev/null')).toSet();
+      final hidden = {...disabled, ...all.where((p) => !present.contains(p))};
+      final saved = (await adb.shell('cat $_hiddenFile 2>/dev/null'))
+          .split(RegExp(r'\s+'))
+          .where(_pkgName.hasMatch)
+          .toSet();
+      final ours = {
+        ...saved,
+        ...known,
+        for (final e in db.entries)
+          if (e.value.verdict == PackageVerdict.remove || e.value.verdict == PackageVerdict.caution) e.key,
+      };
+      final homes = {..._removableHomes, ..._googleTvHomes, ...await _stockHomes(adb, all)};
+      final todo = hidden
+          .where((p) => ours.contains(p) && !homes.contains(p) && p != launcherPkg)
+          .toList()
+        ..sort();
+      for (final p in todo) {
+        try {
+          await adb.shell('pm install-existing $p 2>&1');
+          await adb.shell('pm enable $p 2>&1');
+        } catch (e) {
+          AppLog.error('restore all $p', e);
+        }
+      }
+      final enabled = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
+      final back = todo.where(enabled.contains).toList();
+      final failed = todo.where((p) => !enabled.contains(p)).toList();
+      if (failed.isNotEmpty) AppLog.error('restore all', 'not back: ${failed.join(', ')}');
+
+      var anim = false;
+      for (final k in _animKeys) {
+        if ((await adb.shell('settings get global $k')).trim() == '0.5') {
+          await adb.shell('settings put global $k 1');
+          anim = true;
+        }
+      }
+      // keep on the TV only what is still hidden
+      await adb.shell(failed.isEmpty
+          ? 'rm -f $_hiddenFile'
+          : "printf '%s\\n' ${failed.join(' ')} > $_hiddenFile");
+      return RestoreAllResult(
+        restored: back,
+        failed: failed,
+        labels: {
+          for (final p in todo)
+            if ((db[p]?.label ?? '').isNotEmpty) p: db[p]!.label,
+        },
+        animations: anim,
+      );
+    } finally {
+      adb.close();
+    }
   }
 
   // ── Launcher ──────────────────────────────────────────────────────────────
@@ -908,6 +986,12 @@ class AdbPackageManager {
       await adb.connect();
       final out = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/apps');
       final set = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/settings');
+      // 0.31+: HDMI and other inputs (older launchers answer with apps rows: no id= there)
+      final inp = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/inputs 2>/dev/null');
+      final inputs = [
+        for (final m in RegExp(r'id=([^,]+), label=(.*)$', multiLine: true).allMatches(inp))
+          LauncherInput(m.group(1)!.trim(), m.group(2)!.trim()),
+      ];
       final re = RegExp(r'pkg=([^,]+), fav=(-?\d+), hidden=(\d+), kids=(\d+), label=(.*)$');
       final apps = <LauncherApp>[];
       for (final line in out.split('\n')) {
@@ -935,6 +1019,7 @@ class AdbPackageManager {
         hasWallpaper: kv['wallpaper'] == '1',
         version: int.tryParse(kv['version'] ?? '') ?? 0,
         settings: kv,
+        inputs: inputs,
       );
     } finally {
       adb.close();
@@ -1247,14 +1332,19 @@ class AdbPackageManager {
     }
   }
 
-  /// App opened when the TV is switched on ('' = the launcher itself). Launcher 0.6+.
+  /// App opened when the TV is switched on ('' = the launcher itself). Launcher 0.6+;
+  /// «input:<id>» (an HDMI input or the TV's live TV) needs 0.31+.
   Future<void> setLauncherAutostart(TvDevice device, String pkg) async {
-    if (pkg.isNotEmpty && !RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(pkg)) return;
+    if (pkg.isNotEmpty &&
+        !RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(pkg) &&
+        !RegExp(r'^input:[A-Za-z0-9_.:/$-]+$').hasMatch(pkg)) {
+      return;
+    }
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
       await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
-          '-a com.tvcleanzer.launcher.APPLY --es autostart ${pkg.isEmpty ? '""' : pkg}');
+          "-a com.tvcleanzer.launcher.APPLY --es autostart ${pkg.isEmpty ? '\"\"' : "'$pkg'"}");
     } finally {
       adb.close();
     }

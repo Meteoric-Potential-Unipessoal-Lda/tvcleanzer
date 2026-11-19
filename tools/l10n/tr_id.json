@@ -668,5 +668,14 @@
 "Coba dulu langkah di tab «Yandex TV» dan «Tanpa debugging».",
 "Di firmware YaOS X baru, Yandex menghapus debugging dan mengunci menu pabrik. Jika tidak ada bagian «Debugging» maupun menu servis, ADB tidak bisa diaktifkan.",
 "Tanpa debugging jaringan, TVCleanzer maupun aplikasi serupa tidak bisa terhubung ke TV. Jika Yandex mengembalikan debugging lewat pembaruan, semuanya akan berfungsi.",
-"Cara lain masuk ke menu servis: di layar utama tahan Menu (tiga garis) selama 1 detik, lalu tekan ← ↑ ← ↑ dan Kembali. Cari ADB di sana (biasanya Other options → ADB Mode) lalu setel ke On."
+"Cara lain masuk ke menu servis: di layar utama tahan Menu (tiga garis) selama 1 detik, lalu tekan ← ↑ ← ↑ dan Kembali. Cari ADB di sana (biasanya Other options → ADB Mode) lalu setel ke On.",
+"Sumber: {0}",
+"Kembalikan semua yang disembunyikan",
+"Bahkan tanpa riwayat: TVCleanzer memeriksa TV itu sendiri dan mengaktifkan lagi semua yang mungkin disembunyikannya. Layar utama bawaan dikembalikan di tab «Launcher».",
+"Kembalikan semua di «{0}»?",
+"Kami akan mengaktifkan lagi semua aplikasi yang mungkin disembunyikan TVCleanzer di TV ini dan mengembalikan kecepatan animasi normal. Aplikasi Anda dan launcher tetap ada.",
+"Aplikasi dikembalikan: {0}.",
+"Animasi kembali ke kecepatan normal.",
+"Tidak ada aplikasi tersembunyi: TV sudah seperti semula.",
+"Tidak kembali: {0}. Detail ada di laporan «?»."
 ]

@@ -668,5 +668,14 @@
 "Prova först stegen på flikarna ”Yandex TV” och ”Ingen felsökning”.",
 "I den nya YaOS X-firmwaren har Yandex tagit bort felsökning och låst fabriksmenyn. Finns varken avsnittet ”Felsökning” eller en servicemeny går ADB inte att slå på.",
 "Utan nätverksfelsökning kan varken TVCleanzer eller någon liknande app ansluta till tv:n. Om Yandex återinför felsökningen i en uppdatering fungerar allt.",
-"Ett annat sätt in i servicemenyn: håll Menu (tre streck) intryckt i 1 sekund på startskärmen och tryck sedan ← ↑ ← ↑ och Tillbaka. Leta upp ADB där (oftast Other options → ADB Mode) och ställ in On."
+"Ett annat sätt in i servicemenyn: håll Menu (tre streck) intryckt i 1 sekund på startskärmen och tryck sedan ← ↑ ← ↑ och Tillbaka. Leta upp ADB där (oftast Other options → ADB Mode) och ställ in On.",
+"Källa: {0}",
+"Återställ allt dolt",
+"Även utan historik: TVCleanzer kontrollerar själva tv:n och slår på allt den kan ha dolt där igen. Den ursprungliga startskärmen återställs på fliken «Launcher».",
+"Återställa allt på «{0}»?",
+"Vi slår på alla appar som TVCleanzer kan ha dolt på den här tv:n igen och återställer normal animationshastighet. Dina egna appar och launchern finns kvar.",
+"Återställda appar: {0}.",
+"Animationerna har normal hastighet igen.",
+"Inga dolda appar: tv:n är redan som förut.",
+"Kom inte tillbaka: {0}. Detaljer i rapporten «?»."
 ]

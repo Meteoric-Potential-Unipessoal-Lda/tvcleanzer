@@ -668,5 +668,14 @@
 "Əvvəlcə «Yandex TV» və «Sazlama yoxdur» bölmələrindəki addımları sınayın.",
 "Yeni YaOS X proqramında Yandex sazlamanı çıxarıb və zavod menyusunu bağlayıb. Nə «Sazlama» bölməsi, nə də servis menyusu yoxdursa, ADB-ni yandırmaq olmur.",
 "Şəbəkə sazlaması olmadan televizora nə TVCleanzer, nə də başqa oxşar tətbiq qoşula bilər. Yandex yeniləmədə sazlamanı qaytarsa, hər şey işləyəcək.",
-"Servis menyusuna girməyin başqa yolu: əsas ekranda Menu (üç xətt) düyməsini 1 saniyə basılı saxlayın, sonra ← ↑ ← ↑ və «Geri» basın. Orada ADB tapın (adətən Other options → ADB Mode) və On edin."
+"Servis menyusuna girməyin başqa yolu: əsas ekranda Menu (üç xətt) düyməsini 1 saniyə basılı saxlayın, sonra ← ↑ ← ↑ və «Geri» basın. Orada ADB tapın (adətən Other options → ADB Mode) və On edin.",
+"Mənbə: {0}",
+"Gizlədilənlərin hamısını qaytar",
+"Tarixçə olmasa belə: TVCleanzer televizorun özünü yoxlayacaq və orada gizlədə biləcəyi hər şeyi yenidən yandıracaq. Standart əsas ekran «Launcher» bölməsində qaytarılır.",
+"«{0}» üzərində hər şeyi qaytaraq?",
+"TVCleanzer-in bu televizorda gizlədə biləcəyi bütün tətbiqləri yandıracaq və animasiyaların adi sürətini qaytaracağıq. Sizin tətbiqləriniz və launcher qalacaq.",
+"Qaytarılan tətbiqlər: {0}.",
+"Animasiyalar yenidən adi sürətdədir.",
+"Gizlədilmiş tətbiq yoxdur: televizor artıq əvvəlki kimidir.",
+"Qayıtmayanlar: {0}. Ətraflı — «?» hesabatında."
 ]

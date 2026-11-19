@@ -668,5 +668,14 @@
 "Probeer eerst de stappen op de tabbladen „Yandex TV” en „Geen foutopsporing”.",
 "In de nieuwe YaOS X-firmware heeft Yandex foutopsporing verwijderd en het fabrieksmenu vergrendeld. Is er geen onderdeel „Foutopsporing” en ook geen servicemenu, dan kan ADB niet aan.",
 "Zonder netwerkfoutopsporing kan TVCleanzer noch een vergelijkbare app verbinding maken met de tv. Brengt Yandex foutopsporing terug in een update, dan werkt alles.",
-"Nog een manier om in het servicemenu te komen: houd op het startscherm Menu (drie streepjes) 1 seconde ingedrukt en druk daarna op ← ↑ ← ↑ en Terug. Zoek daar ADB (meestal Other options → ADB Mode) en zet het op On."
+"Nog een manier om in het servicemenu te komen: houd op het startscherm Menu (drie streepjes) 1 seconde ingedrukt en druk daarna op ← ↑ ← ↑ en Terug. Zoek daar ADB (meestal Other options → ADB Mode) en zet het op On.",
+"Bron: {0}",
+"Alles wat verborgen is terugzetten",
+"Ook zonder geschiedenis: TVCleanzer controleert de tv zelf en zet alles weer aan wat het daar verborgen kan hebben. Het originele startscherm zet je terug op het tabblad «Launcher».",
+"Alles terugzetten op «{0}»?",
+"We zetten alle apps weer aan die TVCleanzer op deze tv verborgen kan hebben en brengen animaties terug naar normale snelheid. Je eigen apps en de launcher blijven.",
+"Teruggezette apps: {0}.",
+"Animaties weer op normale snelheid.",
+"Geen verborgen apps: de tv is al zoals hij was.",
+"Niet terug: {0}. Details in het rapport «?»."
 ]

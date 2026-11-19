@@ -668,5 +668,14 @@
 "Trước tiên hãy thử các bước ở tab «Yandex TV» và «Không có gỡ lỗi».",
 "Trên firmware YaOS X mới, Yandex đã bỏ gỡ lỗi và khóa menu nhà máy. Nếu không có mục «Gỡ lỗi» cũng không vào được menu dịch vụ thì không thể bật ADB.",
 "Không có gỡ lỗi qua mạng thì cả TVCleanzer lẫn ứng dụng tương tự đều không kết nối được với TV. Nếu Yandex trả lại gỡ lỗi trong bản cập nhật, mọi thứ sẽ hoạt động.",
-"Một cách khác để vào menu dịch vụ: ở màn hình chính giữ Menu (ba gạch) 1 giây, rồi bấm ← ↑ ← ↑ và Quay lại. Tìm ADB ở đó (thường là Other options → ADB Mode) và chuyển sang On."
+"Một cách khác để vào menu dịch vụ: ở màn hình chính giữ Menu (ba gạch) 1 giây, rồi bấm ← ↑ ← ↑ và Quay lại. Tìm ADB ở đó (thường là Other options → ADB Mode) và chuyển sang On.",
+"Nguồn vào: {0}",
+"Khôi phục mọi thứ đã ẩn",
+"Ngay cả khi không có lịch sử: TVCleanzer kiểm tra chính TV và bật lại mọi thứ có thể đã ẩn trên đó. Màn hình chính gốc được khôi phục ở tab «Launcher».",
+"Khôi phục tất cả trên «{0}»?",
+"Chúng tôi sẽ bật lại mọi ứng dụng TVCleanzer có thể đã ẩn trên TV này và trả hoạt ảnh về tốc độ bình thường. Ứng dụng của bạn và launcher vẫn giữ nguyên.",
+"Đã khôi phục ứng dụng: {0}.",
+"Hoạt ảnh đã về tốc độ bình thường.",
+"Không có ứng dụng bị ẩn: TV đã như cũ.",
+"Chưa khôi phục được: {0}. Chi tiết — trong báo cáo «?»."
 ]

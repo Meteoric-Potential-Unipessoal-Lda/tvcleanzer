@@ -170,6 +170,13 @@ class HistoryNotifier extends StateNotifier<List<CleanRecord>> {
     await _save();
   }
 
+  /// After «Вернуть всё скрытое» on the TV at [host]: its records are all put back.
+  Future<void> markAllRestoredFor(String host) async {
+    String hostOf(String id) => id.contains(':') ? id.substring(0, id.lastIndexOf(':')) : id;
+    state = [for (final r in state) hostOf(r.tvIp) == host ? r.copyWith(restored: true) : r];
+    await _save();
+  }
+
   Future<void> markRestoredByBackup(String backupId) async {
     final i = state.indexWhere((r) => !r.restored && r.backupId == backupId);
     if (i >= 0) await markRestored(state[i].id);

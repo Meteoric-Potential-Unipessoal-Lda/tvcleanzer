@@ -20,26 +20,117 @@ class HistoryScreen extends ConsumerStatefulWidget {
 
 class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   final Set<String> _busy = {};
+  bool _restoringAll = false;
 
   @override
   Widget build(BuildContext context) {
     final records = ref.watch(historyProvider);
     return Scaffold(
       appBar: AppBar(title: Text(tr('История'))),
-      body: records.isEmpty
-          ? _empty()
-          : ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-              itemCount: records.length,
-              itemBuilder: (_, i) => Padding(
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        children: [
+          _restoreAllCard(),
+          const Gap(12),
+          if (records.isEmpty)
+            _empty()
+          else
+            for (var i = 0; i < records.length; i++)
+              Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: _card(records[i])
                     .animate(delay: (i * 50).ms)
                     .fadeIn(duration: 250.ms)
                     .slideY(begin: .08, end: 0, duration: 250.ms),
               ),
-            ),
+        ],
+      ),
     );
+  }
+
+  static String _hostOf(String id) => id.contains(':') ? id.substring(0, id.lastIndexOf(':')) : id;
+
+  /// «Вернуть всё скрытое»: works from the TV itself, so also after a reinstall, on another
+  /// phone or when History lost records (a chat report: the TV could not be put back).
+  Widget _restoreAllCard() {
+    final tv = ref.watch(currentTvProvider);
+    const sub = TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.4);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.bgCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.cardBd),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          const Icon(Icons.settings_backup_restore_rounded, color: AppColors.accent, size: 22),
+          const Gap(10),
+          Expanded(
+            child: Text(tr('Вернуть всё скрытое'),
+                style: GoogleFonts.syne(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          ),
+        ]),
+        const Gap(6),
+        Text(tr('Даже без истории: TVCleanzer проверит сам телевизор и включит всё, что мог на нём скрыть. Стандартный главный экран возвращается на вкладке «Лаунчер».'),
+            style: sub),
+        const Gap(10),
+        if (tv == null)
+          Text(tr('Выберите телевизор на вкладке «Очистка».'),
+              style: const TextStyle(fontSize: 13, color: AppColors.fgMuted))
+        else
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _restoringAll ? null : () => _restoreAll(tv),
+              icon: _restoringAll
+                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Icon(Icons.restore_rounded, size: 18),
+              label: Text(tr('Вернуть всё')),
+            ),
+          ),
+      ]),
+    );
+  }
+
+  Future<void> _restoreAll(TvDevice tv) async {
+    final name = tv.shortName.isEmpty ? tv.ipAddress : tv.shortName;
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(tr('Вернуть всё на «{0}»?', [name])),
+        content: Text(tr('Включим все приложения, которые TVCleanzer мог скрыть на этом телевизоре, и вернём обычную скорость анимаций. Ваши приложения и лаунчер останутся.')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c, false), child: Text(tr('Отмена'))),
+          TextButton(onPressed: () => Navigator.pop(c, true), child: Text(tr('Вернуть всё'))),
+        ],
+      ),
+    );
+    if (yes != true || !mounted) return;
+    setState(() => _restoringAll = true);
+    String msg;
+    try {
+      final host = tv.ipAddress;
+      final known = <String>{
+        for (final r in ref.read(historyProvider))
+          if (!r.isBoost && _hostOf(r.tvIp) == host) ...r.packages,
+      };
+      final res = await ref.read(adbServiceProvider).restoreAllHidden(tv, known: known);
+      if (res.failed.isEmpty) await ref.read(historyProvider.notifier).markAllRestoredFor(host);
+      msg = [
+        if (res.restored.isEmpty && res.failed.isEmpty && !res.animations)
+          tr('Скрытых приложений нет: телевизор уже как был.'),
+        if (res.restored.isNotEmpty) tr('Вернули приложений: {0}.', [res.restored.length]),
+        if (res.animations) tr('Анимации снова обычной скорости.'),
+        if (res.failed.isNotEmpty)
+          tr('Не вернулись: {0}. Подробности — в отчёте «?».', [res.failed.map(res.labelOf).join(', ')]),
+      ].join(' ');
+    } catch (_) {
+      msg = tr('Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.');
+    }
+    if (!mounted) return;
+    setState(() => _restoringAll = false);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), duration: const Duration(seconds: 6)));
   }
 
   Widget _empty() => Center(

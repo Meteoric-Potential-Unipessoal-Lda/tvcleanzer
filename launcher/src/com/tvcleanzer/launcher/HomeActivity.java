@@ -426,6 +426,17 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     }
 
     static boolean openAutostart(android.content.Context c, String pkg) {
+        // A TV input: the TV is just a screen for a box on HDMI (a chat wish: Sber TV + Mi Stick).
+        if (pkg.startsWith("input:")) {
+            String id = pkg.substring(6);
+            if (id.startsWith("tv:")) return openAutostart(c, id.substring(3));
+            try {
+                c.startActivity(Inputs.intent(new Inputs.Item(id, id)));
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
         android.content.pm.PackageManager pm = c.getPackageManager();
         Intent i = pm.getLeanbackLaunchIntentForPackage(pkg);
         if (i == null) i = pm.getLaunchIntentForPackage(pkg);

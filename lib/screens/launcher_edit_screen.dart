@@ -101,7 +101,18 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
     }
   }
 
-  String _label(String pkg) =>
+  String _label(String pkg) {
+    if (pkg.startsWith('input:')) {
+      final id = pkg.substring(6);
+      for (final i in _state?.inputs ?? const <LauncherInput>[]) {
+        if (i.id == id) return i.label;
+      }
+      return id;
+    }
+    return _labelApp(pkg);
+  }
+
+  String _labelApp(String pkg) =>
       _state?.apps.firstWhere((a) => a.pkg == pkg,
           orElse: () => LauncherApp(pkg: pkg, label: pkg, fav: -1, hidden: false, kids: false)).label ?? pkg;
 
@@ -251,11 +262,17 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         DropdownButtonFormField<String>(
-          initialValue: apps.any((a) => a.pkg == _autostart) ? _autostart : '',
+          initialValue: apps.any((a) => a.pkg == _autostart) ||
+                  st.inputs.any((i) => 'input:${i.id}' == _autostart)
+              ? _autostart
+              : '',
           isExpanded: true,
           decoration: InputDecoration(labelText: tr('При включении ТВ открывать'), border: InputBorder.none),
           items: [
             DropdownMenuItem(value: '', child: Text(tr('Главный экран (лаунчер)'))),
+            // launcher 0.31+: an input, e.g. HDMI with a box — the TV works as a plain screen
+            for (final i in st.inputs)
+              DropdownMenuItem(value: 'input:${i.id}', child: Text(tr('Источник: {0}', [i.label]), maxLines: 1, overflow: TextOverflow.ellipsis)),
             for (final a in apps)
               DropdownMenuItem(value: a.pkg, child: Text(a.label, maxLines: 1, overflow: TextOverflow.ellipsis)),
           ],
