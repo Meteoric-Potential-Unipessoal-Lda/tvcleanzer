@@ -662,5 +662,11 @@
 "Yazılımla değil, sizin ya da bir mağaza tarafından yüklenmiş. Yalnızca kesinlikle kullanmıyorsanız kaldırın.",
 "Televizörün kendi ana ekranı açılamadı, bu yüzden başlatıcımız bırakıldı (yoksa siyah ekran kalırdı). «?» ile rapor gönderin.",
 "Sizin uygulamanız: TVCleanzer ona dokunmaz.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Yandex’in kendi televizyonları (YNDX-… modelleri), yeni YaOS X yazılımıyla",
+"Önce “Yandex TV” ve “Hata ayıklama yok” sekmelerindeki adımları deneyin.",
+"Yeni YaOS X yazılımında Yandex hata ayıklamayı kaldırdı ve fabrika menüsünü kilitledi. Ne “Hata ayıklama” bölümü ne de servis menüsü varsa ADB açılamaz.",
+"Ağ üzerinden hata ayıklama olmadan ne TVCleanzer ne de benzer bir uygulama televizyona bağlanabilir. Yandex hata ayıklamayı bir güncellemeyle geri getirirse her şey çalışır.",
+"Servis menüsüne girmenin bir yolu daha: ana ekranda Menu (üç çizgi) tuşunu 1 saniye basılı tutun, ardından ← ↑ ← ↑ ve Geri tuşlarına basın. Orada ADB’yi bulun (genelde Other options → ADB Mode) ve On yapın."
 ]

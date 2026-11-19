@@ -662,5 +662,11 @@
 "Proshivka emas, siz yoki do‘kon o‘rnatgan. Faqat aniq foydalanmasangiz olib tashlang.",
 "Televizorning o‘z asosiy ekranini yoqib bo‘lmadi, shuning uchun launcherimiz qoldirildi (aks holda qora ekran qolardi). «?» orqali hisobot yuboring.",
 "Sizning ilovangiz: TVCleanzer unga tegmaydi.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Stansiya",
+"Yandexning o‘z televizorlari (YNDX-… modellari) yangi YaOS X proshivkasida",
+"Avval «Yandex TV» va «Tuzatish yo‘q» bo‘limlaridagi qadamlarni sinab ko‘ring.",
+"Yangi YaOS X proshivkasida Yandex tuzatishni olib tashladi va zavod menyusini yopdi. «Tuzatish» bo‘limi ham, servis menyusi ham bo‘lmasa — ADB’ni yoqib bo‘lmaydi.",
+"Tarmoq orqali tuzatishsiz televizorga TVCleanzer ham, boshqa shunga o‘xshash ilova ham ulana olmaydi. Yandex yangilanishda tuzatishni qaytarsa — hammasi ishlaydi.",
+"Servis menyusiga kirishning yana bir yo‘li: bosh ekranda Menu (uch chiziq) tugmasini 1 soniya bosib turing, so‘ng ← ↑ ← ↑ va «Orqaga» ni bosing. U yerda ADB’ni toping (odatda Other options → ADB Mode) va On qiling."
 ]

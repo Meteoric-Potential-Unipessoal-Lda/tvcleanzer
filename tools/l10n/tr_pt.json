@@ -662,5 +662,11 @@
 "Instalada por si ou por uma loja, não pelo firmware. Remova só se tiver a certeza de que não usa.",
 "Não foi possível voltar a ligar o ecrã inicial da TV, por isso o nosso launcher fica (senão o ecrã ficaria preto). Envie um relatório em «?».",
 "A sua app: o TVCleanzer não lhe toca.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Televisores da própria Yandex (modelos YNDX-…) com o novo firmware YaOS X",
+"Experimente primeiro os passos dos separadores «Yandex TV» e «Sem depuração».",
+"No novo firmware YaOS X, a Yandex retirou a depuração e bloqueou o menu de fábrica. Se não houver secção «Depuração» nem menu de serviço, não é possível ativar o ADB.",
+"Sem depuração pela rede, nem o TVCleanzer nem nenhuma app semelhante se liga ao televisor. Se a Yandex repuser a depuração numa atualização, tudo volta a funcionar.",
+"Outra forma de entrar no menu de serviço: no ecrã inicial mantenha Menu (três riscas) premido 1 segundo e depois carregue em ← ↑ ← ↑ e Voltar. Procure ADB (normalmente Other options → ADB Mode) e ponha em On."
 ]

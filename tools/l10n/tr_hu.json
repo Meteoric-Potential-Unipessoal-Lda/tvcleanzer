@@ -662,5 +662,11 @@
 "Nem a firmware telepítette, hanem Ön vagy egy áruház. Csak akkor távolítsa el, ha biztosan nem használja.",
 "Nem sikerült bekapcsolni a tévé saját főképernyőjét, ezért a launcherünk maradt (különben fekete képernyő maradna). Küldjön jelentést a «?» gombbal.",
 "Az Ön alkalmazása: a TVCleanzer nem nyúl hozzá.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"A Yandex saját tévéi (YNDX-… modellek) az új YaOS X szoftverrel",
+"Először próbálja ki a „Yandex TV” és a „Nincs hibakeresés” fül lépéseit.",
+"Az új YaOS X szoftverben a Yandex eltávolította a hibakeresést és lezárta a gyári menüt. Ha nincs sem „Hibakeresés” rész, sem szervizmenü, az ADB nem kapcsolható be.",
+"Hálózati hibakeresés nélkül sem a TVCleanzer, sem más hasonló alkalmazás nem tud csatlakozni a tévéhez. Ha a Yandex egy frissítéssel visszahozza a hibakeresést, minden működni fog.",
+"A szervizmenü másik elérési módja: a kezdőképernyőn tartsa nyomva a Menu gombot (három vonal) 1 másodpercig, majd nyomja meg: ← ↑ ← ↑ és Vissza. Keresse meg ott az ADB-t (általában Other options → ADB Mode), és állítsa On-ra."
 ]

@@ -662,5 +662,11 @@
 "Proqram təminatı deyil, siz və ya mağaza quraşdırıb. Yalnız istifadə etmədiyinizə əminsinizsə silin.",
 "Televizorun öz əsas ekranını yandırmaq alınmadı, ona görə launcherimiz saxlanıldı (əks halda qara ekran qalardı). «?» ilə hesabat göndərin.",
 "Sizin tətbiqiniz: TVCleanzer ona toxunmur.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Stansiya",
+"Yandexin öz televizorları (YNDX-… modelləri) yeni YaOS X proqramında",
+"Əvvəlcə «Yandex TV» və «Sazlama yoxdur» bölmələrindəki addımları sınayın.",
+"Yeni YaOS X proqramında Yandex sazlamanı çıxarıb və zavod menyusunu bağlayıb. Nə «Sazlama» bölməsi, nə də servis menyusu yoxdursa, ADB-ni yandırmaq olmur.",
+"Şəbəkə sazlaması olmadan televizora nə TVCleanzer, nə də başqa oxşar tətbiq qoşula bilər. Yandex yeniləmədə sazlamanı qaytarsa, hər şey işləyəcək.",
+"Servis menyusuna girməyin başqa yolu: əsas ekranda Menu (üç xətt) düyməsini 1 saniyə basılı saxlayın, sonra ← ↑ ← ↑ və «Geri» basın. Orada ADB tapın (adətən Other options → ADB Mode) və On edin."
 ]

@@ -662,5 +662,11 @@
 "Installata da te o da uno store, non dal firmware. Rimuovila solo se davvero non la usi.",
 "Non è stato possibile riattivare la schermata Home della TV, quindi il nostro launcher resta (altrimenti lo schermo sarebbe nero). Invia una segnalazione da «?».",
 "La tua app: TVCleanzer non la tocca.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"TV di Yandex stessa (modelli YNDX-…) con il nuovo firmware YaOS X",
+"Prova prima i passaggi delle schede «Yandex TV» e «Niente debug».",
+"Nel nuovo firmware YaOS X Yandex ha tolto il debug e bloccato il menu di fabbrica. Se non c’è né la sezione «Debug» né il menu di servizio, ADB non si può attivare.",
+"Senza debug di rete né TVCleanzer né altre app simili possono collegarsi al televisore. Se Yandex riporterà il debug con un aggiornamento, tutto funzionerà.",
+"Un altro modo per entrare nel menu di servizio: nella schermata principale tieni premuto Menu (tre righe) per 1 secondo, poi premi ← ↑ ← ↑ e Indietro. Cerca ADB (di solito Other options → ADB Mode) e impostalo su On."
 ]

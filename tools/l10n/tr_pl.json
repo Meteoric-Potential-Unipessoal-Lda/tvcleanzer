@@ -662,5 +662,11 @@
 "Zainstalowane nie przez oprogramowanie, lecz przez Ciebie lub sklep. Usuń tylko, jeśli na pewno nie używasz.",
 "Nie udało się włączyć oryginalnego ekranu głównego telewizora, więc nasz launcher zostaje (inaczej zostałby czarny ekran). Wyślij raport przez «?».",
 "Twoja aplikacja: TVCleanzer jej nie rusza.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Telewizory samego Yandexa (modele YNDX-…) z nowym oprogramowaniem YaOS X",
+"Najpierw spróbuj kroków z kart „Yandex TV” i „Brak debugowania”.",
+"W nowym oprogramowaniu YaOS X Yandex usunął debugowanie i zablokował menu fabryczne. Jeśli nie ma ani sekcji „Debugowanie”, ani menu serwisowego, nie da się włączyć ADB.",
+"Bez debugowania sieciowego ani TVCleanzer, ani żadna podobna aplikacja nie połączy się z telewizorem. Jeśli Yandex przywróci debugowanie w aktualizacji, wszystko zadziała.",
+"Inny sposób wejścia do menu serwisowego: na ekranie głównym przytrzymaj Menu (trzy kreski) przez 1 sekundę, potem naciśnij ← ↑ ← ↑ i Wstecz. Znajdź tam ADB (zwykle Other options → ADB Mode) i ustaw On."
 ]

@@ -662,5 +662,11 @@
 "Installée par vous ou par une boutique, pas par le firmware. Retirez-la seulement si vous ne l’utilisez vraiment pas.",
 "Impossible de réactiver l’écran d’accueil de la TV, notre launcher reste donc en place (sinon l’écran serait noir). Envoyez un rapport via « ? ».",
 "Votre appli : TVCleanzer n’y touche pas.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Téléviseurs de Yandex (modèles YNDX-…) sous le nouveau firmware YaOS X",
+"Essayez d’abord les étapes des onglets « Yandex TV » et « Pas de débogage ».",
+"Dans le nouveau firmware YaOS X, Yandex a retiré le débogage et verrouillé le menu usine. S’il n’y a ni section « Débogage » ni menu de service, ADB ne peut pas être activé.",
+"Sans débogage réseau, ni TVCleanzer ni aucune app similaire ne peut se connecter au téléviseur. Si Yandex rétablit le débogage dans une mise à jour, tout fonctionnera.",
+"Autre moyen d’ouvrir le menu de service : sur l’écran d’accueil, maintenez Menu (trois traits) 1 seconde, puis appuyez sur ← ↑ ← ↑ et Retour. Cherchez ADB (souvent Other options → ADB Mode) et mettez-le sur On."
 ]

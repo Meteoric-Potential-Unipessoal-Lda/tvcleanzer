@@ -662,5 +662,11 @@
 "Installed by you or a store, not by the firmware. Remove it only if you really don’t use it.",
 "Could not switch the TV’s own home screen back on, so our launcher stays (otherwise the screen would be black). Please send a report via “?”.",
 "Your app: TVCleanzer leaves it alone.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Yandex’s own TVs (YNDX-… models) on new YaOS X firmware",
+"First try the steps on the “Yandex TV” and “No debugging” tabs.",
+"On new YaOS X firmware Yandex removed debugging and locked the factory menu. If there is neither a “Debugging” section nor a service menu, ADB cannot be turned on.",
+"Without network debugging neither TVCleanzer nor any similar app can connect to the TV. If Yandex brings debugging back in an update, everything will work.",
+"Another way into the service menu: on the home screen hold Menu (three lines) for 1 second, then press ← ↑ ← ↑ and Back. Find ADB there (usually Other options → ADB Mode) and set it to On."
 ]

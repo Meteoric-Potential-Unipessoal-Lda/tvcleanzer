@@ -662,5 +662,11 @@
 "Niet door de firmware geïnstalleerd, maar door jou of een winkel. Verwijder alleen als je hem zeker niet gebruikt.",
 "Kon het eigen hoofdscherm van de tv niet aanzetten, dus onze launcher blijft staan (anders was het scherm zwart). Stuur een rapport via «?».",
 "Je eigen app: TVCleanzer laat hem met rust.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Tv’s van Yandex zelf (modellen YNDX-…) met de nieuwe YaOS X-firmware",
+"Probeer eerst de stappen op de tabbladen „Yandex TV” en „Geen foutopsporing”.",
+"In de nieuwe YaOS X-firmware heeft Yandex foutopsporing verwijderd en het fabrieksmenu vergrendeld. Is er geen onderdeel „Foutopsporing” en ook geen servicemenu, dan kan ADB niet aan.",
+"Zonder netwerkfoutopsporing kan TVCleanzer noch een vergelijkbare app verbinding maken met de tv. Brengt Yandex foutopsporing terug in een update, dan werkt alles.",
+"Nog een manier om in het servicemenu te komen: houd op het startscherm Menu (drie streepjes) 1 seconde ingedrukt en druk daarna op ← ↑ ← ↑ en Terug. Zoek daar ADB (meestal Other options → ADB Mode) en zet het op On."
 ]

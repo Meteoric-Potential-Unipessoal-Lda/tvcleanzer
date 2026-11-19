@@ -662,5 +662,11 @@
 "Installerad av dig eller en butik, inte av firmwaren. Ta bara bort om du säkert inte använder den.",
 "Det gick inte att slå på tv:ns egen huvudskärm, så vår launcher ligger kvar (annars hade skärmen blivit svart). Skicka en rapport via «?».",
 "Din egen app: TVCleanzer rör den inte.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Yandex egna tv-apparater (modeller YNDX-…) med ny YaOS X-firmware",
+"Prova först stegen på flikarna ”Yandex TV” och ”Ingen felsökning”.",
+"I den nya YaOS X-firmwaren har Yandex tagit bort felsökning och låst fabriksmenyn. Finns varken avsnittet ”Felsökning” eller en servicemeny går ADB inte att slå på.",
+"Utan nätverksfelsökning kan varken TVCleanzer eller någon liknande app ansluta till tv:n. Om Yandex återinför felsökningen i en uppdatering fungerar allt.",
+"Ett annat sätt in i servicemenyn: håll Menu (tre streck) intryckt i 1 sekund på startskärmen och tryck sedan ← ↑ ← ↑ och Tillbaka. Leta upp ADB där (oftast Other options → ADB Mode) och ställ in On."
 ]

@@ -662,5 +662,11 @@
 "Dipasang oleh Anda atau toko, bukan oleh firmware. Hapus hanya jika yakin tidak dipakai.",
 "Layar utama bawaan TV gagal diaktifkan, jadi launcher kami tetap dipasang (jika tidak, layar akan hitam). Kirim laporan lewat «?».",
 "Aplikasi Anda: tidak disentuh TVCleanzer.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"TV buatan Yandex sendiri (model YNDX-…) dengan firmware YaOS X baru",
+"Coba dulu langkah di tab «Yandex TV» dan «Tanpa debugging».",
+"Di firmware YaOS X baru, Yandex menghapus debugging dan mengunci menu pabrik. Jika tidak ada bagian «Debugging» maupun menu servis, ADB tidak bisa diaktifkan.",
+"Tanpa debugging jaringan, TVCleanzer maupun aplikasi serupa tidak bisa terhubung ke TV. Jika Yandex mengembalikan debugging lewat pembaruan, semuanya akan berfungsi.",
+"Cara lain masuk ke menu servis: di layar utama tahan Menu (tiga garis) selama 1 detik, lalu tekan ← ↑ ← ↑ dan Kembali. Cari ADB di sana (biasanya Other options → ADB Mode) lalu setel ke On."
 ]

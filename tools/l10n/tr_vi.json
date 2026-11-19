@@ -662,5 +662,11 @@
 "Do bạn hoặc kho ứng dụng cài, không phải firmware. Chỉ gỡ nếu chắc chắn không dùng.",
 "Không bật lại được màn hình chính gốc của TV nên launcher của chúng tôi được giữ lại (nếu không sẽ là màn hình đen). Gửi báo cáo qua «?».",
 "Ứng dụng của bạn: TVCleanzer không đụng tới.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"TV do chính Yandex sản xuất (mẫu YNDX-…) chạy firmware YaOS X mới",
+"Trước tiên hãy thử các bước ở tab «Yandex TV» và «Không có gỡ lỗi».",
+"Trên firmware YaOS X mới, Yandex đã bỏ gỡ lỗi và khóa menu nhà máy. Nếu không có mục «Gỡ lỗi» cũng không vào được menu dịch vụ thì không thể bật ADB.",
+"Không có gỡ lỗi qua mạng thì cả TVCleanzer lẫn ứng dụng tương tự đều không kết nối được với TV. Nếu Yandex trả lại gỡ lỗi trong bản cập nhật, mọi thứ sẽ hoạt động.",
+"Một cách khác để vào menu dịch vụ: ở màn hình chính giữ Menu (ba gạch) 1 giây, rồi bấm ← ↑ ← ↑ và Quay lại. Tìm ADB ở đó (thường là Other options → ADB Mode) và chuyển sang On."
 ]

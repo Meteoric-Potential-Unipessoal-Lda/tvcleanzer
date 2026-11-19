@@ -662,5 +662,11 @@
 "Instalat de tine sau de un magazin, nu de firmware. Elimină doar dacă sigur nu o folosești.",
 "Nu s-a putut activa ecranul principal original al televizorului, așa că launcherul nostru a rămas (altfel ar fi rămas ecran negru). Trimite un raport prin «?».",
 "Aplicația ta: TVCleanzer nu o atinge.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Televizoarele Yandex (modele YNDX-…) cu noul firmware YaOS X",
+"Încearcă mai întâi pașii din filele „Yandex TV” și „Fără depanare”.",
+"În noul firmware YaOS X, Yandex a scos depanarea și a blocat meniul de fabrică. Dacă nu există nici secțiunea „Depanare”, nici meniul de service, ADB nu poate fi pornit.",
+"Fără depanare în rețea, nici TVCleanzer, nici altă aplicație asemănătoare nu se poate conecta la televizor. Dacă Yandex readuce depanarea printr-o actualizare, totul va funcționa.",
+"Încă o cale spre meniul de service: pe ecranul principal ține apăsat Menu (trei linii) 1 secundă, apoi apasă ← ↑ ← ↑ și Înapoi. Găsește acolo ADB (de obicei Other options → ADB Mode) și pune-l pe On."
 ]

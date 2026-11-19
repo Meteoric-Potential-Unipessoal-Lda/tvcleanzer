@@ -662,5 +662,11 @@
 "Von dir oder einem Store installiert, nicht von der Firmware. Nur entfernen, wenn du sie wirklich nicht nutzt.",
 "Der eigene Startbildschirm des Fernsehers ließ sich nicht wieder einschalten, deshalb bleibt unser Launcher (sonst wäre der Bildschirm schwarz). Bitte sende einen Bericht über „?“.",
 "Deine App: TVCleanzer lässt sie in Ruhe.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Fernseher von Yandex selbst (Modelle YNDX-…) mit neuer YaOS-X-Firmware",
+"Probiere zuerst die Schritte in den Reitern „Yandex TV“ und „Kein Debugging“.",
+"In der neuen YaOS-X-Firmware hat Yandex das Debugging entfernt und das Werksmenü gesperrt. Gibt es weder einen Bereich „Debugging“ noch ein Servicemenü, lässt sich ADB nicht einschalten.",
+"Ohne Netzwerk-Debugging kann sich weder TVCleanzer noch eine ähnliche App mit dem Fernseher verbinden. Bringt Yandex das Debugging per Update zurück, funktioniert alles.",
+"Ein weiterer Weg ins Servicemenü: Auf dem Startbildschirm Menu (drei Striche) 1 Sekunde halten, dann ← ↑ ← ↑ und Zurück drücken. Dort ADB suchen (meist Other options → ADB Mode) und auf On stellen."
 ]

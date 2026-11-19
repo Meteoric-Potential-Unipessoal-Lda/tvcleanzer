@@ -662,5 +662,11 @@
 "Nenainstaloval to firmware, ale vy nebo obchod. Odeberte, jen pokud to opravdu nepoužíváte.",
 "Vlastní hlavní obrazovku televize se nepodařilo zapnout, proto náš launcher zůstal (jinak by zůstala černá obrazovka). Pošlete hlášení přes «?».",
 "Vaše aplikace: TVCleanzer se jí nedotkne.",
-"Andrii Zherdyev"
+"Andrii Zherdyev",
+"Yandex TV Station",
+"Televize přímo od Yandexu (modely YNDX-…) s novým firmwarem YaOS X",
+"Nejdřív zkuste kroky z karet „Yandex TV“ a „Bez ladění“.",
+"V novém firmwaru YaOS X Yandex odstranil ladění a zamkl tovární menu. Pokud není ani sekce „Ladění“, ani servisní menu, ADB zapnout nejde.",
+"Bez ladění po síti se k televizi nepřipojí TVCleanzer ani žádná podobná aplikace. Pokud Yandex ladění v aktualizaci vrátí, vše bude fungovat.",
+"Další způsob, jak vstoupit do servisního menu: na hlavní obrazovce podržte Menu (tři čárky) 1 sekundu, pak stiskněte ← ↑ ← ↑ a Zpět. Najděte tam ADB (obvykle Other options → ADB Mode) a nastavte On."
 ]
