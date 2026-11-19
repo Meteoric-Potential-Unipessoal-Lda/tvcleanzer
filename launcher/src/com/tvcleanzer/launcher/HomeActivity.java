@@ -482,9 +482,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         heroTitle.setEllipsize(android.text.TextUtils.TruncateAt.END);
         LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
                 Math.round(contentW * 0.7f), ViewGroup.LayoutParams.WRAP_CONTENT);
-        hlp.topMargin = Math.round(screenH * (inputsPos == Prefs.INPUTS_TOP ? 0.08f : (showTitle ? 0.17f : 0.04f)));
+        // Close under the clock: two full rows of tiles fit on the first screen (owners' wish:
+        // «minimalism», nothing between the clock and the apps but the colours).
+        hlp.topMargin = Math.round(screenH * 0.05f);
         page.addView(heroTitle, hlp);
-        if (!showTitle) heroTitle.setVisibility(View.INVISIBLE); // a little air between the clock and the tiles
+        if (!showTitle) {
+            heroTitle.setVisibility(View.GONE);
+            View air = new View(this);
+            page.addView(air, new LinearLayout.LayoutParams(1, Ui.dp(this, 10)));
+        }
 
         final AppTile.Hook hook = this::showcaseFocused;
         final int zoomPad = Math.round(th * 0.09f) + Ui.dp(this, 8);
@@ -527,7 +533,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         gridOrder = rest;
         gridCols = perRow;
         if (!rest.isEmpty()) {
-            page.addView(sectionTitle(T.t("Приложения"), Ui.dp(this, 22)));
+            // no «Приложения» heading here: the tiles speak for themselves
             LinearLayout row = null;
             for (int i = 0; i < rest.size(); i++) {
                 if (i % perRow == 0) {
