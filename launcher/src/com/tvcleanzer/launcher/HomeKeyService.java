@@ -283,11 +283,37 @@ public class HomeKeyService extends AccessibilityService {
             return false;
         }
         if (e.getAction() == KeyEvent.ACTION_UP) {
+            long now = SystemClock.uptimeMillis();
+            if (code == KeyEvent.KEYCODE_HOME && now - lastHomeUp < DOUBLE_HOME_MS) {
+                // Home twice = running apps, as the stock firmware does. We take Home for
+                // ourselves, so the system never saw the second press (Homatics Box 4K owner:
+                // worked from the phone's remote, not from the real one).
+                lastHomeUp = 0;
+                armedUntil = 0;
+                recentsAt = now;
+                if (!recents()) openHome();
+                return true;
+            }
+            lastHomeUp = code == KeyEvent.KEYCODE_HOME ? now : 0;
             allowedStockPkg = null;
             arm(8000);
             openHome();
         }
         return true; // consume both down and up
+    }
+
+    private static final long DOUBLE_HOME_MS = 450;
+    private long lastHomeUp;
+    /** On Google TV the running-apps panel belongs to the stock home: don't replace it. */
+    private long recentsAt;
+
+    /** The system's «recent apps» screen; false where the firmware has none. */
+    private boolean recents() {
+        try {
+            return performGlobalAction(GLOBAL_ACTION_RECENTS);
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     @Override
@@ -304,6 +330,7 @@ public class HomeKeyService extends AccessibilityService {
             return;
         }
         if (pkg.equals(allowedStockPkg)) return; // opened from our launcher on purpose
+        if (SystemClock.uptimeMillis() - recentsAt < 4000) return; // Home twice: running apps
         // Settings / TV / Input key: Google TV draws these panels from its own home (TCL owners
         // lost both buttons because we kept replacing that home)
         if (keyAsked()) return;
