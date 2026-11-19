@@ -582,6 +582,54 @@ class AdbPackageManager {
     }
   }
 
+  /// The launcher APK bundled with this app, or null in a build without it.
+  static Future<Uint8List?> bundledLauncherApk() async {
+    try {
+      final data = await rootBundle.load('assets/launcher/tvcleanzer-launcher.apk');
+      return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Brings the TV's TVCleanzer Launcher up to the bundled version when it is older: owners
+  /// never pressed «Обновить лаунчер» and kept fixed bugs (a Philips spoke and paused YouTube
+  /// on Volume with an old launcher, until the owner updated it by hand). Careful:
+  ///  * only when our launcher is installed and older — never installs it on its own;
+  ///  * only when our launcher is what the TV shows: nothing playing is interrupted
+  ///    (the check below presses Home); otherwise it waits for the next connection;
+  ///  * `install -r` keeps the launcher's own settings, favourites and photos; nothing
+  ///    from the phone (skin, look) is sent;
+  ///  * then pinned again gently ([_bind] gentle): HOME setting and key filter only; nothing
+  ///    of the firmware is taken off, and a Home-key service the owner switched off stays off.
+  /// Returns the new versionCode, or null when nothing was done.
+  Future<int?> autoUpdateLauncher(TvDevice device, Uint8List apk) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell('dumpsys package $launcherPkg | grep -m1 versionCode');
+      final v = int.tryParse(RegExp(r'versionCode=(\d+)').firstMatch(out)?.group(1) ?? '') ?? 0;
+      if (v <= 0 || v >= bundledLauncherVersion) return null;
+      final front = await _frontPackage(adb);
+      if (front != launcherPkg) {
+        AppLog.error('launcher auto-update', 'v$v on the TV, waits: $front is on screen');
+        return null;
+      }
+      final sdk = int.tryParse((await adb.shell('getprop ro.build.version.sdk')).trim()) ?? device.sdkVersion;
+      if (sdk > 0 && sdk < 21) return null;
+      final res = await _installOne(adb, apk, const Duration(seconds: 90), flags: '-r');
+      if (!res.contains('Success')) {
+        AppLog.error('launcher auto-update', 'v$v: ${res.trim()}');
+        return null;
+      }
+      final b = await _bind(adb, sdk, gentle: true);
+      AppLog.error('launcher auto-update', 'v$v → v$bundledLauncherVersion, home: ${b.name}');
+      return bundledLauncherVersion;
+    } finally {
+      adb.close();
+    }
+  }
+
   /// "Make it the home screen again" without reinstalling (Launcher tab).
   /// [googleTvHard]: the owner said "yes" to switching Google TV Home off (see [_bind]).
   Future<LauncherBind> rebindLauncher(TvDevice device,
@@ -707,9 +755,11 @@ class AdbPackageManager {
   ///  1. HOME role / preferred home + our Home-key service;
   ///  2. still not ours: take the stock Android TV launcher or PatchWall off the TV
   ///     (restorable; only after our launcher is confirmed to open), then check again.
+  ///  [gentle] (the automatic update): HOME setting, key filter and the Home-key service only —
+  ///  nothing of the firmware is taken off (no PatchWall, no stock homes, no Google TV).
   Future<LauncherBind> _bind(AdbClient adb, int sdk,
-      {void Function(String step)? onStep, bool googleTvHard = false}) async {
-    final b = await _bindOnce(adb, sdk, onStep: onStep, googleTvHard: googleTvHard);
+      {void Function(String step)? onStep, bool googleTvHard = false, bool gentle = false}) async {
+    final b = await _bindOnce(adb, sdk, onStep: onStep, googleTvHard: googleTvHard, gentle: gentle);
     if (b != LauncherBind.failed && b != LauncherBind.needsGoogleTvHard) await _syncStockOff(adb);
     return b;
   }
@@ -731,7 +781,7 @@ class AdbPackageManager {
   }
 
   Future<LauncherBind> _bindOnce(AdbClient adb, int sdk,
-      {void Function(String step)? onStep, bool googleTvHard = false}) async {
+      {void Function(String step)? onStep, bool googleTvHard = false, bool gentle = false}) async {
     onStep?.call(tr('Делаем главным экраном…'));
     if (sdk >= 29) {
       final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg 2>&1');
@@ -752,15 +802,25 @@ class AdbPackageManager {
     // Firmwares that force their own launcher on Home: our accessibility service catches the
     // Home key. It must not only be listed but really running ("bound"). (Without the key
     // filter it still puts our launcher back over a stock screen that comes up at power-on.)
-    await _ensureHomeKeyService(adb);
+    // The automatic update keeps the owner's choice: a service switched off in the TV's
+    // settings stays off.
+    final serviceListed = (await adb.shell('settings get secure enabled_accessibility_services'))
+        .trim()
+        .split(':')
+        .contains(_homeKeyService);
+    if (!gentle || serviceListed) await _ensureHomeKeyService(adb);
 
     onStep?.call(tr('Проверяем кнопку «Домой»…'));
     final resolved = _pkgOf(await _resolvedHome(adb));
     if (await _homeOpensOurs(adb) && resolved == launcherPkg) {
+      if (gentle) return LauncherBind.role;
       // Xiaomi: Home is ours now, but PatchWall still opens itself at every power-on
       // (past the HOME role). Take it off too; checked, and put back if Home breaks.
       return await _dropPatchWall(adb, sdk, onStep) ? LauncherBind.hard : LauncherBind.role;
     }
+    // The automatic update never takes anything away: what pinned the launcher before
+    // (stock homes already off, the Home-key service) is still in place.
+    if (gentle) return await _homeOpensOurs(adb) ? LauncherBind.service : LauncherBind.failed;
 
     // Our launcher must open at all before anything is taken away.
     await adb.shell('am start -n $launcherHome');

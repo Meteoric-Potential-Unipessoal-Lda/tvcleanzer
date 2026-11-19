@@ -681,6 +681,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animations are back to normal speed.',
     'Скрытых приложений нет: телевизор уже как был.': 'No hidden apps: the TV is already as it was.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Not restored: {0}. Details are in the “?” report.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'The launcher on the TV has been updated to the new version.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -1362,6 +1363,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Анімації знову звичайної швидкості.',
     'Скрытых приложений нет: телевизор уже как был.': 'Прихованих застосунків немає: телевізор уже такий, як був.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Не повернулися: {0}. Подробиці — у звіті «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Лаунчер на телевізорі оновлено до нової версії.',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -2043,6 +2045,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Las animaciones vuelven a la velocidad normal.',
     'Скрытых приложений нет: телевизор уже как был.': 'No hay apps ocultas: el televisor ya está como antes.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'No se restauraron: {0}. Detalles en el informe «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'El launcher del televisor se ha actualizado a la nueva versión.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -2724,6 +2727,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'As animações voltaram à velocidade normal.',
     'Скрытых приложений нет: телевизор уже как был.': 'Não há apps ocultas: o televisor já está como era.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Não voltaram: {0}. Detalhes no relatório «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'O launcher do televisor foi atualizado para a nova versão.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -3405,6 +3409,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animationen wieder in normaler Geschwindigkeit.',
     'Скрытых приложений нет: телевизор уже как был.': 'Keine ausgeblendeten Apps: Der Fernseher ist schon wie vorher.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Nicht zurück: {0}. Details im „?“-Bericht.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Der Launcher auf dem Fernseher wurde auf die neue Version aktualisiert.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -4086,6 +4091,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Les animations sont de nouveau à vitesse normale.',
     'Скрытых приложений нет: телевизор уже как был.': 'Aucune app masquée : le téléviseur est déjà comme avant.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Non restaurées : {0}. Détails dans le rapport « ? ».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Le launcher du téléviseur a été mis à jour vers la nouvelle version.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -4767,6 +4773,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animazioni di nuovo a velocità normale.',
     'Скрытых приложений нет: телевизор уже как был.': 'Nessuna app nascosta: il televisore è già com’era.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Non ripristinate: {0}. Dettagli nel rapporto «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Il launcher del televisore è stato aggiornato alla nuova versione.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -5448,6 +5455,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Анімацыі зноў звычайнай хуткасці.',
     'Скрытых приложений нет: телевизор уже как был.': 'Схаваных праграм няма: тэлевізар ужо такі, як быў.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Не вярнуліся: {0}. Падрабязнасці — у справаздачы «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Лаўнчар на тэлевізары абноўлены да новай версіі.',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -6129,6 +6137,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Анимациялар қайта қалыпты жылдамдықта.',
     'Скрытых приложений нет: телевизор уже как был.': 'Жасырылған қолданба жоқ: теледидар бұрынғыдай.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Қайтпағандары: {0}. Толығырақ — «?» есебінде.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Теледидардағы лаунчер жаңа нұсқаға жаңартылды.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -6810,6 +6819,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animatsiyalar yana odatiy tezlikda.',
     'Скрытых приложений нет: телевизор уже как был.': 'Yashirilgan ilovalar yo‘q: televizor avvalgidek.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Qaytmaganlari: {0}. Batafsil — «?» hisobotida.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Televizordagi launcher yangi versiyaga yangilandi.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -7491,6 +7501,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Անիմացիաները կրկին սովորական արագությամբ են։',
     'Скрытых приложений нет: телевизор уже как был.': 'Թաքցված հավելվածներ չկան. հեռուստացույցն արդեն նախկինի պես է։',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Չվերադարձան՝ {0}։ Մանրամասները՝ «?» հաշվետվությունում։',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Հեռուստացույցի գործարկիչը թարմացվել է նոր տարբերակով։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -8172,6 +8183,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animasiyalar yenidən adi sürətdədir.',
     'Скрытых приложений нет: телевизор уже как был.': 'Gizlədilmiş tətbiq yoxdur: televizor artıq əvvəlki kimidir.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Qayıtmayanlar: {0}. Ətraflı — «?» hesabatında.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Televizordakı launcher yeni versiyaya yeniləndi.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -8853,6 +8865,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'ანიმაციები ისევ ჩვეულ სიჩქარეზეა.',
     'Скрытых приложений нет: телевизор уже как был.': 'დამალული აპები არ არის: ტელევიზორი უკვე ისეთია, როგორიც იყო.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'არ დაბრუნდა: {0}. დეტალები — «?» ანგარიშში.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'ტელევიზორის ლაუნჩერი ახალ ვერსიამდე განახლდა.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -9534,6 +9547,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Анимациялар кайра кадимки ылдамдыкта.',
     'Скрытых приложений нет: телевизор уже как был.': 'Жашырылган колдонмо жок: телевизор мурдагыдай.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Кайтпагандары: {0}. Толугураак — «?» отчётунда.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Телевизордогу лаунчер жаңы версияга жаңыртылды.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -10215,6 +10229,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animasyonlar yeniden normal hızda.',
     'Скрытых приложений нет: телевизор уже как был.': 'Gizli uygulama yok: televizyon zaten eskisi gibi.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Geri gelmeyenler: {0}. Ayrıntılar «?» raporunda.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Televizyondaki başlatıcı yeni sürüme güncellendi.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -10896,6 +10911,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animacje znów mają normalną szybkość.',
     'Скрытых приложений нет: телевизор уже как был.': 'Brak ukrytych aplikacji: telewizor jest już taki jak wcześniej.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Nie wróciły: {0}. Szczegóły w raporcie «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Launcher na telewizorze został zaktualizowany do nowej wersji.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -11577,6 +11593,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animațiile au din nou viteza normală.',
     'Скрытых приложений нет: телевизор уже как был.': 'Nu sunt aplicații ascunse: televizorul e deja ca înainte.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Nu au revenit: {0}. Detalii — în raportul «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Launcherul de pe televizor a fost actualizat la noua versiune.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -12258,6 +12275,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': '动画已恢复正常速度。',
     'Скрытых приложений нет: телевизор уже как был.': '没有被隐藏的应用：电视已是原样。',
     'Не вернулись: {0}. Подробности — в отчёте «?».': '未能恢复：{0}。详情见「?」报告。',
+    'Лаунчер на телевизоре обновлён до новой версии.': '电视上的启动器已更新到新版本。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -12939,6 +12957,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'アニメーションが通常の速さに戻りました。',
     'Скрытых приложений нет: телевизор уже как был.': '非表示のアプリはありません：テレビはすでに元のままです。',
     'Не вернулись: {0}. Подробности — в отчёте «?».': '戻らなかったもの：{0}。詳しくは「?」のレポートで。',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'テレビのランチャーを新しいバージョンに更新しました。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -13620,6 +13639,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': '애니메이션이 다시 보통 속도입니다.',
     'Скрытых приложений нет: телевизор уже как был.': '숨긴 앱이 없습니다: TV는 이미 원래대로입니다.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': '되돌리지 못함: {0}. 자세한 내용은 \'?\' 보고서에서.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'TV의 런처를 새 버전으로 업데이트했습니다.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -14301,6 +14321,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'एनिमेशन फिर से सामान्य गति पर।',
     'Скрытых приложений нет: телевизор уже как был.': 'कोई छिपा ऐप नहीं: टीवी पहले जैसा ही है।',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'वापस नहीं आए: {0}। विवरण — «?» रिपोर्ट में।',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'टीवी पर लॉन्चर नए संस्करण में अपडेट हो गया।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -14982,6 +15003,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animasi kembali ke kecepatan normal.',
     'Скрытых приложений нет: телевизор уже как был.': 'Tidak ada aplikasi tersembunyi: TV sudah seperti semula.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Tidak kembali: {0}. Detail ada di laporan «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Launcher di TV sudah diperbarui ke versi baru.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -15663,6 +15685,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Hoạt ảnh đã về tốc độ bình thường.',
     'Скрытых приложений нет: телевизор уже как был.': 'Không có ứng dụng bị ẩn: TV đã như cũ.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Chưa khôi phục được: {0}. Chi tiết — trong báo cáo «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Launcher trên TV đã được cập nhật lên phiên bản mới.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -16344,6 +16367,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'แอนิเมชันกลับเป็นความเร็วปกติแล้ว',
     'Скрытых приложений нет: телевизор уже как был.': 'ไม่มีแอปที่ถูกซ่อน: ทีวีเหมือนเดิมแล้ว',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'คืนไม่ได้: {0} รายละเอียดอยู่ในรายงาน «?»',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'อัปเดตลอนเชอร์บนทีวีเป็นเวอร์ชันใหม่แล้ว',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -17025,6 +17049,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animaties weer op normale snelheid.',
     'Скрытых приложений нет: телевизор уже как был.': 'Geen verborgen apps: de tv is al zoals hij was.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Niet terug: {0}. Details in het rapport «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'De launcher op de tv is bijgewerkt naar de nieuwe versie.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -17706,6 +17731,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animace mají opět normální rychlost.',
     'Скрытых приложений нет: телевизор уже как был.': 'Žádné skryté aplikace: televize už je jako dřív.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Nevrátily se: {0}. Podrobnosti v hlášení «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Launcher na televizi byl aktualizován na novou verzi.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -18387,6 +18413,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Τα εφέ κίνησης ξανά σε κανονική ταχύτητα.',
     'Скрытых приложений нет: телевизор уже как был.': 'Δεν υπάρχουν κρυμμένες εφαρμογές: η τηλεόραση είναι ήδη όπως ήταν.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Δεν επανήλθαν: {0}. Λεπτομέρειες στην αναφορά «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Ο launcher της τηλεόρασης ενημερώθηκε στη νέα έκδοση.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -19068,6 +19095,7 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Az animációk ismét normál sebességűek.',
     'Скрытых приложений нет: телевизор уже как был.': 'Nincs elrejtett alkalmazás: a tévé már olyan, mint régen.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Nem tértek vissza: {0}. Részletek a «?» jelentésben.',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'A tévén lévő launcher frissült az új verzióra.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -19749,5 +19777,6 @@ const Map<String, Map<String, String>> translations = {
     'Анимации снова обычной скорости.': 'Animationerna har normal hastighet igen.',
     'Скрытых приложений нет: телевизор уже как был.': 'Inga dolda appar: tv:n är redan som förut.',
     'Не вернулись: {0}. Подробности — в отчёте «?».': 'Kom inte tillbaka: {0}. Detaljer i rapporten «?».',
+    'Лаунчер на телевизоре обновлён до новой версии.': 'Launchern på tv:n har uppdaterats till den nya versionen.',
   },
 };

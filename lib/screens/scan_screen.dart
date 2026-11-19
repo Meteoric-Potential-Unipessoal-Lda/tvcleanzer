@@ -77,8 +77,28 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(scanProvider(widget.device).notifier).startScan();
+      ref.read(scanProvider(widget.device).notifier).startScan().then((_) => _maybeUpdateLauncher());
     });
+  }
+
+  /// TVs already asked this run: one quiet try per TV, never in a loop.
+  static final Set<String> _launcherChecked = {};
+
+  /// After the scan: an old TVCleanzer Launcher on the TV is brought up to date
+  /// (see [AdbPackageManager.autoUpdateLauncher] for when it does nothing).
+  Future<void> _maybeUpdateLauncher() async {
+    final tv = widget.device;
+    if (tv.isDemo || !_launcherChecked.add(tv.ipAddress)) return;
+    try {
+      final apk = await AdbPackageManager.bundledLauncherApk();
+      if (apk == null) return;
+      final v = await ref.read(adbServiceProvider).autoUpdateLauncher(tv, apk);
+      if (v == null || !mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(tr('Лаунчер на телевизоре обновлён до новой версии.'))));
+    } catch (e) {
+      AppLog.error('launcher auto-update', e);
+    }
   }
 
   @override
