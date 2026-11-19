@@ -93,21 +93,37 @@ final class IconArt {
         }
     }
 
-    /** A soft colour wash for the «Витрина» background: the picture squeezed to a few pixels
-     *  and stretched back (bilinear), so only its colours stay. */
+    /** A soft colour wash for the «Витрина» background: the picture squeezed to 8×5 pixels and
+     *  stretched back in steps (bilinear), so only its colours stay — no letters or tile shapes.
+     *  Never bright: a white icon (video, store apps) made the whole screen white and the clock
+     *  unreadable (an owner's video), so every pixel is held below ~40 % brightness. */
     static Bitmap wash(Drawable d) {
         if (d == null) return null;
         try {
-            Bitmap tiny = Bitmap.createBitmap(16, 9, Bitmap.Config.ARGB_8888);
+            Bitmap tiny = Bitmap.createBitmap(8, 5, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(tiny);
             c.drawColor(0xFF0B1020);
-            d.setBounds(0, 0, 16, 9);
+            d.setBounds(0, 0, 8, 5);
             d.draw(c);
-            Bitmap mid = Bitmap.createScaledBitmap(tiny, 64, 36, true);
-            tiny.recycle();
-            Bitmap big = Bitmap.createScaledBitmap(mid, 256, 144, true);
-            mid.recycle();
-            return big;
+            int[] px = new int[40];
+            tiny.getPixels(px, 0, 8, 0, 0, 8, 5);
+            float[] hsv = new float[3];
+            for (int i = 0; i < px.length; i++) {
+                android.graphics.Color.colorToHSV(px[i], hsv);
+                hsv[1] = Math.min(1f, hsv[1] * 1.15f);
+                // dark and greyish stays dark; bright colours are dimmed, white turns slate
+                hsv[2] = Math.min(hsv[2], hsv[1] < 0.15f ? 0.22f : 0.42f);
+                px[i] = android.graphics.Color.HSVToColor(hsv);
+            }
+            tiny.setPixels(px, 0, 8, 0, 0, 8, 5);
+            Bitmap b = tiny;
+            int[][] steps = {{24, 15}, {72, 45}, {256, 160}};
+            for (int[] st : steps) {
+                Bitmap n = Bitmap.createScaledBitmap(b, st[0], st[1], true);
+                b.recycle();
+                b = n;
+            }
+            return b;
         } catch (Throwable e) {
             return null;
         }
