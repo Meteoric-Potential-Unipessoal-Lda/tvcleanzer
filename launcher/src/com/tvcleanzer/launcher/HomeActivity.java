@@ -472,7 +472,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final int inputsPos = prefs.inputsPos();
         if (inputsPos == Prefs.INPUTS_TOP) addInputs(page);
 
-        // Big title of the focused app
+        // Big title of the focused app (can be switched off: «only takes room», owners said);
+        // the old «ОК — открыть · …» hint line is gone for the same reason.
+        final boolean showTitle = prefs.heroTitle();
         heroTitle = Ui.text(this, 46, 0xFFFFFFFF, "sans-serif");
         heroTitle.setTypeface(android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.BOLD));
         heroTitle.setShadowLayer(Ui.dp(this, 12), 0, Ui.dp(this, 2), 0x80000000);
@@ -480,15 +482,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         heroTitle.setEllipsize(android.text.TextUtils.TruncateAt.END);
         LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
                 Math.round(contentW * 0.7f), ViewGroup.LayoutParams.WRAP_CONTENT);
-        hlp.topMargin = Math.round(screenH * (inputsPos == Prefs.INPUTS_TOP ? 0.08f : 0.17f));
+        hlp.topMargin = Math.round(screenH * (inputsPos == Prefs.INPUTS_TOP ? 0.08f : (showTitle ? 0.17f : 0.04f)));
         page.addView(heroTitle, hlp);
-        TextView hint = Ui.text(this, 17, 0xC7FFFFFF, "sans-serif");
-        hint.setText(T.t("ОК — открыть · долгое нажатие — переставить или скрыть"));
-        hint.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x80000000);
-        LinearLayout.LayoutParams hip = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        hip.topMargin = Ui.dp(this, 4);
-        page.addView(hint, hip);
+        if (!showTitle) heroTitle.setVisibility(View.INVISIBLE); // a little air between the clock and the tiles
 
         final AppTile.Hook hook = this::showcaseFocused;
         final int zoomPad = Math.round(th * 0.09f) + Ui.dp(this, 8);

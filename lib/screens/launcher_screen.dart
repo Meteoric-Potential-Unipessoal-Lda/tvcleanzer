@@ -371,6 +371,11 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         seg(tr('Вид главного экрана'), [tr('Плитки'), tr('Часы и док'), tr('Витрина')], look.style,
             (v) => _setLook(look.copyWith(style: v))),
         const Gap(14),
+        if (look.style == 2) ...[
+          sw(tr('Название приложения над плитками'), null, look.heroTitle,
+              (v) => _setLook(look.copyWith(heroTitle: v))),
+          const Gap(8),
+        ],
         seg(tr('Иконки приложений'), [tr('Авто'), tr('Иконки'), tr('ТВ-баннеры')], look.icons,
             (v) => _setLook(look.copyWith(icons: v))),
         const Gap(14),

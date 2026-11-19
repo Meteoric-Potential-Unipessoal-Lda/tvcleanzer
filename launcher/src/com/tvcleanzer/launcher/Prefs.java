@@ -18,7 +18,7 @@ final class Prefs {
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
             AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
-            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", STOCK_OFF = "stockOff", KEY_FILTER = "keyFilter", FAV_BOTTOM = "favBottom", SHELF = "shelf",
+            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", HERO_TITLE = "heroTitle", STOCK_OFF = "stockOff", KEY_FILTER = "keyFilter", FAV_BOTTOM = "favBottom", SHELF = "shelf",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot", ICONS = "icons",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
@@ -142,6 +142,9 @@ final class Prefs {
     void setSplash(boolean v) { sp.edit().putBoolean(SPLASH, v).apply(); }
     /** Tiles style: the app grid starts on the second screen (only favourites on the first). */
     boolean appsBelow()      { return sp.getBoolean(APPS_BELOW, false); }
+    /** «Витрина»: the focused app's name in large letters above the tiles (0.33+). */
+    boolean heroTitle()      { return sp.getBoolean(HERO_TITLE, true); }
+    void setHeroTitle(boolean v) { sp.edit().putBoolean(HERO_TITLE, v).apply(); }
     void setAppsBelow(boolean v) { sp.edit().putBoolean(APPS_BELOW, v).apply(); }
     /** With appsBelow: favourites sit at the bottom of the first screen, over the photo. */
     boolean favBottom()      { return sp.getBoolean(FAV_BOTTOM, false); }

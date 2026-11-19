@@ -107,6 +107,10 @@ public class SettingsActivity extends Activity {
         addRow(skin, T.t("Вид главного экрана"), styleNames[prefs.style()], () -> prefs.setStyle((prefs.style() + 1) % 3));
         String[] iconNames = {T.t("Авто"), T.t("Иконки"), T.t("ТВ-баннеры")};
         addRow(skin, T.t("Иконки приложений"), iconNames[prefs.icons()], () -> prefs.setIcons((prefs.icons() + 1) % 3));
+        if (prefs.style() == Prefs.STYLE_SHOWCASE) {
+            addRow(skin, T.t("Название приложения над плитками"), prefs.heroTitle() ? T.t("Показывать") : T.t("Скрыто"),
+                    () -> prefs.setHeroTitle(!prefs.heroTitle()));
+        }
         addRow(skin, T.t("Часы: шрифт"), Prefs.CLOCK_FONT_NAMES[prefs.clockFont()],
                 () -> prefs.setClockFont((prefs.clockFont() + 1) % Prefs.CLOCK_FONTS.length));
         addRow(skin, T.t("Часы: размер"), prefs.clockSize() + "%",

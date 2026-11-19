@@ -687,6 +687,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Icons',
     'ТВ-баннеры': 'TV banners',
+    'Название приложения над плитками': 'App name above the tiles',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -1374,6 +1375,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Авто',
     'Иконки': 'Іконки',
     'ТВ-баннеры': 'ТВ-банери',
+    'Название приложения над плитками': 'Назва застосунку над плитками',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -2061,6 +2063,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Iconos',
     'ТВ-баннеры': 'Banners de TV',
+    'Название приложения над плитками': 'Nombre de la app sobre los mosaicos',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -2748,6 +2751,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Ícones',
     'ТВ-баннеры': 'Banners de TV',
+    'Название приложения над плитками': 'Nome da app acima dos mosaicos',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -3435,6 +3439,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Symbole',
     'ТВ-баннеры': 'TV-Banner',
+    'Название приложения над плитками': 'App-Name über den Kacheln',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -4122,6 +4127,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Icônes',
     'ТВ-баннеры': 'Bannières TV',
+    'Название приложения над плитками': 'Nom de l\'appli au-dessus des tuiles',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -4809,6 +4815,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Icone',
     'ТВ-баннеры': 'Banner TV',
+    'Название приложения над плитками': 'Nome dell\'app sopra i riquadri',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -5496,6 +5503,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Аўта',
     'Иконки': 'Іконкі',
     'ТВ-баннеры': 'ТБ-банеры',
+    'Название приложения над плитками': 'Назва праграмы над плиткамі',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -6183,6 +6191,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Авто',
     'Иконки': 'Белгішелер',
     'ТВ-баннеры': 'ТД баннерлері',
+    'Название приложения над плитками': 'Плиткалар үстіндегі қолданба атауы',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -6870,6 +6879,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Avto',
     'Иконки': 'Belgilar',
     'ТВ-баннеры': 'TV bannerlari',
+    'Название приложения над плитками': 'Plitkalar ustida ilova nomi',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -7557,6 +7567,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Ավտո',
     'Иконки': 'Պատկերակներ',
     'ТВ-баннеры': 'TV բաններներ',
+    'Название приложения над плитками': 'Հավելվածի անունը սալիկների վերևում',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -8244,6 +8255,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Avto',
     'Иконки': 'İkonlar',
     'ТВ-баннеры': 'TV bannerləri',
+    'Название приложения над плитками': 'Plitələrin üstündə tətbiq adı',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -8931,6 +8943,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'ავტო',
     'Иконки': 'ხატულები',
     'ТВ-баннеры': 'TV ბანერები',
+    'Название приложения над плитками': 'აპის სახელი ფილების ზემოთ',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -9618,6 +9631,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Авто',
     'Иконки': 'Сүрөтчөлөр',
     'ТВ-баннеры': 'ТВ баннерлери',
+    'Название приложения над плитками': 'Плиткалардын үстүндө колдонмонун аты',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -10305,6 +10319,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Otomatik',
     'Иконки': 'Simgeler',
     'ТВ-баннеры': 'TV bannerları',
+    'Название приложения над плитками': 'Kutucukların üstünde uygulama adı',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -10992,6 +11007,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Ikony',
     'ТВ-баннеры': 'Banery TV',
+    'Название приложения над плитками': 'Nazwa aplikacji nad kafelkami',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -11679,6 +11695,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Pictograme',
     'ТВ-баннеры': 'Bannere TV',
+    'Название приложения над плитками': 'Numele aplicației deasupra plăcilor',
   },
   'zh': {
     'Полночь': '午夜',
@@ -12366,6 +12383,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': '自动',
     'Иконки': '图标',
     'ТВ-баннеры': '电视横幅',
+    'Название приложения над плитками': '磁贴上方的应用名称',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -13053,6 +13071,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': '自動',
     'Иконки': 'アイコン',
     'ТВ-баннеры': 'TVバナー',
+    'Название приложения над плитками': 'タイルの上にアプリ名',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -13740,6 +13759,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': '자동',
     'Иконки': '아이콘',
     'ТВ-баннеры': 'TV 배너',
+    'Название приложения над плитками': '타일 위 앱 이름',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -14427,6 +14447,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'ऑटो',
     'Иконки': 'आइकन',
     'ТВ-баннеры': 'टीवी बैनर',
+    'Название приложения над плитками': 'टाइलों के ऊपर ऐप का नाम',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -15114,6 +15135,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Otomatis',
     'Иконки': 'Ikon',
     'ТВ-баннеры': 'Banner TV',
+    'Название приложения над плитками': 'Nama aplikasi di atas ubin',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -15801,6 +15823,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Tự động',
     'Иконки': 'Biểu tượng',
     'ТВ-баннеры': 'Banner TV',
+    'Название приложения над плитками': 'Tên ứng dụng phía trên các ô',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -16488,6 +16511,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'อัตโนมัติ',
     'Иконки': 'ไอคอน',
     'ТВ-баннеры': 'แบนเนอร์ทีวี',
+    'Название приложения над плитками': 'ชื่อแอปเหนือไทล์',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -17175,6 +17199,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Pictogrammen',
     'ТВ-баннеры': 'Tv-banners',
+    'Название приложения над плитками': 'App-naam boven de tegels',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -17862,6 +17887,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Ikony',
     'ТВ-баннеры': 'TV bannery',
+    'Название приложения над плитками': 'Název aplikace nad dlaždicemi',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -18549,6 +18575,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Αυτόματα',
     'Иконки': 'Εικονίδια',
     'ТВ-баннеры': 'Banner TV',
+    'Название приложения над плитками': 'Όνομα εφαρμογής πάνω από τα πλακίδια',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -19236,6 +19263,7 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Ikonok',
     'ТВ-баннеры': 'TV-bannerek',
+    'Название приложения над плитками': 'Alkalmazásnév a csempék fölött',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -19923,5 +19951,6 @@ const Map<String, Map<String, String>> translations = {
     'Авто': 'Auto',
     'Иконки': 'Ikoner',
     'ТВ-баннеры': 'TV-banners',
+    'Название приложения над плитками': 'Appens namn ovanför rutorna',
   },
 };
