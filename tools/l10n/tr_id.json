@@ -355,7 +355,7 @@
 "Jika tidak — hanya pada yang dipilih",
 "Setelan ini ada di versi launcher yang baru: tekan «Perbarui launcher di TV» di bawah.",
 "TV lemah tersendat? Matikan animasi dan latar hidup.",
-"Ada versi launcher baru: pengaturan detail, latar hidup, tema baru, dan unggah foto yang andal. Tekan «Perbarui launcher di TV».",
+"Ada versi launcher baru: tampilan «Etalase», ikon asli aplikasi, dan tema baru. Ketuk «Perbarui launcher di TV».",
 "Penggelapan foto",
 "Penggelapan berfungsi di versi launcher yang baru: perbarui di tab «Launcher».",
 "Sebaiknya foto horizontal, 16:9. Penggelapan membantu membaca jam dan nama di foto yang terang.",
@@ -678,5 +678,10 @@
 "Animasi kembali ke kecepatan normal.",
 "Tidak ada aplikasi tersembunyi: TV sudah seperti semula.",
 "Tidak kembali: {0}. Detail ada di laporan «?».",
-"Launcher di TV sudah diperbarui ke versi baru."
+"Launcher di TV sudah diperbarui ke versi baru.",
+"Etalase",
+"Ikon aplikasi",
+"Otomatis",
+"Ikon",
+"Banner TV"
 ]

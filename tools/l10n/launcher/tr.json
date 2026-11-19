@@ -60,7 +60,7 @@
 "Фото: {0}": "Fotoğraf: {0}",
 "Фон главного экрана": "Ana ekran arka planı",
 "Меняется по фото": "Fotoğraflarla değişir",
-"Одно фото / шкурка": "Tek fotoğraf / tema",
+"Одно фото / тема": "Tek fotoğraf / tema",
 "Заставка при запуске": "Açılış ekranı",
 "Логотип, пока лаунчер загружается": "Başlatıcı yüklenirken logo",
 "Выключена": "Kapalı",
@@ -107,5 +107,6 @@
 "ливень": "sağanak",
 "снегопад": "kar yağışı",
 "гроза": "gök gürültülü fırtına",
-"облачно": "bulutlu"
+"облачно": "bulutlu",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — aç · uzun bas — taşı veya gizle"
 }

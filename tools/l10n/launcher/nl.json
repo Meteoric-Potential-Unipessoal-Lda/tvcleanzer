@@ -60,7 +60,7 @@
 "Фото: {0}": "Foto's: {0}",
 "Фон главного экрана": "Achtergrond hoofdscherm",
 "Меняется по фото": "Wisselt met de foto's",
-"Одно фото / шкурка": "Eén foto / thema",
+"Одно фото / тема": "Eén foto / thema",
 "Заставка при запуске": "Opstartscherm",
 "Логотип, пока лаунчер загружается": "Logo terwijl de launcher laadt",
 "Выключена": "Uit",
@@ -107,5 +107,6 @@
 "ливень": "buien",
 "снегопад": "sneeuwval",
 "гроза": "onweer",
-"облачно": "bewolkt"
+"облачно": "bewolkt",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — openen · lang indrukken — verplaatsen of verbergen"
 }

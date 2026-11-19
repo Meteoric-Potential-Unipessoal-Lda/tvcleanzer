@@ -355,7 +355,7 @@
 "Sinon seulement sous la tuile sélectionnée",
 "Ces réglages arrivent avec la nouvelle version du launcher : touchez « Mettre à jour le launcher sur le TV » ci-dessous.",
 "Une TV peu puissante saccade ? Désactivez les animations et le fond animé.",
-"Une nouvelle version du launcher est disponible : réglages fins, fond animé, nouveaux thèmes et envoi de photos fiable. Touchez « Mettre à jour le launcher sur le TV ».",
+"Une nouvelle version du launcher est disponible : vue « Vitrine », vraies icônes des apps et nouveaux thèmes. Touchez « Mettre à jour le launcher sur le TV ».",
 "Assombrir la photo",
 "L’assombrissement nécessite la nouvelle version du launcher : mettez-le à jour dans l’onglet « Launcher ».",
 "Une photo paysage 16:9 est idéale. L’assombrissement garde l’horloge et les noms lisibles sur les images claires.",
@@ -678,5 +678,10 @@
 "Les animations sont de nouveau à vitesse normale.",
 "Aucune app masquée : le téléviseur est déjà comme avant.",
 "Non restaurées : {0}. Détails dans le rapport « ? ».",
-"Le launcher du téléviseur a été mis à jour vers la nouvelle version."
+"Le launcher du téléviseur a été mis à jour vers la nouvelle version.",
+"Vitrine",
+"Icônes des applis",
+"Auto",
+"Icônes",
+"Bannières TV"
 ]

@@ -355,7 +355,7 @@
 "Altfel — doar la cea selectată",
 "Aceste setări au apărut în noua versiune a launcherului: apasă mai jos «Actualizează launcherul pe TV».",
 "Televizorul slab se mișcă greu? Oprește animațiile și fundalul viu.",
-"Există o versiune nouă a launcherului: reglaj fin, fundal viu, teme noi și încărcare sigură a fotografiilor. Apasă «Actualizează launcherul pe TV».",
+"Există o versiune nouă a launcherului: vizualizarea «Vitrină», iconițe reale ale aplicațiilor și teme noi. Atinge «Actualizează launcherul pe TV».",
 "Întunecarea fotografiei",
 "Întunecarea funcționează în noua versiune a launcherului: actualizează-l în fila «Launcher».",
 "Ideal o fotografie orizontală, 16:9. Întunecarea ajută la citirea ceasului și a numelor pe imagini luminoase.",
@@ -678,5 +678,10 @@
 "Animațiile au din nou viteza normală.",
 "Nu sunt aplicații ascunse: televizorul e deja ca înainte.",
 "Nu au revenit: {0}. Detalii — în raportul «?».",
-"Launcherul de pe televizor a fost actualizat la noua versiune."
+"Launcherul de pe televizor a fost actualizat la noua versiune.",
+"Vitrină",
+"Pictogramele aplicațiilor",
+"Auto",
+"Pictograme",
+"Bannere TV"
 ]

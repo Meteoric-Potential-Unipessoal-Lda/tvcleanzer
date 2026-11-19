@@ -355,7 +355,7 @@
 "Inaczej — tylko pod wybranym",
 "Te ustawienia pojawiły się w nowej wersji launchera: naciśnij poniżej «Zaktualizuj launcher na TV».",
 "Słaby telewizor przycina? Wyłącz animacje i żywe tło.",
-"Jest nowa wersja launchera: dostrajanie, żywe tło, nowe motywy i niezawodne wysyłanie zdjęć. Naciśnij «Zaktualizuj launcher na TV».",
+"Jest nowa wersja launchera: widok «Witryna», prawdziwe ikony aplikacji i nowe motywy. Stuknij «Zaktualizuj launcher na TV».",
 "Przyciemnienie zdjęcia",
 "Przyciemnienie działa w nowej wersji launchera: zaktualizuj go na karcie «Launcher».",
 "Najlepiej poziome zdjęcie, 16:9. Przyciemnienie pomaga czytać zegar i nazwy na jasnych zdjęciach.",
@@ -678,5 +678,10 @@
 "Animacje znów mają normalną szybkość.",
 "Brak ukrytych aplikacji: telewizor jest już taki jak wcześniej.",
 "Nie wróciły: {0}. Szczegóły w raporcie «?».",
-"Launcher na telewizorze został zaktualizowany do nowej wersji."
+"Launcher na telewizorze został zaktualizowany do nowej wersji.",
+"Witryna",
+"Ikony aplikacji",
+"Auto",
+"Ikony",
+"Banery TV"
 ]

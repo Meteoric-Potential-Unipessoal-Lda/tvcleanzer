@@ -355,7 +355,7 @@
 "Anders alleen bij de geselecteerde",
 "Deze instellingen zitten in de nieuwe launcherversie: druk hieronder op «Launcher op tv bijwerken».",
 "Hapert een trage tv? Zet animaties en de levende achtergrond uit.",
-"Er is een nieuwe launcherversie: fijnafstelling, levende achtergrond, nieuwe thema's en betrouwbaar foto's uploaden. Druk op «Launcher op tv bijwerken».",
+"Er is een nieuwe launcherversie: weergave «Etalage», echte app-pictogrammen en nieuwe thema's. Tik op «Launcher op tv bijwerken».",
 "Foto dimmen",
 "Dimmen werkt in de nieuwe launcherversie: werk hem bij op het tabblad «Launcher».",
 "Liefst een liggende foto, 16:9. Dimmen helpt om klok en namen op felle foto's te lezen.",
@@ -678,5 +678,10 @@
 "Animaties weer op normale snelheid.",
 "Geen verborgen apps: de tv is al zoals hij was.",
 "Niet terug: {0}. Details in het rapport «?».",
-"De launcher op de tv is bijgewerkt naar de nieuwe versie."
+"De launcher op de tv is bijgewerkt naar de nieuwe versie.",
+"Etalage",
+"App-pictogrammen",
+"Auto",
+"Pictogrammen",
+"Tv-banners"
 ]

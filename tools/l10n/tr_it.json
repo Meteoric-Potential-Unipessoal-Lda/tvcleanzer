@@ -355,7 +355,7 @@
 "Altrimenti solo sotto quello selezionato",
 "Queste impostazioni arrivano con la nuova versione del launcher: tocca «Aggiorna il launcher sulla TV» qui sotto.",
 "Una TV poco potente scatta? Disattiva animazioni e sfondo animato.",
-"È disponibile una nuova versione del launcher: regolazioni fini, sfondo animato, nuovi temi e invio foto affidabile. Tocca «Aggiorna il launcher sulla TV».",
+"È disponibile una nuova versione del launcher: vista «Vetrina», icone vere delle app e nuovi temi. Tocca «Aggiorna il launcher sulla TV».",
 "Scurisci la foto",
 "L’oscuramento richiede la nuova versione del launcher: aggiornalo nella scheda «Launcher».",
 "Meglio una foto orizzontale 16:9. L’oscuramento rende leggibili orologio e nomi sulle immagini chiare.",
@@ -678,5 +678,10 @@
 "Animazioni di nuovo a velocità normale.",
 "Nessuna app nascosta: il televisore è già com’era.",
 "Non ripristinate: {0}. Dettagli nel rapporto «?».",
-"Il launcher del televisore è stato aggiornato alla nuova versione."
+"Il launcher del televisore è stato aggiornato alla nuova versione.",
+"Vetrina",
+"Icone delle app",
+"Auto",
+"Icone",
+"Banner TV"
 ]

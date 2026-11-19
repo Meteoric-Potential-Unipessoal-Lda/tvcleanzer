@@ -60,7 +60,7 @@
 "Фото: {0}": "Foto: {0}",
 "Фон главного экрана": "Sfondo della schermata principale",
 "Меняется по фото": "Cambia con le foto",
-"Одно фото / шкурка": "Una foto / tema",
+"Одно фото / тема": "Una foto / tema",
 "Заставка при запуске": "Schermata d’avvio",
 "Логотип, пока лаунчер загружается": "Logo mentre il launcher si carica",
 "Выключена": "Disattivata",
@@ -107,5 +107,6 @@
 "ливень": "rovesci",
 "снегопад": "nevicata",
 "гроза": "temporale",
-"облачно": "nuvoloso"
+"облачно": "nuvoloso",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — apri · pressione lunga — sposta o nascondi"
 }

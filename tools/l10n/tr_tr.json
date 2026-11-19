@@ -355,7 +355,7 @@
 "Aksi halde yalnızca seçilende",
 "Bu ayarlar başlatıcının yeni sürümünde geldi: aşağıdaki «TV'deki başlatıcıyı güncelle»ye basın.",
 "Zayıf televizör takılıyor mu? Animasyonları ve canlı arka planı kapatın.",
-"Başlatıcının yeni sürümü var: ince ayarlar, canlı arka plan, yeni temalar ve güvenilir fotoğraf yükleme. «TV'deki başlatıcıyı güncelle»ye basın.",
+"Başlatıcının yeni sürümü var: «Vitrin» görünümü, uygulamaların gerçek simgeleri ve yeni temalar. «TV'deki başlatıcıyı güncelle»ye dokunun.",
 "Fotoğrafı karart",
 "Karartma başlatıcının yeni sürümünde çalışır: «Başlatıcı» sekmesinden güncelleyin.",
 "Yatay fotoğraf daha iyi, 16:9. Karartma, parlak fotoğraflarda saati ve adları okumayı kolaylaştırır.",
@@ -678,5 +678,10 @@
 "Animasyonlar yeniden normal hızda.",
 "Gizli uygulama yok: televizyon zaten eskisi gibi.",
 "Geri gelmeyenler: {0}. Ayrıntılar «?» raporunda.",
-"Televizyondaki başlatıcı yeni sürüme güncellendi."
+"Televizyondaki başlatıcı yeni sürüme güncellendi.",
+"Vitrin",
+"Uygulama simgeleri",
+"Otomatik",
+"Simgeler",
+"TV bannerları"
 ]

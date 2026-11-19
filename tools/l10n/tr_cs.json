@@ -355,7 +355,7 @@
 "Jinak jen u vybrané",
 "Tato nastavení jsou v nové verzi launcheru: níže stiskněte «Aktualizovat launcher na TV».",
 "Slabá televize se zasekává? Vypněte animace a živé pozadí.",
-"Je tu nová verze launcheru: jemné nastavení, živé pozadí, nové motivy a spolehlivé nahrávání fotek. Stiskněte «Aktualizovat launcher na TV».",
+"Je k dispozici nová verze launcheru: vzhled «Výloha», skutečné ikony aplikací a nové motivy. Klepněte na «Aktualizovat launcher na TV».",
 "Ztmavení fotky",
 "Ztmavení funguje v nové verzi launcheru: aktualizujte ho na kartě «Launcher».",
 "Nejlépe fotka na šířku, 16:9. Ztmavení pomáhá číst hodiny a názvy na světlých snímcích.",
@@ -678,5 +678,10 @@
 "Animace mají opět normální rychlost.",
 "Žádné skryté aplikace: televize už je jako dřív.",
 "Nevrátily se: {0}. Podrobnosti v hlášení «?».",
-"Launcher na televizi byl aktualizován na novou verzi."
+"Launcher na televizi byl aktualizován na novou verzi.",
+"Výloha",
+"Ikony aplikací",
+"Auto",
+"Ikony",
+"TV bannery"
 ]

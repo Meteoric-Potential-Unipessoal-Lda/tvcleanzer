@@ -355,7 +355,7 @@
 "Caso contrário, só no selecionado",
 "Estes ajustes chegam com a nova versão do launcher: toque em «Atualizar launcher na TV» abaixo.",
 "Uma TV mais fraca engasga? Desligue as animações e o fundo animado.",
-"Há uma nova versão do launcher: ajustes finos, fundo animado, novos temas e envio de fotos fiável. Toque em «Atualizar launcher na TV».",
+"Há uma nova versão do launcher: vista «Montra», ícones reais das apps e novos temas. Toque em «Atualizar launcher na TV».",
 "Escurecer a foto",
 "O escurecimento precisa da nova versão do launcher: atualize-o no separador «Launcher».",
 "O ideal é uma foto horizontal 16:9. O escurecimento ajuda a ler o relógio e os nomes em fotos claras.",
@@ -678,5 +678,10 @@
 "As animações voltaram à velocidade normal.",
 "Não há apps ocultas: o televisor já está como era.",
 "Não voltaram: {0}. Detalhes no relatório «?».",
-"O launcher do televisor foi atualizado para a nova versão."
+"O launcher do televisor foi atualizado para a nova versão.",
+"Montra",
+"Ícones das apps",
+"Auto",
+"Ícones",
+"Banners de TV"
 ]

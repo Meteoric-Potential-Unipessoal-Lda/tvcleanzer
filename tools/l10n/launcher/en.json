@@ -60,7 +60,7 @@
 "Фото: {0}": "Photos: {0}",
 "Фон главного экрана": "Home background",
 "Меняется по фото": "Changes with the photos",
-"Одно фото / шкурка": "One photo / theme",
+"Одно фото / тема": "One photo / theme",
 "Заставка при запуске": "Splash on start",
 "Логотип, пока лаунчер загружается": "Logo while the launcher loads",
 "Выключена": "Off",
@@ -107,5 +107,6 @@
 "ливень": "showers",
 "снегопад": "snowfall",
 "гроза": "thunderstorm",
-"облачно": "cloudy"
+"облачно": "cloudy",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — open · hold — move or hide"
 }

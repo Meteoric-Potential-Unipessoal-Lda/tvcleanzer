@@ -60,7 +60,7 @@
 "Фото: {0}": "Fotky: {0}",
 "Фон главного экрана": "Pozadí hlavní obrazovky",
 "Меняется по фото": "Mění se s fotkami",
-"Одно фото / шкурка": "Jedna fotka / motiv",
+"Одно фото / тема": "Jedna fotka / motiv",
 "Заставка при запуске": "Úvodní obrazovka",
 "Логотип, пока лаунчер загружается": "Logo, dokud se launcher načítá",
 "Выключена": "Vypnuto",
@@ -107,5 +107,6 @@
 "ливень": "přeháňky",
 "снегопад": "sněžení",
 "гроза": "bouřka",
-"облачно": "oblačno"
+"облачно": "oblačno",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — otevřít · dlouhé stisknutí — přesunout nebo skrýt"
 }

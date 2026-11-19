@@ -60,7 +60,7 @@
 "Фото: {0}": "Foto: {0}",
 "Фон главного экрана": "Asosiy ekran foni",
 "Меняется по фото": "Fotolarga qarab almashadi",
-"Одно фото / шкурка": "Bitta foto / mavzu",
+"Одно фото / тема": "Bitta foto / mavzu",
 "Заставка при запуске": "Ishga tushishdagi zastavka",
 "Логотип, пока лаунчер загружается": "Launcher yuklanguncha logotip",
 "Выключена": "O‘chirilgan",
@@ -107,5 +107,6 @@
 "ливень": "jala",
 "снегопад": "qor yog‘ishi",
 "гроза": "momaqaldiroq",
-"облачно": "bulutli"
+"облачно": "bulutli",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — ochish · uzoq bosish — ko‘chirish yoki yashirish"
 }

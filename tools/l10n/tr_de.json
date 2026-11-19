@@ -355,7 +355,7 @@
 "Sonst nur unter der ausgewählten",
 "Diese Einstellungen kommen mit der neuen Launcher-Version: unten auf „Launcher auf dem TV aktualisieren“ tippen.",
 "Ein schwacher TV ruckelt? Animationen und lebendigen Hintergrund ausschalten.",
-"Neue Launcher-Version verfügbar: Feineinstellungen, lebendiger Hintergrund, neue Designs und zuverlässiger Foto-Upload. Auf „Launcher auf dem TV aktualisieren“ tippen.",
+"Neue Launcher-Version verfügbar: Ansicht „Schaufenster“, echte App-Symbole und neue Designs. Tippe auf „Launcher auf dem TV aktualisieren“.",
 "Foto abdunkeln",
 "Das Abdunkeln braucht die neue Launcher-Version: im Tab „Launcher“ aktualisieren.",
 "Am besten ein Querformat-Foto in 16:9. Abdunkeln hält Uhr und Namen auf hellen Bildern lesbar.",
@@ -678,5 +678,10 @@
 "Animationen wieder in normaler Geschwindigkeit.",
 "Keine ausgeblendeten Apps: Der Fernseher ist schon wie vorher.",
 "Nicht zurück: {0}. Details im „?“-Bericht.",
-"Der Launcher auf dem Fernseher wurde auf die neue Version aktualisiert."
+"Der Launcher auf dem Fernseher wurde auf die neue Version aktualisiert.",
+"Schaufenster",
+"App-Symbole",
+"Auto",
+"Symbole",
+"TV-Banner"
 ]

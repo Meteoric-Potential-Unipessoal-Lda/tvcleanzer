@@ -355,7 +355,7 @@
 "Annars bara under den markerade",
 "De här inställningarna finns i den nya launcherversionen: tryck på «Uppdatera launchern på tv:n» nedan.",
 "Hackar en svag tv? Stäng av animationer och levande bakgrund.",
-"Det finns en ny launcherversion: finjustering, levande bakgrund, nya teman och pålitlig fotouppladdning. Tryck på «Uppdatera launchern på tv:n».",
+"En ny launcherversion finns: vyn «Skyltfönster», riktiga appikoner och nya teman. Tryck på «Uppdatera launchern på tv:n».",
 "Mörka fotot",
 "Mörkningen fungerar i den nya launcherversionen: uppdatera den på fliken «Launcher».",
 "Helst ett liggande foto, 16:9. Mörkningen gör det lättare att läsa klockan och namnen på ljusa bilder.",
@@ -678,5 +678,10 @@
 "Animationerna har normal hastighet igen.",
 "Inga dolda appar: tv:n är redan som förut.",
 "Kom inte tillbaka: {0}. Detaljer i rapporten «?».",
-"Launchern på tv:n har uppdaterats till den nya versionen."
+"Launchern på tv:n har uppdaterats till den nya versionen.",
+"Skyltfönster",
+"Appikoner",
+"Auto",
+"Ikoner",
+"TV-banners"
 ]

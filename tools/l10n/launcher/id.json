@@ -60,7 +60,7 @@
 "Фото: {0}": "Foto: {0}",
 "Фон главного экрана": "Latar layar utama",
 "Меняется по фото": "Berganti sesuai foto",
-"Одно фото / шкурка": "Satu foto / tema",
+"Одно фото / тема": "Satu foto / tema",
 "Заставка при запуске": "Layar pembuka",
 "Логотип, пока лаунчер загружается": "Logo saat launcher dimuat",
 "Выключена": "Nonaktif",
@@ -107,5 +107,6 @@
 "ливень": "hujan deras",
 "снегопад": "hujan salju",
 "гроза": "badai petir",
-"облачно": "berawan"
+"облачно": "berawan",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — buka · tekan lama — pindahkan atau sembunyikan"
 }

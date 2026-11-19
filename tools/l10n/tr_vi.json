@@ -355,7 +355,7 @@
 "Nếu không — chỉ ở ô đang chọn",
 "Các cài đặt này có trong phiên bản launcher mới: bấm «Cập nhật launcher trên TV» bên dưới.",
 "TV yếu bị giật? Tắt hiệu ứng và nền động.",
-"Có phiên bản launcher mới: tinh chỉnh, nền động, giao diện mới và tải ảnh ổn định. Bấm «Cập nhật launcher trên TV».",
+"Có phiên bản launcher mới: giao diện «Trưng bày», biểu tượng thật của ứng dụng và chủ đề mới. Chạm «Cập nhật launcher trên TV».",
 "Làm tối ảnh",
 "Làm tối hoạt động trong phiên bản launcher mới: cập nhật ở tab «Launcher».",
 "Tốt nhất là ảnh ngang 16:9. Làm tối giúp đọc đồng hồ và tên trên ảnh sáng.",
@@ -678,5 +678,10 @@
 "Hoạt ảnh đã về tốc độ bình thường.",
 "Không có ứng dụng bị ẩn: TV đã như cũ.",
 "Chưa khôi phục được: {0}. Chi tiết — trong báo cáo «?».",
-"Launcher trên TV đã được cập nhật lên phiên bản mới."
+"Launcher trên TV đã được cập nhật lên phiên bản mới.",
+"Trưng bày",
+"Biểu tượng ứng dụng",
+"Tự động",
+"Biểu tượng",
+"Banner TV"
 ]

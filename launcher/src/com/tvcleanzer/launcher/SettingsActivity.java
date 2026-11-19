@@ -103,8 +103,10 @@ public class SettingsActivity extends Activity {
         addRow(skin, T.t("Подсветка выбора"), prefs.ringAccent() ? T.t("Цвет темы") : T.t("Белая"),
                 () -> prefs.setRingAccent(!prefs.ringAccent()));
         addRow(skin, T.t("Живой фон"), prefs.ambient() ? T.t("Включён") : T.t("Выключен"), () -> prefs.setAmbient(!prefs.ambient()));
-        addRow(skin, T.t("Вид главного экрана"), prefs.style() == Prefs.STYLE_CLOCK ? T.t("Часы и док") : T.t("Плитки"),
-                () -> prefs.setStyle(prefs.style() == Prefs.STYLE_CLOCK ? Prefs.STYLE_TILES : Prefs.STYLE_CLOCK));
+        String[] styleNames = {T.t("Плитки"), T.t("Часы и док"), T.t("Витрина")};
+        addRow(skin, T.t("Вид главного экрана"), styleNames[prefs.style()], () -> prefs.setStyle((prefs.style() + 1) % 3));
+        String[] iconNames = {T.t("Авто"), T.t("Иконки"), T.t("ТВ-баннеры")};
+        addRow(skin, T.t("Иконки приложений"), iconNames[prefs.icons()], () -> prefs.setIcons((prefs.icons() + 1) % 3));
         addRow(skin, T.t("Часы: шрифт"), Prefs.CLOCK_FONT_NAMES[prefs.clockFont()],
                 () -> prefs.setClockFont((prefs.clockFont() + 1) % Prefs.CLOCK_FONTS.length));
         addRow(skin, T.t("Часы: размер"), prefs.clockSize() + "%",
@@ -124,7 +126,7 @@ public class SettingsActivity extends Activity {
         int nPhotos = Photos.count(this);
         addRow(skin, T.t("Фоторамка"), nPhotos == 0 ? T.t("Фото добавляются с телефона") : T.f("Фото: {0}", nPhotos), null);
         if (nPhotos > 0) {
-            addRow(skin, T.t("Фон главного экрана"), prefs.homePhotos() ? T.t("Меняется по фото") : T.t("Одно фото / шкурка"),
+            addRow(skin, T.t("Фон главного экрана"), prefs.homePhotos() ? T.t("Меняется по фото") : T.t("Одно фото / тема"),
                     () -> prefs.setHomePhotos(!prefs.homePhotos()));
             final int[] secs = {10, 30, 60, 300};
             int cur = prefs.photoSec();

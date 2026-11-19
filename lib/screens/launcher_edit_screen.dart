@@ -439,7 +439,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
                   Icon(has ? Icons.photo_rounded : Icons.add_photo_alternate_rounded,
                       size: 48, color: has ? AppColors.accent : AppColors.fgMid),
                   const Gap(8),
-                  Text(has ? tr('На ТВ стоит ваше фото') : tr('Фон сейчас из шкурки'),
+                  Text(has ? tr('На ТВ стоит ваше фото') : tr('Фон сейчас из темы'),
                       style: const TextStyle(color: AppColors.fg, fontWeight: FontWeight.w600)),
                 ]),
               ),
@@ -496,7 +496,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             side: const BorderSide(color: AppColors.cardBd),
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
-          onPressed: _saving ? null : () => _run(tr('Фон вернулся к шкурке'), () async {
+          onPressed: _saving ? null : () => _run(tr('Фон вернулся к теме'), () async {
             await ref.read(adbServiceProvider).removeWallpaper(widget.tv);
             try {
               final f = await _previewFile();

@@ -60,7 +60,7 @@
 "Фото: {0}": "Foton: {0}",
 "Фон главного экрана": "Huvudskärmens bakgrund",
 "Меняется по фото": "Växlar med fotona",
-"Одно фото / шкурка": "Ett foto / tema",
+"Одно фото / тема": "Ett foto / tema",
 "Заставка при запуске": "Startbild",
 "Логотип, пока лаунчер загружается": "Logotyp medan launchern laddar",
 "Выключена": "Av",
@@ -107,5 +107,6 @@
 "ливень": "regnskurar",
 "снегопад": "snöfall",
 "гроза": "åska",
-"облачно": "molnigt"
+"облачно": "molnigt",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — öppna · håll in — flytta eller dölj"
 }

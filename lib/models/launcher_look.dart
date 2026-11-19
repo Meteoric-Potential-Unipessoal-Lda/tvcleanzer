@@ -18,8 +18,11 @@ class LauncherLook {
   final int inputs;
   /// Favourites: 0 one scrolling row, 4/5/6 a grid with that many per row (launcher 0.11+).
   final int favCols;
-  /// Home screen look (launcher 0.7+): 0 tiles, 1 big clock with a dock.
+  /// Home screen look (launcher 0.7+): 0 tiles, 1 big clock with a dock, 2 «Витрина» (0.32+).
   final int style;
+  /// Tile pictures (launcher 0.32+): 0 auto (icons in the dock and «Витрина», TV banners in
+  /// the tiles), 1 the apps' own icons everywhere, 2 TV banners wherever an app has one.
+  final int icons;
   /// Clock style: 0 left, 1 centre.
   final int clockPos;
   /// Clock size, percent (60–180).
@@ -51,11 +54,12 @@ class LauncherLook {
     this.lat = 0,
     this.lon = 0,
     this.appsBelow = false,
+    this.icons = 0,
   });
 
   LauncherLook copyWith({int? anim, bool? ringAccent, int? tiles, int? wallDim,
           bool? ambient, bool? clock24, bool? labels, int? inputs, int? favCols, int? style, int? clockPos,
-          int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon, bool? appsBelow}) =>
+          int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon, bool? appsBelow, int? icons}) =>
       LauncherLook(
         anim: anim ?? this.anim,
         ringAccent: ringAccent ?? this.ringAccent,
@@ -74,13 +78,14 @@ class LauncherLook {
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
         appsBelow: appsBelow ?? this.appsBelow,
+        icons: icons ?? this.icons,
       );
 
   /// Extras for `am broadcast … com.tvcleanzer.launcher.APPLY`.
   String get extras => '--ei anim $anim --ez ringAccent $ringAccent --ei tiles $tiles '
       '--ei wallDim $wallDim --ez ambient $ambient --ez clock24 $clock24 --ez labels $labels '
       '--ei inputs $inputs --ei favCols $favCols --ei style $style --ei clockPos $clockPos --ei clockSize $clockSize '
-      '--ei clockFont $clockFont --ez appsBelow $appsBelow --es weatherCity ${_q(weatherCity)}'
+      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --es weatherCity ${_q(weatherCity)}'
       '${weatherCity.isEmpty ? '' : ' --ef lat ${lat.toStringAsFixed(4)} --ef lon ${lon.toStringAsFixed(4)}'}';
 
   /// Single-quoted for the TV's shell (city names may have spaces or apostrophes).
@@ -90,7 +95,7 @@ class LauncherLook {
         'anim': anim, 'ringAccent': ringAccent, 'tiles': tiles, 'wallDim': wallDim,
         'ambient': ambient, 'clock24': clock24, 'labels': labels, 'inputs': inputs, 'favCols': favCols,
         'style': style, 'clockPos': clockPos, 'clockSize': clockSize, 'clockFont': clockFont,
-        'weatherCity': weatherCity, 'lat': lat, 'lon': lon, 'appsBelow': appsBelow,
+        'weatherCity': weatherCity, 'lat': lat, 'lon': lon, 'appsBelow': appsBelow, 'icons': icons,
       };
 
   static int _i(Object? v, int def, int lo, int hi) =>
@@ -109,7 +114,7 @@ class LauncherLook {
         labels: _b(m['labels'], false),
         inputs: _i(m['inputs'], 0, 0, 2),
         favCols: const [4, 5, 6].contains(_i(m['favCols'], 0, 0, 6)) ? _i(m['favCols'], 0, 0, 6) : 0,
-        style: _i(m['style'], 0, 0, 1),
+        style: _i(m['style'], 0, 0, 2),
         clockPos: _i(m['clockPos'], 1, 0, 1),
         clockSize: _i(m['clockSize'], 100, 60, 180),
         clockFont: _i(m['clockFont'], 0, 0, 4),
@@ -117,5 +122,6 @@ class LauncherLook {
         lat: double.tryParse('${m['lat'] ?? ''}') ?? 0,
         lon: double.tryParse('${m['lon'] ?? ''}') ?? 0,
         appsBelow: _b(m['appsBelow'], false),
+        icons: _i(m['icons'], 0, 0, 2),
       );
 }

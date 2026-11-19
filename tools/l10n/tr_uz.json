@@ -355,7 +355,7 @@
 "Aks holda — faqat tanlanganida",
 "Bu sozlamalar launcherning yangi versiyasida paydo bo‘ldi: pastdagi «Televizordagi launcherni yangilash»ni bosing.",
 "Kuchsiz televizor sekinlashyaptimi? Animatsiyalar va jonli fonni o‘chiring.",
-"Launcherning yangi versiyasi bor: nozik sozlash, jonli fon, yangi mavzular va rasmlarni ishonchli yuklash. «Televizordagi launcherni yangilash»ni bosing.",
+"Launcherning yangi versiyasi bor: «Vitrina» ko‘rinishi, ilovalarning haqiqiy belgilari va yangi mavzular. «Televizordagi launcherni yangilash» ni bosing.",
 "Rasmni qoraytirish",
 "Qoraytirish launcherning yangi versiyasida ishlaydi: uni «Launcher» bo‘limida yangilang.",
 "Gorizontal rasm yaxshiroq, 16:9. Qoraytirish yorqin rasmlarda soat va nomlarni o‘qishga yordam beradi.",
@@ -678,5 +678,10 @@
 "Animatsiyalar yana odatiy tezlikda.",
 "Yashirilgan ilovalar yo‘q: televizor avvalgidek.",
 "Qaytmaganlari: {0}. Batafsil — «?» hisobotida.",
-"Televizordagi launcher yangi versiyaga yangilandi."
+"Televizordagi launcher yangi versiyaga yangilandi.",
+"Vitrina",
+"Ilova belgilari",
+"Avto",
+"Belgilar",
+"TV bannerlari"
 ]

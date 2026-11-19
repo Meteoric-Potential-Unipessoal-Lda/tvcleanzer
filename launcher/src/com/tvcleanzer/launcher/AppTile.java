@@ -25,7 +25,13 @@ final class AppTile extends LinearLayout {
     private final TextView label;   // name under the card
     private final GradientDrawable ring;
     private final boolean labelsAlways;
-    private final int h;
+    private final int w, h;
+    /** Soft light across the top of the card while it is selected (a lifted, glossy card). */
+    private final android.view.View gloss;
+
+    /** Told when a tile gets the focus («Витрина» shows that app above the row). */
+    interface Hook { void focused(AppTile t); }
+    Hook hook;
 
     private static final DecelerateInterpolator EASE = new DecelerateInterpolator(1.6f);
 
@@ -49,6 +55,7 @@ final class AppTile extends LinearLayout {
         int outW = w;
         w = Math.max(1, w - 2 * room);
         h = Math.round(w * (float) h / outW);
+        this.w = w;
         this.h = h;
         setPadding(room, room, room, 0);
         setOrientation(VERTICAL);
@@ -89,6 +96,17 @@ final class AppTile extends LinearLayout {
         inner.setPadding(pad, 0, pad, Math.round(h * 0.1f));
         card.addView(inner, ilp);
 
+        GradientDrawable shine = new GradientDrawable();
+        shine.setGradientType(GradientDrawable.RADIAL_GRADIENT);
+        shine.setGradientCenter(0.25f, 0f);
+        shine.setGradientRadius(w * 0.75f);
+        shine.setColors(new int[]{0x47FFFFFF, 0x00FFFFFF});
+        gloss = new android.view.View(c);
+        gloss.setBackground(shine);
+        gloss.setAlpha(0f);
+        card.addView(gloss, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
         // The ring is its own view just outside the card, above it: drawn on the card
         // itself it was cut by the card's rounded clip (owners: "выделение отрезано").
         int stroke = Ui.dp(c, 3);
@@ -113,6 +131,10 @@ final class AppTile extends LinearLayout {
 
         setOnFocusChangeListener((v, has) -> onFocus(has));
     }
+
+    /** Size of the card itself (what the art is drawn for). */
+    int cardW() { return w; }
+    int cardH() { return h; }
 
     /** Called from the art loader on the main thread. */
     void setArt(Drawable d, boolean isBanner) {
@@ -145,6 +167,9 @@ final class AppTile extends LinearLayout {
         android.view.ViewParent parent = getParent();
         if (parent instanceof android.view.View) ((android.view.View) parent).setTranslationZ(has ? 2f : 0f);
         setTranslationZ(has ? 1f : 0f);
+        if (has && hook != null) hook.focused(this);
+        if (anim == Prefs.ANIM_OFF) gloss.setAlpha(has ? 1f : 0f);
+        else gloss.animate().alpha(has ? 1f : 0f).setDuration(duration).start();
         float s = has ? focusScale : 1f;
         float z = anim == Prefs.ANIM_OFF ? 0 : Ui.dp(getContext(), anim == Prefs.ANIM_SOFT ? 10 : 20);
         holder.animate().scaleX(s).scaleY(s).setDuration(duration).setInterpolator(EASE).start();

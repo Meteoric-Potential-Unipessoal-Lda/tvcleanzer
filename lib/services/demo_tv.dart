@@ -406,7 +406,7 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=31 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=32 minSdk=21 targetSdk=34\n' : '';
     }
     if (c.startsWith('dumpsys activity activities')) {
       // Home on the demo TV opens whatever is the home screen.
@@ -460,7 +460,7 @@ class DemoAdbClient extends AdbClient {
       final v = au.group(1)!.replaceAll("'", '');
       _s.look['autostart'] = v == '""' || v.isEmpty ? '-' : v;
     }
-    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon|photoSec|homePhotos|appsBelow) (\S+)').allMatches(c)) {
+    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon|photoSec|homePhotos|appsBelow|icons) (\S+)').allMatches(c)) {
       final v = m.group(2)!;
       _s.look[m.group(1)!] = v == 'true' ? '1' : v == 'false' ? '0' : v;
     }

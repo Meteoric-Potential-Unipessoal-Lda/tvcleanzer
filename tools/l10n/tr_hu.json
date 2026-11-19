@@ -355,7 +355,7 @@
 "Különben csak a kijelöltnél",
 "Ezek a beállítások a launcher új verziójában jelentek meg: nyomja meg lent a «Launcher frissítése a tévén» gombot.",
 "Akad a gyenge tévé? Kapcsolja ki az animációkat és az élő hátteret.",
-"Új launcherverzió érhető el: finomhangolás, élő háttér, új témák és megbízható fotófeltöltés. Nyomja meg a «Launcher frissítése a tévén» gombot.",
+"Új launcher-verzió érhető el: «Kirakat» nézet, valódi alkalmazásikonok és új témák. Koppintson a «Launcher frissítése a tévén» gombra.",
 "Fotó sötétítése",
 "A sötétítés a launcher új verziójában működik: frissítse a «Launcher» lapon.",
 "Fekvő fotó a legjobb, 16:9. A sötétítés segít olvasni az órát és a neveket világos képeken.",
@@ -678,5 +678,10 @@
 "Az animációk ismét normál sebességűek.",
 "Nincs elrejtett alkalmazás: a tévé már olyan, mint régen.",
 "Nem tértek vissza: {0}. Részletek a «?» jelentésben.",
-"A tévén lévő launcher frissült az új verzióra."
+"A tévén lévő launcher frissült az új verzióra.",
+"Kirakat",
+"Alkalmazásikonok",
+"Auto",
+"Ikonok",
+"TV-bannerek"
 ]

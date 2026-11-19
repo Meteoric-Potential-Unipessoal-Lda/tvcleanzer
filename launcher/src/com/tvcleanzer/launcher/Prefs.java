@@ -19,13 +19,16 @@ final class Prefs {
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
             AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
             PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", STOCK_OFF = "stockOff", KEY_FILTER = "keyFilter", FAV_BOTTOM = "favBottom", SHELF = "shelf",
-            ORDER = "order", AUTOSTART_BOOT = "autostartBoot",
+            ORDER = "order", AUTOSTART_BOOT = "autostartBoot", ICONS = "icons",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
             W_TEMP = "weatherTemp", W_CODE = "weatherCode", W_TS = "weatherTs", W_ERR = "weatherErr";
 
-    /** Home screen look: tiles (clock on top, rows of apps) or a big clock with a dock. */
-    static final int STYLE_TILES = 0, STYLE_CLOCK = 1;
+    /** Home screen look: tiles (clock on top, rows of apps), a big clock with a dock, or
+     *  «Витрина»: the chosen app's colours fill the screen, big icons in a row below. */
+    static final int STYLE_TILES = 0, STYLE_CLOCK = 1, STYLE_SHOWCASE = 2;
+    /** App pictures: banners in wide tiles and icons in square ones / icons everywhere / banners. */
+    static final int ICONS_AUTO = 0, ICONS_ON = 1, ICONS_BANNERS = 2;
     static final int CLOCK_LEFT = 0, CLOCK_CENTER = 1;
     /** System font families for the clock: thin, light, regular, condensed, bold. */
     static final String[] CLOCK_FONTS = {"sans-serif-thin", "sans-serif-light", "sans-serif",
@@ -82,8 +85,10 @@ final class Prefs {
     }
     void setOrder(List<String> keys) { sp.edit().putString(ORDER, TextUtils.join(",", keys)).apply(); }
 
-    int style()              { return clamp(sp.getInt(STYLE, STYLE_TILES), 0, 1); }
-    void setStyle(int v)     { sp.edit().putInt(STYLE, clamp(v, 0, 1)).apply(); }
+    int style()              { return clamp(sp.getInt(STYLE, STYLE_TILES), 0, 2); }
+    void setStyle(int v)     { sp.edit().putInt(STYLE, clamp(v, 0, 2)).apply(); }
+    int icons()              { return clamp(sp.getInt(ICONS, ICONS_AUTO), 0, 2); }
+    void setIcons(int v)     { sp.edit().putInt(ICONS, clamp(v, 0, 2)).apply(); }
     int clockPos()           { return clamp(sp.getInt(CLOCK_POS, CLOCK_CENTER), 0, 1); }
     void setClockPos(int v)  { sp.edit().putInt(CLOCK_POS, clamp(v, 0, 1)).apply(); }
     /** Clock size, percent of the standard size (60–180). */

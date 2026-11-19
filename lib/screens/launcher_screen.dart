@@ -249,7 +249,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       ref.read(adbServiceProvider).applyLauncherSkin(tv, s.id).catchError((_) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(tr('Не удалось применить шкурку: телевизор не отвечает.'))));
+              SnackBar(content: Text(tr('Не удалось применить тему: телевизор не отвечает.'))));
         }
       });
     }
@@ -283,7 +283,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           if (ref.watch(currentTvProvider) != null) const Gap(16),
           _SkinPreview(skin: skin, look: look),
           const Gap(20),
-          _label(tr('Шкурки')),
+          _label(tr('Тема')),
           const Gap(10),
           SizedBox(
             height: 108,
@@ -368,8 +368,11 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         );
     return _card(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        seg(tr('Вид главного экрана'), [tr('Плитки'), tr('Часы и док')], look.style,
+        seg(tr('Вид главного экрана'), [tr('Плитки'), tr('Часы и док'), tr('Витрина')], look.style,
             (v) => _setLook(look.copyWith(style: v))),
+        const Gap(14),
+        seg(tr('Иконки приложений'), [tr('Авто'), tr('Иконки'), tr('ТВ-баннеры')], look.icons,
+            (v) => _setLook(look.copyWith(icons: v))),
         const Gap(14),
         seg(tr('Размер часов'), [tr('Меньше'), tr('Обычные'), tr('Крупнее'), tr('Огромные')],
             const [80, 100, 130, 160].indexOf(look.clockSize).clamp(0, 3),
@@ -417,7 +420,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         seg(tr('Источники (HDMI)'), [tr('Вверху'), tr('Внизу'), tr('Скрыты')], look.inputs,
             (v) => _setLook(look.copyWith(inputs: v))),
         const Gap(14),
-        seg(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет шкурки')], look.ringAccent ? 1 : 0,
+        seg(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет темы')], look.ringAccent ? 1 : 0,
             (v) => _setLook(look.copyWith(ringAccent: v == 1))),
         const Gap(6),
         sw(tr('Живой фон'), tr('Свечение медленно плывёт по экрану'), look.ambient,
@@ -509,8 +512,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         const Gap(8),
         Text(
           installed
-              ? tr('Шкурка меняется сразу: просто выберите другую выше. На телевизоре: долгое нажатие OK на приложении — добавить в избранное, переставить или скрыть; шестерёнка — настройки.')
-              : tr('Лёгкий красивый лаунчер: часы, избранное, все приложения, шкурки. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).'),
+              ? tr('Тема меняется сразу: просто выберите другую выше. На телевизоре: долгое нажатие OK на приложении — добавить в избранное, переставить или скрыть; шестерёнка — настройки.')
+              : tr('Лёгкий красивый лаунчер: часы, избранное, все приложения, темы. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).'),
           style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5),
         ),
         if (_outdated) ...[
@@ -519,7 +522,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             const Icon(Icons.new_releases_rounded, size: 18, color: AppColors.warn),
             const Gap(8),
             Expanded(
-              child: Text(tr('Есть новая версия лаунчера: тонкие настройки, живой фон, новые шкурки и надёжная загрузка фото. Нажмите «Обновить лаунчер на ТВ».'),
+              child: Text(tr('Есть новая версия лаунчера: вид «Витрина», настоящие иконки приложений и новые темы. Нажмите «Обновить лаунчер на ТВ».'),
                   style: const TextStyle(fontSize: 13, color: AppColors.warn, height: 1.4)),
             ),
           ]),

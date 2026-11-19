@@ -54,6 +54,14 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private final ExecutorService io = Executors.newSingleThreadExecutor();
     private final Map<String, Drawable> artCache = new HashMap<>();
     private final Map<String, Boolean> bannerCache = new HashMap<>();
+    /** «Витрина»: the blurred colour wash behind the focused app, per package. */
+    private final Map<String, android.graphics.Bitmap> heroCache = new HashMap<>();
+    private TextView heroTitle;
+    private final android.widget.ImageView[] heroViews = new android.widget.ImageView[2];
+    private int heroFront;
+    private String heroPkg;
+    private float heroAlpha = 0.95f;
+    private final Runnable heroUpdate = this::updateHero;
     private List<AppEntry> apps = new ArrayList<>();
     /** The "Apps" grid as shown (own order first), for moving tiles left/right. */
     private List<AppEntry> gridOrder = new ArrayList<>();
@@ -86,8 +94,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         public void onReceive(Context c, Intent i) {
             String pkg = i.getData() != null ? i.getData().getSchemeSpecificPart() : null;
             if (pkg != null) {
-                artCache.remove(pkg);
-                bannerCache.remove(pkg);
+                for (java.util.Iterator<String> it = artCache.keySet().iterator(); it.hasNext(); ) {
+                    if (it.next().startsWith(pkg + "#")) it.remove();
+                }
+                for (java.util.Iterator<String> it = bannerCache.keySet().iterator(); it.hasNext(); ) {
+                    if (it.next().startsWith(pkg + "#")) it.remove();
+                }
+                heroCache.remove(pkg);
             }
             reloadApps();
         }
@@ -396,8 +409,233 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             entered = true;
             for (int i = 0; i < tiles.size(); i++) tiles.get(i).enter(i);
         }
-        loadArt(tiles);
+        loadArt(tiles, true);
         if (resumed) startAmbient();
+    }
+
+    /**
+     * «Витрина»: the focused app's own colours fill the screen behind a big title, with one row
+     * of large tiles (favourites) and all apps below. Same spirit as premium TV boxes, own design:
+     * no foreign logos, fonts or layout copied.
+     */
+    private void buildShowcaseHome(Skin skin, int screenW, int padH, int padV, int anim, int ringColor, String focusPkg) {
+        final Set<String> hidden = prefs.hidden();
+        final int screenH = getResources().getDisplayMetrics().heightPixels;
+        final int size = prefs.tileSize();
+        final int perRow = GRID_COLUMNS[size] - 1;     // 6 / 5 / 4 large tiles across
+        final int contentW = screenW - 2 * padH;
+        final int gap = Ui.dp(this, 20);
+        final int tw = (contentW - gap * (perRow - 1)) / perRow;
+        final int th = tw * 3 / 5;
+
+        // The colour wash: two layers that cross-fade when the focus moves.
+        heroAlpha = wallBitmap != null ? 0.45f : 0.95f;
+        for (int i = 0; i < 2; i++) {
+            android.widget.ImageView iv = new android.widget.ImageView(this);
+            iv.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+            iv.setAlpha(0f);
+            heroViews[i] = iv;
+            root.addView(iv, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        }
+        heroFront = 0;
+        heroPkg = null;
+        // shades: dark at the bottom (the tiles), a little at the top (clock) and on the left (title)
+        View down = new View(this);
+        down.setBackground(new android.graphics.drawable.GradientDrawable(
+                android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{0x59000000, 0x00000000, 0x00000000, 0xB305070D, 0xF205070D}));
+        root.addView(down, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        View side = new View(this);
+        side.setBackground(new android.graphics.drawable.GradientDrawable(
+                android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{0x99000000, 0x00000000, 0x00000000}));
+        root.addView(side, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
+        favTitle = null;
+        favShelf = null;
+        scroll = new ScrollView(this);
+        hookFavScroll();
+        scroll.setClipChildren(false);
+        scroll.setClipToPadding(false);
+        scroll.setVerticalScrollBarEnabled(false);
+        scroll.setFillViewport(true);
+        LinearLayout page = new LinearLayout(this);
+        page.setOrientation(LinearLayout.VERTICAL);
+        page.setClipChildren(false);
+        page.setClipToPadding(false);
+        page.setPadding(padH, padV, padH, padV * 3);
+        scroll.addView(page);
+        page.addView(topBar(skin));
+        final int inputsPos = prefs.inputsPos();
+        if (inputsPos == Prefs.INPUTS_TOP) addInputs(page);
+
+        // Big title of the focused app
+        heroTitle = Ui.text(this, 46, 0xFFFFFFFF, "sans-serif");
+        heroTitle.setTypeface(android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.BOLD));
+        heroTitle.setShadowLayer(Ui.dp(this, 12), 0, Ui.dp(this, 2), 0x80000000);
+        heroTitle.setSingleLine(true);
+        heroTitle.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
+                Math.round(contentW * 0.7f), ViewGroup.LayoutParams.WRAP_CONTENT);
+        hlp.topMargin = Math.round(screenH * (inputsPos == Prefs.INPUTS_TOP ? 0.08f : 0.17f));
+        page.addView(heroTitle, hlp);
+        TextView hint = Ui.text(this, 17, 0xC7FFFFFF, "sans-serif");
+        hint.setText(T.t("ОК — открыть · долгое нажатие — переставить или скрыть"));
+        hint.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x80000000);
+        LinearLayout.LayoutParams hip = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        hip.topMargin = Ui.dp(this, 4);
+        page.addView(hint, hip);
+
+        final AppTile.Hook hook = this::showcaseFocused;
+        final int zoomPad = Math.round(th * 0.09f) + Ui.dp(this, 8);
+        List<AppTile> tiles = new ArrayList<>();
+
+        // One row of large tiles: the favourites
+        favGridCols = 0;
+        if (!favorites.isEmpty()) {
+            HorizontalScrollView hs = new HorizontalScrollView(this);
+            hs.setHorizontalScrollBarEnabled(false);
+            hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            hs.setClipChildren(false);
+            hs.setClipToPadding(false);
+            // the zoomed tile and its ring stay whole at both ends
+            hs.setPadding(zoomPad, zoomPad, zoomPad, zoomPad);
+            LinearLayout row = row();
+            for (int i = 0; i < favorites.size(); i++) {
+                AppTile t = tile(favorites.get(i), tw, th, skin, false, 15, 1.12f, anim, ringColor);
+                t.hook = hook;
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (i > 0) lp.leftMargin = gap;
+                row.addView(t, lp);
+                tiles.add(t);
+            }
+            hs.addView(row);
+            favShelf = hs;
+            LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            slp.topMargin = Ui.dp(this, 18) - zoomPad;
+            slp.leftMargin = -zoomPad;
+            slp.rightMargin = -zoomPad;
+            page.addView(hs, slp);
+        }
+
+        // All other apps, same tiles, a grid below
+        List<AppEntry> rest = new ArrayList<>();
+        for (AppEntry a : apps) if (!favorites.contains(a) && !hidden.contains(a.pkg)) rest.add(a);
+        rest = ordered(rest);
+        gridOrder = rest;
+        gridCols = perRow;
+        if (!rest.isEmpty()) {
+            page.addView(sectionTitle(T.t("Приложения"), Ui.dp(this, 22)));
+            LinearLayout row = null;
+            for (int i = 0; i < rest.size(); i++) {
+                if (i % perRow == 0) {
+                    row = row();
+                    row.setPadding(0, Ui.dp(this, 12) + Math.round(th * 0.06f), 0, Ui.dp(this, 4));
+                    page.addView(row);
+                }
+                AppTile t = tile(rest.get(i), tw, th, skin, prefs.labelsAlways(), 14, 1.12f, anim, ringColor);
+                t.hook = hook;
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (i % perRow > 0) lp.leftMargin = gap;
+                row.addView(t, lp);
+                tiles.add(t);
+            }
+        }
+        if (inputsPos == Prefs.INPUTS_BOTTOM) addInputs(page);
+        if (apps.isEmpty()) {
+            TextView empty = Ui.text(this, 18, 0x99FFFFFF, "sans-serif");
+            empty.setText(T.t("Загружаем приложения…"));
+            page.addView(empty);
+        }
+        root.addView(scroll, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
+        AppTile target = null;
+        for (AppTile t : tiles) if (t.app.pkg.equals(focusPkg)) { target = t; break; }
+        if (target == null && !tiles.isEmpty()) target = tiles.get(0);
+        if (target != null) {
+            target.requestFocus();
+            if (target.app.pkg.equals(movingPkg)) target.setMoving(true);
+            showcaseFocused(target);
+        }
+        if (!entered) {
+            entered = true;
+            for (int i = 0; i < tiles.size(); i++) tiles.get(i).enter(i);
+        }
+        loadArt(tiles, true);
+        if (resumed) startAmbient();
+    }
+
+    /** Title at once; the background a moment later (fast scrolling does not flash colours). */
+    private void showcaseFocused(AppTile t) {
+        if (heroTitle == null) return;
+        heroTitle.setText(t.app.label);
+        heroPkg = t.app.pkg;
+        main.removeCallbacks(heroUpdate);
+        main.postDelayed(heroUpdate, heroCache.containsKey(t.app.pkg) ? 60 : 160);
+    }
+
+    private void updateHero() {
+        final String pkg = heroPkg;
+        if (pkg == null || heroViews[0] == null) return;
+        android.graphics.Bitmap b = heroCache.get(pkg);
+        if (b != null) { showHero(b); return; }
+        AppEntry found = null;
+        for (AppEntry a : apps) if (a.pkg.equals(pkg)) { found = a; break; }
+        if (found == null) return;
+        final AppEntry app = found;
+        io.execute(() -> {
+            Drawable d = app.loadBanner(pm);
+            if (d == null) d = IconArt.icon(pm, app);
+            final android.graphics.Bitmap w = IconArt.wash(d);
+            main.post(() -> {
+                if (w == null) return;
+                if (heroCache.size() > 24) heroCache.clear();
+                heroCache.put(pkg, w);
+                if (pkg.equals(heroPkg)) showHero(w);
+            });
+        });
+    }
+
+    private void showHero(android.graphics.Bitmap b) {
+        android.widget.ImageView front = heroViews[heroFront], back = heroViews[1 - heroFront];
+        if (front == null || back == null || front.getParent() == null) return;
+        if (front.getTag() == b && front.getAlpha() > 0f) return;
+        back.setImageBitmap(b);
+        back.setTag(b);
+        int dur = prefs.anim() == Prefs.ANIM_OFF ? 0 : (prefs.anim() == Prefs.ANIM_SOFT ? 700 : 450);
+        back.animate().cancel();
+        front.animate().cancel();
+        if (dur == 0) {
+            back.setAlpha(heroAlpha);
+            front.setAlpha(0f);
+        } else {
+            back.setAlpha(0f);
+            back.animate().alpha(heroAlpha).setDuration(dur).start();
+            front.animate().alpha(0f).setDuration(dur).start();
+        }
+        heroFront = 1 - heroFront;
+    }
+
+    /** Back up to a favourite from the apps below: show the clock and the top bar too
+     *  (owners had to press Up three more times to see them). Hooked once per window. */
+    private void hookFavScroll() {
+        if (focusHooked) return;
+        focusHooked = true;
+        getWindow().getDecorView().getViewTreeObserver().addOnGlobalFocusChangeListener((was, now) -> {
+            final ScrollView sc = scroll;
+            if (now != null && sc != null && favShelf != null && sc.getScrollY() > 0
+                    && isInside(now, favShelf) && (was == null || !isInside(was, favShelf))) {
+                sc.post(() -> sc.smoothScrollTo(0, 0));
+            }
+        });
     }
 
     private void chooseInput() {
@@ -719,26 +957,22 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         root.addView(vig, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
+        heroTitle = null;
+        heroViews[0] = heroViews[1] = null;
+        main.removeCallbacks(heroUpdate);
         if (!kids && prefs.style() == Prefs.STYLE_CLOCK && !showGrid) {
             buildClockHome(skin, screenW, padH, padV, anim, ringColor, focusPkg);
+            return;
+        }
+        if (!kids && prefs.style() == Prefs.STYLE_SHOWCASE) {
+            buildShowcaseHome(skin, screenW, padH, padV, anim, ringColor, focusPkg);
             return;
         }
 
         favTitle = null;
         favShelf = null;
         scroll = new ScrollView(this);
-        // Back up to a favourite from the apps below: show the clock and the top bar too
-        // (owners had to press Up three more times to see them). Hooked once per window.
-        if (!focusHooked) {
-            focusHooked = true;
-            getWindow().getDecorView().getViewTreeObserver().addOnGlobalFocusChangeListener((was, now) -> {
-                final ScrollView sc = scroll;
-                if (now != null && sc != null && favShelf != null && sc.getScrollY() > 0
-                        && isInside(now, favShelf) && (was == null || !isInside(was, favShelf))) {
-                    sc.post(() -> sc.smoothScrollTo(0, 0));
-                }
-            });
-        }
+        hookFavScroll();
         scroll.setClipChildren(false);
         scroll.setClipToPadding(false);
         scroll.setVerticalScrollBarEnabled(false);
@@ -914,7 +1148,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             entered = true;
             for (int i = 0; i < tiles.size(); i++) tiles.get(i).enter(i);
         }
-        loadArt(tiles);
+        loadArt(tiles, false);
         if (resumed) startAmbient();
     }
 
@@ -1209,24 +1443,41 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (ambientAnim != null) { ambientAnim.cancel(); ambientAnim = null; }
     }
 
-    private void loadArt(List<AppTile> tiles) {
+    /** [squareTiles]: the dock and «Витрина» (icons look right there); wide tiles keep the
+     *  TV banners unless the owner chose icons everywhere ([Prefs.icons]). Apps without a
+     *  banner always get their own icon on a plate, never a tiny icon in an empty card. */
+    private void loadArt(List<AppTile> tiles, boolean squareTiles) {
+        final int mode = prefs.icons();
+        final boolean useIcons = mode == Prefs.ICONS_ON || (mode == Prefs.ICONS_AUTO && squareTiles);
         for (final AppTile t : tiles) {
-            final String k = t.app.pkg;
+            final int cw = t.cardW(), ch = t.cardH();
+            final String k = t.app.pkg + "#" + (useIcons ? "i" : "b") + cw + "x" + ch;
             Drawable cached = artCache.get(k);
             if (cached != null) {
                 t.setArt(cached, Boolean.TRUE.equals(bannerCache.get(k)));
                 continue;
             }
             io.execute(() -> {
-                Drawable d = t.app.loadBanner(pm);
+                Drawable d = useIcons ? null : t.app.loadBanner(pm);
                 boolean banner = d != null;
+                if (d == null) {
+                    android.graphics.Bitmap b = IconArt.tile(IconArt.icon(pm, t.app), cw, ch);
+                    if (b != null) {
+                        android.graphics.drawable.BitmapDrawable bd =
+                                new android.graphics.drawable.BitmapDrawable(getResources(), b);
+                        bd.setFilterBitmap(true);
+                        d = bd;
+                        banner = true; // fills the card like a banner
+                    }
+                }
                 if (d == null) d = t.app.loadIcon(pm);
                 final Drawable art = d;
+                final boolean fills = banner;
                 main.post(() -> {
                     if (art == null) return;
                     artCache.put(k, art);
-                    bannerCache.put(k, banner);
-                    t.setArt(art, banner);
+                    bannerCache.put(k, fills);
+                    t.setArt(art, fills);
                 });
             });
         }

@@ -60,7 +60,7 @@
 "Фото: {0}": "Fotografii: {0}",
 "Фон главного экрана": "Fundalul ecranului principal",
 "Меняется по фото": "Se schimbă cu fotografiile",
-"Одно фото / шкурка": "O fotografie / temă",
+"Одно фото / тема": "O fotografie / temă",
 "Заставка при запуске": "Ecran de pornire",
 "Логотип, пока лаунчер загружается": "Logo cât se încarcă launcherul",
 "Выключена": "Dezactivat",
@@ -107,5 +107,6 @@
 "ливень": "averse",
 "снегопад": "ninsoare abundentă",
 "гроза": "furtună",
-"облачно": "noros"
+"облачно": "noros",
+"ОК — открыть · долгое нажатие — переставить или скрыть": "OK — deschide · apăsare lungă — mută sau ascunde"
 }
