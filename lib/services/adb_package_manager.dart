@@ -538,7 +538,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 40;
+  static const bundledLauncherVersion = 41;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -917,12 +917,13 @@ class AdbPackageManager {
   static const _patchWall = 'com.mitv.tvhome.atv';
 
   /// Does Google TV's home play the HDMI inputs here (nobody else answers "view an input")?
+  /// TCL G10: nobody answers it at all — launcherx starts TCL's own player its own way; with
+  /// launcherx off, HDMI was gone (VIV: «С экрана Google TV источник HDMI включился»).
   Future<bool> _inputsLiveInGoogleTvHome(AdbClient adb) async {
     final out = await adb.shell('cmd package query-activities --brief -a android.intent.action.VIEW '
         '-d content://android.media.tv/passthrough/x 2>&1');
     final handlers = RegExp(r'([A-Za-z][\w.]+)/').allMatches(out).map((m) => m.group(1)!).toSet();
-    return handlers.contains('com.google.android.apps.tv.launcherx') &&
-        handlers.every((p) => _googleTvHomes.contains(p) || p == launcherPkg);
+    return handlers.every((p) => _googleTvHomes.contains(p) || p == launcherPkg);
   }
 
   /// Firmware homes TVCleanzer switched off on this TV (see [_firmwareHome]), one per line.

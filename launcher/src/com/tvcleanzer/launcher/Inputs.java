@@ -33,7 +33,47 @@ final class Inputs {
         for (Intent t : i.first) {
             try { c.startActivity(t); return true; } catch (Throwable ignored) {}
         }
-        try { c.startActivity(intent(i)); return true; } catch (Throwable e) { return false; }
+        Intent std = intent(i);
+        if (i.open == null) {
+            PackageManager pm = c.getPackageManager();
+            if (pm.queryIntentActivities(std, 0).isEmpty()) {
+                // Nobody answers the standard "view an input" (TCL G10: only Google TV's home
+                // could open HDMI, our tiles bounced back). Hand the same request to the TV's
+                // own player by name: TCL's TVActivity takes it (VIV, Smart TV Pro, tested).
+                Intent direct = directPlayer(c, std.getData());
+                if (direct != null) {
+                    try { c.startActivity(direct); return true; } catch (Throwable ignored) {}
+                }
+            }
+        }
+        try { c.startActivity(std); return true; } catch (Throwable e) { return false; }
+    }
+
+    /** Players that open an input when asked by name, with the passthrough URI as data. */
+    private static final String[][] DIRECT = {
+            {"com.tcl.tv", "com.tcl.tv.TVActivity"},
+    };
+
+    private static Intent directPlayer(Context c, android.net.Uri data) {
+        PackageManager pm = c.getPackageManager();
+        for (String[] d : DIRECT) {
+            Intent i = new Intent(Intent.ACTION_VIEW, data)
+                    .setComponent(new android.content.ComponentName(d[0], d[1]))
+                    // a running player keeps its input when the request only reaches onNewIntent:
+                    // start it afresh (tested: worked only after the player was closed)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            // the input id as an extra too: some builds read it from there (tested to work as well)
+            String id = android.media.tv.TvContract.isChannelUriForPassthroughInput(data) && data.getPathSegments().size() > 1
+                    ? data.getPathSegments().get(1) : null;
+            if (id != null) {
+                i.putExtra("inputId", id);
+                i.putExtra("android.media.tv.extra.INPUT_ID", id);
+            }
+            try {
+                if (pm.resolveActivity(i, 0) != null) return i;
+            } catch (Throwable ignored) {}
+        }
+        return null;
     }
 
     /** The first channel of the TV's tuner (needs READ_EPG_DATA, granted by the phone app over

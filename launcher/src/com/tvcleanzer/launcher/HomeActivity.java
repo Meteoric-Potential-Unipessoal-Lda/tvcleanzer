@@ -672,11 +672,6 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private void openInput(Inputs.Item it) {
         HomeKeyService.quiet(15000);
-        if (it.open == null && it.first.isEmpty() && pm.queryIntentActivities(Inputs.intent(it), 0).isEmpty()) {
-            // Google TV plays HDMI in its own home: switched off, the input has nobody to show it
-            Toast.makeText(this, T.t("Источники на этом ТВ показывает экран Google TV, а он выключен. В TVCleanzer: Лаунчер → «Вернуть стандартный лаунчер»."), Toast.LENGTH_LONG).show();
-            return;
-        }
         if (!Inputs.open(this, it)) Toast.makeText(this, T.f("Не удалось открыть {0}", it.label), Toast.LENGTH_SHORT).show();
     }
 
@@ -699,12 +694,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 Inputs.Item tv = Inputs.tv(c, true);
                 return tv != null ? Inputs.open(c, tv) : openAutostart(c, id.substring(3));
             }
-            try {
-                c.startActivity(Inputs.intent(new Inputs.Item(id, id)));
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
+            return Inputs.open(c, new Inputs.Item(id, id));
         }
         android.content.pm.PackageManager pm = c.getPackageManager();
         Intent i = pm.getLeanbackLaunchIntentForPackage(pkg);
