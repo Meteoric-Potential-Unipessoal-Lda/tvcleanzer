@@ -88,6 +88,7 @@ final class T {
     private static final String[] RU = {
         "Магазин приложений",
         "Яндекс Браузер",
+        "Источники не найдены",
         "Источник",
         "Все приложения",
         "Загружаем приложения…",
@@ -264,6 +265,7 @@ final class T {
         static final String[] A = {
             "App store",
             "Yandex Browser",
+            "No inputs found",
             "Input",
             "All apps",
             "Loading apps…",
@@ -441,6 +443,7 @@ final class T {
         static final String[] A = {
             "Магазин застосунків",
             "Яндекс Браузер",
+            "Джерела не знайдено",
             "Джерело",
             "Усі застосунки",
             "Завантажуємо застосунки…",
@@ -618,6 +621,7 @@ final class T {
         static final String[] A = {
             "Tienda de apps",
             "Yandex Browser",
+            "No se encontraron entradas",
             "Entrada",
             "Todas las apps",
             "Cargando apps…",
@@ -795,6 +799,7 @@ final class T {
         static final String[] A = {
             "Loja de apps",
             "Yandex Browser",
+            "Nenhuma entrada encontrada",
             "Entrada",
             "Todas as apps",
             "A carregar apps…",
@@ -972,6 +977,7 @@ final class T {
         static final String[] A = {
             "App-Store",
             "Yandex Browser",
+            "Keine Eingänge gefunden",
             "Eingang",
             "Alle Apps",
             "Apps werden geladen…",
@@ -1149,6 +1155,7 @@ final class T {
         static final String[] A = {
             "Boutique d’apps",
             "Yandex Browser",
+            "Aucune entrée trouvée",
             "Source",
             "Toutes les apps",
             "Chargement des apps…",
@@ -1326,6 +1333,7 @@ final class T {
         static final String[] A = {
             "Store di app",
             "Yandex Browser",
+            "Nessun ingresso trovato",
             "Sorgente",
             "Tutte le app",
             "Caricamento app…",
@@ -1503,6 +1511,7 @@ final class T {
         static final String[] A = {
             "Крама праграм",
             "Яндэкс Браўзер",
+            "Крыніцы не знойдзены",
             "Крыніца",
             "Усе праграмы",
             "Загружаем праграмы…",
@@ -1680,6 +1689,7 @@ final class T {
         static final String[] A = {
             "Қолданбалар дүкені",
             "Яндекс Браузер",
+            "Көздер табылмады",
             "Көз",
             "Барлық қолданбалар",
             "Қолданбалар жүктелуде…",
@@ -1857,6 +1867,7 @@ final class T {
         static final String[] A = {
             "Ilovalar do‘koni",
             "Yandex Brauzer",
+            "Manbalar topilmadi",
             "Manba",
             "Barcha ilovalar",
             "Ilovalar yuklanmoqda…",
@@ -2034,6 +2045,7 @@ final class T {
         static final String[] A = {
             "Հավելվածների խանութ",
             "Յանդեքս Բրաուզեր",
+            "Աղբյուրներ չգտնվեցին",
             "Աղբյուր",
             "Բոլոր հավելվածները",
             "Հավելվածները բեռնվում են…",
@@ -2211,6 +2223,7 @@ final class T {
         static final String[] A = {
             "Tətbiq mağazası",
             "Yandex Brauzer",
+            "Mənbə tapılmadı",
             "Mənbə",
             "Bütün tətbiqlər",
             "Tətbiqlər yüklənir…",
@@ -2388,6 +2401,7 @@ final class T {
         static final String[] A = {
             "აპების მაღაზია",
             "Yandex ბრაუზერი",
+            "წყაროები ვერ მოიძებნა",
             "წყარო",
             "ყველა აპი",
             "აპები იტვირთება…",
@@ -2565,6 +2579,7 @@ final class T {
         static final String[] A = {
             "Колдонмолор дүкөнү",
             "Яндекс Браузер",
+            "Булактар табылган жок",
             "Булак",
             "Бардык колдонмолор",
             "Колдонмолор жүктөлүүдө…",
@@ -2742,6 +2757,7 @@ final class T {
         static final String[] A = {
             "Uygulama mağazası",
             "Yandex Tarayıcı",
+            "Kaynak bulunamadı",
             "Kaynak",
             "Tüm uygulamalar",
             "Uygulamalar yükleniyor…",
@@ -2919,6 +2935,7 @@ final class T {
         static final String[] A = {
             "Sklep z aplikacjami",
             "Yandex Browser",
+            "Nie znaleziono źródeł",
             "Źródło",
             "Wszystkie aplikacje",
             "Wczytywanie aplikacji…",
@@ -3096,6 +3113,7 @@ final class T {
         static final String[] A = {
             "Magazin de aplicații",
             "Yandex Browser",
+            "Nu s-au găsit surse",
             "Sursă",
             "Toate aplicațiile",
             "Se încarcă aplicațiile…",
@@ -3273,6 +3291,7 @@ final class T {
         static final String[] A = {
             "应用商店",
             "Yandex 浏览器",
+            "未找到信号源",
             "信号源",
             "全部应用",
             "正在加载应用…",
@@ -3450,6 +3469,7 @@ final class T {
         static final String[] A = {
             "アプリストア",
             "Yandex ブラウザ",
+            "入力が見つかりません",
             "入力",
             "すべてのアプリ",
             "アプリを読み込み中…",
@@ -3627,6 +3647,7 @@ final class T {
         static final String[] A = {
             "앱 스토어",
             "Yandex 브라우저",
+            "입력을 찾을 수 없음",
             "입력",
             "모든 앱",
             "앱을 불러오는 중…",
@@ -3804,6 +3825,7 @@ final class T {
         static final String[] A = {
             "ऐप स्टोर",
             "Yandex ब्राउज़र",
+            "कोई इनपुट नहीं मिला",
             "स्रोत",
             "सभी ऐप",
             "ऐप लोड हो रहे हैं…",
@@ -3981,6 +4003,7 @@ final class T {
         static final String[] A = {
             "Toko aplikasi",
             "Yandex Browser",
+            "Sumber tidak ditemukan",
             "Sumber",
             "Semua aplikasi",
             "Memuat aplikasi…",
@@ -4158,6 +4181,7 @@ final class T {
         static final String[] A = {
             "Cửa hàng ứng dụng",
             "Yandex Browser",
+            "Không tìm thấy nguồn vào",
             "Nguồn",
             "Tất cả ứng dụng",
             "Đang tải ứng dụng…",
@@ -4335,6 +4359,7 @@ final class T {
         static final String[] A = {
             "ร้านแอป",
             "Yandex Browser",
+            "ไม่พบแหล่งสัญญาณ",
             "แหล่งสัญญาณ",
             "แอปทั้งหมด",
             "กำลังโหลดแอป…",
@@ -4512,6 +4537,7 @@ final class T {
         static final String[] A = {
             "App-winkel",
             "Yandex Browser",
+            "Geen ingangen gevonden",
             "Bron",
             "Alle apps",
             "Apps laden…",
@@ -4689,6 +4715,7 @@ final class T {
         static final String[] A = {
             "Obchod s aplikacemi",
             "Yandex Browser",
+            "Nenalezeny žádné vstupy",
             "Zdroj",
             "Všechny aplikace",
             "Načítáme aplikace…",
@@ -4866,6 +4893,7 @@ final class T {
         static final String[] A = {
             "Κατάστημα εφαρμογών",
             "Yandex Browser",
+            "Δεν βρέθηκαν είσοδοι",
             "Πηγή",
             "Όλες οι εφαρμογές",
             "Φόρτωση εφαρμογών…",
@@ -5043,6 +5071,7 @@ final class T {
         static final String[] A = {
             "Alkalmazásbolt",
             "Yandex Browser",
+            "Nem található bemenet",
             "Forrás",
             "Minden alkalmazás",
             "Alkalmazások betöltése…",
@@ -5220,6 +5249,7 @@ final class T {
         static final String[] A = {
             "Appbutik",
             "Yandex Browser",
+            "Inga ingångar hittades",
             "Källa",
             "Alla appar",
             "Laddar appar…",

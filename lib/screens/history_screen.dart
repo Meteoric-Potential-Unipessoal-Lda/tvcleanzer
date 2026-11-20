@@ -123,7 +123,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         if (res.restored.isNotEmpty) tr('Вернули приложений: {0}.', [res.restored.length]),
         if (res.animations) tr('Анимации снова обычной скорости.'),
         if (res.failed.isNotEmpty)
-          tr('Не вернулись: {0}. Подробности — в отчёте «?».', [res.failed.map(res.labelOf).join(', ')]),
+          tr('Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.', [res.failed.map(res.labelOf).join(', ')]),
       ].join(' ');
     } catch (_) {
       msg = tr('Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.');

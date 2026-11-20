@@ -64,6 +64,8 @@ PROTECTED += [
  r'^com\.cvte\.tv\.(setting|api.*|tools)$',
  r'^com\.cultraview\.osupdate$',
  r'^com\.example\.upgrad$',
+ # TCL Google TV: Quick Panel (remote ⚙ / Source), shortcut menu, TCL TV player
+ r'^com\.tcl\.(suspension|common\.shortcutmenu|tv|sourcemenu)$',
 ]
 PROT = [re.compile(p, re.I) for p in PROTECTED]
 # tvmanager is protected by the TV-service rule, but Xiaomi's "TV Manager" cleaner is safe; keep it protected anyway (safe side).

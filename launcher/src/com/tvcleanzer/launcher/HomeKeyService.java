@@ -42,7 +42,7 @@ public class HomeKeyService extends AccessibilityService {
             android.accessibilityservice.AccessibilityServiceInfo info = getServiceInfo();
             if (info == null) return;
             int flag = android.accessibilityservice.AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
-            int nf = new Prefs(this).keyFilter() ? info.flags | flag : info.flags & ~flag;
+            int nf = new Prefs(this).keyFilter() || stockHomeOff() ? info.flags | flag : info.flags & ~flag;
             if (nf != info.flags) {
                 info.flags = nf;
                 setServiceInfo(info);
@@ -147,11 +147,53 @@ public class HomeKeyService extends AccessibilityService {
     }
 
     private boolean isStock(String pkg) {
-        return !pkg.equals(getPackageName()) && (stockHomes.contains(pkg) || HIJACKERS.contains(pkg));
+        return !pkg.equals(getPackageName()) && !tvPlayers.contains(pkg)
+                && (stockHomes.contains(pkg) || HIJACKERS.contains(pkg));
+    }
+
+    /** Apps that show HDMI / live TV. Some firmwares (TCL) let their TV player answer HOME too:
+     *  we took it for the stock home and threw the owner back from every input (TCL C7L,
+     *  Smart TV Pro: «источник включается и сразу летит в лаунчер»). Never replaced. */
+    private final Set<String> tvPlayers = new HashSet<>();
+
+    /** The HOME activities of the stock launchers. Google TV draws its Inputs and Settings
+     *  panels from the same package: only its home screen itself is replaced. */
+    private final Set<String> homeClasses = new HashSet<>();
+
+    /** Launchers whose other screens (panels, dialogs) belong to the TV, not to the home. */
+    static final Set<String> CLASS_STRICT = new HashSet<>(Arrays.asList(
+            "com.google.android.apps.tv.launcherx", "com.google.android.tvlauncher",
+            "com.google.android.leanbacklauncher", "com.tcl.waterfall.overseas"));
+
+    /** Opening an input from our launcher: leave whatever comes up for a while (HDMI apps
+     *  start through a chain of screens). Uptime ms. */
+    static volatile long quietUntil;
+
+    static void quiet(long ms) { quietUntil = SystemClock.uptimeMillis() + ms; }
+
+    private void refreshTvPlayers() {
+        tvPlayers.clear();
+        PackageManager pm = getPackageManager();
+        Intent[] probes = {
+                new Intent(Intent.ACTION_VIEW, android.media.tv.TvContract.buildChannelUriForPassthroughInput("x")),
+                new Intent(Intent.ACTION_VIEW).setDataAndType(android.media.tv.TvContract.buildChannelUri(1),
+                        android.media.tv.TvContract.Channels.CONTENT_ITEM_TYPE),
+        };
+        for (Intent probe : probes) {
+            try {
+                for (ResolveInfo ri : pm.queryIntentActivities(probe, 0)) tvPlayers.add(ri.activityInfo.packageName);
+            } catch (Throwable ignored) {}
+        }
+        tvPlayers.addAll(Arrays.asList("com.tcl.tv", "com.tcl.sourcemenu", "com.android.tv", "com.google.android.tv",
+                "com.mediatek.wwtv.tvcenter", "com.droidlogic.tvsource", "com.xiaomi.mitv.tvplayer",
+                "org.droidtv.playtv", "com.sony.dtv.tvx"));
+        tvPlayers.remove(getPackageName());
     }
 
     private void refreshStockHomes() {
+        refreshTvPlayers();
         stockHomes.clear();
+        homeClasses.clear();
         Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
         try {
             List<ResolveInfo> list = getPackageManager()
@@ -162,6 +204,8 @@ public class HomeKeyService extends AccessibilityService {
                 if (!p.equals(getPackageName()) && !p.equals("android")
                         && !p.equals("com.android.settings") && !p.equals("com.android.tv.settings")) {
                     stockHomes.add(p);
+                    homeClasses.add(ri.activityInfo.name);
+                    if (ri.activityInfo.targetActivity != null) homeClasses.add(ri.activityInfo.targetActivity);
                 }
             }
         } catch (Throwable ignored) {}
@@ -196,12 +240,15 @@ public class HomeKeyService extends AccessibilityService {
      *  Settings and TV keys any more: we do. */
     private boolean stockKey(KeyEvent e) {
         int code = e.getKeyCode();
-        if (code != KeyEvent.KEYCODE_SETTINGS && code != KeyEvent.KEYCODE_TV) return false;
-        if (!new Prefs(this).stockOff()) return false;
+        if (code != KeyEvent.KEYCODE_SETTINGS && code != KeyEvent.KEYCODE_TV && code != KeyEvent.KEYCODE_TV_INPUT) return false;
+        if (!new Prefs(this).stockOff() && !stockHomeOff()) return false;
         if (e.getAction() == KeyEvent.ACTION_UP) {
             Intent i = null;
             if (code == KeyEvent.KEYCODE_SETTINGS) {
                 i = new Intent(android.provider.Settings.ACTION_SETTINGS);
+            } else if (code == KeyEvent.KEYCODE_TV_INPUT) {
+                // the stock home drew the input list: now ours does
+                i = new Intent(this, HomeActivity.class).putExtra(HomeActivity.EXTRA_INPUTS, true);
             } else {
                 Inputs.Item tv = Inputs.tv(this, true);
                 if (tv != null) i = Inputs.intent(tv);
@@ -210,6 +257,21 @@ public class HomeKeyService extends AccessibilityService {
             try { startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); } catch (Throwable ignored) {}
         }
         return true;
+    }
+
+    /** Google TV's home is switched off (pinned hard, or by hand): nobody else answers ⚙,
+     *  TV and Source any more (TCL C7L owner: ⚙ dead after bringing the stock home back and forth). */
+    private boolean stockHomeOff() {
+        PackageManager pm = getPackageManager();
+        boolean any = false;
+        for (String p : new String[]{"com.google.android.apps.tv.launcherx", "com.google.android.tvlauncher"}) {
+            try {
+                android.content.pm.ApplicationInfo ai = pm.getApplicationInfo(p, 0);
+                any = true;
+                if (ai.enabled) return false;
+            } catch (Throwable ignored) {}
+        }
+        return any;
     }
 
     private Runnable volRepeat;
@@ -330,6 +392,12 @@ public class HomeKeyService extends AccessibilityService {
             return;
         }
         if (pkg.equals(allowedStockPkg)) return; // opened from our launcher on purpose
+        if (SystemClock.uptimeMillis() < quietUntil) return; // an input / TV just opened from us
+        if (CLASS_STRICT.contains(pkg)) {
+            // Google TV: its Inputs / Settings panels are this package too; only its home screen goes
+            CharSequence cls = event.getClassName();
+            if (cls == null || !homeClasses.contains(cls.toString())) return;
+        }
         if (SystemClock.uptimeMillis() - recentsAt < 4000) return; // Home twice: running apps
         // Settings / TV / Input key: Google TV draws these panels from its own home (TCL owners
         // lost both buttons because we kept replacing that home)

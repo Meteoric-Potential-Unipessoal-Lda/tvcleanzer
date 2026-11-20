@@ -690,6 +690,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'App name above the tiles',
     'Память на главном экране': 'Memory on the home screen',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Pressing it closes background apps and frees memory',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Not restored: {0}. They are no longer on the TV — install them again from the app store.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -1380,6 +1381,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Назва застосунку над плитками',
     'Память на главном экране': 'Пам’ять на головному екрані',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Натискання закриває застосунки у фоні й звільняє пам’ять',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Не повернулися: {0}. Їх більше немає на телевізорі — встановіть знову з магазину застосунків.',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -2070,6 +2072,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Nombre de la app sobre los mosaicos',
     'Память на главном экране': 'Memoria en la pantalla de inicio',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Al pulsarlo se cierran las apps en segundo plano y se libera memoria',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'No se restauraron: {0}. Ya no están en el televisor: instálalas de nuevo desde la tienda de apps.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -2760,6 +2763,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Nome da app acima dos mosaicos',
     'Память на главном экране': 'Memória no ecrã inicial',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Ao premir, fecha as apps em segundo plano e liberta memória',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Não foram repostas: {0}. Já não estão no televisor — instale-as de novo a partir da loja de apps.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -3450,6 +3454,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'App-Name über den Kacheln',
     'Память на главном экране': 'Speicher auf dem Startbildschirm',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Drücken schließt Hintergrund-Apps und gibt Speicher frei',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Nicht wiederhergestellt: {0}. Sie sind nicht mehr auf dem Fernseher – installieren Sie sie erneut aus dem App-Store.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -4140,6 +4145,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Nom de l\'appli au-dessus des tuiles',
     'Память на главном экране': 'Mémoire sur l’écran d’accueil',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Appuyer ferme les applis en arrière-plan et libère la mémoire',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Non restaurées : {0}. Elles ne sont plus sur le téléviseur — réinstallez-les depuis la boutique d’applis.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -4830,6 +4836,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Nome dell\'app sopra i riquadri',
     'Память на главном экране': 'Memoria nella schermata Home',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Premendolo chiude le app in background e libera memoria',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Non ripristinate: {0}. Non sono più sul televisore: reinstallale dallo store delle app.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -5520,6 +5527,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Назва праграмы над плиткамі',
     'Память на главном экране': 'Памяць на галоўным экране',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Націск закрывае праграмы ў фоне і вызваляе памяць',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Не вярнуліся: {0}. Іх больш няма на тэлевізары — усталюйце нанова з крамы праграм.',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -6210,6 +6218,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Плиткалар үстіндегі қолданба атауы',
     'Память на главном экране': 'Басты экрандағы жад',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Басқанда фондағы қолданбалар жабылып, жад босайды',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Қайтарылмады: {0}. Олар теледидарда жоқ — қолданбалар дүкенінен қайта орнатыңыз.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -6900,6 +6909,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Plitkalar ustida ilova nomi',
     'Память на главном экране': 'Bosh ekranda xotira',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Bosilganda fondagi ilovalar yopiladi va xotira bo‘shaydi',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Qaytmadi: {0}. Ular endi televizorda yo‘q — ilovalar do‘konidan qayta o‘rnating.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -7590,6 +7600,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Հավելվածի անունը սալիկների վերևում',
     'Память на главном экране': 'Հիշողությունը գլխավոր էկրանին',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Սեղմելիս փակում է ֆոնային հավելվածները և ազատում հիշողությունը',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Չվերադարձվեցին՝ {0}։ Դրանք այլևս հեռուստացույցում չկան. նորից տեղադրեք հավելվածների խանութից։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -8280,6 +8291,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Plitələrin üstündə tətbiq adı',
     'Память на главном экране': 'Əsas ekranda yaddaş',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Basanda arxa fondakı tətbiqlər bağlanır və yaddaş boşalır',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Qaytarılmadı: {0}. Onlar artıq televizorda yoxdur — tətbiq mağazasından yenidən quraşdırın.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -8970,6 +8982,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'აპის სახელი ფილების ზემოთ',
     'Память на главном экране': 'მეხსიერება მთავარ ეკრანზე',
     'Нажатие закрывает приложения в фоне и освобождает память': 'დაჭერა ხურავს ფონურ აპებს და ათავისუფლებს მეხსიერებას',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'არ დაბრუნდა: {0}. ისინი ტელევიზორზე აღარ არის — ხელახლა დააინსტალირეთ აპების მაღაზიიდან.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -9660,6 +9673,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Плиткалардын үстүндө колдонмонун аты',
     'Память на главном экране': 'Башкы экрандагы эс',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Басканда фондогу колдонмолор жабылып, эс бошойт',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Кайтарылган жок: {0}. Алар сыналгыда жок — колдонмолор дүкөнүнөн кайра орнотуңуз.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -10350,6 +10364,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Kutucukların üstünde uygulama adı',
     'Память на главном экране': 'Ana ekranda bellek',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Basınca arka plandaki uygulamaları kapatır ve bellek boşaltır',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Geri getirilemedi: {0}. Artık televizyonda yoklar — uygulama mağazasından yeniden yükleyin.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -11040,6 +11055,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Nazwa aplikacji nad kafelkami',
     'Память на главном экране': 'Pamięć na ekranie głównym',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Naciśnięcie zamyka aplikacje w tle i zwalnia pamięć',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Nie przywrócono: {0}. Nie ma ich już na telewizorze — zainstaluj je ponownie ze sklepu z aplikacjami.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -11730,6 +11746,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Numele aplicației deasupra plăcilor',
     'Память на главном экране': 'Memoria pe ecranul principal',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Apăsarea închide aplicațiile din fundal și eliberează memorie',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Nu au revenit: {0}. Nu mai sunt pe televizor — instalați-le din nou din magazinul de aplicații.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -12420,6 +12437,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': '磁贴上方的应用名称',
     'Память на главном экране': '主屏幕显示内存',
     'Нажатие закрывает приложения в фоне и освобождает память': '按下即可关闭后台应用并释放内存',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': '未能恢复：{0}。电视上已没有这些应用，请从应用商店重新安装。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -13110,6 +13128,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'タイルの上にアプリ名',
     'Память на главном экране': 'ホーム画面にメモリを表示',
     'Нажатие закрывает приложения в фоне и освобождает память': '押すとバックグラウンドのアプリを閉じてメモリを解放',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': '復元できませんでした：{0}。テレビにもう存在しません。アプリストアから再インストールしてください。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -13800,6 +13819,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': '타일 위 앱 이름',
     'Память на главном экране': '홈 화면에 메모리 표시',
     'Нажатие закрывает приложения в фоне и освобождает память': '누르면 백그라운드 앱을 닫고 메모리를 확보합니다',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': '복원되지 않음: {0}. TV에 더 이상 없습니다. 앱 스토어에서 다시 설치하세요.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -14490,6 +14510,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'टाइलों के ऊपर ऐप का नाम',
     'Память на главном экране': 'होम स्क्रीन पर मेमोरी',
     'Нажатие закрывает приложения в фоне и освобождает память': 'दबाने पर बैकग्राउंड ऐप बंद होते हैं और मेमोरी खाली होती है',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'वापस नहीं आए: {0}। ये अब टीवी पर नहीं हैं — ऐप स्टोर से दोबारा इंस्टॉल करें।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -15180,6 +15201,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Nama aplikasi di atas ubin',
     'Память на главном экране': 'Memori di layar utama',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Menekannya menutup aplikasi latar belakang dan membebaskan memori',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Tidak kembali: {0}. Aplikasi ini sudah tidak ada di TV — pasang lagi dari toko aplikasi.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -15870,6 +15892,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Tên ứng dụng phía trên các ô',
     'Память на главном экране': 'Bộ nhớ trên màn hình chính',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Nhấn để đóng ứng dụng chạy nền và giải phóng bộ nhớ',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Không khôi phục được: {0}. Các ứng dụng này không còn trên TV — hãy cài lại từ cửa hàng ứng dụng.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -16560,6 +16583,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'ชื่อแอปเหนือไทล์',
     'Память на главном экране': 'หน่วยความจำบนหน้าจอหลัก',
     'Нажатие закрывает приложения в фоне и освобождает память': 'กดเพื่อปิดแอปเบื้องหลังและคืนหน่วยความจำ',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'กู้คืนไม่ได้: {0} แอปเหล่านี้ไม่อยู่บนทีวีแล้ว — ติดตั้งใหม่จากร้านค้าแอป',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -17250,6 +17274,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'App-naam boven de tegels',
     'Память на главном экране': 'Geheugen op het startscherm',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Indrukken sluit apps op de achtergrond en maakt geheugen vrij',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Niet teruggezet: {0}. Ze staan niet meer op de tv — installeer ze opnieuw via de appwinkel.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -17940,6 +17965,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Název aplikace nad dlaždicemi',
     'Память на главном экране': 'Paměť na hlavní obrazovce',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Stisknutí zavře aplikace na pozadí a uvolní paměť',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Nevrátily se: {0}. Na televizoru už nejsou — nainstalujte je znovu z obchodu s aplikacemi.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -18630,6 +18656,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Όνομα εφαρμογής πάνω από τα πλακίδια',
     'Память на главном экране': 'Μνήμη στην αρχική οθόνη',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Το πάτημα κλείνει τις εφαρμογές στο παρασκήνιο και ελευθερώνει μνήμη',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Δεν επανήλθαν: {0}. Δεν υπάρχουν πια στην τηλεόραση — εγκαταστήστε τις ξανά από το κατάστημα εφαρμογών.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -19320,6 +19347,7 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Alkalmazásnév a csempék fölött',
     'Память на главном экране': 'Memória a kezdőképernyőn',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Megnyomva bezárja a háttérben futó alkalmazásokat és memóriát szabadít fel',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Nem kerültek vissza: {0}. Már nincsenek a tévén — telepítse újra őket az alkalmazásboltból.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -20010,5 +20038,6 @@ const Map<String, Map<String, String>> translations = {
     'Название приложения над плитками': 'Appens namn ovanför rutorna',
     'Память на главном экране': 'Minne på hemskärmen',
     'Нажатие закрывает приложения в фоне и освобождает память': 'Ett tryck stänger appar i bakgrunden och frigör minne',
+    'Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.': 'Återställdes inte: {0}. De finns inte längre på tv:n – installera dem igen från appbutiken.',
   },
 };

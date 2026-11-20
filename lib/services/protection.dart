@@ -67,6 +67,9 @@ class Protection {
     r'^com\.cvte\.tv\.(setting|api.*|tools)$',
     r'^com\.cultraview\.osupdate$',
     r'^com\.example\.upgrad$',
+    // TCL Google TV: «Quick Panel» is what the remote's ⚙ and Source keys open; the shortcut menu
+    // and TCL's own TV player sit behind them too (TCL C7L / Smart TV Pro owners lost both keys).
+    r'^com\.tcl\.(suspension|common\.shortcutmenu|tv|sourcemenu)$',
   ].map((p) => RegExp(p, caseSensitive: false)).toList();
 
   static final _launcher = RegExp('launcher', caseSensitive: false);

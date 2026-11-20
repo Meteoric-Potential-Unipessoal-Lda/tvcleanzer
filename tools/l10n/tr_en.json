@@ -686,5 +686,6 @@
 "TV banners",
 "App name above the tiles",
 "Memory on the home screen",
-"Pressing it closes background apps and frees memory"
+"Pressing it closes background apps and frees memory",
+"Not restored: {0}. They are no longer on the TV — install them again from the app store."
 ]

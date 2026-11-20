@@ -686,5 +686,6 @@
 "TV-bannerek",
 "Alkalmazásnév a csempék fölött",
 "Memória a kezdőképernyőn",
-"Megnyomva bezárja a háttérben futó alkalmazásokat és memóriát szabadít fel"
+"Megnyomva bezárja a háttérben futó alkalmazásokat és memóriát szabadít fel",
+"Nem kerültek vissza: {0}. Már nincsenek a tévén — telepítse újra őket az alkalmazásboltból."
 ]

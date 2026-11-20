@@ -135,6 +135,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // after a reboot Wi-Fi comes up after the home screen: keep the pill (and weather) current
         try { registerReceiver(netChanged, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")); } catch (Exception ignored) {}
         reloadApps();
+        maybeChooseInput(getIntent());
     }
 
     @Override
@@ -155,7 +156,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         main.removeCallbacks(weatherTick);
         main.post(weatherTick);
         main.removeCallbacks(memTick);
-        main.postDelayed(memTick, 10 * 1000L);
+        main.post(memTick); // right away: the TV may have slept for hours
         main.removeCallbacks(homePhotoTick);
         main.postDelayed(homePhotoTick, Math.max(30, prefs.photoSec()) * 1000L);
     }
@@ -238,7 +239,24 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (showGrid) { showGrid = false; build(); }
+        maybeChooseInput(intent);
     }
+
+    /** The remote's Source key, answered by our key service where the stock home is off. */
+    static final String EXTRA_INPUTS = "inputs";
+
+    private void maybeChooseInput(Intent intent) {
+        if (intent == null || !intent.getBooleanExtra(EXTRA_INPUTS, false)) return;
+        intent.removeExtra(EXTRA_INPUTS);
+        if (!appsLoaded) { chooseInputPending = true; return; } // the list is still loading
+        if (inputs.isEmpty()) {
+            Toast.makeText(this, T.t("Источники не найдены"), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        chooseInput();
+    }
+
+    private boolean chooseInputPending;
 
     private void refreshWeather() {
         if (!prefs.hasWeather()) return;
@@ -653,6 +671,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     }
 
     private void openInput(Inputs.Item it) {
+        HomeKeyService.quiet(15000);
         try { startActivity(Inputs.intent(it)); }
         catch (Exception e) { Toast.makeText(this, T.f("Не удалось открыть {0}", it.label), Toast.LENGTH_SHORT).show(); }
     }
@@ -668,6 +687,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     }
 
     static boolean openAutostart(android.content.Context c, String pkg) {
+        HomeKeyService.quiet(20000); // let the app / input come up without being replaced
         // A TV input: the TV is just a screen for a box on HDMI (a chat wish: Sber TV + Mi Stick).
         if (pkg.startsWith("input:")) {
             String id = pkg.substring(6);
@@ -821,6 +841,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 build();
                 appsLoaded = true;
                 maybeHideSplash();
+                if (chooseInputPending) {
+                    chooseInputPending = false;
+                    if (!inputs.isEmpty()) chooseInput();
+                }
             });
         });
     }
@@ -1165,6 +1189,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         LinearLayout left = new LinearLayout(this);
         left.setOrientation(LinearLayout.VERTICAL);
         TextView greet = Ui.text(this, 15, 0xB3FFFFFF, "sans-serif-medium");
+        greetView = greet;
         greet.setText(greeting().toUpperCase());
         greet.setLetterSpacing(0.16f);
         greet.setPadding(0, 0, Ui.dp(this, 8), 0);
@@ -1210,8 +1235,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             Pill mem = new Pill(this, Memory.label(this));
             memPill = mem;
             mem.setOnClickListener(v -> freeMemory());
-            LinearLayout.LayoutParams mp = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams mp = pillLp();
             mp.rightMargin = Ui.dp(this, 14);
             bar.addView(mem, mp);
         }
@@ -1219,12 +1243,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         Pill net = new Pill(this, networkLabel());
         netPill = net;
         net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
-        bar.addView(net);
+        bar.addView(net, pillLp());
 
         Pill tvSettings = new Pill(this, T.t("Настройки ТВ"));
         tvSettings.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
-        LinearLayout.LayoutParams pp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams pp = pillLp();
         pp.leftMargin = Ui.dp(this, 14);
         bar.addView(tvSettings, pp);
 
@@ -1268,6 +1291,29 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private Pill netPill;
     private Pill memPill;
+    private TextView greetView;
+
+    /** Every pill of the top bar: one height (the gear's), centred on one line. */
+    private LinearLayout.LayoutParams pillLp() {
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, Ui.dp(this, 46));
+        lp.gravity = Gravity.CENTER_VERTICAL;
+        return lp;
+    }
+
+    /** Greeting, network and memory follow the clock: the TV sleeps for hours and wakes up
+     *  to an old screen (owners saw «Добрый вечер» at night, «Нет сети» with Wi-Fi up). */
+    private void refreshStatus() {
+        if (greetView != null) {
+            String g = greeting().toUpperCase();
+            if (!g.contentEquals(greetView.getText())) greetView.setText(g);
+        }
+        if (netPill != null) {
+            CharSequence n = networkLabel();
+            if (!n.toString().equals(netPill.getText().toString())) netPill.setText(n);
+        }
+        if (memPill != null && !freeing) memPill.setText(Memory.label(this));
+    }
     private boolean freeing;
 
     /** RAM pill: closes background apps, then says how much came free. */
@@ -1288,7 +1334,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private final Runnable memTick = new Runnable() {
         @Override public void run() {
-            if (memPill != null && !freeing) memPill.setText(Memory.label(HomeActivity.this));
+            refreshStatus();
             if (resumed) main.postDelayed(this, 10 * 1000L);
         }
     };
@@ -1393,7 +1439,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private String greeting() {
         int h = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (h < 5) return T.t("Доброй ночи");
+        if (h >= 23 || h < 5) return T.t("Доброй ночи");
         if (h < 12) return T.t("Доброе утро");
         if (h < 18) return T.t("Добрый день");
         return T.t("Добрый вечер");

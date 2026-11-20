@@ -113,5 +113,6 @@
 "ОЗУ {0} / {1} ГБ": "RAM {0} / {1} GB",
 "Освобождаем память…": "Bellek boşaltılıyor…",
 "Освобождено {0} МБ": "{0} MB boşaltıldı",
-"Лишнего в памяти нет": "Bellekte fazlalık yok"
+"Лишнего в памяти нет": "Bellekte fazlalık yok",
+"Источники не найдены": "Kaynak bulunamadı"
 }

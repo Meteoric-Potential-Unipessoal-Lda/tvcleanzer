@@ -113,5 +113,6 @@
 "ОЗУ {0} / {1} ГБ": "RAM {0} / {1} Go",
 "Освобождаем память…": "Libération de la mémoire…",
 "Освобождено {0} МБ": "{0} Mo libérés",
-"Лишнего в памяти нет": "Rien de superflu en mémoire"
+"Лишнего в памяти нет": "Rien de superflu en mémoire",
+"Источники не найдены": "Aucune entrée trouvée"
 }
