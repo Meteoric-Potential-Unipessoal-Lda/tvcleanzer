@@ -746,5 +746,15 @@
 "The TV isn't answering. Turn it on once with its own remote: after that the phone will learn to wake it.",
 "Stop screen mirroring",
 "Not enough space on the TV for this video: {0} MB needed, {1} MB free.",
-"Screen brightness. Some TVs only take it from their own picture settings."
+"Screen brightness. Some TVs only take it from their own picture settings.",
+"Small",
+"Live background speed",
+"Fast",
+"Slow",
+"Very slow",
+"Change theme by itself",
+"No",
+"Every hour",
+"Every day",
+"If your router has two networks (2.4 and 5 GHz), connect the phone and the TV to the same one."
 ]

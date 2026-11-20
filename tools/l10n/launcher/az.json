@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — aç, «Menyu» və ya uzun OK — bağla",
 "Закрыть все": "Hamısını bağla",
 "Закрываем…": "Bağlanır…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Siyahı əlçatan deyil: TVCleanzer olan telefonu televizora bir dəfə qoşun, o, giriş verəcək."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Siyahı əlçatan deyil: TVCleanzer olan telefonu televizora bir dəfə qoşun, o, giriş verəcək.",
+"Маленькие значки": "Kiçik nişanlar",
+"Кнопки пульта": "Pult düymələri",
+"Назначить кнопку": "Düymə təyin et",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Pultda təyin etmək istədiyiniz düyməni basın…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "TVCleanzer «Ev» düyməsi xidməti lazımdır: onu telefondan «Launcher» bölməsində yandırın.",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "Pult düyməsi istənilən tətbiqi aça bilər. Sətirdə OK — təyinatı sil.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "Düymə launcherə çatmadı: televizor onu özündə saxlayır. Başqasını yoxlayın.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Bu düyməni ({0}) tutmaq olmaz: idarə üçün lazımdır. Başqasını basın.",
+"Кнопка {0}: какое приложение открывать?": "{0} düyməsi: hansı tətbiq açılsın?"
 }

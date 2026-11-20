@@ -318,6 +318,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       Text(tr('Телефон и телевизор — в одной сети, VPN на телефоне выключен.'),
           textAlign: TextAlign.center,
           style: const TextStyle(color: AppColors.fgMuted, fontSize: 13, height: 1.4)),
+      const Gap(4),
+      // a review: found the TV only after moving the phone to the 5 GHz network
+      Text(tr('Если роутер раздаёт две сети (2,4 и 5 ГГц), подключите телефон и телевизор к одной из них.'),
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: AppColors.fgMuted, fontSize: 13, height: 1.4)),
       const Gap(24),
       FilledButton.icon(
         icon: const Icon(Icons.refresh_rounded),

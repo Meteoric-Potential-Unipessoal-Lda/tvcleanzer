@@ -746,5 +746,15 @@
 "TV không phản hồi. Hãy bật nó một lần bằng điều khiển của TV: sau đó điện thoại sẽ học cách đánh thức nó.",
 "Dừng phản chiếu màn hình",
 "TV không đủ dung lượng cho video này: cần {0} MB, còn trống {1} MB.",
-"Độ sáng màn hình. Một số TV chỉ lấy độ sáng từ cài đặt hình ảnh riêng của chúng."
+"Độ sáng màn hình. Một số TV chỉ lấy độ sáng từ cài đặt hình ảnh riêng của chúng.",
+"Nhỏ",
+"Tốc độ nền động",
+"Nhanh",
+"Chậm",
+"Rất chậm",
+"Tự đổi chủ đề",
+"Không",
+"Mỗi giờ",
+"Mỗi ngày",
+"Nếu router phát hai mạng (2,4 và 5 GHz), hãy kết nối điện thoại và TV vào cùng một mạng."
 ]

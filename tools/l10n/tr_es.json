@@ -746,5 +746,15 @@
 "El televisor no responde. Enciéndelo una vez con su mando: después el teléfono aprenderá a despertarlo.",
 "Detener la duplicación",
 "No hay espacio suficiente en la TV para este vídeo: se necesitan {0} MB, hay {1} MB libres.",
-"Brillo de pantalla. Algunos televisores solo lo toman de sus propios ajustes de imagen."
+"Brillo de pantalla. Algunos televisores solo lo toman de sus propios ajustes de imagen.",
+"Pequeños",
+"Velocidad del fondo animado",
+"Rápido",
+"Lento",
+"Muy lento",
+"Cambiar el tema solo",
+"No",
+"Cada hora",
+"Cada día",
+"Si el router emite dos redes (2,4 y 5 GHz), conecta el teléfono y el televisor a la misma."
 ]

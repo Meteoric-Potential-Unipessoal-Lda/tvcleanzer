@@ -34,6 +34,27 @@ public class HomeKeyService extends AccessibilityService {
     /** The running instance, for ConfigReceiver (key filter switched from the phone). */
     static volatile HomeKeyService running;
 
+    /** «Кнопки пульта»: KeyMapActivity waits for one press of the button to assign. */
+    interface KeyLearn { void key(int code); }
+    static volatile KeyLearn learn;
+    /** Remote keys that open an app (Prefs.keyMap), cached for the key path. */
+    private static volatile java.util.Map<Integer, String> keyMap = new java.util.HashMap<>();
+
+    /** Navigation, volume, power and digits stay what they are. */
+    static boolean remappable(int code) {
+        switch (code) {
+            case KeyEvent.KEYCODE_DPAD_UP: case KeyEvent.KEYCODE_DPAD_DOWN: case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT: case KeyEvent.KEYCODE_DPAD_CENTER: case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_BACK: case KeyEvent.KEYCODE_HOME: case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN: case KeyEvent.KEYCODE_VOLUME_MUTE: case KeyEvent.KEYCODE_MUTE:
+            case KeyEvent.KEYCODE_POWER: case KeyEvent.KEYCODE_SLEEP: case KeyEvent.KEYCODE_WAKEUP:
+            case KeyEvent.KEYCODE_TV_POWER: case KeyEvent.KEYCODE_UNKNOWN:
+                return false;
+            default:
+                return !(code >= KeyEvent.KEYCODE_0 && code <= KeyEvent.KEYCODE_9);
+        }
+    }
+
     /** Catch keys only where the phone app found it needed (Prefs.keyFilter): where Home opens
      *  us by itself the filter only costs key repeat. The redirect of a stock screen that pops
      *  up at power-on works without it. */
@@ -42,7 +63,10 @@ public class HomeKeyService extends AccessibilityService {
             android.accessibilityservice.AccessibilityServiceInfo info = getServiceInfo();
             if (info == null) return;
             int flag = android.accessibilityservice.AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
-            int nf = new Prefs(this).keyFilter() || stockHomeOff() ? info.flags | flag : info.flags & ~flag;
+            Prefs p = new Prefs(this);
+            keyMap = p.keyMap();
+            boolean want = p.keyFilter() || stockHomeOff() || !keyMap.isEmpty() || learn != null;
+            int nf = want ? info.flags | flag : info.flags & ~flag;
             if (nf != info.flags) {
                 info.flags = nf;
                 setServiceInfo(info);
@@ -334,6 +358,22 @@ public class HomeKeyService extends AccessibilityService {
         int code = e.getKeyCode();
         lastKeyAt = SystemClock.uptimeMillis();
         lastKeyCode = code;
+        KeyLearn l = learn;
+        if (l != null && remappable(code)) {
+            if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) l.key(code);
+            return true;
+        }
+        String app = keyMap.get(code);
+        if (app != null) {
+            if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) {
+                try {
+                    android.content.Intent i = getPackageManager().getLeanbackLaunchIntentForPackage(app);
+                    if (i == null) i = getPackageManager().getLaunchIntentForPackage(app);
+                    if (i != null) startActivity(i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK));
+                } catch (Throwable ignored) {}
+            }
+            return true;
+        }
         if (volumeKey(e)) return true;
         if (stockKey(e)) return true;
         // 191 = the "Mi" button on Xiaomi remotes (elsewhere it is a gamepad key)

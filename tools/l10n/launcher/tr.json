@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — aç, Menü veya uzun OK — kapat",
 "Закрыть все": "Tümünü kapat",
 "Закрываем…": "Kapatılıyor…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Liste kullanılamıyor: TVCleanzer yüklü bir telefonu TV'ye bir kez bağlayın, erişimi açacaktır."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Liste kullanılamıyor: TVCleanzer yüklü bir telefonu TV'ye bir kez bağlayın, erişimi açacaktır.",
+"Маленькие значки": "Küçük simgeler",
+"Кнопки пульта": "Kumanda tuşları",
+"Назначить кнопку": "Tuş ata",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Kumandada atamak istediğiniz tuşa basın…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "TVCleanzer Ana Sayfa tuşu hizmeti gerekli: telefondan «Launcher» sekmesinde açın.",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "Bir kumanda tuşu herhangi bir uygulamayı açabilir. Satırda OK — atamayı kaldır.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "Tuş launcher'a ulaşmadı: TV onu kendine saklıyor. Başka birini deneyin.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Bu tuş ({0}) alınamaz: kontrol için gerekli. Başka birine basın.",
+"Кнопка {0}: какое приложение открывать?": "{0} tuşu: hangi uygulama açılsın?"
 }

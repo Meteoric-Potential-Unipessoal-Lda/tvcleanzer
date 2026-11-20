@@ -746,5 +746,15 @@
 "TV tidak merespons. Nyalakan sekali dengan remote bawaannya: setelah itu ponsel akan belajar membangunkannya.",
 "Hentikan pencerminan layar",
 "Ruang di TV tidak cukup untuk video ini: perlu {0} MB, tersedia {1} MB.",
-"Kecerahan layar. Beberapa TV hanya mengambilnya dari pengaturan gambarnya sendiri."
+"Kecerahan layar. Beberapa TV hanya mengambilnya dari pengaturan gambarnya sendiri.",
+"Kecil",
+"Kecepatan latar hidup",
+"Cepat",
+"Lambat",
+"Sangat lambat",
+"Ganti tema otomatis",
+"Tidak",
+"Setiap jam",
+"Setiap hari",
+"Jika router punya dua jaringan (2,4 dan 5 GHz), sambungkan ponsel dan TV ke jaringan yang sama."
 ]

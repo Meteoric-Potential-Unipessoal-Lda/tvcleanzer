@@ -746,5 +746,15 @@
 "A tévé nem válaszol. Kapcsolja be egyszer a saját távirányítójával: utána a telefon megtanulja felébreszteni.",
 "Képernyőtükrözés leállítása",
 "Nincs elég hely a tévén ehhez a videóhoz: {0} MB kell, {1} MB szabad.",
-"Képernyő fényereje. Egyes tévék csak a saját képbeállításaikból veszik."
+"Képernyő fényereje. Egyes tévék csak a saját képbeállításaikból veszik.",
+"Kicsi",
+"Élő háttér sebessége",
+"Gyors",
+"Lassú",
+"Nagyon lassú",
+"Téma váltása magától",
+"Nem",
+"Óránként",
+"Naponta",
+"Ha a router két hálózatot sugároz (2,4 és 5 GHz), a telefont és a tévét ugyanarra csatlakoztassa."
 ]

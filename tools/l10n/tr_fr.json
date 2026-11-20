@@ -746,5 +746,15 @@
 "Le téléviseur ne répond pas. Allumez-le une fois avec sa télécommande : ensuite le téléphone saura le réveiller.",
 "Arrêter la recopie",
 "Pas assez d'espace sur la TV pour cette vidéo : {0} Mo nécessaires, {1} Mo libres.",
-"Luminosité de l'écran. Certains téléviseurs ne la prennent que dans leurs propres réglages d'image."
+"Luminosité de l'écran. Certains téléviseurs ne la prennent que dans leurs propres réglages d'image.",
+"Petites",
+"Vitesse du fond animé",
+"Rapide",
+"Lent",
+"Très lent",
+"Changer de thème tout seul",
+"Non",
+"Toutes les heures",
+"Tous les jours",
+"Si votre routeur diffuse deux réseaux (2,4 et 5 GHz), connectez le téléphone et la TV au même."
 ]

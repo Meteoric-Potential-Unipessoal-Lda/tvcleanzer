@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — deschide, Meniu sau OK lung — închide",
 "Закрыть все": "Închide toate",
 "Закрываем…": "Se închid…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Listă indisponibilă: conectați o dată un telefon cu TVCleanzer la televizor și va acorda accesul."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Listă indisponibilă: conectați o dată un telefon cu TVCleanzer la televizor și va acorda accesul.",
+"Маленькие значки": "Pictograme mici",
+"Кнопки пульта": "Butoanele telecomenzii",
+"Назначить кнопку": "Atribuie un buton",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Apăsați pe telecomandă butonul pe care vreți să-l atribuiți…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "E nevoie de serviciul butonului Acasă TVCleanzer: porniți-l din telefon, în fila „Launcher”.",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "Un buton al telecomenzii poate deschide orice aplicație. OK pe un rând elimină atribuirea.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "Butonul nu a ajuns la launcher: televizorul îl păstrează pentru sine. Încercați altul.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Acest buton ({0}) nu poate fi folosit: e necesar pentru control. Apăsați altul.",
+"Кнопка {0}: какое приложение открывать?": "Butonul {0}: ce aplicație să deschidă?"
 }

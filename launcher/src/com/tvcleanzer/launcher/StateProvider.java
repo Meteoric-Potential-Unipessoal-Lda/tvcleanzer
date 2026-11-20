@@ -46,6 +46,8 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"favCols", p.favCols()});
             c.addRow(new Object[]{"style", p.style()});
             c.addRow(new Object[]{"icons", p.icons()});
+            c.addRow(new Object[]{"skinAuto", p.skinAuto()});
+            c.addRow(new Object[]{"ambientSec", p.ambientSec()});
             c.addRow(new Object[]{"clockPos", p.clockPos()});
             c.addRow(new Object[]{"clockSize", p.clockSize()});
             c.addRow(new Object[]{"clockFont", p.clockFont()});

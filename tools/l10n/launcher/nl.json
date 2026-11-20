@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — openen, Menu of lang OK — sluiten",
 "Закрыть все": "Alles sluiten",
 "Закрываем…": "Sluiten…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Lijst niet beschikbaar: verbind één keer een telefoon met TVCleanzer met de tv, dan geeft die toegang."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Lijst niet beschikbaar: verbind één keer een telefoon met TVCleanzer met de tv, dan geeft die toegang.",
+"Маленькие значки": "Kleine pictogrammen",
+"Кнопки пульта": "Knoppen van de afstandsbediening",
+"Назначить кнопку": "Knop toewijzen",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Druk op de knop van de afstandsbediening die je wilt toewijzen…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "De TVCleanzer-dienst voor de Home-knop is nodig: zet hem aan vanaf de telefoon, tab „Launcher”.",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "Een knop van de afstandsbediening kan elke app openen. OK op een regel verwijdert de toewijzing.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "De knop kwam niet aan bij de launcher: de tv houdt hem voor zichzelf. Probeer een andere.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Deze knop ({0}) kan niet worden gebruikt: hij is nodig voor de bediening. Druk op een andere.",
+"Кнопка {0}: какое приложение открывать?": "Knop {0}: welke app moet hij openen?"
 }

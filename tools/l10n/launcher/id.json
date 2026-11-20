@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — buka, Menu atau OK lama — tutup",
 "Закрыть все": "Tutup semua",
 "Закрываем…": "Menutup…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Daftar tidak tersedia: hubungkan ponsel dengan TVCleanzer ke TV sekali, dan aksesnya akan dibuka."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Daftar tidak tersedia: hubungkan ponsel dengan TVCleanzer ke TV sekali, dan aksesnya akan dibuka.",
+"Маленькие значки": "Ikon kecil",
+"Кнопки пульта": "Tombol remote",
+"Назначить кнопку": "Tetapkan tombol",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Tekan tombol remote yang ingin ditetapkan…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "Diperlukan layanan tombol Beranda TVCleanzer: aktifkan dari ponsel di tab «Launcher».",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "Tombol remote bisa membuka aplikasi apa pun. OK pada baris — hapus penetapan.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "Tombol tidak sampai ke launcher: TV menyimpannya untuk dirinya. Coba tombol lain.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Tombol ini ({0}) tidak bisa dipakai: diperlukan untuk kontrol. Tekan yang lain.",
+"Кнопка {0}: какое приложение открывать?": "Tombol {0}: aplikasi mana yang dibuka?"
 }

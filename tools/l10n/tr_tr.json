@@ -746,5 +746,15 @@
 "Televizyon yanıt vermiyor. Bir kez kendi kumandasıyla açın: sonra telefon onu uyandırmayı öğrenir.",
 "Ekran yansıtmayı durdur",
 "TV'de bu video için yeterli yer yok: {0} MB gerekli, {1} MB boş.",
-"Ekran parlaklığı. Bazı televizyonlar bunu yalnızca kendi görüntü ayarlarından alır."
+"Ekran parlaklığı. Bazı televizyonlar bunu yalnızca kendi görüntü ayarlarından alır.",
+"Küçük",
+"Canlı arka plan hızı",
+"Hızlı",
+"Yavaş",
+"Çok yavaş",
+"Tema kendiliğinden değişsin",
+"Hayır",
+"Her saat",
+"Her gün",
+"Modem iki ağ yayınlıyorsa (2,4 ve 5 GHz), telefonu ve TV'yi aynı ağa bağlayın."
 ]

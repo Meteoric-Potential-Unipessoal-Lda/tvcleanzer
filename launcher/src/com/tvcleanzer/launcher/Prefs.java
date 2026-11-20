@@ -28,7 +28,9 @@ final class Prefs {
      *  «Витрина»: the chosen app's colours fill the screen, big icons in a row below. */
     static final int STYLE_TILES = 0, STYLE_CLOCK = 1, STYLE_SHOWCASE = 2;
     /** App pictures: banners in wide tiles and icons in square ones / icons everywhere / banners. */
-    static final int ICONS_AUTO = 0, ICONS_ON = 1, ICONS_BANNERS = 2;
+    static final int ICONS_AUTO = 0, ICONS_ON = 1, ICONS_BANNERS = 2, ICONS_SMALL = 3;
+    /** Theme changes by itself (review request): off, every hour, every day. */
+    static final int SKIN_AUTO_OFF = 0, SKIN_AUTO_HOUR = 1, SKIN_AUTO_DAY = 2;
     static final int CLOCK_LEFT = 0, CLOCK_CENTER = 1;
     /** System font families for the clock: thin, light, regular, condensed, bold. */
     static final String[] CLOCK_FONTS = {"sans-serif-thin", "sans-serif-light", "sans-serif",
@@ -87,8 +89,48 @@ final class Prefs {
 
     int style()              { return clamp(sp.getInt(STYLE, STYLE_TILES), 0, 2); }
     void setStyle(int v)     { sp.edit().putInt(STYLE, clamp(v, 0, 2)).apply(); }
-    int icons()              { return clamp(sp.getInt(ICONS, ICONS_AUTO), 0, 2); }
-    void setIcons(int v)     { sp.edit().putInt(ICONS, clamp(v, 0, 2)).apply(); }
+    int icons()              { return clamp(sp.getInt(ICONS, ICONS_AUTO), 0, 3); }
+    void setIcons(int v)     { sp.edit().putInt(ICONS, clamp(v, 0, 3)).apply(); }
+    int skinAuto()           { return clamp(sp.getInt("skinAuto", SKIN_AUTO_OFF), 0, 2); }
+    void setSkinAuto(int v)  { sp.edit().putInt("skinAuto", clamp(v, 0, 2)).putLong("skinAt", System.currentTimeMillis()).apply(); }
+    /** Live background: seconds for one drift (0 = by the animation setting, 14 / 22 s). */
+    int ambientSec()         { int v = sp.getInt("ambientSec", 0); return v <= 0 ? 0 : clamp(v, 4, 300); }
+    void setAmbientSec(int v) { sp.edit().putInt("ambientSec", v <= 0 ? 0 : clamp(v, 4, 300)).apply(); }
+
+    /** «Кнопки пульта»: remote key code → app package. */
+    java.util.Map<Integer, String> keyMap() {
+        java.util.Map<Integer, String> m = new java.util.HashMap<>();
+        for (String part : sp.getString("keyMap", "").split(";")) {
+            int eq = part.indexOf('=');
+            if (eq <= 0) continue;
+            try { m.put(Integer.parseInt(part.substring(0, eq)), part.substring(eq + 1)); } catch (NumberFormatException ignored) {}
+        }
+        return m;
+    }
+    private void saveKeys(java.util.Map<Integer, String> m) {
+        StringBuilder b = new StringBuilder();
+        for (java.util.Map.Entry<Integer, String> e : m.entrySet()) {
+            if (b.length() > 0) b.append(';');
+            b.append(e.getKey()).append('=').append(e.getValue());
+        }
+        sp.edit().putString("keyMap", b.toString()).apply();
+    }
+    void putKey(int code, String pkg) { java.util.Map<Integer, String> m = keyMap(); m.put(code, pkg); saveKeys(m); }
+    void removeKey(int code)          { java.util.Map<Integer, String> m = keyMap(); m.remove(code); saveKeys(m); }
+
+    /** Time for the next theme? Then it moves on to the next one and says true. */
+    boolean nextSkinIfDue() {
+        int mode = skinAuto();
+        if (mode == SKIN_AUTO_OFF) return false;
+        long at = sp.getLong("skinAt", 0), now = System.currentTimeMillis();
+        long period = mode == SKIN_AUTO_HOUR ? 3600_000L : 24 * 3600_000L;
+        if (at > 0 && now - at < period) return false;
+        Skin cur = skin();
+        int i = 0;
+        for (int k = 0; k < Skin.ALL.length; k++) if (Skin.ALL[k].id.equals(cur.id)) i = k;
+        sp.edit().putString(SKIN, Skin.ALL[(i + 1) % Skin.ALL.length].id).putLong("skinAt", now).apply();
+        return at > 0; // the very first check only starts the clock
+    }
     int clockPos()           { return clamp(sp.getInt(CLOCK_POS, CLOCK_CENTER), 0, 1); }
     void setClockPos(int v)  { sp.edit().putInt(CLOCK_POS, clamp(v, 0, 1)).apply(); }
     /** Clock size, percent of the standard size (60–180). */

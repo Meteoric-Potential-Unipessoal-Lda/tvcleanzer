@@ -746,5 +746,15 @@
 "Televizorul nu răspunde. Porniți-l o dată cu telecomanda lui: după aceea telefonul va învăța să-l trezească.",
 "Oprește oglindirea ecranului",
 "Spațiu insuficient pe TV pentru acest video: sunt necesari {0} MB, liberi {1} MB.",
-"Luminozitatea ecranului. Unele televizoare o iau doar din propriile setări de imagine."
+"Luminozitatea ecranului. Unele televizoare o iau doar din propriile setări de imagine.",
+"Mici",
+"Viteza fundalului animat",
+"Rapid",
+"Lent",
+"Foarte lent",
+"Schimbă tema singur",
+"Nu",
+"În fiecare oră",
+"În fiecare zi",
+"Dacă routerul emite două rețele (2,4 și 5 GHz), conectați telefonul și televizorul la aceeași."
 ]

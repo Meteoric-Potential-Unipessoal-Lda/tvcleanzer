@@ -746,5 +746,15 @@
 "A TV não responde. Ligue-a uma vez com o comando dela: depois o telefone aprende a acordá-la.",
 "Parar o espelhamento",
 "Não há espaço suficiente na TV para este vídeo: são precisos {0} MB, há {1} MB livres.",
-"Brilho do ecrã. Algumas TVs só o aceitam nas suas próprias definições de imagem."
+"Brilho do ecrã. Algumas TVs só o aceitam nas suas próprias definições de imagem.",
+"Pequenos",
+"Velocidade do fundo animado",
+"Rápido",
+"Lento",
+"Muito lento",
+"Mudar o tema sozinho",
+"Não",
+"A cada hora",
+"Todos os dias",
+"Se o router tiver duas redes (2,4 e 5 GHz), ligue o telefone e a TV à mesma."
 ]

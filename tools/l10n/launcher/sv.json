@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — öppna, Meny eller långt OK — stäng",
 "Закрыть все": "Stäng alla",
 "Закрываем…": "Stänger…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Listan är inte tillgänglig: anslut en telefon med TVCleanzer till tv:n en gång så ger den åtkomst."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Listan är inte tillgänglig: anslut en telefon med TVCleanzer till tv:n en gång så ger den åtkomst.",
+"Маленькие значки": "Små ikoner",
+"Кнопки пульта": "Fjärrkontrollens knappar",
+"Назначить кнопку": "Tilldela knapp",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Tryck på fjärrkontrollens knapp som du vill tilldela…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "TVCleanzers tjänst för hemknappen behövs: slå på den från telefonen på fliken ”Launcher”.",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "En knapp på fjärrkontrollen kan öppna vilken app som helst. OK på en rad tar bort tilldelningen.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "Knappen nådde inte launchern: tv:n behåller den själv. Prova en annan.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Den här knappen ({0}) kan inte tas: den behövs för styrning. Tryck på en annan.",
+"Кнопка {0}: какое приложение открывать?": "Knapp {0}: vilken app ska den öppna?"
 }

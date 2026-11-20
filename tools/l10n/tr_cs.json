@@ -746,5 +746,15 @@
 "Televizor neodpovídá. Jednou ho zapněte jeho ovladačem: potom se ho telefon naučí probouzet.",
 "Zastavit zrcadlení obrazovky",
 "Na televizoru není dost místa pro toto video: potřeba {0} MB, volno {1} MB.",
-"Jas obrazovky. Některé televizory ho berou jen ze svého nastavení obrazu."
+"Jas obrazovky. Některé televizory ho berou jen ze svého nastavení obrazu.",
+"Malé",
+"Rychlost živého pozadí",
+"Rychle",
+"Pomalu",
+"Velmi pomalu",
+"Měnit motiv sám",
+"Ne",
+"Každou hodinu",
+"Každý den",
+"Pokud router vysílá dvě sítě (2,4 a 5 GHz), připojte telefon i televizor ke stejné."
 ]

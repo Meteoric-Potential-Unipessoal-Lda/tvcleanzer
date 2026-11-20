@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — abrir, Menu ou OK longo — fechar",
 "Закрыть все": "Fechar todas",
 "Закрываем…": "A fechar…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Lista indisponível: ligue uma vez um telefone com o TVCleanzer à TV e ele dará o acesso."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Lista indisponível: ligue uma vez um telefone com o TVCleanzer à TV e ele dará o acesso.",
+"Маленькие значки": "Ícones pequenos",
+"Кнопки пульта": "Botões do comando",
+"Назначить кнопку": "Atribuir botão",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Prima no comando o botão que quer atribuir…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "É preciso o serviço do botão Início do TVCleanzer: ative-o no telefone, no separador «Launcher».",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "Um botão do comando pode abrir qualquer app. OK numa linha remove a atribuição.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "O botão não chegou ao launcher: a TV guarda-o para si. Experimente outro.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Este botão ({0}) não pode ser usado: é necessário para o controlo. Prima outro.",
+"Кнопка {0}: какое приложение открывать?": "Botão {0}: que app deve abrir?"
 }

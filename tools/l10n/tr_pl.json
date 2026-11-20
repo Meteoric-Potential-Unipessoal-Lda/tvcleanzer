@@ -746,5 +746,15 @@
 "Telewizor nie odpowiada. Włącz go raz zwykłym pilotem: potem telefon nauczy się go budzić.",
 "Zatrzymaj powielanie ekranu",
 "Za mało miejsca na telewizorze na to wideo: potrzeba {0} MB, wolne {1} MB.",
-"Jasność ekranu. Niektóre telewizory biorą ją tylko z własnych ustawień obrazu."
+"Jasność ekranu. Niektóre telewizory biorą ją tylko z własnych ustawień obrazu.",
+"Małe",
+"Szybkość żywego tła",
+"Szybko",
+"Wolno",
+"Bardzo wolno",
+"Zmieniaj motyw sam",
+"Nie",
+"Co godzinę",
+"Codziennie",
+"Jeśli router nadaje dwie sieci (2,4 i 5 GHz), podłącz telefon i telewizor do tej samej."
 ]

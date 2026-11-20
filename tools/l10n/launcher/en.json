@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — open, Menu or long OK — close",
 "Закрыть все": "Close all",
 "Закрываем…": "Closing…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "List unavailable: connect a phone with TVCleanzer to the TV once and it will grant access."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "List unavailable: connect a phone with TVCleanzer to the TV once and it will grant access.",
+"Маленькие значки": "Small icons",
+"Кнопки пульта": "Remote buttons",
+"Назначить кнопку": "Assign a button",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Press the remote button you want to assign…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "The TVCleanzer Home button service is needed: turn it on from the phone on the Launcher tab.",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "A remote button can open any app. OK on a line removes the assignment.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "The button did not reach the launcher: the TV keeps it for itself. Try another one.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "This button ({0}) can't be taken: it is needed for control. Press another.",
+"Кнопка {0}: какое приложение открывать?": "Button {0}: which app should it open?"
 }

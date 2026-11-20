@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — ochish, «Menyu» yoki uzun OK — yopish",
 "Закрыть все": "Hammasini yopish",
 "Закрываем…": "Yopilmoqda…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Roʻyxat mavjud emas: TVCleanzer oʻrnatilgan telefonni televizorga bir marta ulang, u ruxsat beradi."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "Roʻyxat mavjud emas: TVCleanzer oʻrnatilgan telefonni televizorga bir marta ulang, u ruxsat beradi.",
+"Маленькие значки": "Kichik belgilar",
+"Кнопки пульта": "Pult tugmalari",
+"Назначить кнопку": "Tugma tayinlash",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Pultda tayinlamoqchi boʻlgan tugmani bosing…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "TVCleanzer «Uyga» tugmasi xizmati kerak: uni telefondan «Launcher» boʻlimida yoqing.",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "Pult tugmasi istalgan ilovani ochishi mumkin. Qatorda OK — tayinlashni olib tashlash.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "Tugma launcherga yetib kelmadi: televizor uni oʻziga qoldiradi. Boshqasini sinab koʻring.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Bu tugmani ({0}) egallab boʻlmaydi: u boshqaruv uchun kerak. Boshqasini bosing.",
+"Кнопка {0}: какое приложение открывать?": "{0} tugmasi: qaysi ilovani ochsin?"
 }

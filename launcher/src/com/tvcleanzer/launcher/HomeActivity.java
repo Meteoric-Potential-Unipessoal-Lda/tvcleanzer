@@ -151,6 +151,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onResume() {
         super.onResume();
         resumed = true;
+        if (prefs.nextSkinIfDue()) dirty = true; // «Менять тему сама»
         if (dirty) { dirty = false; build(); } else startAmbient();
         maybeAutostart();
         main.removeCallbacks(weatherTick);
@@ -1504,7 +1505,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final View a = ambientGlows.get(0), b = ambientGlows.get(1);
         final float dx = getResources().getDisplayMetrics().widthPixels * 0.06f;
         ambientAnim = android.animation.ValueAnimator.ofFloat(0f, 1f);
-        ambientAnim.setDuration(prefs.anim() == Prefs.ANIM_SOFT ? 22000 : 14000);
+        int sec = prefs.ambientSec();
+        ambientAnim.setDuration(sec > 0 ? sec * 1000L : (prefs.anim() == Prefs.ANIM_SOFT ? 22000 : 14000));
         ambientAnim.setRepeatCount(android.animation.ValueAnimator.INFINITE);
         ambientAnim.setRepeatMode(android.animation.ValueAnimator.REVERSE);
         ambientAnim.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
@@ -1529,10 +1531,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
      *  banner always get their own icon on a plate, never a tiny icon in an empty card. */
     private void loadArt(List<AppTile> tiles, boolean squareTiles) {
         final int mode = prefs.icons();
-        final boolean useIcons = mode == Prefs.ICONS_ON || (mode == Prefs.ICONS_AUTO && squareTiles);
+        final boolean small = mode == Prefs.ICONS_SMALL; // the icon at its own size on the card (review request)
+        final boolean useIcons = small || mode == Prefs.ICONS_ON || (mode == Prefs.ICONS_AUTO && squareTiles);
         for (final AppTile t : tiles) {
             final int cw = t.cardW(), ch = t.cardH();
-            final String k = t.app.pkg + "#" + (useIcons ? "i" : "b") + cw + "x" + ch;
+            final String k = t.app.pkg + "#" + (small ? "s" : useIcons ? "i" : "b") + cw + "x" + ch;
             Drawable cached = artCache.get(k);
             if (cached != null) {
                 t.setArt(cached, Boolean.TRUE.equals(bannerCache.get(k)));
@@ -1541,6 +1544,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             io.execute(() -> {
                 Drawable d = useIcons ? null : t.app.loadBanner(pm);
                 boolean banner = d != null;
+                if (small) d = IconArt.icon(pm, t.app);
                 if (d == null) {
                     android.graphics.Bitmap b = IconArt.tile(IconArt.icon(pm, t.app), cw, ch);
                     if (b != null) {

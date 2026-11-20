@@ -105,8 +105,17 @@ public class SettingsActivity extends Activity {
         addRow(skin, T.t("Живой фон"), prefs.ambient() ? T.t("Включён") : T.t("Выключен"), () -> prefs.setAmbient(!prefs.ambient()));
         String[] styleNames = {T.t("Плитки"), T.t("Часы и док"), T.t("Витрина")};
         addRow(skin, T.t("Вид главного экрана"), styleNames[prefs.style()], () -> prefs.setStyle((prefs.style() + 1) % 3));
-        String[] iconNames = {T.t("Авто"), T.t("Иконки"), T.t("ТВ-баннеры")};
-        addRow(skin, T.t("Иконки приложений"), iconNames[prefs.icons()], () -> prefs.setIcons((prefs.icons() + 1) % 3));
+        String[] iconNames = {T.t("Авто"), T.t("Иконки"), T.t("ТВ-баннеры"), T.t("Маленькие значки")};
+        addRow(skin, T.t("Иконки приложений"), iconNames[prefs.icons()], () -> prefs.setIcons((prefs.icons() + 1) % 4));
+        String[] autoNames = {T.t("Нет"), T.t("Каждый час"), T.t("Каждый день")};
+        addRow(skin, T.t("Менять тему сама"), autoNames[prefs.skinAuto()], () -> prefs.setSkinAuto((prefs.skinAuto() + 1) % 3));
+        final int[] speeds = {0, 8, 30, 90};
+        String[] speedNames = {T.t("Авто"), T.t("Быстро"), T.t("Медленно"), T.t("Очень медленно")};
+        int si = 0;
+        for (int k = 0; k < speeds.length; k++) if (speeds[k] == prefs.ambientSec()) si = k;
+        final int curSpeed = si;
+        addRow(skin, T.t("Скорость живого фона"), speedNames[si], () -> prefs.setAmbientSec(speeds[(curSpeed + 1) % speeds.length]));
+        addRow(skin, T.t("Кнопки пульта"), "›", () -> startActivity(new Intent(this, KeyMapActivity.class)));
         addRow(skin, T.t("Память на главном экране"), prefs.memPill() ? T.t("Показывать") : T.t("Скрыто"),
                 () -> prefs.setMemPill(!prefs.memPill()));
         if (prefs.style() == Prefs.STYLE_SHOWCASE) {

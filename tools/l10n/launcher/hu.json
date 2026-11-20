@@ -121,5 +121,14 @@
 "ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — megnyitás, Menü vagy hosszú OK — bezárás",
 "Закрыть все": "Összes bezárása",
 "Закрываем…": "Bezárás…",
-"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "A lista nem érhető el: csatlakoztasson egyszer egy TVCleanzert futtató telefont a tévéhez, és az megadja a hozzáférést."
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "A lista nem érhető el: csatlakoztasson egyszer egy TVCleanzert futtató telefont a tévéhez, és az megadja a hozzáférést.",
+"Маленькие значки": "Kis ikonok",
+"Кнопки пульта": "Távirányító gombjai",
+"Назначить кнопку": "Gomb hozzárendelése",
+"Нажмите на пульте кнопку, которую хотите назначить…": "Nyomja meg a távirányítón a hozzárendelni kívánt gombot…",
+"Нужна служба кнопки «Домой» TVCleanzer: включите её с телефона на вкладке «Лаунчер».": "A TVCleanzer Kezdőlap gomb szolgáltatása szükséges: kapcsolja be a telefonon a „Launcher” lapon.",
+"Кнопка пульта может открывать любое приложение. ОК на строке — убрать назначение.": "A távirányító gombja bármelyik alkalmazást megnyithatja. OK egy soron — hozzárendelés törlése.",
+"Кнопка не дошла до лаунчера: телевизор оставляет её себе. Попробуйте другую.": "A gomb nem jutott el a launcherig: a tévé megtartja magának. Próbáljon másikat.",
+"Эту кнопку ({0}) занять нельзя: она нужна для управления. Нажмите другую.": "Ez a gomb ({0}) nem foglalható: a vezérléshez kell. Nyomjon meg egy másikat.",
+"Кнопка {0}: какое приложение открывать?": "{0} gomb: melyik alkalmazást nyissa meg?"
 }
