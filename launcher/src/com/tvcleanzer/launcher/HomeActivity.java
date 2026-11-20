@@ -1262,7 +1262,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
      *  holding OK on it opens the launcher's. */
     private void wireGear(GearButton gear) {
         if (prefs.cleanBar()) {
-            gear.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+            // OK asks which settings: holding OK was the only way into the launcher's own ones,
+            // and nobody knew it (a Yandex TV owner: «пропала шестерёнка», the gear always
+            // opened the TV panel); long press stays as a shortcut
+            gear.setOnClickListener(v -> new android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                    .setItems(new String[]{T.t("Настройки ТВ"), T.t("Настройки лаунчера")}, (d, which) -> {
+                        if (which == 0) openSettings(Settings.ACTION_SETTINGS);
+                        else startActivity(new Intent(this, SettingsActivity.class));
+                    })
+                    .show());
             gear.setOnLongClickListener(v -> { startActivity(new Intent(this, SettingsActivity.class)); return true; });
         } else {
             gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
