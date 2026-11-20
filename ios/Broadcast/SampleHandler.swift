@@ -297,7 +297,7 @@ final class SampleHandler: RPBroadcastSampleHandler {
       }
       if rotation == nil {
         var r: VTPixelRotationSession?
-        VTPixelRotationSessionCreate(allocator: nil, pixelRotationSessionOut: &r)
+        VTPixelRotationSessionCreate(nil, &r)
         rotation = r
       }
     }
@@ -318,7 +318,7 @@ final class SampleHandler: RPBroadcastSampleHandler {
     VTSessionSetProperty(rSession, key: kVTPixelRotationPropertyKey_Rotation, value: angle)
     var turned: CVPixelBuffer?
     CVPixelBufferPoolCreatePixelBuffer(nil, rp, &turned)
-    guard let out = turned, VTPixelRotationSessionRotateImage(rSession, from: small, to: out) == noErr else { return small }
+    guard let out = turned, VTPixelRotationSessionRotateImage(rSession, small, out) == noErr else { return small }
     return out
   }
 
