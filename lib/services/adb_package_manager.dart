@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:flutter/services.dart';
@@ -538,7 +539,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 43;
+  static const bundledLauncherVersion = 44;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1600,18 +1601,32 @@ class AdbPackageManager {
   static String _sq(String s) => "'${s.replaceAll("'", "'\\''")}'";
 
   /// Shows a photo / video from the phone on the TV (launcher 0.42+: StateProvider "cast" +
-  /// CastActivity). Throws with a readable message when the launcher is too old.
-  Future<void> castFile(TvDevice device, Uint8List bytes, {required bool video,
+  /// CastActivity). [data] is read piece by piece, so a film of several gigabytes never has to
+  /// fit in the phone's memory; the TV needs room for two copies for a moment (the upload,
+  /// then the launcher's own). Throws with a readable message when space or the launcher is short.
+  Future<void> castFile(TvDevice device, Stream<List<int>> data, int length, {required bool video,
       void Function(int sent)? onProgress}) async {
     const tmp = '/data/local/tmp/tvcleanzer_cast';
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
-      await adb.execIn('cat > $tmp', bytes, onProgress: onProgress, timeout: const Duration(seconds: 120));
+      await adb.shell('rm -f $tmp');
+      final freeKb = await _dataFreeKb(adb);
+      final needKb = length * 2 ~/ 1024 + 300 * 1024; // two copies + room for the TV itself
+      if (freeKb > 0 && freeKb < needKb) {
+        throw AdbException(tr('На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.',
+            ['${needKb ~/ 1024}', '${freeKb ~/ 1024}']));
+      }
+      await adb.execInStream('cat > $tmp', data, onProgress: onProgress, timeout: const Duration(seconds: 120));
       final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first) ?? -1;
-      if (size != bytes.length) throw AdbException(tr('Файл не дошёл до телевизора. Попробуйте ещё раз.'));
+      if (size != length) {
+        await adb.shell('rm -f $tmp');
+        throw AdbException(tr('Файл не дошёл до телевизора. Попробуйте ещё раз.'));
+      }
+      // the TV's flash copies some 20 MB/s on a slow box
+      final copy = Duration(seconds: max(120, length ~/ (10 * 1024 * 1024)));
       final w = await adb.shell('content write --uri content://$launcherPkg.state/cast < $tmp 2>&1 && echo TVC_OK',
-          timeout: const Duration(seconds: 120));
+          timeout: copy);
       await adb.shell('rm -f $tmp');
       if (!w.contains('TVC_OK')) {
         throw AdbException(tr('Обновите лаунчер на ТВ: показ фото и видео с телефона есть в новой версии.'));

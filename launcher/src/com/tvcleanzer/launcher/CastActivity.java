@@ -17,7 +17,7 @@ import java.io.File;
 /**
  * A photo or a video sent from the phone («Трансляция» on the phone's remote). The phone
  * streams the file into the launcher (StateProvider "cast") and starts this screen.
- * Video: OK pauses, ◀ ▶ jump 10 s; Back closes.
+ * Video: OK pauses, ◀ ▶ jump 10 s, ▲ ▼ a minute; Back closes and deletes the file.
  */
 public class CastActivity extends Activity {
     static File file(Context c) {
@@ -80,6 +80,14 @@ public class CastActivity extends Activity {
     }
 
     @Override
+    protected void onDestroy() {
+        if (video != null) video.stopPlayback();
+        // a film of several gigabytes must not stay on the TV after watching
+        if (isFinishing()) file(this).delete();
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onKeyDown(int code, KeyEvent e) {
         if (video != null) {
             switch (code) {
@@ -92,6 +100,12 @@ public class CastActivity extends Activity {
                     return true;
                 case KeyEvent.KEYCODE_DPAD_RIGHT: case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
                     video.seekTo(Math.min(video.getDuration(), video.getCurrentPosition() + 10000));
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_UP: // a film: a minute at a time
+                    video.seekTo(Math.min(video.getDuration(), video.getCurrentPosition() + 60000));
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                    video.seekTo(Math.max(0, video.getCurrentPosition() - 60000));
                     return true;
                 default:
             }

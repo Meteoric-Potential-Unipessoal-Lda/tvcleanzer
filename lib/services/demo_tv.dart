@@ -230,6 +230,18 @@ class DemoAdbClient extends AdbClient {
   }
 
   @override
+  Future<void> execInStream(String command, Stream<List<int>> input,
+      {Duration timeout = const Duration(seconds: 90), void Function(int sent)? onProgress}) async {
+    var n = 0;
+    await for (final d in input) {
+      n += d.length;
+    }
+    await _lag(500);
+    onProgress?.call(n);
+    if (command.startsWith('cat > ')) _s.tmpFile = n;
+  }
+
+  @override
   Future<String> shell(String command,
       {Duration timeout = const Duration(seconds: 30)}) async {
     await _lag();
@@ -414,7 +426,7 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=43 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=44 minSdk=21 targetSdk=34\n' : '';
     }
     if (c.startsWith('dumpsys activity activities')) {
       // Home on the demo TV opens whatever is the home screen.

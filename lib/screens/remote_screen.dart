@@ -127,22 +127,20 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     if (img == null) return;
     final bytes = await img.readAsBytes();
     await _run(tr('Отправляем на ТВ…'),
-        () => ref.read(adbServiceProvider).castFile(tv, bytes, video: false));
+        () => ref.read(adbServiceProvider).castFile(tv, Stream.value(bytes), bytes.length, video: false));
   }
 
+  /// Any size: the file goes to the TV straight from the phone's storage, piece by piece.
   Future<void> _castVideo(TvDevice tv) async {
     final v = await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (v == null) return;
     final len = await v.length();
-    if (len > 700 * 1024 * 1024) {
-      _snack(tr('Видео слишком большое: до 700 МБ.'));
-      return;
-    }
-    final bytes = await v.readAsBytes();
-    await _run(tr('Отправляем на ТВ…'), () => ref.read(adbServiceProvider).castFile(tv, bytes, video: true,
-        onProgress: (sent) {
-      if (mounted) setState(() => _busy = '${tr('Отправляем на ТВ…')} ${(sent * 100 / bytes.length).round()}%');
-    }));
+    await _run(tr('Отправляем на ТВ…'), () => ref.read(adbServiceProvider).castFile(tv, v.openRead(), len,
+            video: true, onProgress: (sent) {
+          if (mounted) {
+            setState(() => _busy = '${tr('Отправляем на ТВ…')} ${(sent * 100 / len).round()}%');
+          }
+        }));
   }
 
   Future<void> _castLink(TvDevice tv) async {

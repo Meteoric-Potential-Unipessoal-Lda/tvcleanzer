@@ -347,6 +347,12 @@ class AdbClient {
   /// (`cat > file` would otherwise wait forever). No output is returned —
   /// check the result with a separate command (e.g. the file size).
   Future<void> execIn(String command, Uint8List input,
+          {Duration timeout = const Duration(seconds: 90), void Function(int sent)? onProgress}) =>
+      execInStream(command, Stream.value(input), timeout: timeout, onProgress: onProgress);
+
+  /// [execIn] from a stream (a big video read from disk piece by piece: it never has to fit
+  /// in the phone's memory).
+  Future<void> execInStream(String command, Stream<List<int>> input,
       {Duration timeout = const Duration(seconds: 90), void Function(int sent)? onProgress}) async {
     final localId = _nextLocalId++;
     _send(_Msg(_cmdOpen, localId, 0, _cString('exec:$command')));
@@ -361,32 +367,58 @@ class AdbClient {
         throw AdbException('TV refused the command: $command');
       }
     }
+    final rid = remoteId;
 
     final chunk = _uploadChunk;
     var told = 0;
-    var off = 0;
-    while (off < input.length) {
-      final end = min(off + chunk, input.length);
-      _send(_Msg(_cmdWrte, localId, remoteId, Uint8List.sublistView(input, off, end)));
-      off = end;
+    var sent = 0;
+    Future<void> put(Uint8List piece) async {
+      _send(_Msg(_cmdWrte, localId, rid, piece));
+      sent += piece.length;
       while (true) {
         final m = await _read(timeout, 'Upload timed out: $command');
         if (m.arg1 != localId) continue;
         if (m.cmd == _cmdOkay) break;
         if (m.cmd == _cmdWrte) {
-          _send(_Msg(_cmdOkay, localId, remoteId));
+          _send(_Msg(_cmdOkay, localId, rid));
         } else if (m.cmd == _cmdClse) {
           throw AdbException('The TV closed the upload early: $command');
         }
       }
-      if (onProgress != null && (off - told >= 512 * 1024 || off == input.length)) {
-        told = off;
-        onProgress(off);
+      if (onProgress != null && sent - told >= 512 * 1024) {
+        told = sent;
+        onProgress(sent);
       }
     }
 
+    // pieces of exactly [chunk] bytes, whatever sizes the stream hands us
+    final pending = BytesBuilder(copy: false);
+    await for (final data in input) {
+      var d = data is Uint8List ? data : Uint8List.fromList(data);
+      if (pending.isEmpty && d.length >= chunk) {
+        var off = 0;
+        while (d.length - off >= chunk) {
+          await put(Uint8List.sublistView(d, off, off + chunk));
+          off += chunk;
+        }
+        d = Uint8List.sublistView(d, off);
+      }
+      pending.add(d);
+      while (pending.length >= chunk) {
+        final all = pending.takeBytes();
+        var off = 0;
+        while (all.length - off >= chunk) {
+          await put(Uint8List.sublistView(all, off, off + chunk));
+          off += chunk;
+        }
+        if (off < all.length) pending.add(Uint8List.sublistView(all, off));
+      }
+    }
+    if (pending.isNotEmpty) await put(pending.takeBytes());
+    onProgress?.call(sent);
+
     // Close our side: the TV closes the command's stdin, the command finishes.
-    _send(_Msg(_cmdClse, localId, remoteId));
+    _send(_Msg(_cmdClse, localId, rid));
     try {
       while (true) {
         final m = await _read(const Duration(seconds: 5), 'close');

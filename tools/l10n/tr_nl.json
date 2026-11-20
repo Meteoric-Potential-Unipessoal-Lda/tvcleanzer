@@ -744,5 +744,6 @@
 "Telefoonscherm op de tv. Stop hier, in de melding of met Terug op de afstandsbediening.",
 "De tv reageerde niet: we hebben een inschakelsignaal via het netwerk gestuurd. Gaat hij niet aan, zet dan Wake on LAN aan in de tv-instellingen.",
 "De tv reageert niet. Zet hem één keer aan met zijn eigen afstandsbediening: daarna leert de telefoon hem te wekken.",
-"Schermspiegeling stoppen"
+"Schermspiegeling stoppen",
+"Te weinig ruimte op de tv voor deze video: {0} MB nodig, {1} MB vrij."
 ]

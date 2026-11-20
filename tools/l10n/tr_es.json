@@ -744,5 +744,6 @@
 "Pantalla del teléfono en el televisor. Detenla aquí, en la notificación o con Atrás en el mando de la TV.",
 "El televisor no respondía: le enviamos una señal de encendido por red. Si no se encendió, activa «Encendido por red» (Wake on LAN) en los ajustes de la TV.",
 "El televisor no responde. Enciéndelo una vez con su mando: después el teléfono aprenderá a despertarlo.",
-"Detener la duplicación"
+"Detener la duplicación",
+"No hay espacio suficiente en la TV para este vídeo: se necesitan {0} MB, hay {1} MB libres."
 ]

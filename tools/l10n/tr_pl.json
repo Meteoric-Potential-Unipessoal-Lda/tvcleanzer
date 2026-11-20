@@ -744,5 +744,6 @@
 "Ekran telefonu na telewizorze. Zatrzymaj tutaj, w powiadomieniu lub przyciskiem Wstecz na pilocie TV.",
 "Telewizor nie odpowiadał: wysłaliśmy mu sygnał włączenia przez sieć. Jeśli się nie włączył, w ustawieniach TV włącz Wake on LAN (włączanie przez sieć).",
 "Telewizor nie odpowiada. Włącz go raz zwykłym pilotem: potem telefon nauczy się go budzić.",
-"Zatrzymaj powielanie ekranu"
+"Zatrzymaj powielanie ekranu",
+"Za mało miejsca na telewizorze na to wideo: potrzeba {0} MB, wolne {1} MB."
 ]

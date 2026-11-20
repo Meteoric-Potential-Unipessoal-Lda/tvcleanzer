@@ -744,5 +744,6 @@
 "A telefon képernyője a tévén. Leállítás itt, az értesítésben vagy a tévé távirányítójának Vissza gombjával.",
 "A tévé nem válaszolt: hálózati bekapcsolási jelet küldtünk neki. Ha nem kapcsolt be, a tévé beállításaiban kapcsolja be a Wake on LAN funkciót.",
 "A tévé nem válaszol. Kapcsolja be egyszer a saját távirányítójával: utána a telefon megtanulja felébreszteni.",
-"Képernyőtükrözés leállítása"
+"Képernyőtükrözés leállítása",
+"Nincs elég hely a tévén ehhez a videóhoz: {0} MB kell, {1} MB szabad."
 ]

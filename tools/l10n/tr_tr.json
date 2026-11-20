@@ -744,5 +744,6 @@
 "Telefon ekranı televizyonda. Buradan, bildirimden veya TV kumandasındaki Geri tuşuyla durdurun.",
 "Televizyon yanıt vermedi: ona ağ üzerinden açma sinyali gönderdik. Açılmadıysa TV ayarlarında Wake on LAN'ı (ağ ile açma) etkinleştirin.",
 "Televizyon yanıt vermiyor. Bir kez kendi kumandasıyla açın: sonra telefon onu uyandırmayı öğrenir.",
-"Ekran yansıtmayı durdur"
+"Ekran yansıtmayı durdur",
+"TV'de bu video için yeterli yer yok: {0} MB gerekli, {1} MB boş."
 ]

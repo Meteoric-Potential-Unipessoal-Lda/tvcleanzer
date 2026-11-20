@@ -744,5 +744,6 @@
 "Màn hình điện thoại trên TV. Dừng tại đây, trong thông báo hoặc bằng nút Quay lại trên điều khiển TV.",
 "TV không phản hồi: đã gửi tín hiệu bật qua mạng. Nếu TV không bật, hãy bật Wake on LAN trong cài đặt TV.",
 "TV không phản hồi. Hãy bật nó một lần bằng điều khiển của TV: sau đó điện thoại sẽ học cách đánh thức nó.",
-"Dừng phản chiếu màn hình"
+"Dừng phản chiếu màn hình",
+"TV không đủ dung lượng cho video này: cần {0} MB, còn trống {1} MB."
 ]

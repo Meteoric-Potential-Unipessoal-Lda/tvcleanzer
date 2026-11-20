@@ -744,5 +744,6 @@
 "Obrazovka telefonu na televizoru. Zastavíte ji zde, v oznámení nebo tlačítkem Zpět na ovladači TV.",
 "Televizor neodpovídal: poslali jsme mu signál zapnutí po síti. Pokud se nezapnul, zapněte v nastavení TV Wake on LAN (zapnutí po síti).",
 "Televizor neodpovídá. Jednou ho zapněte jeho ovladačem: potom se ho telefon naučí probouzet.",
-"Zastavit zrcadlení obrazovky"
+"Zastavit zrcadlení obrazovky",
+"Na televizoru není dost místa pro toto video: potřeba {0} MB, volno {1} MB."
 ]

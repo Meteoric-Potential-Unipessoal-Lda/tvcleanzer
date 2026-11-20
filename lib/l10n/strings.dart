@@ -748,6 +748,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'The TV didn\'t answer: we sent it a network wake-up signal. If it didn\'t turn on, enable Wake on LAN in the TV settings.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'The TV isn\'t answering. Turn it on once with its own remote: after that the phone will learn to wake it.',
     'Остановить повтор экрана': 'Stop screen mirroring',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Not enough space on the TV for this video: {0} MB needed, {1} MB free.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -1496,6 +1497,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Телевізор не відповідав: надіслали йому сигнал увімкнення через мережу. Якщо не увімкнувся, у налаштуваннях ТВ увімкніть «Увімкнення через мережу» (Wake on LAN).',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Телевізор не відповідає. Увімкніть його звичайним пультом один раз: після цього телефон навчиться його будити.',
     'Остановить повтор экрана': 'Зупинити повтор екрана',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'На телевізорі замало місця для цього відео: потрібно {0} МБ, вільно {1} МБ.',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -2244,6 +2246,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'El televisor no respondía: le enviamos una señal de encendido por red. Si no se encendió, activa «Encendido por red» (Wake on LAN) en los ajustes de la TV.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'El televisor no responde. Enciéndelo una vez con su mando: después el teléfono aprenderá a despertarlo.',
     'Остановить повтор экрана': 'Detener la duplicación',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'No hay espacio suficiente en la TV para este vídeo: se necesitan {0} MB, hay {1} MB libres.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -2992,6 +2995,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'A TV não respondeu: enviámos um sinal de ligar pela rede. Se não ligou, ative «Ligar pela rede» (Wake on LAN) nas definições da TV.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'A TV não responde. Ligue-a uma vez com o comando dela: depois o telefone aprende a acordá-la.',
     'Остановить повтор экрана': 'Parar o espelhamento',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Não há espaço suficiente na TV para este vídeo: são precisos {0} MB, há {1} MB livres.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -3740,6 +3744,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Der Fernseher hat nicht geantwortet: Wir haben ihm ein Einschaltsignal übers Netzwerk geschickt. Falls er nicht angeht, aktivieren Sie Wake on LAN in den TV-Einstellungen.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Der Fernseher antwortet nicht. Schalten Sie ihn einmal mit seiner Fernbedienung ein: Danach lernt das Handy, ihn aufzuwecken.',
     'Остановить повтор экрана': 'Spiegelung stoppen',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Zu wenig Platz auf dem Fernseher für dieses Video: {0} MB nötig, {1} MB frei.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -4488,6 +4493,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Le téléviseur ne répondait pas : nous lui avons envoyé un signal d\'allumage par le réseau. S\'il ne s\'allume pas, activez Wake on LAN dans les réglages de la TV.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Le téléviseur ne répond pas. Allumez-le une fois avec sa télécommande : ensuite le téléphone saura le réveiller.',
     'Остановить повтор экрана': 'Arrêter la recopie',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Pas assez d\'espace sur la TV pour cette vidéo : {0} Mo nécessaires, {1} Mo libres.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -5236,6 +5242,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'La TV non rispondeva: le abbiamo inviato un segnale di accensione via rete. Se non si è accesa, attiva Wake on LAN nelle impostazioni della TV.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'La TV non risponde. Accendila una volta con il suo telecomando: poi il telefono imparerà a svegliarla.',
     'Остановить повтор экрана': 'Interrompi la duplicazione',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Spazio insufficiente sulla TV per questo video: servono {0} MB, liberi {1} MB.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -5984,6 +5991,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Тэлевізар не адказваў: адправілі яму сігнал уключэння па сетцы. Калі не ўключыўся, у наладах ТВ уключыце «Уключэнне па сетцы» (Wake on LAN).',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Тэлевізар не адказвае. Уключыце яго звычайным пультам адзін раз: пасля гэтага тэлефон навучыцца яго будзіць.',
     'Остановить повтор экрана': 'Спыніць паўтор экрана',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'На тэлевізары мала месца для гэтага відэа: трэба {0} МБ, вольна {1} МБ.',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -6732,6 +6740,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Теледидар жауап бермеді: оған желі арқылы қосу сигналын жібердік. Қосылмаса, ТВ баптауларында «Желі арқылы қосу» (Wake on LAN) функциясын қосыңыз.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Теледидар жауап бермейді. Оны кәдімгі пультпен бір рет қосыңыз: осыдан кейін телефон оны оятуды үйренеді.',
     'Остановить повтор экрана': 'Экранды қайталауды тоқтату',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Теледидарда бұл бейнеге орын аз: {0} МБ керек, {1} МБ бос.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -7480,6 +7489,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Televizor javob bermadi: unga tarmoq orqali yoqish signalini yubordik. Yoqilmasa, TV sozlamalarida «Tarmoq orqali yoqish» (Wake on LAN) ni yoqing.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Televizor javob bermayapti. Uni oddiy pult bilan bir marta yoqing: shundan keyin telefon uni uyg‘otishni o‘rganadi.',
     'Остановить повтор экрана': 'Ekranni takrorlashni to‘xtatish',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Televizorda bu video uchun joy kam: {0} MB kerak, {1} MB bo‘sh.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -8228,6 +8238,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Հեռուստացույցը չպատասխանեց․ ուղարկեցինք ցանցով միացման ազդանշան։ Եթե չմիացավ, հեռուստացույցի կարգավորումներում միացրեք «Միացում ցանցով» (Wake on LAN)։',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Հեռուստացույցը չի պատասխանում։ Մեկ անգամ միացրեք այն սովորական վահանակով․ դրանից հետո հեռախոսը կսովորի արթնացնել այն։',
     'Остановить повтор экрана': 'Կանգնեցնել էկրանի կրկնօրինակումը',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Հեռուստացույցում այս տեսանյութի համար տեղը քիչ է․ պետք է {0} ՄԲ, ազատ է {1} ՄԲ։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -8976,6 +8987,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Televizor cavab vermədi: ona şəbəkə ilə yandırma siqnalı göndərdik. Yanmadısa, TV parametrlərində «Şəbəkə ilə yandırma» (Wake on LAN) funksiyasını aktiv edin.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Televizor cavab vermir. Onu adi pultla bir dəfə yandırın: bundan sonra telefon onu oyatmağı öyrənəcək.',
     'Остановить повтор экрана': 'Ekranın təkrarını dayandır',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Televizorda bu video üçün yer azdır: {0} MB lazımdır, {1} MB boşdur.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -9724,6 +9736,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'ტელევიზორი არ პასუხობდა: გავუგზავნეთ ქსელით ჩართვის სიგნალი. თუ არ ჩაირთო, ტელევიზორის პარამეტრებში ჩართეთ «ქსელით ჩართვა» (Wake on LAN).',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'ტელევიზორი არ პასუხობს. ერთხელ ჩართეთ ჩვეულებრივი პულტით: ამის შემდეგ ტელეფონი ისწავლის მის გაღვიძებას.',
     'Остановить повтор экрана': 'ეკრანის გამეორების შეჩერება',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'ტელევიზორზე ამ ვიდეოსთვის ადგილი არ არის საკმარისი: საჭიროა {0} მბ, თავისუფალია {1} მბ.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -10472,6 +10485,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Сыналгы жооп берген жок: ага тармак аркылуу күйгүзүү сигналын жөнөттүк. Күйбөсө, ТВ жөндөөлөрүндө «Тармак аркылуу күйгүзүү» (Wake on LAN) иштетиңиз.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Сыналгы жооп бербей жатат. Аны кадимки пульт менен бир жолу күйгүзүңүз: андан кийин телефон аны ойготууну үйрөнөт.',
     'Остановить повтор экрана': 'Экранды кайталоону токтотуу',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Сыналгыда бул видео үчүн орун аз: {0} МБ керек, {1} МБ бош.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -11220,6 +11234,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Televizyon yanıt vermedi: ona ağ üzerinden açma sinyali gönderdik. Açılmadıysa TV ayarlarında Wake on LAN\'ı (ağ ile açma) etkinleştirin.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Televizyon yanıt vermiyor. Bir kez kendi kumandasıyla açın: sonra telefon onu uyandırmayı öğrenir.',
     'Остановить повтор экрана': 'Ekran yansıtmayı durdur',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'TV\'de bu video için yeterli yer yok: {0} MB gerekli, {1} MB boş.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -11968,6 +11983,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Telewizor nie odpowiadał: wysłaliśmy mu sygnał włączenia przez sieć. Jeśli się nie włączył, w ustawieniach TV włącz Wake on LAN (włączanie przez sieć).',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Telewizor nie odpowiada. Włącz go raz zwykłym pilotem: potem telefon nauczy się go budzić.',
     'Остановить повтор экрана': 'Zatrzymaj powielanie ekranu',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Za mało miejsca na telewizorze na to wideo: potrzeba {0} MB, wolne {1} MB.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -12716,6 +12732,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Televizorul nu a răspuns: i-am trimis un semnal de pornire prin rețea. Dacă nu a pornit, activați Wake on LAN în setările TV.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Televizorul nu răspunde. Porniți-l o dată cu telecomanda lui: după aceea telefonul va învăța să-l trezească.',
     'Остановить повтор экрана': 'Oprește oglindirea ecranului',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Spațiu insuficient pe TV pentru acest video: sunt necesari {0} MB, liberi {1} MB.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -13464,6 +13481,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': '电视没有响应：已通过网络向它发送开机信号。如果没有开机，请在电视设置中开启“网络唤醒”（Wake on LAN）。',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': '电视没有响应。请用它自己的遥控器开机一次：之后手机就能学会唤醒它。',
     'Остановить повтор экрана': '停止屏幕镜像',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': '电视空间不足，无法放下这个视频：需要 {0} MB，可用 {1} MB。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -14212,6 +14230,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'テレビが応答しなかったため、ネットワーク経由で電源オンの信号を送りました。つかない場合は、テレビの設定で Wake on LAN（ネットワーク経由で起動）を有効にしてください。',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'テレビが応答しません。一度テレビ本体のリモコンで電源を入れてください。その後はスマホから起動できるようになります。',
     'Остановить повтор экрана': '画面ミラーリングを停止',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'テレビの空き容量が足りません：{0} MB必要、空き {1} MB。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -14960,6 +14979,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'TV가 응답하지 않아 네트워크로 켜기 신호를 보냈습니다. 켜지지 않으면 TV 설정에서 Wake on LAN(네트워크로 켜기)을 켜세요.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'TV가 응답하지 않습니다. TV 리모컨으로 한 번 켜 주세요: 그 후에는 휴대폰이 TV를 깨우는 법을 익힙니다.',
     'Остановить повтор экрана': '화면 미러링 중지',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'TV에 이 동영상을 위한 공간이 부족합니다: {0}MB 필요, {1}MB 남음.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -15708,6 +15728,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'टीवी जवाब नहीं दे रहा था: हमने उसे नेटवर्क से चालू करने का सिग्नल भेजा। अगर चालू नहीं हुआ, तो टीवी सेटिंग्स में Wake on LAN चालू करें।',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'टीवी जवाब नहीं दे रहा। इसे एक बार इसके अपने रिमोट से चालू करें: उसके बाद फ़ोन इसे जगाना सीख जाएगा।',
     'Остановить повтор экрана': 'स्क्रीन मिररिंग रोकें',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'इस वीडियो के लिए टीवी पर जगह कम है: {0} MB चाहिए, {1} MB ख़ाली है।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -16456,6 +16477,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'TV tidak merespons: kami mengirim sinyal menyalakan lewat jaringan. Jika tidak menyala, aktifkan Wake on LAN di pengaturan TV.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'TV tidak merespons. Nyalakan sekali dengan remote bawaannya: setelah itu ponsel akan belajar membangunkannya.',
     'Остановить повтор экрана': 'Hentikan pencerminan layar',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Ruang di TV tidak cukup untuk video ini: perlu {0} MB, tersedia {1} MB.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -17204,6 +17226,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'TV không phản hồi: đã gửi tín hiệu bật qua mạng. Nếu TV không bật, hãy bật Wake on LAN trong cài đặt TV.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'TV không phản hồi. Hãy bật nó một lần bằng điều khiển của TV: sau đó điện thoại sẽ học cách đánh thức nó.',
     'Остановить повтор экрана': 'Dừng phản chiếu màn hình',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'TV không đủ dung lượng cho video này: cần {0} MB, còn trống {1} MB.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -17952,6 +17975,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'ทีวีไม่ตอบสนอง: ส่งสัญญาณเปิดเครื่องผ่านเครือข่ายแล้ว หากไม่เปิด ให้เปิด Wake on LAN ในการตั้งค่าทีวี',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'ทีวีไม่ตอบสนอง เปิดทีวีด้วยรีโมทของมันเองหนึ่งครั้ง: หลังจากนั้นโทรศัพท์จะปลุกทีวีได้',
     'Остановить повтор экрана': 'หยุดการสะท้อนหน้าจอ',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'พื้นที่บนทีวีไม่พอสำหรับวิดีโอนี้: ต้องใช้ {0} MB ว่าง {1} MB',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -18700,6 +18724,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'De tv reageerde niet: we hebben een inschakelsignaal via het netwerk gestuurd. Gaat hij niet aan, zet dan Wake on LAN aan in de tv-instellingen.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'De tv reageert niet. Zet hem één keer aan met zijn eigen afstandsbediening: daarna leert de telefoon hem te wekken.',
     'Остановить повтор экрана': 'Schermspiegeling stoppen',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Te weinig ruimte op de tv voor deze video: {0} MB nodig, {1} MB vrij.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -19448,6 +19473,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Televizor neodpovídal: poslali jsme mu signál zapnutí po síti. Pokud se nezapnul, zapněte v nastavení TV Wake on LAN (zapnutí po síti).',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Televizor neodpovídá. Jednou ho zapněte jeho ovladačem: potom se ho telefon naučí probouzet.',
     'Остановить повтор экрана': 'Zastavit zrcadlení obrazovky',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Na televizoru není dost místa pro toto video: potřeba {0} MB, volno {1} MB.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -20196,6 +20222,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Η τηλεόραση δεν απαντούσε: της στείλαμε σήμα ενεργοποίησης μέσω δικτύου. Αν δεν άνοιξε, ενεργοποιήστε το Wake on LAN στις ρυθμίσεις της TV.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Η τηλεόραση δεν απαντά. Ανοίξτε την μία φορά με το δικό της τηλεχειριστήριο: μετά το τηλέφωνο θα μάθει να την ξυπνά.',
     'Остановить повтор экрана': 'Διακοπή κατοπτρισμού οθόνης',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Δεν υπάρχει αρκετός χώρος στην TV για αυτό το βίντεο: χρειάζονται {0} MB, ελεύθερα {1} MB.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -20944,6 +20971,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'A tévé nem válaszolt: hálózati bekapcsolási jelet küldtünk neki. Ha nem kapcsolt be, a tévé beállításaiban kapcsolja be a Wake on LAN funkciót.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'A tévé nem válaszol. Kapcsolja be egyszer a saját távirányítójával: utána a telefon megtanulja felébreszteni.',
     'Остановить повтор экрана': 'Képernyőtükrözés leállítása',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'Nincs elég hely a tévén ehhez a videóhoz: {0} MB kell, {1} MB szabad.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -21692,5 +21720,6 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).': 'Tv:n svarade inte: vi skickade en startsignal via nätverket. Om den inte startade, slå på Wake on LAN i tv:ns inställningar.',
     'Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.': 'Tv:n svarar inte. Starta den en gång med dess egen fjärrkontroll: sedan lär sig telefonen att väcka den.',
     'Остановить повтор экрана': 'Stoppa skärmspegling',
+    'На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.': 'För lite utrymme på tv:n för den här videon: {0} MB behövs, {1} MB ledigt.',
   },
 };
