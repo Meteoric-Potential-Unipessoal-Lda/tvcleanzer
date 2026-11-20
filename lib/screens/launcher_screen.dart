@@ -85,7 +85,16 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       _version = _installed == true ? await api.launcherVersion(tv) : null;
       _weatherErr = null;
       if ((_version ?? 0) >= 8) {
-        final e = (await api.launcherState(tv)).settings['weatherErr']?.toString() ?? '-';
+        final st = await api.launcherState(tv);
+        // What the TV has now, not the phone's old copy: settings changed on the TV itself
+        // (launcher 0.54+) were overwritten by the phone's look on the next change or update
+        // («слетают многие настройки», an owner).
+        if (st.settings.containsKey('style')) {
+          await ref.read(launcherLookProvider.notifier).set(LauncherLook.fromMap(st.settings));
+          final sk = st.settings['skin'];
+          if (sk != null && sk.isNotEmpty) await ref.read(selectedSkinProvider.notifier).select(LauncherSkin.byId(sk));
+        }
+        final e = st.settings['weatherErr']?.toString() ?? '-';
         if (e != '-' && e.isNotEmpty) {
           _weatherErr = e;
           AppLog.error('launcher weather', e);
@@ -115,7 +124,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       }
       final bind = await ref.read(adbServiceProvider).installLauncher(
             tv, apk, ref.read(selectedSkinProvider).id,
+            // an update keeps what the owner set up on the TV; a new install gets the phone's look
             look: ref.read(launcherLookProvider),
+            keepSettings: _installed == true,
             onStep: (s) { if (mounted) setState(() => _step = s); },
           );
       _installed = true;

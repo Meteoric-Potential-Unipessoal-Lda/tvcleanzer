@@ -600,7 +600,7 @@ class AdbPackageManager {
   /// presses Home so the user sees it. Android 7+; Android 5–6 experimental.
   /// [onStep] reports progress for the UI.
   Future<LauncherBind> installLauncher(TvDevice device, Uint8List apk, String skin,
-      {LauncherLook? look, void Function(String step)? onStep}) async {
+      {LauncherLook? look, bool keepSettings = false, void Function(String step)? onStep}) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       onStep?.call(tr('Подключаемся к телевизору…'));
@@ -619,7 +619,7 @@ class AdbPackageManager {
       final res = await _installOne(adb, apk, const Duration(seconds: 90), flags: '-r');
       if (!res.contains('Success')) throw AdbException(_installError(res));
 
-      await adb.shell(_applyCommand(skin, look));
+      if (!keepSettings) await adb.shell(_applyCommand(skin, look));
       return await _bind(adb, sdk, onStep: onStep);
     } finally {
       adb.close();
