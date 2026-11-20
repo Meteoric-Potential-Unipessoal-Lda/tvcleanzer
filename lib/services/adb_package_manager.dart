@@ -582,7 +582,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 53;
+  static const bundledLauncherVersion = 55;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -844,11 +844,12 @@ class AdbPackageManager {
       await adb.shell('appops set $launcherPkg GET_USAGE_STATS allow 2>&1');
     }
     // Where Home already opens us through the HOME setting, the service must not catch keys:
-    // that costs key repeat (Haier FF Pro, Xiaomi MOEU1: held Volume moved one step). Tested
-    // with the filter off; Xiaomi keeps it for the Mi key.
+    // that costs key repeat — held Volume moves one step (Haier FF Pro, Xiaomi MOEU1, and many
+    // Xiaomi owners in the chat: held «−» no longer went down to mute). Xiaomi was kept on the
+    // filter for the Mi key; the service still puts our launcher back over PatchWall by its
+    // window, so holding Volume matters more.
     await _setKeyFilter(adb, true);
-    if (_pkgOf(await _resolvedHome(adb)) == launcherPkg &&
-        !(await adb.shell('getprop ro.product.manufacturer')).toLowerCase().contains('xiaomi')) {
+    if (_pkgOf(await _resolvedHome(adb)) == launcherPkg) {
       await _setKeyFilter(adb, false);
       if (!await _homeOpensOurs(adb)) await _setKeyFilter(adb, true);
     }

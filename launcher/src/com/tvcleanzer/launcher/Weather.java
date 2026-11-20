@@ -57,7 +57,7 @@ final class Weather {
             c.setConnectTimeout(8000);
             c.setReadTimeout(8000);
             // api.met.no asks every client to name itself
-            c.setRequestProperty("User-Agent", "TVCleanzerLauncher/0.53 (dayavacorp@gmail.com)");
+            c.setRequestProperty("User-Agent", "TVCleanzerLauncher/0.55 (dayavacorp@gmail.com)");
             int code = c.getResponseCode();
             if (code != 200) throw new java.io.IOException("HTTP " + code);
             InputStream in = c.getInputStream();
@@ -101,6 +101,48 @@ final class Weather {
         if (s.equals("fair")) return 1;
         if (s.equals("clearsky")) return 0;
         return 3;
+    }
+
+    /** A city found by name (typed on the TV). */
+    static final class Place {
+        final String city, label;
+        final float lat, lon;
+        Place(String city, String label, float lat, float lon) { this.city = city; this.label = label; this.lat = lat; this.lon = lon; }
+    }
+
+    /** Cities by name from Open-Meteo's geocoder, in the TV's language. Network: off the UI
+     *  thread. Null when there is no connection, empty when nothing matched. */
+    static java.util.List<Place> search(String name) {
+        String lang = Locale.getDefault().getLanguage();
+        String q;
+        try {
+            q = "geocoding-api.open-meteo.com/v1/search?count=8&format=json&language="
+                    + (lang.isEmpty() ? "en" : lang) + "&name=" + java.net.URLEncoder.encode(name, "UTF-8");
+        } catch (Exception e) {
+            return null;
+        }
+        String body = null;
+        for (String scheme : new String[]{"https://", "http://"}) {
+            try { body = get(scheme + q); break; } catch (Exception ignored) {}
+        }
+        if (body == null) return null;
+        java.util.List<Place> out = new java.util.ArrayList<>();
+        try {
+            org.json.JSONArray rs = new JSONObject(body).optJSONArray("results");
+            if (rs == null) return out;
+            for (int i = 0; i < rs.length(); i++) {
+                JSONObject r = rs.getJSONObject(i);
+                String city = r.optString("name");
+                if (city.isEmpty()) continue;
+                StringBuilder label = new StringBuilder(city);
+                for (String k : new String[]{"admin1", "country"}) {
+                    String v = r.optString(k);
+                    if (!v.isEmpty() && !v.equals(city)) label.append(", ").append(v);
+                }
+                out.add(new Place(city, label.toString(), (float) r.getDouble("latitude"), (float) r.getDouble("longitude")));
+            }
+        } catch (Exception ignored) {}
+        return out;
     }
 
     private static void fetch(String url, Prefs p) throws Exception {

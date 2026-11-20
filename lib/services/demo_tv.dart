@@ -426,7 +426,7 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=53 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=55 minSdk=21 targetSdk=34\n' : '';
     }
     if (c.startsWith('dumpsys activity activities')) {
       // Home on the demo TV opens whatever is the home screen.

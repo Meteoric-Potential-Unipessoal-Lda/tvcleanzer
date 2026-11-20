@@ -112,6 +112,7 @@ public class HomeKeyService extends AccessibilityService {
     protected void onServiceConnected() {
         running = this;
         updateKeyFilter();
+        updateNight();
         refreshStockHomes();
         if (SystemClock.elapsedRealtime() < BOOT_WINDOW_MS) { arm(90_000); checkFrontSoon(); }
         screenOn = new BroadcastReceiver() {
@@ -139,6 +140,7 @@ public class HomeKeyService extends AccessibilityService {
     public void onDestroy() {
         if (running == this) running = null;
         handler.removeCallbacksAndMessages(null);
+        removeNight();
         if (screenOn != null) try { unregisterReceiver(screenOn); } catch (Throwable ignored) {}
         super.onDestroy();
     }
@@ -443,6 +445,65 @@ public class HomeKeyService extends AccessibilityService {
         } catch (Throwable t) {
             return false;
         }
+    }
+
+    // ── Night mode: a warm, dimmer veil over everything (no root needed: an accessibility
+    //    overlay sits above every app). Owners asked for it like Night Shift, 1–5, by time. ──
+
+    private android.view.View nightView;
+    private int nightShown = -1;
+    private final Runnable nightTick = new Runnable() {
+        @Override public void run() { updateNight(); }
+    };
+
+    /** Shows, changes or removes the veil to match the settings and the clock. */
+    void updateNight() {
+        handler.removeCallbacks(nightTick);
+        Prefs p = new Prefs(this);
+        int level = p.nightNow() ? p.nightLevel() : 0;
+        if (level != nightShown) {
+            removeNight();
+            if (level > 0) addNight(level);
+        }
+        if (p.nightMode() == Prefs.NIGHT_SCHEDULE) handler.postDelayed(nightTick, 30_000);
+    }
+
+    private void addNight(int level) {
+        if (android.os.Build.VERSION.SDK_INT < 22) return; // no accessibility overlay before 5.1
+        try {
+            android.view.WindowManager wm = (android.view.WindowManager) getSystemService(WINDOW_SERVICE);
+            android.view.View v = new android.view.View(this);
+            // warm amber over a little black: blue goes down first, brightness with it
+            float a = level / 5f;
+            int amber = Math.round(a * 0.30f * 255) << 24 | 0xFF8A1E;
+            int dark = Math.round(a * 0.40f * 255) << 24;
+            v.setBackground(new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{
+                    new android.graphics.drawable.ColorDrawable(dark),
+                    new android.graphics.drawable.ColorDrawable(amber)}));
+            android.view.WindowManager.LayoutParams lp = new android.view.WindowManager.LayoutParams(
+                    android.view.WindowManager.LayoutParams.MATCH_PARENT,
+                    android.view.WindowManager.LayoutParams.MATCH_PARENT,
+                    android.view.WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+                    android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                            | android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                            | android.view.WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                            | android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                    android.graphics.PixelFormat.TRANSLUCENT);
+            wm.addView(v, lp);
+            nightView = v;
+            nightShown = level;
+        } catch (Throwable t) {
+            android.util.Log.w("TVCleanzerNight", "overlay: " + t);
+            nightShown = 0;
+        }
+    }
+
+    private void removeNight() {
+        if (nightView != null) {
+            try { ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).removeView(nightView); } catch (Throwable ignored) {}
+            nightView = null;
+        }
+        nightShown = 0;
     }
 
     static boolean usageAccess(Context c) {

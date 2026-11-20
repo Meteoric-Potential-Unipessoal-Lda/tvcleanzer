@@ -194,6 +194,39 @@ final class Prefs {
     boolean cleanBar()       { return sp.getBoolean("cleanBar", false); }
     void setCleanBar(boolean v) { sp.edit().putBoolean("cleanBar", v).apply(); }
     void setMemPill(boolean v) { sp.edit().putBoolean(MEM_PILL, v).apply(); }
+    /** Top bar as round icons instead of words (network icon in a status colour) — owners
+     *  who like it minimal asked for it (0.55+). */
+    boolean barIcons()       { return sp.getBoolean("barIcons", false); }
+    void setBarIcons(boolean v) { sp.edit().putBoolean("barIcons", v).apply(); }
+    /** «Избранное» / «Приложения» headings over the rows (0.55+). */
+    boolean sectionTitles()  { return sp.getBoolean("sectionTitles", true); }
+    void setSectionTitles(boolean v) { sp.edit().putBoolean("sectionTitles", v).apply(); }
+    static final int SHAPE_ROUNDED = 0, SHAPE_CIRCLE = 1;
+    /** App icons in «Иконки» / «Маленькие значки»: rounded squares or circles (0.55+). */
+    int iconShape()          { return clamp(sp.getInt("iconShape", SHAPE_ROUNDED), 0, 1); }
+    void setIconShape(int v) { sp.edit().putInt("iconShape", clamp(v, 0, 1)).apply(); }
+    static final int NIGHT_OFF = 0, NIGHT_ON = 1, NIGHT_SCHEDULE = 2;
+    /** Night mode: a warm, dimmer screen over everything (drawn by the Home-key service). */
+    int nightMode()          { return clamp(sp.getInt("nightMode", NIGHT_OFF), 0, 2); }
+    void setNightMode(int v) { sp.edit().putInt("nightMode", clamp(v, 0, 2)).apply(); }
+    /** Strength 1–5. */
+    int nightLevel()         { return clamp(sp.getInt("nightLevel", 3), 1, 5); }
+    void setNightLevel(int v) { sp.edit().putInt("nightLevel", clamp(v, 1, 5)).apply(); }
+    /** Schedule, minutes after midnight: from (default 20:00) to (default 07:00). */
+    int nightFrom()          { return clamp(sp.getInt("nightFrom", 20 * 60), 0, 24 * 60 - 1); }
+    int nightTo()            { return clamp(sp.getInt("nightTo", 7 * 60), 0, 24 * 60 - 1); }
+    void setNightFrom(int m) { sp.edit().putInt("nightFrom", clamp(m, 0, 24 * 60 - 1)).apply(); }
+    void setNightTo(int m)   { sp.edit().putInt("nightTo", clamp(m, 0, 24 * 60 - 1)).apply(); }
+    /** Night mode should be showing now. */
+    boolean nightNow() {
+        int m = nightMode();
+        if (m == NIGHT_ON) return true;
+        if (m != NIGHT_SCHEDULE) return false;
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        int now = c.get(java.util.Calendar.HOUR_OF_DAY) * 60 + c.get(java.util.Calendar.MINUTE);
+        int from = nightFrom(), to = nightTo();
+        return from <= to ? now >= from && now < to : now >= from || now < to;
+    }
     void setAppsBelow(boolean v) { sp.edit().putBoolean(APPS_BELOW, v).apply(); }
     /** With appsBelow: favourites sit at the bottom of the first screen, over the photo. */
     boolean favBottom()      { return sp.getBoolean(FAV_BOTTOM, false); }

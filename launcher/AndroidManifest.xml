@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="53"
-    android:versionName="0.53">
+    android:versionCode="55"
+    android:versionName="0.55">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -15,6 +15,9 @@
     <!-- the tuner's channel list, to open «ТВ» on the antenna rather than the last HDMI;
          granted by the phone app over ADB (pm grant) -->
     <uses-permission android:name="com.android.providers.tv.permission.READ_EPG_DATA" />
+    <!-- wallpaper and photo-frame pictures from a USB stick, chosen on the TV (FilesActivity) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
@@ -136,6 +139,13 @@
             android:name=".CastActivity"
             android:theme="@style/HomeTheme"
             android:exported="true"
+            android:screenOrientation="landscape" />
+
+        <!-- pictures from a USB stick / the TV's memory: wallpaper and photo frame -->
+        <activity
+            android:name=".FilesActivity"
+            android:theme="@style/HomeTheme"
+            android:exported="false"
             android:screenOrientation="landscape" />
 
         <!-- «Кнопки пульта»: a remote button opens an app of the owner's choice -->

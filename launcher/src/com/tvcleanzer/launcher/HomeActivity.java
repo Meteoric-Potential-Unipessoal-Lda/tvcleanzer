@@ -556,11 +556,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (!rest.isEmpty()) {
             // no «Приложения» heading here: the tiles speak for themselves
             LinearLayout row = null;
+            View firstRow = null;
             for (int i = 0; i < rest.size(); i++) {
                 if (i % perRow == 0) {
                     row = row();
                     row.setPadding(0, Ui.dp(this, 12) + Math.round(th * 0.06f), 0, Ui.dp(this, 4));
                     page.addView(row);
+                    if (firstRow == null) firstRow = row;
                 }
                 AppTile t = tile(rest.get(i), tw, th, skin, prefs.labelsAlways(), 14, 1.12f, anim, ringColor);
                 t.hook = hook;
@@ -570,6 +572,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 row.addView(t, lp);
                 tiles.add(t);
             }
+            // «Витрина» with only the favourites on the first screen; ▼ brings the rest (a
+            // Grundig owner: the other apps crowded the showcase)
+            if (prefs.appsBelow() && favShelf != null) pushBelow(favShelf, favShelf, firstRow, false);
         }
         if (inputsPos == Prefs.INPUTS_BOTTOM) addInputs(page);
         if (apps.isEmpty()) {
@@ -1020,6 +1025,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         List<AppTile> tiles = new ArrayList<>();
         if (!favorites.isEmpty()) {
             favTitle = sectionTitle(T.t("Избранное"), Ui.dp(this, 30));
+            // «Названия разделов» off: no heading, the shelf keeps the heading's place
+            if (!prefs.sectionTitles()) favTitle.setVisibility(View.GONE);
             page.addView(favTitle);
             FrameLayout shelf = new FrameLayout(this);
             favShelf = shelf;
@@ -1099,47 +1106,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
         if (!rest.isEmpty()) {
             final TextView appsTitle = sectionTitle(kids ? T.t("Можно смотреть") : T.t("Приложения"), Ui.dp(this, 26));
+            if (!kids && !prefs.sectionTitles()) appsTitle.setVisibility(View.GONE);
             page.addView(appsTitle);
-            // "Apps on the second screen": the first screen shows only the top and favourites,
-            // the grid starts just below it (▼ scrolls down to it).
-            if (!kids && prefs.appsBelow()) {
-                final int screenH = getResources().getDisplayMetrics().heightPixels;
-                appsTitle.getViewTreeObserver().addOnGlobalLayoutListener(
-                        new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override public void onGlobalLayout() {
-                        appsTitle.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        int sy = scroll != null ? scroll.getScrollY() : 0;
-                        // favourites low on the first screen, over the photo (an owner's wish)
-                        int favPush = 0;
-                        if (prefs.favBottom() && favShelf != null && favTitle != null) {
-                            int[] s = new int[2];
-                            favShelf.getLocationOnScreen(s);
-                            int bottom = s[1] + sy + favShelf.getHeight();
-                            favPush = Math.max(0, screenH - Ui.dp(HomeActivity.this, 40) - bottom);
-                            if (favPush > 0) {
-                                LinearLayout.LayoutParams fl = (LinearLayout.LayoutParams) favTitle.getLayoutParams();
-                                fl.topMargin += favPush;
-                                favTitle.setLayoutParams(fl);
-                            }
-                        }
-                        int[] at = new int[2];
-                        appsTitle.getLocationOnScreen(at);
-                        int top = at[1] + sy + favPush;
-                        int push = screenH - top + Ui.dp(HomeActivity.this, 26);
-                        if (push > 0) {
-                            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) appsTitle.getLayoutParams();
-                            lp.topMargin += push;
-                            appsTitle.setLayoutParams(lp);
-                        }
-                    }
-                });
-            }
+            View firstRow = null;
             LinearLayout row = null;
             for (int i = 0; i < rest.size(); i++) {
                 if (i % cols == 0) {
                     row = row();
                     row.setPadding(0, Ui.dp(this, 12) + Math.round(tileH * 0.05f), 0, Ui.dp(this, 4));
                     page.addView(row);
+                    if (firstRow == null) firstRow = row;
                 }
                 AppTile t = tile(rest.get(i), tileW, tileH, skin, kids || labelsAlways,
                         kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), kids ? 1.08f : 1.12f, anim, ringColor);
@@ -1148,6 +1124,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 if (i % cols > 0) lp.leftMargin = gap;
                 row.addView(t, lp);
                 tiles.add(t);
+            }
+            // "Apps on the second screen": the first screen shows only the top and favourites,
+            // the grid starts just below it (▼ scrolls down to it)
+            if (!kids && prefs.appsBelow()) {
+                View favTop = favTitle != null && favTitle.getVisibility() == View.VISIBLE ? favTitle : favShelf;
+                pushBelow(favTop, favShelf, appsTitle.getVisibility() == View.VISIBLE ? appsTitle : firstRow,
+                        prefs.favBottom());
             }
         }
 
@@ -1239,7 +1222,21 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
 
         netPill = null;
-        if (!prefs.cleanBar()) {
+        netIcon = null;
+        if (!prefs.cleanBar() && prefs.barIcons()) {
+            // round icons instead of words; the network one in a status colour
+            int[] ns = netState();
+            TopIcon net = new TopIcon(this, ns[0], ns[1]);
+            netIcon = net;
+            net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
+            int is = Ui.dp(this, 46);
+            bar.addView(net, new LinearLayout.LayoutParams(is, is));
+            TopIcon tv = new TopIcon(this, TopIcon.TV, 0);
+            tv.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+            LinearLayout.LayoutParams tp = new LinearLayout.LayoutParams(is, is);
+            tp.leftMargin = Ui.dp(this, 14);
+            bar.addView(tv, tp);
+        } else if (!prefs.cleanBar()) {
             Pill net = new Pill(this, networkLabel());
             netPill = net;
             net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
@@ -1302,6 +1299,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     }
 
     private Pill netPill;
+    private TopIcon netIcon;
     private Pill memPill;
     private TextView greetView;
 
@@ -1323,6 +1321,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (netPill != null) {
             CharSequence n = networkLabel();
             if (!n.toString().equals(netPill.getText().toString())) netPill.setText(n);
+        }
+        if (netIcon != null) {
+            int[] ns = netState();
+            netIcon.set(ns[0], ns[1]);
         }
         if (memPill != null && !freeing) memPill.setText(Memory.label(this));
     }
@@ -1368,6 +1370,30 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             }
         } catch (Throwable ignored) {}
         return false;
+    }
+
+    /** {glyph, colour} for the network icon: VPN (blue lock), Wi-Fi / Ethernet in green when
+     *  online, orange when there is no network or the network has no internet. */
+    @SuppressWarnings("deprecation")
+    private int[] netState() {
+        try {
+            android.net.ConnectivityManager cm =
+                    (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            android.net.NetworkInfo ni = cm == null ? null : cm.getActiveNetworkInfo();
+            if (ni == null || !ni.isConnected()) return new int[]{TopIcon.OFFLINE, TopIcon.BAD};
+            if (vpnOn(cm) || ni.getType() == android.net.ConnectivityManager.TYPE_VPN) {
+                return new int[]{TopIcon.VPN, TopIcon.VPN_COLOR};
+            }
+            int glyph = ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET ? TopIcon.ETHERNET : TopIcon.WIFI;
+            boolean online = true;
+            if (android.os.Build.VERSION.SDK_INT >= 23) {
+                android.net.NetworkCapabilities nc = cm.getNetworkCapabilities(cm.getActiveNetwork());
+                online = nc == null || nc.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+            }
+            return new int[]{glyph, online ? TopIcon.OK : TopIcon.BAD};
+        } catch (Throwable t) {
+            return new int[]{TopIcon.WIFI, 0};
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -1481,6 +1507,49 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
     }
 
+    /**
+     * Apps on the second screen: [appsTop] (the apps heading or their first row) is pushed just
+     * below the bottom of the screen; with [favBottom] the favourites sit low on the first one.
+     * Worked out from the views' places in the page on every layout, not once from screen
+     * coordinates: those were taken before the page had settled (the weather line or the
+     * art came in later) and the shelf sometimes jumped down «for no reason» (an owner's report).
+     */
+    private void pushBelow(final View favTop, final View favShelf, final View appsTop, final boolean favBottom) {
+        if (appsTop == null) return;
+        final int[] extra = {0, 0}; // added to favTop / appsTop top margins
+        appsTop.getViewTreeObserver().addOnGlobalLayoutListener(
+                new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override public void onGlobalLayout() {
+                if (!appsTop.isAttachedToWindow()) {
+                    appsTop.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    return;
+                }
+                ScrollView sc = scroll;
+                int screenH = sc != null && sc.getHeight() > 0 ? sc.getHeight() : getResources().getDisplayMetrics().heightPixels;
+                if (appsTop.getHeight() == 0) return;
+                int fe = 0;
+                if (favBottom && favTop != null && favShelf != null && favShelf.getHeight() > 0) {
+                    int baseBottom = favShelf.getBottom() - extra[0];
+                    fe = Math.max(0, screenH - Ui.dp(HomeActivity.this, 40) - baseBottom);
+                }
+                int baseTop = appsTop.getTop() - extra[0] - extra[1];
+                int ae = Math.max(0, screenH + Ui.dp(HomeActivity.this, 26) - (baseTop + fe));
+                if (Math.abs(fe - extra[0]) > 1 && favTop != null) {
+                    LinearLayout.LayoutParams fl = (LinearLayout.LayoutParams) favTop.getLayoutParams();
+                    fl.topMargin += fe - extra[0];
+                    extra[0] = fe;
+                    favTop.setLayoutParams(fl);
+                }
+                if (Math.abs(ae - extra[1]) > 1) {
+                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) appsTop.getLayoutParams();
+                    lp.topMargin += ae - extra[1];
+                    extra[1] = ae;
+                    appsTop.setLayoutParams(lp);
+                }
+            }
+        });
+    }
+
     private TextView sectionTitle(String s, int topMargin) {
         TextView t = Ui.text(this, 17, 0xB3FFFFFF, "sans-serif-medium");
         t.setText(s);
@@ -1547,12 +1616,29 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final int mode = prefs.icons();
         final boolean small = mode == Prefs.ICONS_SMALL; // the icon at its own size on the card (review request)
         final boolean useIcons = small || mode == Prefs.ICONS_ON || (mode == Prefs.ICONS_AUTO && squareTiles);
+        final boolean round = useIcons && prefs.iconShape() == Prefs.SHAPE_CIRCLE; // round icons (owners asked)
         for (final AppTile t : tiles) {
             final int cw = t.cardW(), ch = t.cardH();
-            final String k = t.app.pkg + "#" + (small ? "s" : useIcons ? "i" : "b") + cw + "x" + ch;
+            final String k = t.app.pkg + "#" + (small ? "s" : useIcons ? "i" : "b") + (round ? "o" : "") + cw + "x" + ch;
             Drawable cached = artCache.get(k);
             if (cached != null) {
                 t.setArt(cached, Boolean.TRUE.equals(bannerCache.get(k)));
+                continue;
+            }
+            if (round) {
+                io.execute(() -> {
+                    Drawable icon = IconArt.icon(pm, t.app);
+                    android.graphics.Bitmap b = small ? IconArt.circle(icon, Math.round(ch * 0.6f))
+                            : IconArt.roundTile(icon, cw, ch);
+                    final Drawable art = b == null ? icon : new android.graphics.drawable.BitmapDrawable(getResources(), b);
+                    final boolean fills = !small && b != null;
+                    main.post(() -> {
+                        if (art == null) return;
+                        artCache.put(k, art);
+                        bannerCache.put(k, fills);
+                        t.setArt(art, fills);
+                    });
+                });
                 continue;
             }
             io.execute(() -> {

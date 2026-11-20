@@ -137,6 +137,61 @@ final class IconArt {
         }
     }
 
+    /** The app's icon as a circle of [d] pixels, like round icons on phones (an owner's wish).
+     *  Adaptive icons: both layers at launcher scale; others on a plate of their own colour. */
+    static Bitmap circle(Drawable icon, int d) {
+        if (icon == null || d <= 0) return null;
+        try {
+            Bitmap out = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(out);
+            android.graphics.Path clip = new android.graphics.Path();
+            clip.addCircle(d / 2f, d / 2f, d / 2f, android.graphics.Path.Direction.CW);
+            c.clipPath(clip);
+            if (Build.VERSION.SDK_INT >= 26 && icon instanceof android.graphics.drawable.AdaptiveIconDrawable) {
+                android.graphics.drawable.AdaptiveIconDrawable ad = (android.graphics.drawable.AdaptiveIconDrawable) icon;
+                Drawable bg = ad.getBackground(), fg = ad.getForeground();
+                int layer = Math.round(d * 1.5f), o = (d - layer) / 2;
+                c.drawColor(bg != null ? opaqueCenter(bg) : 0xFF2B3446);
+                if (bg != null) { bg.setBounds(o, o, o + layer, o + layer); bg.draw(c); }
+                if (fg != null) { fg.setBounds(o, o, o + layer, o + layer); fg.draw(c); }
+                return out;
+            }
+            int[] info = analyse(icon);
+            if (info[1] == 1) {
+                // its own background: fill the circle, baked corners fall outside
+                int side = Math.round(d * 1.16f), o = (d - side) / 2;
+                icon.setBounds(o, o, o + side, o + side);
+                icon.draw(c);
+            } else {
+                c.drawColor(info[0]);
+                int side = Math.round(d * 0.68f), o = (d - side) / 2;
+                icon.setBounds(o, o, o + side, o + side);
+                icon.draw(c);
+            }
+            return out;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    /** A w×h card with the round icon in the middle, on the icon's own colour. */
+    static Bitmap roundTile(Drawable icon, int w, int h) {
+        Bitmap ci = circle(icon, Math.round(Math.min(w, h) * 0.78f));
+        if (ci == null) return null;
+        try {
+            Bitmap out = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(out);
+            int edge = ci.getPixel(ci.getWidth() / 2, Math.max(1, ci.getHeight() / 12));
+            plate(c, w, h, mix(0xFF000000 | edge, 0xFF000000, 0.45f));
+            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+            c.drawBitmap(ci, (w - ci.getWidth()) / 2f, (h - ci.getHeight()) / 2f, p);
+            ci.recycle();
+            return out;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
     /**
      * A TV banner on a card of another shape: cropped at most a little (a whole crop cut
      * «calman» to «calmar» on an owner's photo), the rest of the card in the banner's own
