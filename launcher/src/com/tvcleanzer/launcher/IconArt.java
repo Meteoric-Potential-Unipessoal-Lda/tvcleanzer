@@ -91,13 +91,22 @@ final class IconArt {
                 return out;
             }
             if (info[1] == 1) {
-                // its own background: edge to edge; a little larger so baked-in corners fall outside
-                int side = Math.round(Math.max(w, h) * 1.08f);
+                // its own background: a little larger so baked-in corners fall outside. On a wide
+                // card it goes by the height — by the width the picture was cut top and bottom
+                // (rocket, diamonds, «CANALI TV» on an owner's photos) — and the sides take the
+                // icon's own background colour, so it reads as one picture.
+                int side = Math.round((square ? Math.max(w, h) : h) * 1.08f);
                 Bitmap ib = Bitmap.createBitmap(side, side, Bitmap.Config.ARGB_8888);
                 Canvas ic = new Canvas(ib);
                 icon.setBounds(0, 0, side, side);
                 icon.draw(ic);
-                plate(c, w, h, info[0]);
+                if (square) {
+                    plate(c, w, h, info[0]);
+                } else {
+                    Paint fill = new Paint();
+                    fill.setColor(sideColor(ib, info[0]));
+                    c.drawRect(0, 0, w, h, fill);
+                }
                 Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
                 c.drawBitmap(ib, (w - side) / 2f, (h - side) / 2f, p);
                 ib.recycle();
@@ -111,6 +120,26 @@ final class IconArt {
         } catch (Throwable e) {
             return null;
         }
+    }
+
+    /** The background along a full icon's left and right sides (inside its baked corners). */
+    private static int sideColor(Bitmap b, int fallback) {
+        int sz = b.getWidth();
+        long r = 0, g = 0, bl = 0;
+        int n = 0;
+        int[] xs = {Math.round(sz * 0.07f), Math.round(sz * 0.93f) - 1};
+        for (int x : xs) {
+            for (int y = Math.round(sz * 0.3f); y < Math.round(sz * 0.7f); y += Math.max(1, sz / 40)) {
+                int px = b.getPixel(x, y);
+                if ((px >>> 24) < 200) continue;
+                r += (px >> 16) & 0xFF;
+                g += (px >> 8) & 0xFF;
+                bl += px & 0xFF;
+                n++;
+            }
+        }
+        if (n < 6) return fallback;
+        return 0xFF000000 | ((int) (r / n) << 16) | ((int) (g / n) << 8) | (int) (bl / n);
     }
 
     /** The colour along a banner's left edge (its own background), else [fallback]. */
