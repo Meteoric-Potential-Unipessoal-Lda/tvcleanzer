@@ -218,6 +218,42 @@ RU = {
  'com.vk.tv': ('VK Видео', F, 'caution'),
 }
 
+# Checked against couch-tv's privacy list (tv-home/tools/privacy-list.txt, MIT, sources in its docs/PRIVACY.md).
+# Fire TV tracking and ad services: ASK makes every "amazon" package caution, these are pure telemetry/ads.
+ACRN='Следит, что вы смотрите (ACR)'
+RU.update({
+ 'com.amazon.tv.acr': ('Распознавание контента Amazon', ACRN, 'remove'),
+ 'com.amazon.hybridadidservice': ('Рекламный ID Amazon', A, 'remove'),
+ 'com.amazon.privacypassservice': ('Privacy Pass Amazon (рекламные токены)', A, 'remove'),
+ 'com.amazon.hedwig': ('Рекламные каналы Fire TV', A, 'remove'),
+ 'com.amazon.sneakpeek': ('Sneak Peek (реклама на главном)', A, 'remove'),
+ 'com.amazon.kso.blackbird': ('Спецпредложения Amazon', A, 'remove'),
+ 'com.amazon.wirelessmetrics.service': ('Метрики Wi-Fi Amazon', T, 'remove'),
+ 'com.amazon.perfcollection': ('Сбор данных о работе Amazon', T, 'remove'),
+ 'com.amazon.tv.fw.metrics': ('Метрики прошивки Fire TV', T, 'remove'),
+ 'com.amazon.dp.logger': ('Журнал устройства Amazon', T, 'remove'),
+ 'com.amazon.logan': ('Журналы Amazon', T, 'remove'),
+ 'com.amazon.neo.minerva.logcat': ('Сбор системных журналов Amazon', T, 'remove'),
+ 'com.amazon.ceviche': ('Метрики Amazon (Ceviche)', T, 'remove'),
+ 'com.amazon.spiderpork': ('Метрики Amazon (Spiderpork)', T, 'remove'),
+ # Sony and Xiaomi promo/ad services missing from CleanYourTV
+ 'com.sony.dtv.promos': ('Промо Sony', A, 'remove'),
+ 'com.sony.dtv.sonyselect': ('Sony Select (витрина приложений)', A, 'remove'),
+ 'com.sony.dtv.notificationcenter': ('Уведомления Sony', 'Присылает промо-уведомления, но через него идут и системные', 'caution'),
+ 'com.miui.msa.global': ('Рекламный сервис Xiaomi (MSA)', A, 'remove'),
+ # Widely removed, but couch-tv keeps them for good reasons: not for the automatic clean
+ 'com.google.android.tvrecommendations': ('Рекомендации Google',
+     'Рекомендации на главном. На Google TV через него идёт ряд «Продолжить просмотр»', 'caution'),
+ 'com.google.android.partnersetup': ('Настройка партнёров Google',
+     'Ставит партнёрские приложения, но нужен при настройке ТВ после сброса', 'caution'),
+ 'com.android.adservices.api': ('Рекламные сервисы Android',
+     'Модуль самой системы Android: рекламу не показывает, лучше не трогать', 'caution'),
+ 'com.android.ondevicepersonalization.services': ('Персонализация рекламы',
+     'Модуль самой системы Android: рекламу не показывает, лучше не трогать', 'caution'),
+ 'com.android.federatedcompute.services': ('Обучение рекламы на устройстве',
+     'Модуль самой системы Android: рекламу не показывает, лучше не трогать', 'caution'),
+})
+
 # Plain words for what an app does and what stops working (owners said the generic lines tell them nothing).
 # Exact packages first, then name patterns; both only replace the generic reasons.
 STREAM='Онлайн-кинотеатр: уберите, если нет подписки и не смотрите'
