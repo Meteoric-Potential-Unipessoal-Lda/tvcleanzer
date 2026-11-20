@@ -1,5 +1,10 @@
 package com.tvcleanzer.tvcleanzer
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -34,6 +39,11 @@ import javax.net.ssl.X509TrustManager
  * The pairing protocol itself is in Dart (lib/services/pairing/).
  */
 class MainActivity : FlutterActivity() {
+    companion object {
+        private const val REQ_PERMS = 7301
+        private const val REQ_CAPTURE = 7302
+    }
+
     private class Unsupported(msg: String) : Exception(msg)
 
     private val io = Executors.newCachedThreadPool()
@@ -41,8 +51,37 @@ class MainActivity : FlutterActivity() {
     private val sockets = ConcurrentHashMap<Int, SSLSocket>()
     private val nextId = AtomicInteger(1)
 
+    // «Повтор экрана»: the start request waits for the permission prompts and the system's
+    // «start recording?» dialog.
+    private var mirrorChannel: MethodChannel? = null
+    private var mirrorArgs: Map<String, Any?>? = null
+    private var mirrorResult: MethodChannel.Result? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        val mc = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "tvcleanzer/mirror")
+        mirrorChannel = mc
+        MirrorService.onStopped = { reason -> mirrorChannel?.invokeMethod("stopped", reason) }
+        mc.setMethodCallHandler { call, result ->
+            when (call.method) {
+                "start" -> {
+                    if (mirrorResult != null || MirrorService.running) {
+                        result.success(MirrorService.running)
+                        return@setMethodCallHandler
+                    }
+                    @Suppress("UNCHECKED_CAST")
+                    mirrorArgs = call.arguments as Map<String, Any?>
+                    mirrorResult = result
+                    askMirrorPermissions()
+                }
+                "stop" -> {
+                    MirrorService.stopNow()
+                    result.success(null)
+                }
+                "running" -> result.success(MirrorService.running)
+                else -> result.notImplemented()
+            }
+        }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "tvcleanzer/tls")
             .setMethodCallHandler { call, result ->
                 io.execute {
@@ -82,7 +121,65 @@ class MainActivity : FlutterActivity() {
             }
     }
 
+    private fun askMirrorPermissions() {
+        val want = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= 29 && mirrorArgs?.get("audio") == true &&
+            checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+        ) want += Manifest.permission.RECORD_AUDIO
+        // the «stop» notification while another app is on screen
+        if (Build.VERSION.SDK_INT >= 33 &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) want += Manifest.permission.POST_NOTIFICATIONS
+        if (want.isEmpty()) askCapture() else requestPermissions(want.toTypedArray(), REQ_PERMS)
+    }
+
+    private fun askCapture() {
+        val mpm = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        try {
+            startActivityForResult(mpm.createScreenCaptureIntent(), REQ_CAPTURE)
+        } catch (e: Exception) {
+            mirrorDone(false)
+        }
+    }
+
+    private fun mirrorDone(started: Boolean) {
+        val r = mirrorResult
+        mirrorResult = null
+        mirrorArgs = null
+        r?.success(started)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQ_PERMS && mirrorResult != null) askCapture() // without sound if refused
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_CAPTURE) return
+        val a = mirrorArgs
+        if (resultCode != Activity.RESULT_OK || data == null || a == null) return mirrorDone(false)
+        val i = Intent(this, MirrorService::class.java)
+            .putExtra("code", resultCode)
+            .putExtra("data", data)
+            .putExtra("host", a["host"] as String)
+            .putExtra("port", (a["port"] as Number).toInt())
+            .putExtra("token", a["token"] as String)
+            .putExtra("maxSize", (a["maxSize"] as Number).toInt())
+            .putExtra("bitrate", (a["bitrate"] as Number).toInt())
+            .putExtra("audio", a["audio"] == true)
+            .putExtra("title", a["title"] as String?)
+            .putExtra("stop", a["stopLabel"] as String?)
+        try {
+            if (Build.VERSION.SDK_INT >= 26) startForegroundService(i) else startService(i)
+            mirrorDone(true)
+        } catch (e: Exception) {
+            mirrorDone(false)
+        }
+    }
+
     override fun onDestroy() {
+        if (MirrorService.onStopped != null) MirrorService.onStopped = null
         sockets.values.forEach { runCatching { it.close() } }
         sockets.clear()
         super.onDestroy()

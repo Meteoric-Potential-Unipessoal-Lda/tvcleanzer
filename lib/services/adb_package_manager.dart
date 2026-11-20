@@ -538,7 +538,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 42;
+  static const bundledLauncherVersion = 43;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1621,6 +1621,32 @@ class AdbPackageManager {
       if (out.contains('Error')) {
         throw AdbException(tr('Обновите лаунчер на ТВ: показ фото и видео с телефона есть в новой версии.'));
       }
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Opens the launcher's «Повтор экрана» screen, listening on [port] for the phone with
+  /// [token] (launcher 0.43+). False when the launcher on the TV is older.
+  Future<bool> startMirror(TvDevice device, {required int port, required String token}) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell('am start -n $launcherPkg/.MirrorActivity -f 0x10000000 '
+          '--ei port $port --es token $token 2>&1');
+      return !out.contains('Error') && !out.contains('does not exist');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Closes the TV's mirror screen (the phone's owner cancelled before it began).
+  Future<void> closeMirror(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('am start -n $launcherPkg/.MirrorActivity -f 0x10000000 --ez close true 2>&1');
+    } catch (_) {
     } finally {
       adb.close();
     }

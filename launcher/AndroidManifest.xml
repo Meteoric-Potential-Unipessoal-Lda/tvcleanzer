@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="42"
-    android:versionName="0.42">
+    android:versionCode="43"
+    android:versionName="0.43">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -131,6 +131,15 @@
             android:name=".CastActivity"
             android:theme="@style/HomeTheme"
             android:exported="true"
+            android:screenOrientation="landscape" />
+
+        <!-- «Повтор экрана»: started by the phone app over ADB with a one-time token -->
+        <activity
+            android:name=".MirrorActivity"
+            android:theme="@style/HomeTheme"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:excludeFromRecents="true"
             android:screenOrientation="landscape" />
 
         <provider

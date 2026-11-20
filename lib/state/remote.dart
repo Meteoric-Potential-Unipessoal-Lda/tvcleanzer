@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/tv_device.dart';
 import '../services/adb_client.dart';
+import '../services/wake_on_lan.dart';
 import 'current_tv.dart';
 
 import '../l10n/l10n.dart';
@@ -13,6 +14,9 @@ enum RemoteStatus { idle, connecting, ready, error }
 class NeedsLauncher implements Exception {
   const NeedsLauncher();
 }
+
+/// What the Power button did.
+enum PowerResult { sent, wol, unreachable }
 
 class RemoteState {
   final RemoteStatus status;
@@ -73,6 +77,17 @@ class RemoteController extends StateNotifier<RemoteState> {
     }, input: true).catchError((_) {}); // shown via state
   }
 
+  /// Power: the key over ADB; when the TV no longer answers (deep standby), a Wake-on-LAN
+  /// packet to the network card we learned while it was on.
+  Future<PowerResult> power(String ip) async {
+    try {
+      await _enqueue(ip, () => 'keyevent ${Keys.power}', input: true);
+      return PowerResult.sent;
+    } catch (_) {
+      return await WakeOnLan.wake(ip) ? PowerResult.wol : PowerResult.unreachable;
+    }
+  }
+
   /// A long press (the TV's «options» on a tile).
   void longKey(String ip, int code) =>
       _enqueue(ip, () => 'keyevent --longpress $code', input: true).catchError((_) {});
@@ -124,6 +139,13 @@ class RemoteController extends StateNotifier<RemoteState> {
           await c.connect();
           _client = c;
           _ip = ip;
+          // the TV's network cards, for switching it on later (Wake-on-LAN)
+          try {
+            final macs = await c.shell(
+                'cat /sys/class/net/eth0/address /sys/class/net/wlan0/address 2>/dev/null',
+                timeout: const Duration(seconds: 4));
+            await WakeOnLan.remember(ip, macs);
+          } catch (_) {}
           _set(const RemoteState(RemoteStatus.ready));
         }
         if (!input) {

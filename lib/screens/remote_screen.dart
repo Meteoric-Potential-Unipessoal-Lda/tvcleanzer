@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -11,6 +15,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
+import '../services/demo_tv.dart';
+import '../services/mirror.dart';
 import '../state/current_tv.dart';
 import '../state/remote.dart';
 import '../theme/app_theme.dart';
@@ -34,9 +40,27 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   int _sleepMin = 0;
   DateTime? _sleepAt;
   String? _busy; // what is being sent to the TV right now
+  StreamSubscription<String?>? _mirrorEnded;
+
+  @override
+  void initState() {
+    super.initState();
+    Mirror.sync();
+    _mirrorEnded = Mirror.ended.listen((why) {
+      final m = switch (why) {
+        'connect' => tr('Телефон не достучался до телевизора. Проверьте, что они в одной Wi-Fi сети.'),
+        'token' => tr('Телевизор не принял телефон. Попробуйте ещё раз.'),
+        'encoder' => tr('Этот телефон не смог сжать видео экрана.'),
+        'closed' => tr('Повтор экрана закончился.'),
+        _ => null,
+      };
+      if (m != null) _snack(m);
+    });
+  }
 
   @override
   void dispose() {
+    _mirrorEnded?.cancel();
     _text.dispose();
     _focus.dispose();
     super.dispose();
@@ -167,12 +191,135 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(12),
-            child: Text(tr('Снимок экрана ТВ. Сохраните его скриншотом телефона, если нужно отправить.'),
-                textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: AppColors.fgMid)),
+            child: Builder(
+              builder: (bctx) => FilledButton.icon(
+                onPressed: () => _shareShot(bctx, shot),
+                icon: Icon(Platform.isWindows ? Icons.save_alt_rounded : Icons.ios_share_rounded),
+                label: Text(Platform.isWindows ? tr('Сохранить') : tr('Поделиться')),
+              ),
+            ),
           ),
         ]),
       ),
     );
+  }
+
+  /// The TV screenshot to Telegram, the gallery… (phones) or a file (Windows).
+  Future<void> _shareShot(BuildContext ctx, Uint8List png) async {
+    final name = 'tv-${DateTime.now().toIso8601String().substring(0, 19).replaceAll(':', '-')}.png';
+    try {
+      if (Platform.isWindows) {
+        final path = await FilePicker.platform.saveFile(fileName: name, type: FileType.image, bytes: png);
+        if (path == null) return;
+        final f = File(path);
+        if (!await f.exists() || await f.length() == 0) await f.writeAsBytes(png);
+        _snack(tr('Сохранено: {0}', [path]));
+        return;
+      }
+      final box = ctx.findRenderObject() as RenderBox?;
+      await SharePlus.instance.share(ShareParams(
+        files: [XFile.fromData(png, mimeType: 'image/png', name: name)],
+        fileNameOverrides: [name],
+        sharePositionOrigin: box == null ? null : box.localToGlobal(Offset.zero) & box.size,
+      ));
+    } catch (_) {
+      _snack(tr('Не получилось сохранить снимок.'));
+    }
+  }
+
+  /// «Повтор экрана»: the phone's screen (and sound) live on the TV.
+  Future<void> _mirror(TvDevice tv) async {
+    if (Mirror.running.value) {
+      await Mirror.stop();
+      return;
+    }
+    var hd = false, audio = true;
+    final go = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: AppColors.bgCard,
+      isScrollControlled: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, set) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Text(tr('Повтор экрана'),
+                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: AppColors.fg)),
+              const Gap(8),
+              Text(tr('Всё, что на экране телефона, появится на телевизоре. Телефон спросит разрешение на запись экрана.'),
+                  style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.4)),
+              const Gap(16),
+              SegmentedButton<bool>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(value: false, label: Text(tr('Плавнее'))),
+                  ButtonSegment(value: true, label: Text(tr('Чётче'))),
+                ],
+                selected: {hd},
+                onSelectionChanged: (v) => set(() => hd = v.first),
+              ),
+              const Gap(4),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                value: audio,
+                onChanged: (v) => set(() => audio = v),
+                title: Text(tr('Со звуком'), style: const TextStyle(color: AppColors.fg)),
+                subtitle: Text(tr('Звук игр и видео пойдёт на телевизор (Android 10 и новее)'),
+                    style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+              ),
+              Text(tr('Платные кинотеатры и банки прячут свой экран: на ТВ там будет чёрный.'),
+                  style: const TextStyle(fontSize: 11.5, color: AppColors.fgMuted)),
+              const Gap(14),
+              FilledButton.icon(
+                onPressed: () => Navigator.pop(ctx, true),
+                icon: const Icon(Icons.cast_rounded),
+                label: Text(tr('Показать на ТВ')),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+    if (go != true || !mounted) return;
+    if (tv.ipAddress == DemoTv.host) {
+      _snack(tr('В демо-режиме повтор экрана не работает: подключите настоящий телевизор.'));
+      return;
+    }
+    final token = Mirror.newToken();
+    var ready = false;
+    await _run(tr('Готовим телевизор…'), () async {
+      if (!await ref.read(adbServiceProvider).startMirror(tv, port: Mirror.port, token: token)) {
+        throw AdbException(tr('Обновите лаунчер на ТВ: повтор экрана есть в новой версии.'));
+      }
+      ready = true;
+    });
+    if (!ready || !mounted) return;
+    final started = await Mirror.start(
+      host: tv.ipAddress,
+      token: token,
+      hd: hd,
+      audio: audio,
+      title: tr('Экран телефона на телевизоре'),
+      stopLabel: tr('Остановить'),
+    );
+    if (!started) {
+      ref.read(adbServiceProvider).closeMirror(tv);
+      return;
+    }
+    _snack(tr('Экран телефона на телевизоре. Остановить — здесь, в уведомлении или кнопкой «Назад» на пульте ТВ.'));
+  }
+
+  /// Power: over ADB, or Wake-on-LAN when the TV sleeps too deep to answer.
+  Future<void> _power(TvDevice tv) async {
+    final r = await ref.read(remoteProvider.notifier).power(tv.id);
+    switch (r) {
+      case PowerResult.sent:
+        break;
+      case PowerResult.wol:
+        _snack(tr('Телевизор не отвечал: отправили ему сигнал включения по сети. Если не включился, в настройках ТВ включите «Включение по сети» (Wake on LAN).'));
+      case PowerResult.unreachable:
+        _snack(tr('Телевизор не отвечает. Включите его обычным пультом один раз: после этого телефон научится его будить.'));
+    }
   }
 
   Future<void> _sleep(TvDevice tv) async {
@@ -269,7 +416,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                 _RoundButton(icon: Icons.home_rounded, label: tr('Домой'), onTap: () => _key(tv, Keys.home)),
                 _RoundButton(icon: Icons.menu_rounded, label: tr('Меню'), onTap: () => _key(tv, Keys.menu)),
                 _RoundButton(icon: Icons.power_settings_new_rounded, label: tr('Питание'),
-                    onTap: () => _key(tv, Keys.power), color: AppColors.danger),
+                    onTap: () => _power(tv), color: AppColors.danger),
               ]),
               const Gap(18),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
@@ -348,6 +495,28 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
 
   Widget _castRow(TvDevice tv) => Column(children: [
         _section(tr('Трансляция с телефона')),
+        if (Mirror.supported) ...[
+          ValueListenableBuilder<bool>(
+            valueListenable: Mirror.running,
+            builder: (_, on, __) => SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: on
+                  ? FilledButton.icon(
+                      style: FilledButton.styleFrom(backgroundColor: AppColors.danger),
+                      onPressed: () => _mirror(tv),
+                      icon: const Icon(Icons.stop_screen_share_rounded),
+                      label: Text(tr('Остановить повтор экрана')),
+                    )
+                  : FilledButton.icon(
+                      onPressed: () => _mirror(tv),
+                      icon: const Icon(Icons.screen_share_rounded),
+                      label: Text(tr('Повтор экрана')),
+                    ),
+            ),
+          ),
+          const Gap(10),
+        ],
         Row(children: [
           Expanded(child: _CastButton(icon: Icons.photo_rounded, label: tr('Фото'), onTap: () => _castPhoto(tv))),
           const Gap(10),
