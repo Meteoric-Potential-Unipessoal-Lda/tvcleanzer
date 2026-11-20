@@ -116,6 +116,8 @@ public class SettingsActivity extends Activity {
         final int curSpeed = si;
         addRow(skin, T.t("Скорость живого фона"), speedNames[si], () -> prefs.setAmbientSec(speeds[(curSpeed + 1) % speeds.length]));
         addRow(skin, T.t("Кнопки пульта"), "›", () -> startActivity(new Intent(this, KeyMapActivity.class)));
+        addRow(skin, T.t("Только шестерёнка вверху"), prefs.cleanBar() ? T.t("Включено") : T.t("Выключено"),
+                () -> prefs.setCleanBar(!prefs.cleanBar()));
         addRow(skin, T.t("Память на главном экране"), prefs.memPill() ? T.t("Показывать") : T.t("Скрыто"),
                 () -> prefs.setMemPill(!prefs.memPill()));
         if (prefs.style() == Prefs.STYLE_SHOWCASE) {

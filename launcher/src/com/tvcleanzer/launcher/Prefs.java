@@ -189,6 +189,10 @@ final class Prefs {
     void setHeroTitle(boolean v) { sp.edit().putBoolean(HERO_TITLE, v).apply(); }
     /** RAM pill on the home screen; pressing it closes background apps (0.36+). */
     boolean memPill()        { return sp.getBoolean(MEM_PILL, true); }
+    /** Only the gear up top, and it opens the TV's own settings (hold: the launcher's). A review
+     *  asked for the cleanest look: no network pill, no «Настройки ТВ» pill. */
+    boolean cleanBar()       { return sp.getBoolean("cleanBar", false); }
+    void setCleanBar(boolean v) { sp.edit().putBoolean("cleanBar", v).apply(); }
     void setMemPill(boolean v) { sp.edit().putBoolean(MEM_PILL, v).apply(); }
     void setAppsBelow(boolean v) { sp.edit().putBoolean(APPS_BELOW, v).apply(); }
     /** With appsBelow: favourites sit at the bottom of the first screen, over the photo. */

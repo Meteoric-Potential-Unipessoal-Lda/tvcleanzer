@@ -756,5 +756,9 @@
 "No",
 "Every hour",
 "Every day",
-"If your router has two networks (2.4 and 5 GHz), connect the phone and the TV to the same one."
+"If your router has two networks (2.4 and 5 GHz), connect the phone and the TV to the same one.",
+"Only the gear at the top",
+"No network and «TV settings» pills: the gear opens TV settings, holding it opens launcher settings",
+"On",
+"Off"
 ]

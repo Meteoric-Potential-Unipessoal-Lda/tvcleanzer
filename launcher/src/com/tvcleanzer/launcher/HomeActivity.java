@@ -379,7 +379,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             order.add(in);
         }
         GearButton gear = new GearButton(this, skin.accent);
-        gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+        wireGear(gear);
         Pill all = new Pill(this, T.t("Все приложения"));
         all.setOnClickListener(v -> { showGrid = true; build(); });
 
@@ -1238,24 +1238,38 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             bar.addView(mem, mp);
         }
 
-        Pill net = new Pill(this, networkLabel());
-        netPill = net;
-        net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
-        bar.addView(net, pillLp());
+        netPill = null;
+        if (!prefs.cleanBar()) {
+            Pill net = new Pill(this, networkLabel());
+            netPill = net;
+            net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
+            bar.addView(net, pillLp());
 
-        Pill tvSettings = new Pill(this, T.t("Настройки ТВ"));
-        tvSettings.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
-        LinearLayout.LayoutParams pp = pillLp();
-        pp.leftMargin = Ui.dp(this, 14);
-        bar.addView(tvSettings, pp);
+            Pill tvSettings = new Pill(this, T.t("Настройки ТВ"));
+            tvSettings.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+            LinearLayout.LayoutParams pp = pillLp();
+            pp.leftMargin = Ui.dp(this, 14);
+            bar.addView(tvSettings, pp);
+        }
 
         GearButton gear = new GearButton(this, skin.accent);
         int gs = Ui.dp(this, 46);
         LinearLayout.LayoutParams gp = new LinearLayout.LayoutParams(gs, gs);
         gp.leftMargin = Ui.dp(this, 14);
-        gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+        wireGear(gear);
         bar.addView(gear, gp);
         return bar;
+    }
+
+    /** The gear: launcher settings; with «Только шестерёнка вверху» the TV's own settings, and
+     *  holding OK on it opens the launcher's. */
+    private void wireGear(GearButton gear) {
+        if (prefs.cleanBar()) {
+            gear.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+            gear.setOnLongClickListener(v -> { startActivity(new Intent(this, SettingsActivity.class)); return true; });
+        } else {
+            gear.setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+        }
     }
 
     private View kidsBar() {

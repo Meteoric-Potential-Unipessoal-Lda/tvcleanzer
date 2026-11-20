@@ -373,6 +373,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         const Gap(14),
         sw(tr('Память на главном экране'), tr('Нажатие закрывает приложения в фоне и освобождает память'), look.memPill,
             (v) => _setLook(look.copyWith(memPill: v))),
+        sw(tr('Только шестерёнка вверху'), tr('Без плашек сети и «Настройки ТВ»: шестерёнка открывает настройки ТВ, удержание — настройки лаунчера'),
+            look.cleanBar, (v) => _setLook(look.copyWith(cleanBar: v))),
         const Gap(8),
         if (look.style == 2) ...[
           sw(tr('Название приложения над плитками'), null, look.heroTitle,

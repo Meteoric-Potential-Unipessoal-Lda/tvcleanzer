@@ -28,6 +28,8 @@ class LauncherLook {
   final bool heroTitle;
   /// RAM pill on the TV home screen that frees memory when pressed (launcher 0.36+).
   final bool memPill;
+  /// Only the gear up top, opening the TV's settings (hold: the launcher's) (launcher 0.49+).
+  final bool cleanBar;
   /// Theme changes by itself (launcher 0.48+): 0 off, 1 every hour, 2 every day.
   final int skinAuto;
   /// Live background: seconds per drift, 0 = by the animation setting (launcher 0.48+).
@@ -66,13 +68,14 @@ class LauncherLook {
     this.icons = 0,
     this.heroTitle = true,
     this.memPill = true,
+    this.cleanBar = false,
     this.skinAuto = 0,
     this.ambientSec = 0,
   });
 
   LauncherLook copyWith({int? anim, bool? ringAccent, int? tiles, int? wallDim,
           bool? ambient, bool? clock24, bool? labels, int? inputs, int? favCols, int? style, int? clockPos,
-          int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon, bool? appsBelow, int? icons, bool? heroTitle, bool? memPill, int? skinAuto, int? ambientSec}) =>
+          int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon, bool? appsBelow, int? icons, bool? heroTitle, bool? memPill, bool? cleanBar, int? skinAuto, int? ambientSec}) =>
       LauncherLook(
         anim: anim ?? this.anim,
         ringAccent: ringAccent ?? this.ringAccent,
@@ -94,6 +97,7 @@ class LauncherLook {
         icons: icons ?? this.icons,
         heroTitle: heroTitle ?? this.heroTitle,
         memPill: memPill ?? this.memPill,
+        cleanBar: cleanBar ?? this.cleanBar,
         skinAuto: skinAuto ?? this.skinAuto,
         ambientSec: ambientSec ?? this.ambientSec,
       );
@@ -102,7 +106,7 @@ class LauncherLook {
   String get extras => '--ei anim $anim --ez ringAccent $ringAccent --ei tiles $tiles '
       '--ei wallDim $wallDim --ez ambient $ambient --ez clock24 $clock24 --ez labels $labels '
       '--ei inputs $inputs --ei favCols $favCols --ei style $style --ei clockPos $clockPos --ei clockSize $clockSize '
-      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --ez heroTitle $heroTitle --ez memPill $memPill --ei skinAuto $skinAuto --ei ambientSec $ambientSec --es weatherCity ${_q(weatherCity)}'
+      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --ez heroTitle $heroTitle --ez memPill $memPill --ez cleanBar $cleanBar --ei skinAuto $skinAuto --ei ambientSec $ambientSec --es weatherCity ${_q(weatherCity)}'
       '${weatherCity.isEmpty ? '' : ' --ef lat ${lat.toStringAsFixed(4)} --ef lon ${lon.toStringAsFixed(4)}'}';
 
   /// Single-quoted for the TV's shell (city names may have spaces or apostrophes).
@@ -113,7 +117,7 @@ class LauncherLook {
         'ambient': ambient, 'clock24': clock24, 'labels': labels, 'inputs': inputs, 'favCols': favCols,
         'style': style, 'clockPos': clockPos, 'clockSize': clockSize, 'clockFont': clockFont,
         'weatherCity': weatherCity, 'lat': lat, 'lon': lon, 'appsBelow': appsBelow, 'icons': icons, 'heroTitle': heroTitle, 'memPill': memPill,
-        'skinAuto': skinAuto, 'ambientSec': ambientSec,
+        'cleanBar': cleanBar, 'skinAuto': skinAuto, 'ambientSec': ambientSec,
       };
 
   static int _i(Object? v, int def, int lo, int hi) =>
@@ -143,6 +147,7 @@ class LauncherLook {
         icons: _i(m['icons'], 0, 0, 3),
         heroTitle: _b(m['heroTitle'], true),
         memPill: _b(m['memPill'], true),
+        cleanBar: _b(m['cleanBar'], false),
         skinAuto: _i(m['skinAuto'], 0, 0, 2),
         ambientSec: _i(m['ambientSec'], 0, 0, 300),
       );
