@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
@@ -65,6 +67,9 @@ final class IconArt {
                 // a launcher shows the middle 72 of the layers' 108 units
                 int layer = Math.round(Math.max(w, h) * 1.5f);
                 if (bg != null) {
+                    // some background layers are see-through (Play Store on TVs came out grey on
+                    // the dark card): an opaque underlay of the layer's own colour first
+                    c.drawColor(opaqueCenter(bg));
                     bg.setBounds((w - layer) / 2, (h - layer) / 2, (w + layer) / 2, (h + layer) / 2);
                     bg.draw(c);
                 } else {
@@ -100,15 +105,25 @@ final class IconArt {
                 Canvas ic = new Canvas(ib);
                 icon.setBounds(0, 0, side, side);
                 icon.draw(ic);
+                Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
                 if (square) {
                     plate(c, w, h, info[0]);
+                    c.drawBitmap(ib, (w - side) / 2f, (h - side) / 2f, p);
                 } else {
-                    Paint fill = new Paint();
-                    fill.setColor(sideColor(ib, info[0]));
-                    c.drawRect(0, 0, w, h, fill);
+                    // the sides take the colour from inside the icon and its left and right edges
+                    // fade into it — a frame or corners of another tint showed as a seam (Calman)
+                    c.drawColor(sideColor(ib, info[0]));
+                    float left = (w - side) / 2f;
+                    int save = c.saveLayer(left, 0, left + side, h, null);
+                    c.drawBitmap(ib, left, (h - side) / 2f, p);
+                    Paint m = new Paint();
+                    m.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+                    m.setShader(new LinearGradient(left, 0, left + side, 0,
+                            new int[]{0x00000000, 0xFF000000, 0xFF000000, 0x00000000},
+                            new float[]{0f, 0.16f, 0.84f, 1f}, Shader.TileMode.CLAMP));
+                    c.drawRect(left, 0, left + side, h, m);
+                    c.restoreToCount(save);
                 }
-                Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-                c.drawBitmap(ib, (w - side) / 2f, (h - side) / 2f, p);
                 ib.recycle();
                 return out;
             }
@@ -122,12 +137,53 @@ final class IconArt {
         }
     }
 
+    /**
+     * A TV banner on a card of another shape: cropped at most a little (a whole crop cut
+     * «calman» to «calmar» on an owner's photo), the rest of the card in the banner's own
+     * edge colour. Null if the banner has no size.
+     */
+    static Bitmap banner(Drawable b, int w, int h) {
+        if (b == null || w <= 0 || h <= 0) return null;
+        int bw0 = b.getIntrinsicWidth(), bh0 = b.getIntrinsicHeight();
+        if (bw0 <= 0 || bh0 <= 0) return null;
+        try {
+            float cover = Math.max(w / (float) bw0, h / (float) bh0);
+            float contain = Math.min(w / (float) bw0, h / (float) bh0);
+            float k = Math.min(cover, contain * 1.03f);
+            Bitmap out = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(out);
+            int bw = Math.round(bw0 * k), bh = Math.round(bh0 * k);
+            if (bw < w || bh < h) c.drawColor(edgeColor(b, 0xFF1E2430));
+            b.setBounds((w - bw) / 2, (h - bh) / 2, (w + bw) / 2, (h + bh) / 2);
+            b.draw(c);
+            return out;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    /** A layer's colour at its centre, made opaque. */
+    private static int opaqueCenter(Drawable d) {
+        try {
+            Bitmap b = Bitmap.createBitmap(9, 9, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            d.setBounds(0, 0, 9, 9);
+            d.draw(c);
+            int px = b.getPixel(4, 4);
+            b.recycle();
+            if ((px >>> 24) == 0) return 0xFFFFFFFF;
+            return 0xFF000000 | (px & 0xFFFFFF);
+        } catch (Throwable t) {
+            return 0xFFFFFFFF;
+        }
+    }
+
     /** The background along a full icon's left and right sides (inside its baked corners). */
     private static int sideColor(Bitmap b, int fallback) {
         int sz = b.getWidth();
         long r = 0, g = 0, bl = 0;
         int n = 0;
-        int[] xs = {Math.round(sz * 0.07f), Math.round(sz * 0.93f) - 1};
+        int[] xs = {Math.round(sz * 0.2f), Math.round(sz * 0.8f) - 1};
         for (int x : xs) {
             for (int y = Math.round(sz * 0.3f); y < Math.round(sz * 0.7f); y += Math.max(1, sz / 40)) {
                 int px = b.getPixel(x, y);
