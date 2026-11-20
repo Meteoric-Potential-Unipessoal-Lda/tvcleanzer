@@ -308,6 +308,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     // the phone's permission first: it opens our port, then the TV is told where to find us
     final r = await Mirror.start(
       host: tv.ipAddress,
+      adbPort: tv.port,
       token: token,
       hd: hd,
       audio: audio,

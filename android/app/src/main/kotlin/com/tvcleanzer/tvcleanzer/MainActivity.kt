@@ -168,6 +168,7 @@ class MainActivity : FlutterActivity() {
             .putExtra("maxSize", (a["maxSize"] as Number).toInt())
             .putExtra("bitrate", (a["bitrate"] as Number).toInt())
             .putExtra("audio", a["audio"] == true)
+            .putExtra("relayPort", (a["relayPort"] as? Number)?.toInt() ?: 0)
             .putExtra("title", a["title"] as String?)
             .putExtra("stop", a["stopLabel"] as String?)
         // our own port for the TV to dial, and our address as the TV sees it

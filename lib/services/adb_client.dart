@@ -717,12 +717,14 @@ class AdbStream {
     _finish();
   }
 
-  /// Sends [bytes]; resolves when the TV has taken them.
-  Future<void> write(List<int> bytes) async {
+  /// Sends [bytes]; resolves when the TV has taken them. [chunk]: bytes per ADB message (a
+  /// bulk stream such as screen mirroring wants the TV's maximum, not 4 KB).
+  Future<void> write(List<int> bytes, {int chunk = 4096}) async {
     if (_closed) throw AdbException('TV closed the connection.');
-    final max = min(_c._peerMaxData, 4096);
+    final max = min(_c._peerMaxData, chunk);
     for (var off = 0; off < bytes.length; off += max) {
-      _pending.add(Uint8List.fromList(bytes.sublist(off, min(off + max, bytes.length))));
+      final end = min(off + max, bytes.length);
+      _pending.add(bytes is Uint8List ? Uint8List.sublistView(bytes, off, end) : Uint8List.fromList(bytes.sublist(off, end)));
     }
     while (_pending.isNotEmpty) {
       while (_ack != null) {

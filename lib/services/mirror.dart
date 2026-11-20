@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import 'mirror_relay.dart';
+
 /// «Повтор экрана»: the phone's screen and sound on the TV (Android: MediaProjection →
 /// H.264 → TCP → the launcher's MirrorActivity). iPhone needs a ReplayKit broadcast
 /// extension: not yet.
@@ -30,6 +32,8 @@ class Mirror {
     _ch.setMethodCallHandler((c) async {
       if (c.method == 'stopped') {
         running.value = false;
+        _relay?.close();
+        _relay = null;
         _ended.add(c.arguments as String?);
       }
       return null;
@@ -43,8 +47,11 @@ class Mirror {
 
   /// Asks the phone's permission and starts sending; null when the owner said no. The result
   /// carries the phone's address and port for the TV to dial back (some TVs let nothing in).
+  static MirrorRelay? _relay;
+
   static Future<({String? phone, int phonePort})?> start({
     required String host,
+    required int adbPort,
     required String token,
     required bool hd,
     required bool audio,
@@ -52,9 +59,16 @@ class Mirror {
     required String stopLabel,
   }) async {
     _wire();
+    if (running.value) return (phone: null, phonePort: 0);
+    _relay?.close();
+    _relay = null;
+    try {
+      _relay = await MirrorRelay.start(host: host, adbPort: adbPort, tvPort: port);
+    } catch (_) {}
     final r = await _ch.invokeMethod<Object?>('start', {
       'host': host,
       'port': port,
+      'relayPort': _relay?.port ?? 0,
       'token': token,
       'maxSize': hd ? 1920 : 1280,
       'bitrate': hd ? 10000000 : 5000000,
@@ -71,6 +85,8 @@ class Mirror {
       return (phone: null, phonePort: 0);
     }
     running.value = false;
+    _relay?.close();
+    _relay = null;
     return null;
   }
 
@@ -78,6 +94,8 @@ class Mirror {
     _wire();
     await _ch.invokeMethod<void>('stop');
     running.value = false;
+    _relay?.close();
+    _relay = null;
   }
 
   /// After the app comes back: the service may have ended meanwhile.

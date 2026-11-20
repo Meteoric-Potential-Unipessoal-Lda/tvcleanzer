@@ -128,6 +128,7 @@ class MirrorService : Service() {
         val port = intent.getIntExtra("port", 7300)
         val token = intent.getStringExtra("token") ?: ""
         val withSound = intent.getBooleanExtra("audio", false)
+        relayPort = intent.getIntExtra("relayPort", 0)
         ctl.execute { begin(host, port, token, withSound) }
         return START_NOT_STICKY
     }
@@ -180,6 +181,8 @@ class MirrorService : Service() {
     @Volatile private var lastError = "timeout"
     @Volatile private var tvSaidNo = false
 
+    private var relayPort = 0
+
     private fun meet(host: String, port: Int, token: String): Socket? {
         val won = java.util.concurrent.atomic.AtomicReference<Socket?>(null)
         val lock = Object()
@@ -226,19 +229,22 @@ class MirrorService : Service() {
                 }
             }, "mirror-listen").start()
         }
-        Thread({
+        fun dial(h: String, p: Int, name: String) = Thread({
             while (!done && won.get() == null && System.currentTimeMillis() < until) {
                 val s = Socket()
                 try {
-                    s.connect(InetSocketAddress(host, port), 3000)
+                    s.connect(InetSocketAddress(h, p), 3000)
                     if (greet(s)) return@Thread
                 } catch (e: IOException) {
-                    lastError = e.message ?: e.javaClass.simpleName
+                    if (name == "mirror-dial") lastError = e.message ?: e.javaClass.simpleName
                     runCatching { s.close() }
                 }
                 Thread.sleep(500)
             }
-        }, "mirror-dial").start()
+        }, name).start()
+        dial(host, port, "mirror-dial")
+        // third road: the app carries the stream over its ADB connection (TV firewalls)
+        if (relayPort > 0) dial("127.0.0.1", relayPort, "mirror-relay")
 
         synchronized(lock) {
             while (!done && won.get() == null && System.currentTimeMillis() < until) {
