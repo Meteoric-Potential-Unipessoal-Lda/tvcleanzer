@@ -114,5 +114,6 @@
 "Освобождаем память…": "Freeing memory…",
 "Освобождено {0} МБ": "Freed {0} MB",
 "Лишнего в памяти нет": "Nothing extra in memory",
-"Источники не найдены": "No inputs found"
+"Источники не найдены": "No inputs found",
+"Источники на этом ТВ показывает экран Google TV, а он выключен. В TVCleanzer: Лаунчер → «Вернуть стандартный лаунчер».": "On this TV the inputs are shown by the Google TV home, and it is switched off. In TVCleanzer: Launcher → “Restore the stock launcher”."
 }

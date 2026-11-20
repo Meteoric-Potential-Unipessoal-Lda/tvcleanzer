@@ -114,5 +114,6 @@
 "Освобождаем память…": "Libération de la mémoire…",
 "Освобождено {0} МБ": "{0} Mo libérés",
 "Лишнего в памяти нет": "Rien de superflu en mémoire",
-"Источники не найдены": "Aucune entrée trouvée"
+"Источники не найдены": "Aucune entrée trouvée",
+"Источники на этом ТВ показывает экран Google TV, а он выключен. В TVCleanzer: Лаунчер → «Вернуть стандартный лаунчер».": "Sur ce téléviseur, les entrées sont affichées par l’écran Google TV, qui est désactivé. Dans TVCleanzer : Launcher → « Rétablir le launcher d’origine »."
 }

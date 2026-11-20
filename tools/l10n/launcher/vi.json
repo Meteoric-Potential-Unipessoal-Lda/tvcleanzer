@@ -114,5 +114,6 @@
 "Освобождаем память…": "Đang giải phóng bộ nhớ…",
 "Освобождено {0} МБ": "Đã giải phóng {0} MB",
 "Лишнего в памяти нет": "Không có gì thừa trong bộ nhớ",
-"Источники не найдены": "Không tìm thấy nguồn vào"
+"Источники не найдены": "Không tìm thấy nguồn vào",
+"Источники на этом ТВ показывает экран Google TV, а он выключен. В TVCleanzer: Лаунчер → «Вернуть стандартный лаунчер».": "Trên TV này, nguồn vào do màn hình Google TV hiển thị, nhưng nó đang bị tắt. Trong TVCleanzer: Launcher → «Khôi phục launcher gốc»."
 }

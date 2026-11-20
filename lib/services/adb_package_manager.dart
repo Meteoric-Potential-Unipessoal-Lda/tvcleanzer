@@ -538,7 +538,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 39;
+  static const bundledLauncherVersion = 40;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -878,7 +878,12 @@ class AdbPackageManager {
     // and was left with a black screen (nothing turned Google TV Home back on).
     // Also when the service IS running but Google TV still takes Home (a TCL Smart TV Pro,
     // Android 11 report: service bound, Home opened launcherx every time): offer the same.
-    if (googleTv && googleTvHard) {
+    // TCL Google TV (G10 board, Smart TV Pro): HDMI is played by launcherx itself — with it
+    // off, picking a source switched the input in hardware but nothing showed it, and the owner
+    // landed back on our home (VIV, 1.3.48 report). There the hard way is never taken.
+    final inputsInHome = googleTv && await _inputsLiveInGoogleTvHome(adb);
+    if (inputsInHome) AppLog.error('google tv hard', 'skipped: HDMI is shown by launcherx');
+    if (googleTv && googleTvHard && !inputsInHome) {
       onStep?.call(tr('Закрепляем лаунчер…'));
       final off = <String>[];
       for (final p in _googleTvHomes.where(installed.contains)) {
@@ -910,6 +915,15 @@ class AdbPackageManager {
   }
 
   static const _patchWall = 'com.mitv.tvhome.atv';
+
+  /// Does Google TV's home play the HDMI inputs here (nobody else answers "view an input")?
+  Future<bool> _inputsLiveInGoogleTvHome(AdbClient adb) async {
+    final out = await adb.shell('cmd package query-activities --brief -a android.intent.action.VIEW '
+        '-d content://android.media.tv/passthrough/x 2>&1');
+    final handlers = RegExp(r'([A-Za-z][\w.]+)/').allMatches(out).map((m) => m.group(1)!).toSet();
+    return handlers.contains('com.google.android.apps.tv.launcherx') &&
+        handlers.every((p) => _googleTvHomes.contains(p) || p == launcherPkg);
+  }
 
   /// Firmware homes TVCleanzer switched off on this TV (see [_firmwareHome]), one per line.
   static const _firmwareHomesFile = '/data/local/tmp/tvcleanzer_homes';
@@ -1409,7 +1423,7 @@ class AdbPackageManager {
     try {
       await adb.connect();
       await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
-          "-a com.tvcleanzer.launcher.APPLY --es autostart ${pkg.isEmpty ? '\"\"' : "'$pkg'"}");
+          "-a com.tvcleanzer.launcher.APPLY --es autostart ${pkg.isEmpty ? '""' : "'$pkg'"}");
     } finally {
       adb.close();
     }
