@@ -12,6 +12,19 @@ import java.util.List;
 public class ConfigReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        if ("com.tvcleanzer.launcher.PASTE".equals(intent.getAction())) {
+            // Russian (any) text from the phone: `input text` only types Latin letters. The phone
+            // puts it on the TV's clipboard through us, then presses Paste (0.42+).
+            String text = intent.getStringExtra("text");
+            if (text == null) return;
+            try {
+                android.content.ClipboardManager cm =
+                        (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                cm.setPrimaryClip(android.content.ClipData.newPlainText("TVCleanzer", text));
+                setResultCode(1);
+            } catch (Throwable ignored) {}
+            return;
+        }
         if (!"com.tvcleanzer.launcher.APPLY".equals(intent.getAction())) return;
         Prefs p = new Prefs(context);
         String skin = intent.getStringExtra("skin");

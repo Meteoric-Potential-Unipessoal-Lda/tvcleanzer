@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="41"
-    android:versionName="0.41">
+    android:versionCode="42"
+    android:versionName="0.42">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -126,6 +126,13 @@
         </service>
 
         <!-- Read-only state for the phone app (ADB shell holds DUMP, apps don't) -->
+        <!-- a photo / video sent from the phone's remote; started by the phone over ADB -->
+        <activity
+            android:name=".CastActivity"
+            android:theme="@style/HomeTheme"
+            android:exported="true"
+            android:screenOrientation="landscape" />
+
         <provider
             android:name=".StateProvider"
             android:authorities="com.tvcleanzer.launcher.state"
@@ -138,6 +145,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.tvcleanzer.launcher.APPLY" />
+                <action android:name="com.tvcleanzer.launcher.PASTE" />
             </intent-filter>
         </receiver>
     </application>

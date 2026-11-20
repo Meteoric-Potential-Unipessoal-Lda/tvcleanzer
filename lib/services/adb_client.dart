@@ -252,6 +252,32 @@ class AdbClient {
     }
   }
 
+  /// Runs [command] via the `exec:` service and returns its raw output bytes
+  /// (`adb exec-out`: no terminal in between, so binary data such as a
+  /// `screencap -p` PNG arrives intact).
+  Future<Uint8List> execOut(String command,
+      {Duration timeout = const Duration(seconds: 30)}) async {
+    final localId = _nextLocalId++;
+    _send(_Msg(_cmdOpen, localId, 0, _cString('exec:$command')));
+    int? remoteId;
+    final out = BytesBuilder(copy: false);
+    while (true) {
+      final m = await _read(timeout, 'Command timed out: $command');
+      if (m.arg1 != localId) continue;
+      switch (m.cmd) {
+        case _cmdOkay:
+          remoteId ??= m.arg0;
+        case _cmdWrte:
+          remoteId ??= m.arg0;
+          out.add(m.data);
+          _send(_Msg(_cmdOkay, localId, remoteId));
+        case _cmdClse:
+          if (remoteId == null) throw AdbException('TV refused the command: $command');
+          return out.takeBytes();
+      }
+    }
+  }
+
   /// Runs [command] via the `exec:` service and streams [input] to its stdin,
   /// e.g. `cmd package install -S <size>` with the APK bytes (Android 7+).
   /// Returns everything the command printed.

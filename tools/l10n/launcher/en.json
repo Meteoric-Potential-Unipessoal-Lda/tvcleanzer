@@ -114,5 +114,6 @@
 "Освобождаем память…": "Freeing memory…",
 "Освобождено {0} МБ": "Freed {0} MB",
 "Лишнего в памяти нет": "Nothing extra in memory",
-"Источники не найдены": "No inputs found"
+"Источники не найдены": "No inputs found",
+"Телевизор не умеет показывать это видео": "The TV can't play this video"
 }

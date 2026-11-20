@@ -88,6 +88,7 @@ final class T {
     private static final String[] RU = {
         "Магазин приложений",
         "Яндекс Браузер",
+        "Телевизор не умеет показывать это видео",
         "Источники не найдены",
         "Источник",
         "Все приложения",
@@ -265,6 +266,7 @@ final class T {
         static final String[] A = {
             "App store",
             "Yandex Browser",
+            "The TV can't play this video",
             "No inputs found",
             "Input",
             "All apps",
@@ -443,6 +445,7 @@ final class T {
         static final String[] A = {
             "Магазин застосунків",
             "Яндекс Браузер",
+            "Телевізор не вміє показувати це відео",
             "Джерела не знайдено",
             "Джерело",
             "Усі застосунки",
@@ -621,6 +624,7 @@ final class T {
         static final String[] A = {
             "Tienda de apps",
             "Yandex Browser",
+            "La TV no puede reproducir este vídeo",
             "No se encontraron entradas",
             "Entrada",
             "Todas las apps",
@@ -799,6 +803,7 @@ final class T {
         static final String[] A = {
             "Loja de apps",
             "Yandex Browser",
+            "A TV não consegue reproduzir este vídeo",
             "Nenhuma entrada encontrada",
             "Entrada",
             "Todas as apps",
@@ -977,6 +982,7 @@ final class T {
         static final String[] A = {
             "App-Store",
             "Yandex Browser",
+            "Der Fernseher kann dieses Video nicht abspielen",
             "Keine Eingänge gefunden",
             "Eingang",
             "Alle Apps",
@@ -1155,6 +1161,7 @@ final class T {
         static final String[] A = {
             "Boutique d’apps",
             "Yandex Browser",
+            "La TV ne peut pas lire cette vidéo",
             "Aucune entrée trouvée",
             "Source",
             "Toutes les apps",
@@ -1333,6 +1340,7 @@ final class T {
         static final String[] A = {
             "Store di app",
             "Yandex Browser",
+            "La TV non riesce a riprodurre questo video",
             "Nessun ingresso trovato",
             "Sorgente",
             "Tutte le app",
@@ -1511,6 +1519,7 @@ final class T {
         static final String[] A = {
             "Крама праграм",
             "Яндэкс Браўзер",
+            "Тэлевізар не ўмее паказваць гэтае відэа",
             "Крыніцы не знойдзены",
             "Крыніца",
             "Усе праграмы",
@@ -1689,6 +1698,7 @@ final class T {
         static final String[] A = {
             "Қолданбалар дүкені",
             "Яндекс Браузер",
+            "Теледидар бұл бейнені көрсете алмайды",
             "Көздер табылмады",
             "Көз",
             "Барлық қолданбалар",
@@ -1867,6 +1877,7 @@ final class T {
         static final String[] A = {
             "Ilovalar do‘koni",
             "Yandex Brauzer",
+            "Televizor bu videoni ko‘rsata olmaydi",
             "Manbalar topilmadi",
             "Manba",
             "Barcha ilovalar",
@@ -2045,6 +2056,7 @@ final class T {
         static final String[] A = {
             "Հավելվածների խանութ",
             "Յանդեքս Բրաուզեր",
+            "Հեռուստացույցը չի կարող ցույց տալ այս տեսանյութը",
             "Աղբյուրներ չգտնվեցին",
             "Աղբյուր",
             "Բոլոր հավելվածները",
@@ -2223,6 +2235,7 @@ final class T {
         static final String[] A = {
             "Tətbiq mağazası",
             "Yandex Brauzer",
+            "Televizor bu videonu göstərə bilmir",
             "Mənbə tapılmadı",
             "Mənbə",
             "Bütün tətbiqlər",
@@ -2401,6 +2414,7 @@ final class T {
         static final String[] A = {
             "აპების მაღაზია",
             "Yandex ბრაუზერი",
+            "ტელევიზორს ამ ვიდეოს ჩვენება არ შეუძლია",
             "წყაროები ვერ მოიძებნა",
             "წყარო",
             "ყველა აპი",
@@ -2579,6 +2593,7 @@ final class T {
         static final String[] A = {
             "Колдонмолор дүкөнү",
             "Яндекс Браузер",
+            "Сыналгы бул видеону көрсөтө албайт",
             "Булактар табылган жок",
             "Булак",
             "Бардык колдонмолор",
@@ -2757,6 +2772,7 @@ final class T {
         static final String[] A = {
             "Uygulama mağazası",
             "Yandex Tarayıcı",
+            "TV bu videoyu oynatamıyor",
             "Kaynak bulunamadı",
             "Kaynak",
             "Tüm uygulamalar",
@@ -2935,6 +2951,7 @@ final class T {
         static final String[] A = {
             "Sklep z aplikacjami",
             "Yandex Browser",
+            "Telewizor nie potrafi odtworzyć tego wideo",
             "Nie znaleziono źródeł",
             "Źródło",
             "Wszystkie aplikacje",
@@ -3113,6 +3130,7 @@ final class T {
         static final String[] A = {
             "Magazin de aplicații",
             "Yandex Browser",
+            "Televizorul nu poate reda acest videoclip",
             "Nu s-au găsit surse",
             "Sursă",
             "Toate aplicațiile",
@@ -3291,6 +3309,7 @@ final class T {
         static final String[] A = {
             "应用商店",
             "Yandex 浏览器",
+            "电视无法播放此视频",
             "未找到信号源",
             "信号源",
             "全部应用",
@@ -3469,6 +3488,7 @@ final class T {
         static final String[] A = {
             "アプリストア",
             "Yandex ブラウザ",
+            "テレビはこの動画を再生できません",
             "入力が見つかりません",
             "入力",
             "すべてのアプリ",
@@ -3647,6 +3667,7 @@ final class T {
         static final String[] A = {
             "앱 스토어",
             "Yandex 브라우저",
+            "TV에서 이 동영상을 재생할 수 없습니다",
             "입력을 찾을 수 없음",
             "입력",
             "모든 앱",
@@ -3825,6 +3846,7 @@ final class T {
         static final String[] A = {
             "ऐप स्टोर",
             "Yandex ब्राउज़र",
+            "टीवी यह वीडियो नहीं चला सकता",
             "कोई इनपुट नहीं मिला",
             "स्रोत",
             "सभी ऐप",
@@ -4003,6 +4025,7 @@ final class T {
         static final String[] A = {
             "Toko aplikasi",
             "Yandex Browser",
+            "TV tidak bisa memutar video ini",
             "Sumber tidak ditemukan",
             "Sumber",
             "Semua aplikasi",
@@ -4181,6 +4204,7 @@ final class T {
         static final String[] A = {
             "Cửa hàng ứng dụng",
             "Yandex Browser",
+            "TV không phát được video này",
             "Không tìm thấy nguồn vào",
             "Nguồn",
             "Tất cả ứng dụng",
@@ -4359,6 +4383,7 @@ final class T {
         static final String[] A = {
             "ร้านแอป",
             "Yandex Browser",
+            "ทีวีเล่นวิดีโอนี้ไม่ได้",
             "ไม่พบแหล่งสัญญาณ",
             "แหล่งสัญญาณ",
             "แอปทั้งหมด",
@@ -4537,6 +4562,7 @@ final class T {
         static final String[] A = {
             "App-winkel",
             "Yandex Browser",
+            "De tv kan deze video niet afspelen",
             "Geen ingangen gevonden",
             "Bron",
             "Alle apps",
@@ -4715,6 +4741,7 @@ final class T {
         static final String[] A = {
             "Obchod s aplikacemi",
             "Yandex Browser",
+            "Televize toto video neumí přehrát",
             "Nenalezeny žádné vstupy",
             "Zdroj",
             "Všechny aplikace",
@@ -4893,6 +4920,7 @@ final class T {
         static final String[] A = {
             "Κατάστημα εφαρμογών",
             "Yandex Browser",
+            "Η τηλεόραση δεν μπορεί να παίξει αυτό το βίντεο",
             "Δεν βρέθηκαν είσοδοι",
             "Πηγή",
             "Όλες οι εφαρμογές",
@@ -5071,6 +5099,7 @@ final class T {
         static final String[] A = {
             "Alkalmazásbolt",
             "Yandex Browser",
+            "A tévé nem tudja lejátszani ezt a videót",
             "Nem található bemenet",
             "Forrás",
             "Minden alkalmazás",
@@ -5249,6 +5278,7 @@ final class T {
         static final String[] A = {
             "Appbutik",
             "Yandex Browser",
+            "Tv:n kan inte spela upp den här videon",
             "Inga ingångar hittades",
             "Källa",
             "Alla appar",

@@ -538,7 +538,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 41;
+  static const bundledLauncherVersion = 42;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1589,6 +1589,96 @@ class AdbPackageManager {
         if (out.contains('Events injected: 1')) return true;
       }
       return false;
+    } finally {
+      adb.close();
+    }
+  }
+
+  // ── Remote extras: cast, links, search, screenshot, sleep timer ────────────────────────
+
+  /// Single-quoted for the TV's shell.
+  static String _sq(String s) => "'${s.replaceAll("'", "'\\''")}'";
+
+  /// Shows a photo / video from the phone on the TV (launcher 0.42+: StateProvider "cast" +
+  /// CastActivity). Throws with a readable message when the launcher is too old.
+  Future<void> castFile(TvDevice device, Uint8List bytes, {required bool video,
+      void Function(int sent)? onProgress}) async {
+    const tmp = '/data/local/tmp/tvcleanzer_cast';
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.execIn('cat > $tmp', bytes, onProgress: onProgress, timeout: const Duration(seconds: 120));
+      final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first) ?? -1;
+      if (size != bytes.length) throw AdbException(tr('Файл не дошёл до телевизора. Попробуйте ещё раз.'));
+      final w = await adb.shell('content write --uri content://$launcherPkg.state/cast < $tmp 2>&1 && echo TVC_OK',
+          timeout: const Duration(seconds: 120));
+      await adb.shell('rm -f $tmp');
+      if (!w.contains('TVC_OK')) {
+        throw AdbException(tr('Обновите лаунчер на ТВ: показ фото и видео с телефона есть в новой версии.'));
+      }
+      final out = await adb.shell('am start -n $launcherPkg/.CastActivity -f 0x10008000 '
+          '--es type ${video ? 'video' : 'image'} 2>&1');
+      if (out.contains('Error')) {
+        throw AdbException(tr('Обновите лаунчер на ТВ: показ фото и видео с телефона есть в новой версии.'));
+      }
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Opens a link on the TV: YouTube links go to the YouTube app, others to a browser.
+  Future<bool> openUrl(TvDevice device, String url) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell('am start -a android.intent.action.VIEW -d ${_sq(url)} 2>&1');
+      return !out.contains('Error');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// The TV's own search with [query] (Android TV / Google TV); else the Search key.
+  Future<void> tvSearch(TvDevice device, String query) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell('am start -a android.search.action.GLOBAL_SEARCH --es query ${_sq(query)} 2>&1');
+      if (out.contains('Error')) await adb.shell('input keyevent 84');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// A PNG of what the TV shows right now.
+  Future<Uint8List> screenshot(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final png = await adb.execOut('screencap -p', timeout: const Duration(seconds: 20));
+      if (png.length < 8 || png[1] != 0x50 || png[2] != 0x4E || png[3] != 0x47) {
+        throw AdbException(tr('Телевизор не дал сделать снимок экрана.'));
+      }
+      return png;
+    } finally {
+      adb.close();
+    }
+  }
+
+  static const _sleepPid = '/data/local/tmp/tvcleanzer_sleep';
+
+  /// Puts the TV to sleep in [minutes] (a shell timer on the TV itself: works with the phone
+  /// away). 0 cancels.
+  Future<void> sleepTimer(TvDevice device, int minutes) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('[ -f $_sleepPid ] && kill \$(cat $_sleepPid) 2>/dev/null; rm -f $_sleepPid');
+      if (minutes <= 0) return;
+      // its own session: survives the end of this ADB connection
+      final job = "echo \$\$ > $_sleepPid; sleep ${minutes * 60}; rm -f $_sleepPid; input keyevent 223";
+      await adb.shell('if command -v setsid >/dev/null 2>&1; then setsid sh -c ${_sq(job)} '
+          '>/dev/null 2>&1 < /dev/null & else nohup sh -c ${_sq(job)} >/dev/null 2>&1 < /dev/null & fi');
     } finally {
       adb.close();
     }

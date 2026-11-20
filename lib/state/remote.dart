@@ -9,6 +9,11 @@ import 'current_tv.dart';
 import '../l10n/l10n.dart';
 enum RemoteStatus { idle, connecting, ready, error }
 
+/// Non-Latin text needs TVCleanzer Launcher 0.42+ on the TV.
+class NeedsLauncher implements Exception {
+  const NeedsLauncher();
+}
+
 class RemoteState {
   final RemoteStatus status;
   final String? message;
@@ -20,6 +25,9 @@ class Keys {
   static const up = 19, down = 20, left = 21, right = 22, ok = 23;
   static const back = 4, home = 3, menu = 82;
   static const volUp = 24, volDown = 25, mute = 164, playPause = 85;
+  static const power = 26, input = 178, recents = 187, settings = 176;
+  static const rewind = 89, forward = 90, prev = 88, next = 87;
+  static const paste = 279;
 }
 
 /// Keeps one ADB connection open to the current TV and sends key presses
@@ -65,26 +73,44 @@ class RemoteController extends StateNotifier<RemoteState> {
     }, input: true).catchError((_) {}); // shown via state
   }
 
-  /// Types ASCII text into the focused field on the TV.
-  Future<void> text(String ip, String value) {
-    final escaped = value
-        .replaceAll("'", "'\\''")
-        .replaceAll(' ', '%s');
-    return _enqueue(ip, () => "text '$escaped'", input: true);
+  /// A long press (the TV's «options» on a tile).
+  void longKey(String ip, int code) =>
+      _enqueue(ip, () => 'keyevent --longpress $code', input: true).catchError((_) {});
+
+  /// Types text into the focused field on the TV. Latin goes through `input text`; any
+  /// other letters (Russian…) through the TV's clipboard — our launcher (0.42+) puts them
+  /// there — and the Paste key.
+  Future<void> text(String ip, String value) async {
+    if (RegExp(r'^[\x20-\x7E]*$').hasMatch(value)) {
+      final escaped = value
+          .replaceAll("'", "'\\''")
+          .replaceAll(' ', '%s');
+      return _enqueue(ip, () => "text '$escaped'", input: true);
+    }
+    var pasted = false;
+    await _enqueue(ip, () => "am broadcast -n com.tvcleanzer.launcher/.ConfigReceiver "
+        "-a com.tvcleanzer.launcher.PASTE --es text '${value.replaceAll("'", "'\\''")}'",
+        onOut: (out) => pasted = out.contains('result=1'));
+    if (!pasted) throw const NeedsLauncher();
+    await _enqueue(ip, () => 'keyevent ${Keys.paste}', input: true);
   }
 
   /// Runs commands one after another (ADB shell commands must not overlap).
   /// [cmd] is built when its turn comes, so key presses that arrive meanwhile join it.
-  Future<void> _enqueue(String ip, String? Function() cmd, {bool input = false}) {
+  Future<void> _enqueue(String ip, String? Function() cmd,
+      {bool input = false, void Function(String out)? onOut}) {
     final f = _chain.then((_) async {
       final c = cmd();
-      if (c != null) await _run(ip, c, input: input);
+      if (c != null) {
+        final out = await _run(ip, c, input: input);
+        onOut?.call(out);
+      }
     });
     _chain = f.catchError((_) {});
     return f;
   }
 
-  Future<void> _run(String ip, String cmd, {bool input = false}) async {
+  Future<String> _run(String ip, String cmd, {bool input = false}) async {
     for (var attempt = 0; attempt < 2; attempt++) {
       try {
         if (_client == null || _ip != ip) {
@@ -101,8 +127,7 @@ class RemoteController extends StateNotifier<RemoteState> {
           _set(const RemoteState(RemoteStatus.ready));
         }
         if (!input) {
-          await _client!.shell(cmd, timeout: const Duration(seconds: 8));
-          return;
+          return await _client!.shell(cmd, timeout: const Duration(seconds: 8));
         }
         if (_cmdInput != false) {
           // Android 12+ runs `cmd input` inside the system: no tool to start, no delay.
@@ -111,10 +136,9 @@ class RemoteController extends StateNotifier<RemoteState> {
           final ok = !RegExp(r'unknown|error|exception|not found|can.t find|usage|no shell command', caseSensitive: false)
               .hasMatch(out);
           _cmdInput = ok;
-          if (ok) return;
+          if (ok) return out;
         }
-        await _client!.shell('input $cmd', timeout: const Duration(seconds: 10));
-        return;
+        return await _client!.shell('input $cmd', timeout: const Duration(seconds: 10));
       } catch (e) {
         _drop(); // stale connection (TV slept, Wi-Fi changed) — retry once
         if (attempt == 1) {
@@ -124,6 +148,7 @@ class RemoteController extends StateNotifier<RemoteState> {
         }
       }
     }
+    throw StateError('unreachable');
   }
 
   /// Forget the connection (e.g. another TV was selected).

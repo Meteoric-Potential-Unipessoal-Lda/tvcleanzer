@@ -347,6 +347,22 @@ public class HomeKeyService extends AccessibilityService {
             }
             return false;
         }
+        // Home held down = running apps too (a chat wish, together with the double press)
+        if (code == KeyEvent.KEYCODE_HOME && e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 1) {
+            homeHeld = true;
+            lastHomeUp = 0;
+            armedUntil = 0;
+            recentsAt = SystemClock.uptimeMillis();
+            if (!recents()) openHome();
+            return true;
+        }
+        if (code == KeyEvent.KEYCODE_HOME && e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) {
+            homeHeld = false;
+        }
+        if (e.getAction() == KeyEvent.ACTION_UP && homeHeld && code == KeyEvent.KEYCODE_HOME) {
+            homeHeld = false;
+            return true; // the hold already opened running apps
+        }
         if (e.getAction() == KeyEvent.ACTION_UP) {
             long now = SystemClock.uptimeMillis();
             if (code == KeyEvent.KEYCODE_HOME && now - lastHomeUp < DOUBLE_HOME_MS) {
@@ -368,6 +384,7 @@ public class HomeKeyService extends AccessibilityService {
     }
 
     private static final long DOUBLE_HOME_MS = 450;
+    private boolean homeHeld;
     private long lastHomeUp;
     /** On Google TV the running-apps panel belongs to the stock home: don't replace it. */
     private long recentsAt;

@@ -1,10 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../models/tv_device.dart';
+import '../services/adb_client.dart';
+import '../services/adb_package_manager.dart';
 import '../state/current_tv.dart';
 import '../state/remote.dart';
 import '../theme/app_theme.dart';
@@ -20,16 +26,39 @@ class RemoteScreen extends ConsumerStatefulWidget {
 
 class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   final _text = TextEditingController();
+  final _focus = FocusNode();
   bool _sending = false;
+  bool _pad = false; // touchpad instead of the arrows
+  String? _favsFor;
+  List<LauncherApp> _favs = const [];
+  int _sleepMin = 0;
+  DateTime? _sleepAt;
+  String? _busy; // what is being sent to the TV right now
 
   @override
   void dispose() {
     _text.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
   void _key(TvDevice tv, int code) =>
       ref.read(remoteProvider.notifier).key(tv.id, code);
+
+  void _snack(String m) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
+  }
+
+  /// The launcher's favourites, for quick launch (only with our launcher on the TV).
+  void _loadFavs(TvDevice tv) {
+    if (_favsFor == tv.id) return;
+    _favsFor = tv.id;
+    ref.read(adbServiceProvider).launcherState(tv).then((s) {
+      final f = s.apps.where((a) => a.fav >= 0 && !a.hidden).toList()..sort((a, b) => a.fav.compareTo(b.fav));
+      if (mounted && _favsFor == tv.id) setState(() => _favs = f);
+    }).catchError((_) {});
+  }
 
   Future<void> _sendText(TvDevice tv) async {
     final value = _text.text.trim();
@@ -38,45 +67,295 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     try {
       await ref.read(remoteProvider.notifier).text(tv.id, value);
       _text.clear();
+    } on NeedsLauncher {
+      _snack(tr('Русский текст передаётся через лаунчер TVCleanzer: установите или обновите его на вкладке «Лаунчер».'));
     } catch (_) {
       // status card shows the error
     }
     if (mounted) setState(() => _sending = false);
   }
 
+  Future<void> _search(TvDevice tv) async {
+    final value = _text.text.trim();
+    if (value.isEmpty) {
+      _key(tv, 84); // the Search key: the TV's own search screen
+      return;
+    }
+    await _run(tr('Ищем на ТВ…'), () => ref.read(adbServiceProvider).tvSearch(tv, value));
+    _text.clear();
+  }
+
+  /// Runs a one-off TV command with a «busy» line; errors become a snackbar.
+  Future<void> _run(String label, Future<void> Function() job) async {
+    if (_busy != null) return;
+    setState(() => _busy = label);
+    try {
+      await job();
+    } catch (e) {
+      _snack(e is AdbException ? e.message : tr('Нет связи с телевизором. Проверьте, что он включён и в той же Wi-Fi сети.'));
+    }
+    if (mounted) setState(() => _busy = null);
+  }
+
+  Future<void> _castPhoto(TvDevice tv) async {
+    final img = await ImagePicker().pickImage(
+        source: ImageSource.gallery, maxWidth: 1920, maxHeight: 1920, imageQuality: 88);
+    if (img == null) return;
+    final bytes = await img.readAsBytes();
+    await _run(tr('Отправляем на ТВ…'),
+        () => ref.read(adbServiceProvider).castFile(tv, bytes, video: false));
+  }
+
+  Future<void> _castVideo(TvDevice tv) async {
+    final v = await ImagePicker().pickVideo(source: ImageSource.gallery);
+    if (v == null) return;
+    final len = await v.length();
+    if (len > 700 * 1024 * 1024) {
+      _snack(tr('Видео слишком большое: до 700 МБ.'));
+      return;
+    }
+    final bytes = await v.readAsBytes();
+    await _run(tr('Отправляем на ТВ…'), () => ref.read(adbServiceProvider).castFile(tv, bytes, video: true,
+        onProgress: (sent) {
+      if (mounted) setState(() => _busy = '${tr('Отправляем на ТВ…')} ${(sent * 100 / bytes.length).round()}%');
+    }));
+  }
+
+  Future<void> _castLink(TvDevice tv) async {
+    final c = TextEditingController();
+    final url = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(tr('Ссылка')),
+        content: TextField(
+          controller: c,
+          autofocus: true,
+          keyboardType: TextInputType.url,
+          decoration: InputDecoration(hintText: tr('Ссылка на видео или сайт')),
+          onSubmitted: (v) => Navigator.pop(ctx, v),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Отмена'))),
+          FilledButton(onPressed: () => Navigator.pop(ctx, c.text), child: Text(tr('Открыть на ТВ'))),
+        ],
+      ),
+    );
+    var u = (url ?? '').trim();
+    if (u.isEmpty) return;
+    if (!u.contains('://')) u = 'https://$u';
+    await _run(tr('Открываем на ТВ…'), () async {
+      if (!await ref.read(adbServiceProvider).openUrl(tv, u)) {
+        throw AdbException(tr('На телевизоре нет приложения, которое откроет эту ссылку.'));
+      }
+    });
+  }
+
+  Future<void> _screenshot(TvDevice tv) async {
+    Uint8List? png;
+    await _run(tr('Снимаем экран ТВ…'), () async => png = await ref.read(adbServiceProvider).screenshot(tv));
+    final shot = png;
+    if (shot == null || !mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => Dialog(
+        backgroundColor: AppColors.bgCard,
+        insetPadding: const EdgeInsets.all(12),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            child: InteractiveViewer(child: Image.memory(shot, fit: BoxFit.contain)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(tr('Снимок экрана ТВ. Сохраните его скриншотом телефона, если нужно отправить.'),
+                textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: AppColors.fgMid)),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Future<void> _sleep(TvDevice tv) async {
+    final options = [15, 30, 60, 90, 120];
+    final pick = await showModalBottomSheet<int>(
+      context: context,
+      backgroundColor: AppColors.bgCard,
+      builder: (ctx) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(tr('Таймер сна'),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          ),
+          for (final m in options)
+            ListTile(
+              leading: const Icon(Icons.bedtime_rounded, color: AppColors.accent),
+              title: Text(tr('Выключить через {0} мин', ['$m']), style: const TextStyle(color: AppColors.fg)),
+              onTap: () => Navigator.pop(ctx, m),
+            ),
+          if (_sleepAt != null)
+            ListTile(
+              leading: const Icon(Icons.close_rounded, color: AppColors.warn),
+              title: Text(tr('Отменить таймер'), style: const TextStyle(color: AppColors.fg)),
+              onTap: () => Navigator.pop(ctx, 0),
+            ),
+          const Gap(8),
+        ]),
+      ),
+    );
+    if (pick == null) return;
+    await _run(tr('Ставим таймер…'), () async {
+      await ref.read(adbServiceProvider).sleepTimer(tv, pick);
+      setState(() {
+        _sleepMin = pick;
+        _sleepAt = pick == 0 ? null : DateTime.now().add(Duration(minutes: pick));
+      });
+      _snack(pick == 0 ? tr('Таймер сна отменён.') : tr('Телевизор выключится через {0} мин.', ['$pick']));
+    });
+  }
+
+  /// The phone's own volume keys turn the TV up and down (Android: iOS keeps them).
+  KeyEventResult _onKey(TvDevice tv, KeyEvent e) {
+    if (e is! KeyDownEvent && e is! KeyRepeatEvent) {
+      return e.logicalKey == LogicalKeyboardKey.audioVolumeUp || e.logicalKey == LogicalKeyboardKey.audioVolumeDown
+          ? KeyEventResult.handled
+          : KeyEventResult.ignored;
+    }
+    if (e.logicalKey == LogicalKeyboardKey.audioVolumeUp) {
+      _key(tv, Keys.volUp);
+      return KeyEventResult.handled;
+    }
+    if (e.logicalKey == LogicalKeyboardKey.audioVolumeDown) {
+      _key(tv, Keys.volDown);
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
   @override
   Widget build(BuildContext context) {
     final tv = ref.watch(currentTvProvider);
     final rs = ref.watch(remoteProvider);
+    if (tv != null) _loadFavs(tv);
+    final body = tv == null
+        ? _noTv()
+        : SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+            child: Column(children: [
+              _status(tv, rs),
+              if (_busy != null) ...[
+                const Gap(10),
+                Row(children: [
+                  const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                  const Gap(10),
+                  Expanded(child: Text(_busy!, style: const TextStyle(fontSize: 13, color: AppColors.fgMid))),
+                ]),
+              ],
+              const Gap(16),
+              SegmentedButton<bool>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(value: false, icon: const Icon(Icons.gamepad_rounded), label: Text(tr('Кнопки'))),
+                  ButtonSegment(value: true, icon: const Icon(Icons.touch_app_rounded), label: Text(tr('Сенсорная панель'))),
+                ],
+                selected: {_pad},
+                onSelectionChanged: (v) => setState(() => _pad = v.first),
+              ),
+              const Gap(18),
+              _pad ? _TouchPad(onKey: (c) => _key(tv, c), onLongOk: () => ref.read(remoteProvider.notifier).longKey(tv.id, Keys.ok)) : _DPad(onKey: (c) => _key(tv, c)),
+              const Gap(24),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                _RoundButton(icon: Icons.arrow_back_rounded, label: tr('Назад'), onTap: () => _key(tv, Keys.back)),
+                _RoundButton(icon: Icons.home_rounded, label: tr('Домой'), onTap: () => _key(tv, Keys.home)),
+                _RoundButton(icon: Icons.menu_rounded, label: tr('Меню'), onTap: () => _key(tv, Keys.menu)),
+                _RoundButton(icon: Icons.power_settings_new_rounded, label: tr('Питание'),
+                    onTap: () => _key(tv, Keys.power), color: AppColors.danger),
+              ]),
+              const Gap(18),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                _RoundButton(icon: Icons.volume_down_rounded, label: tr('Тише'), onTap: () => _key(tv, Keys.volDown)),
+                _RoundButton(icon: Icons.volume_off_rounded, label: tr('Без звука'), onTap: () => _key(tv, Keys.mute)),
+                _RoundButton(icon: Icons.volume_up_rounded, label: tr('Громче'), onTap: () => _key(tv, Keys.volUp)),
+                _RoundButton(icon: Icons.input_rounded, label: tr('Источник'), onTap: () => _key(tv, Keys.input)),
+              ]),
+              const Gap(18),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                _RoundButton(icon: Icons.skip_previous_rounded, label: '', onTap: () => _key(tv, Keys.prev), small: true),
+                _RoundButton(icon: Icons.fast_rewind_rounded, label: '', onTap: () => _key(tv, Keys.rewind), small: true),
+                _RoundButton(icon: Icons.play_arrow_rounded, label: '', onTap: () => _key(tv, Keys.playPause), small: true),
+                _RoundButton(icon: Icons.fast_forward_rounded, label: '', onTap: () => _key(tv, Keys.forward), small: true),
+                _RoundButton(icon: Icons.skip_next_rounded, label: '', onTap: () => _key(tv, Keys.next), small: true),
+              ]),
+              const Gap(18),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                _RoundButton(icon: Icons.view_carousel_rounded, label: tr('Запущенные'), onTap: () => _key(tv, Keys.recents)),
+                _RoundButton(icon: Icons.settings_rounded, label: tr('Настройки'), onTap: () => _key(tv, Keys.settings)),
+                _RoundButton(icon: Icons.bedtime_rounded,
+                    label: _sleepAt == null ? tr('Таймер сна') : tr('{0} мин', ['$_sleepMin']),
+                    onTap: () => _sleep(tv)),
+                _RoundButton(icon: Icons.screenshot_monitor_rounded, label: tr('Снимок'), onTap: () => _screenshot(tv)),
+              ]),
+              if (_favs.isNotEmpty) ...[const Gap(24), _favRow(tv)],
+              const Gap(24),
+              _textInput(tv),
+              const Gap(6),
+              Text(tr('Можно голосом: нажмите микрофон на клавиатуре телефона и продиктуйте.'),
+                  style: const TextStyle(fontSize: 11.5, color: AppColors.fgMuted)),
+              const Gap(24),
+              _castRow(tv),
+            ]).animate().fadeIn(duration: 300.ms),
+          );
     return Scaffold(
       appBar: AppBar(title: Text(tr('Пульт'))),
       body: tv == null
-          ? _noTv()
-          : SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-              child: Column(children: [
-                _status(tv, rs),
-                const Gap(28),
-                _DPad(onKey: (c) => _key(tv, c)),
-                const Gap(28),
-                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  _RoundButton(icon: Icons.arrow_back_rounded, label: tr('Назад'), onTap: () => _key(tv, Keys.back)),
-                  _RoundButton(icon: Icons.home_rounded, label: tr('Домой'), onTap: () => _key(tv, Keys.home)),
-                  _RoundButton(icon: Icons.menu_rounded, label: tr('Меню'), onTap: () => _key(tv, Keys.menu)),
-                ]),
-                const Gap(18),
-                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  _RoundButton(icon: Icons.volume_down_rounded, label: tr('Тише'), onTap: () => _key(tv, Keys.volDown)),
-                  _RoundButton(icon: Icons.volume_off_rounded, label: tr('Без звука'), onTap: () => _key(tv, Keys.mute)),
-                  _RoundButton(icon: Icons.volume_up_rounded, label: tr('Громче'), onTap: () => _key(tv, Keys.volUp)),
-                  _RoundButton(icon: Icons.play_arrow_rounded, label: tr('Пауза'), onTap: () => _key(tv, Keys.playPause)),
-                ]),
-                const Gap(28),
-                _textInput(tv),
-              ]).animate().fadeIn(duration: 300.ms),
-            ),
+          ? body
+          : Focus(autofocus: true, focusNode: _focus, onKeyEvent: (_, e) => _onKey(tv, e), child: body),
     );
   }
+
+  Widget _section(String title) => Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Text(title.toUpperCase(),
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: .8, color: AppColors.fgMuted)),
+        ),
+      );
+
+  Widget _favRow(TvDevice tv) => Column(children: [
+        _section(tr('Избранное')),
+        SizedBox(
+          height: 44,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _favs.length,
+            separatorBuilder: (_, __) => const Gap(8),
+            itemBuilder: (_, i) {
+              final a = _favs[i];
+              return ActionChip(
+                avatar: const Icon(Icons.play_circle_outline_rounded, size: 18, color: AppColors.accent),
+                label: Text(a.label),
+                onPressed: () => _run(tr('Открываем на ТВ…'), () async {
+                  if (!await ref.read(adbServiceProvider).openApp(tv, a.pkg)) {
+                    throw AdbException(tr('Не удалось открыть {0}', [a.label]));
+                  }
+                }),
+              );
+            },
+          ),
+        ),
+      ]);
+
+  Widget _castRow(TvDevice tv) => Column(children: [
+        _section(tr('Трансляция с телефона')),
+        Row(children: [
+          Expanded(child: _CastButton(icon: Icons.photo_rounded, label: tr('Фото'), onTap: () => _castPhoto(tv))),
+          const Gap(10),
+          Expanded(child: _CastButton(icon: Icons.movie_rounded, label: tr('Видео'), onTap: () => _castVideo(tv))),
+          const Gap(10),
+          Expanded(child: _CastButton(icon: Icons.link_rounded, label: tr('Ссылка'), onTap: () => _castLink(tv))),
+        ]),
+      ]);
 
   Widget _noTv() => Center(
         child: Padding(
@@ -150,7 +429,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
             onSubmitted: (_) => _sendText(tv),
             style: const TextStyle(color: AppColors.fg),
             decoration: InputDecoration(
-              hintText: tr('Текст на ТВ (латиница)'),
+              hintText: tr('Текст или поиск на ТВ'),
               hintStyle: const TextStyle(color: AppColors.fgMuted),
               filled: true,
               fillColor: AppColors.bgCard,
@@ -166,7 +445,16 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
             ),
           ),
         ),
-        const Gap(10),
+        const Gap(8),
+        SizedBox(
+          height: 50,
+          child: IconButton.filledTonal(
+            tooltip: tr('Поиск на ТВ'),
+            onPressed: () => _search(tv),
+            icon: const Icon(Icons.search_rounded),
+          ),
+        ),
+        const Gap(8),
         SizedBox(
           height: 50,
           child: FilledButton(
@@ -242,7 +530,9 @@ class _RoundButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _RoundButton({required this.icon, required this.label, required this.onTap});
+  final Color? color;
+  final bool small;
+  const _RoundButton({required this.icon, required this.label, required this.onTap, this.color, this.small = false});
 
   @override
   Widget build(BuildContext context) {
@@ -250,18 +540,127 @@ class _RoundButton extends StatelessWidget {
       onTap: onTap,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(
-          width: 58,
-          height: 58,
+          width: small ? 48 : 58,
+          height: small ? 48 : 58,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppColors.bgCard,
             border: Border.all(color: AppColors.cardBd),
           ),
-          child: Icon(icon, color: AppColors.fg),
+          child: Icon(icon, color: color ?? AppColors.fg),
         ),
-        const Gap(6),
-        Text(label, style: const TextStyle(fontSize: 11, color: AppColors.fgMid)),
+        if (label.isNotEmpty) ...[
+          const Gap(6),
+          Text(label, style: const TextStyle(fontSize: 11, color: AppColors.fgMid)),
+        ],
       ]),
     );
   }
+}
+
+class _CastButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  const _CastButton({required this.icon, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => Pressable(
+        onTap: onTap,
+        child: Container(
+          height: 74,
+          decoration: BoxDecoration(
+            color: AppColors.bgCard,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.cardBd),
+          ),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(icon, color: AppColors.accent),
+            const Gap(6),
+            Text(label, style: const TextStyle(fontSize: 12.5, color: AppColors.fg)),
+          ]),
+        ),
+      );
+}
+
+/// Touchpad: a swipe moves the focus (longer swipes, more steps), a tap is OK, a long
+/// press is a long OK (the TV's «options» on a tile).
+class _TouchPad extends StatefulWidget {
+  final ValueChanged<int> onKey;
+  final VoidCallback onLongOk;
+  const _TouchPad({required this.onKey, required this.onLongOk});
+
+  @override
+  State<_TouchPad> createState() => _TouchPadState();
+}
+
+class _TouchPadState extends State<_TouchPad> {
+  static const _step = 48.0; // finger travel per key press
+  Offset _acc = Offset.zero;
+  Offset? _dot;
+
+  void _move(Offset d) {
+    _acc += d;
+    while (_acc.dx.abs() >= _step || _acc.dy.abs() >= _step) {
+      if (_acc.dx.abs() >= _acc.dy.abs()) {
+        final right = _acc.dx > 0;
+        widget.onKey(right ? Keys.right : Keys.left);
+        _acc = Offset(_acc.dx + (right ? -_step : _step), 0);
+      } else {
+        final down = _acc.dy > 0;
+        widget.onKey(down ? Keys.down : Keys.up);
+        _acc = Offset(0, _acc.dy + (down ? -_step : _step));
+      }
+      HapticFeedback.selectionClick();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          widget.onKey(Keys.ok);
+        },
+        onLongPress: () {
+          HapticFeedback.mediumImpact();
+          widget.onLongOk();
+        },
+        onPanStart: (d) => setState(() {
+          _acc = Offset.zero;
+          _dot = d.localPosition;
+        }),
+        onPanUpdate: (d) {
+          _move(d.delta);
+          setState(() => _dot = d.localPosition);
+        },
+        onPanEnd: (_) => setState(() => _dot = null),
+        child: Container(
+          height: 250,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: AppColors.bgCard,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: AppColors.cardBd),
+          ),
+          child: Stack(children: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(tr('Проведите пальцем — стрелки, коснитесь — ОК'),
+                    textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: AppColors.fgMuted)),
+              ),
+            ),
+            if (_dot != null)
+              Positioned(
+                left: _dot!.dx - 22,
+                top: _dot!.dy - 22,
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.accent.withValues(alpha: .35)),
+                ),
+              ),
+          ]),
+        ),
+      );
 }

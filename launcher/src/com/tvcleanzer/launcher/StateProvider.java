@@ -91,6 +91,11 @@ public class StateProvider extends ContentProvider {
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         String seg = uri.getLastPathSegment();
+        if (getContext() != null && mode.contains("w") && "cast".equals(seg)) {
+            // a photo / video for the TV screen, from the phone's remote (0.42+)
+            return ParcelFileDescriptor.open(CastActivity.file(getContext()), ParcelFileDescriptor.MODE_WRITE_ONLY
+                    | ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_TRUNCATE);
+        }
         if (getContext() == null || !mode.contains("w") || !("wallpaper".equals(seg) || "photo".equals(seg))) {
             throw new FileNotFoundException(uri.toString());
         }

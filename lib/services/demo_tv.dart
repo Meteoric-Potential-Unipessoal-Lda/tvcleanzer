@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
@@ -213,6 +214,13 @@ class DemoAdbClient extends AdbClient {
     return '';
   }
 
+  /// A demo «screenshot»: a small dark PNG (2×2), enough to show the viewer.
+  @override
+  Future<Uint8List> execOut(String command, {Duration timeout = const Duration(seconds: 30)}) async {
+    await _lag(400);
+    return base64Decode('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFElEQVR4nGNkYPj/n4GBgYGBgQEAHgID/xcLywcAAAAASUVORK5CYII=');
+  }
+
   @override
   Future<void> execIn(String command, Uint8List input,
       {Duration timeout = const Duration(seconds: 90), void Function(int sent)? onProgress}) async {
@@ -406,7 +414,7 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.startsWith('dumpsys package com.tvcleanzer.launcher')) {
-      return s.launcherInstalled ? '    versionCode=41 minSdk=21 targetSdk=34\n' : '';
+      return s.launcherInstalled ? '    versionCode=42 minSdk=21 targetSdk=34\n' : '';
     }
     if (c.startsWith('dumpsys activity activities')) {
       // Home on the demo TV opens whatever is the home screen.
