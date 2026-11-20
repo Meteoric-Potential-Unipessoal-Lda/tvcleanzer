@@ -128,6 +128,12 @@ class AdbPackageManager {
           '-c android.intent.category.LEANBACK_LAUNCHER 2>/dev/null; '
           'cmd package query-activities --brief -a android.intent.action.MAIN '
           '-c android.intent.category.LAUNCHER 2>/dev/null'));
+      // Android 5–6: no `cmd` — without this the TV's own home screen was not protected
+      if (homes.isEmpty && launchable.isEmpty) {
+        final old = await _oldCategories(adb);
+        homes.addAll(old['HOME']!);
+        launchable..addAll(old['LEANBACK_LAUNCHER']!)..addAll(old['LAUNCHER']!);
+      }
       // Memory each package uses right now (what removing it frees).
       final ramKb = _parsePsRss(await adb.shell('ps -A -o RSS,NAME 2>/dev/null || ps'));
 
@@ -193,6 +199,42 @@ class AdbPackageManager {
         .whereType<String>()
         .toSet();
   }
+
+  /// Android 5–6 have no `cmd package query-activities`: packages with a MAIN activity of
+  /// each category, read from the resolver table (`dumpsys package -f r` prints each
+  /// filter's categories). Keys: "HOME", "LEANBACK_LAUNCHER", "LAUNCHER".
+  static Map<String, Set<String>> parseResolverCategories(String out) {
+    final res = <String, Set<String>>{'HOME': {}, 'LEANBACK_LAUNCHER': {}, 'LAUNCHER': {}};
+    final entry = RegExp(r'^\s*[0-9a-f]+\s+([A-Za-z0-9_.]+)/\S+\s+filter');
+    final cat = RegExp(r'Category: "android\.intent\.category\.([A-Z_]+)"');
+    var inActivities = false;
+    String? pkg;
+    for (final l in out.split('\n')) {
+      if (l.contains('Activity Resolver Table')) { inActivities = true; continue; }
+      if (inActivities && l.contains('Resolver Table')) break; // Receiver/Service tables
+      if (!inActivities) continue;
+      final e = entry.firstMatch(l);
+      if (e != null) { pkg = e.group(1); continue; }
+      final c = cat.firstMatch(l);
+      if (c != null && pkg != null) res[c.group(1)!]?.add(pkg);
+    }
+    return res;
+  }
+
+  /// [parseResolverCategories] read from the TV (empty sets when it says nothing).
+  Future<Map<String, Set<String>>> _oldCategories(AdbClient adb) async {
+    try {
+      return parseResolverCategories(
+          await adb.shell('dumpsys package -f r 2>/dev/null', timeout: const Duration(seconds: 40)));
+    } catch (e) {
+      AppLog.error('resolver table', e);
+      return {'HOME': {}, 'LEANBACK_LAUNCHER': {}, 'LAUNCHER': {}};
+    }
+  }
+
+  /// Android 5–6 (SDK 21–23): no `cmd`, and `pm install-existing` can't be relied on, so
+  /// apps are switched off (`pm disable-user`, undone by `pm enable`) instead of removed.
+  static bool oldAndroid(int sdk) => sdk > 0 && sdk < 24;
 
   /// RSS (KB) per package from `ps -A -o RSS,NAME` (Android 8+) or plain `ps`.
   static Map<String, int> _parsePsRss(String out) {
@@ -343,7 +385,7 @@ class AdbPackageManager {
     try {
       await adb.connect();
       final installed = _parsePackageList(await adb.shell('pm list packages'));
-      final viaDisable = usesDisable(installed);
+      final viaDisable = usesDisable(installed) || oldAndroid(device.sdkVersion);
       // Apps the owner installed: "uninstall for user 0" deletes them for good (no copy in the
       // firmware to bring back), so they are only switched off. Undo = switch on.
       final userApps = _parsePackageList(await adb.shell('pm list packages -3')).toSet();
@@ -353,7 +395,8 @@ class AdbPackageManager {
         try {
           // One method refused (Xiaomi keeps some ad apps from being
           // uninstalled, but lets them be disabled): try the other one.
-          final ok = userApps.contains(name)
+          // Android 5–6: switched off only — an uninstall might not come back there
+          final ok = userApps.contains(name) || oldAndroid(device.sdkVersion)
               ? await disable(name)
               : viaDisable
                   ? (await disable(name) || await uninstall(name))
@@ -539,7 +582,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 52;
+  static const bundledLauncherVersion = 53;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -846,7 +889,7 @@ class AdbPackageManager {
     if (fw != null && !stock.contains(fw)) stock.add(fw);
     if (stock.isNotEmpty && !googleTv) {
       onStep?.call(tr('Закрепляем лаунчер…'));
-      final viaDisable = usesDisable(installed);
+      final viaDisable = usesDisable(installed) || oldAndroid(sdk);
       final removed = <String>[];
       for (final p in stock) {
         final out = viaDisable || p == fw
@@ -962,6 +1005,7 @@ class AdbPackageManager {
       final homes = _parseComponents(await adb.shell(
           'cmd package query-activities --brief -a android.intent.action.MAIN '
           '-c android.intent.category.HOME 2>/dev/null'));
+      if (homes.isEmpty) homes.addAll((await _oldCategories(adb))['HOME']!); // Android 5–6
       final ok = homes.contains(front) || _knownFirmwareHomes.contains(front);
       AppLog.error('firmware home', '$front (declares HOME: ${homes.contains(front)}) ${ok ? 'switching off' : 'left'}');
       return ok ? front : null;
@@ -990,7 +1034,7 @@ class AdbPackageManager {
 
   Future<bool> _dropPatchWall(AdbClient adb, int sdk, void Function(String step)? onStep) async {
     final installed = _parsePackageList(await adb.shell('pm list packages')).toSet();
-    if (!installed.contains(_patchWall) || installed.contains('com.google.android.apps.tv.launcherx')) return false;
+    if (oldAndroid(sdk) || !installed.contains(_patchWall) || installed.contains('com.google.android.apps.tv.launcherx')) return false;
     onStep?.call(tr('Убираем PatchWall…'));
     final out = await adb.shell('pm uninstall -k --user 0 $_patchWall');
     if (!out.toLowerCase().contains('success')) return false;
@@ -1046,6 +1090,7 @@ class AdbPackageManager {
       final homes = _parseComponents(await adb.shell(
           'cmd package query-activities --brief -a android.intent.action.MAIN '
           '-c android.intent.category.HOME 2>/dev/null'));
+      if (homes.isEmpty) homes.addAll((await _oldCategories(adb))['HOME']!); // Android 5–6
       final enabled = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
       final saved = (await adb.shell('cat $_firmwareHomesFile 2>/dev/null')).split(RegExp(r'\s+'));
       final others = {...homes, ...saved.where(_knownFirmwareHomes.contains)}
@@ -1505,6 +1550,10 @@ class AdbPackageManager {
           '-c android.intent.category.LEANBACK_LAUNCHER 2>/dev/null; '
           'cmd package query-activities --brief -a android.intent.action.MAIN '
           '-c android.intent.category.LAUNCHER 2>/dev/null'));
+      if (launchable.isEmpty) {
+        final old = await _oldCategories(adb); // Android 5–6: no `cmd`
+        launchable..addAll(old['LEANBACK_LAUNCHER']!)..addAll(old['LAUNCHER']!);
+      }
       final labels = <String, String>{};
       if (all.contains(launcherPkg)) {
         final out = await adb.shell('content query --uri content://com.tvcleanzer.launcher.state/apps 2>/dev/null');

@@ -63,7 +63,8 @@ final class Inputs {
                     // start it afresh (tested: worked only after the player was closed)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             // the input id as an extra too: some builds read it from there (tested to work as well)
-            String id = android.media.tv.TvContract.isChannelUriForPassthroughInput(data) && data.getPathSegments().size() > 1
+            String id = Build.VERSION.SDK_INT >= 24 && android.media.tv.TvContract.isChannelUriForPassthroughInput(data)
+                    && data.getPathSegments().size() > 1
                     ? data.getPathSegments().get(1) : null;
             if (id != null) {
                 i.putExtra("inputId", id);
@@ -106,7 +107,33 @@ final class Inputs {
     private static final String[] LIVE_TV = {
             "com.mediatek.wwtv.tvcenter", "com.google.android.tv", "com.android.tv", "com.sony.dtv.tvx",
             "org.droidtv.playtv", "com.xiaomi.mitv.tvplayer", "com.droidlogic.tvsource", "com.tcl.tv",
+            // Sber (Салют ТВ / StarOS): «Смотреть ТВ» — starlivetv (an owner's Sber TV, CVTE am30ah:
+            // no «ТВ» in our launcher, the stock one had it); Yandex TV: «Эфир»
+            "ru.sberdevices.starlivetv", "ru.sberdevices.tv", "com.yandex.tv.live",
     };
+
+    /** Package names that look like a live TV app on firmwares we don't know yet. */
+    private static final java.util.regex.Pattern LIVE_LIKE = java.util.regex.Pattern.compile(
+            "livetv|tvplayer|tvcenter|tv\\.live|\\.live$|\\.dtv\\.|atvplayer|tvview", java.util.regex.Pattern.CASE_INSENSITIVE);
+
+    /** How to open [p]: its TV or phone launcher entry, else its first exported main screen
+     *  (live TV apps of some firmwares have no icon of their own — only the stock home opens them). */
+    private static Intent launch(PackageManager pm, String p) {
+        Intent i = null;
+        try {
+            if (Build.VERSION.SDK_INT >= 21) i = pm.getLeanbackLaunchIntentForPackage(p);
+            if (i == null) i = pm.getLaunchIntentForPackage(p);
+            if (i == null) {
+                for (ResolveInfo ri : pm.queryIntentActivities(new Intent(Intent.ACTION_MAIN).setPackage(p), 0)) {
+                    if (ri.activityInfo == null || !ri.activityInfo.exported) continue;
+                    i = new Intent(Intent.ACTION_MAIN)
+                            .setClassName(ri.activityInfo.packageName, ri.activityInfo.name);
+                    break;
+                }
+            }
+        } catch (Throwable ignored) {}
+        return i;
+    }
 
     private Inputs() {}
 
@@ -125,7 +152,8 @@ final class Inputs {
                         }
                         continue; // tuners and apps: reached through «ТВ» below
                     }
-                    if (info.isHidden(c)) continue;
+                    // isHidden: Android 7+; on 5–6 it threw and the whole list came out empty
+                    if (Build.VERSION.SDK_INT >= 24 && info.isHidden(c)) continue;
                     CharSequence l = null;
                     if (Build.VERSION.SDK_INT >= 24) l = info.loadCustomLabel(c);
                     if (l == null || l.length() == 0) l = info.loadLabel(c);
@@ -163,11 +191,17 @@ final class Inputs {
             for (ResolveInfo ri : pm.queryIntentActivities(view, 0)) {
                 if (!ri.activityInfo.packageName.equals(c.getPackageName())) cand.add(ri.activityInfo.packageName);
             }
-            if (tuner || !cand.isEmpty()) for (String p : LIVE_TV) cand.add(p);
+            if (tuner || !cand.isEmpty()) {
+                for (String p : LIVE_TV) cand.add(p);
+                // unknown firmwares: installed apps named like a live TV player
+                try {
+                    for (android.content.pm.ApplicationInfo ai : pm.getInstalledApplications(0)) {
+                        if (LIVE_LIKE.matcher(ai.packageName).find() && !ai.packageName.equals(c.getPackageName())) cand.add(ai.packageName);
+                    }
+                } catch (Throwable ignored) {}
+            }
             for (String p : cand) {
-                Intent i = null;
-                if (Build.VERSION.SDK_INT >= 21) i = pm.getLeanbackLaunchIntentForPackage(p);
-                if (i == null) i = pm.getLaunchIntentForPackage(p);
+                Intent i = launch(pm, p);
                 if (i != null) {
                     Item item = new Item("tv:" + p, T.t("ТВ"), i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     Intent ch = firstChannel(c, tunerId, p);
