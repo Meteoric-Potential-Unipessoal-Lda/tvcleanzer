@@ -446,6 +446,11 @@ public class SettingsActivity extends Activity {
         n.setText(name);
         TextView val = Ui.text(this, 17, 0x99FFFFFF, "sans-serif");
         val.setText(value);
+        // a long value no longer squeezes the name into «Заставка…» (seen on an owner's video)
+        val.setSingleLine(true);
+        val.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        val.setMaxWidth(Math.round(getResources().getDisplayMetrics().widthPixels * 0.17f));
+        val.setPadding(Ui.dp(this, 12), 0, 0, 0);
         row.addView(n, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         row.addView(val);
 
