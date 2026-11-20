@@ -1,5 +1,6 @@
 import Flutter
 import Network
+import ReplayKit
 import Security
 import UIKit
 
@@ -20,6 +21,71 @@ import UIKit
       let channel = FlutterMethodChannel(name: "tvcleanzer/tls", binaryMessenger: registrar.messenger())
       channel.setMethodCallHandler { [weak self] call, result in
         self?.tls.handle(call, result)
+      }
+    }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "TvcleanzerMirror") {
+      let channel = FlutterMethodChannel(name: "tvcleanzer/mirror", binaryMessenger: registrar.messenger())
+      channel.setMethodCallHandler { call, result in MirrorBridge.handle(call, result) }
+    }
+  }
+}
+
+/// "tvcleanzer/mirror" on iPhone: the screen goes out through the Broadcast upload extension
+/// (ios/Broadcast). We hand it the TV's address and token through the app group and open the
+/// system's «start broadcast» sheet; the extension reports a heartbeat back the same way.
+enum MirrorBridge {
+  static let group = "group.com.tvcleanzer.app"
+  static let ext = "com.tvcleanzer.app.Broadcast"
+  private static var picker: RPSystemBroadcastPickerView?
+
+  static func handle(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+    let d = UserDefaults(suiteName: group)
+    switch call.method {
+    case "start":
+      guard let d = d else { result(nil); return }
+      let a = call.arguments as? [String: Any] ?? [:]
+      for (k, v) in a where v is String || v is Int || v is Bool || v is Double {
+        d.set(v, forKey: k)
+      }
+      d.set(Date().timeIntervalSince1970, forKey: "at")
+      d.set(0.0, forKey: "stop")
+      d.removeObject(forKey: "endReason")
+      showPicker()
+      result(["ios": true])
+    case "state":
+      let reason: Any = d?.string(forKey: "endReason") ?? NSNull()
+      result(["running": running(d), "reason": reason])
+    case "running":
+      result(running(d))
+    case "stop":
+      d?.set(Date().timeIntervalSince1970, forKey: "stop")
+      result(nil)
+    default:
+      result(FlutterMethodNotImplemented)
+    }
+  }
+
+  private static func running(_ d: UserDefaults?) -> Bool {
+    let beat = d?.double(forKey: "beat") ?? 0
+    return beat > 0 && Date().timeIntervalSince1970 - beat < 3.5
+  }
+
+  /// The system sheet («Начать вещание»), opened by tapping the picker's own button.
+  private static func showPicker() {
+    let window = UIApplication.shared.connectedScenes
+      .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+      .first
+    guard let w = window else { return }
+    picker?.removeFromSuperview()
+    let p = RPSystemBroadcastPickerView(frame: CGRect(x: -200, y: -200, width: 44, height: 44))
+    p.preferredExtension = ext
+    p.showsMicrophoneButton = false
+    w.addSubview(p)
+    picker = p
+    for v in p.subviews {
+      if let b = v as? UIButton {
+        b.sendActions(for: .allTouchEvents)
+        break
       }
     }
   }

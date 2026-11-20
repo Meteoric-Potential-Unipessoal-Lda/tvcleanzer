@@ -274,7 +274,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                 value: audio,
                 onChanged: (v) => set(() => audio = v),
                 title: Text(tr('Со звуком'), style: const TextStyle(color: AppColors.fg)),
-                subtitle: Text(tr('Звук игр и видео пойдёт на телевизор (Android 10 и новее)'),
+                subtitle: Text(Mirror.ios ? tr('Звук игр и видео пойдёт на телевизор') : tr('Звук игр и видео пойдёт на телевизор (Android 10 и новее)'),
                     style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
               ),
               Text(tr('Платные кинотеатры и банки прячут свой экран: на ТВ там будет чёрный.'),
@@ -305,6 +305,39 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       ready = true;
     });
     if (!ready || !mounted) return;
+    if (Mirror.ios) {
+      // iPhone: the TV listens first (a minute), then the system sheet starts the extension
+      var listening = false;
+      await _run(tr('Готовим телевизор…'), () async {
+        if (!await adb.startMirror(tv, port: Mirror.port, token: token)) {
+          throw AdbException(tr('Обновите лаунчер на ТВ: повтор экрана есть в новой версии.'));
+        }
+        listening = true;
+      });
+      if (!listening || !mounted) return;
+      final ok = await Mirror.start(
+        host: tv.ipAddress,
+        adbPort: tv.port,
+        token: token,
+        hd: hd,
+        audio: audio,
+        title: tr('Экран телефона на телевизоре'),
+        stopLabel: tr('Остановить'),
+        texts: {
+          'errStart': tr('Сначала нажмите «Повтор экрана» в TVCleanzer.'),
+          'errConnect': tr('Телефон не достучался до телевизора. Проверьте, что они в одной Wi-Fi сети.'),
+          'errToken': tr('Телевизор не принял телефон. Попробуйте ещё раз.'),
+          'msgClosed': tr('Повтор экрана закончился.'),
+          'msgStopped': tr('Повтор экрана остановлен.'),
+        },
+      );
+      if (ok == null) {
+        ref.read(adbServiceProvider).closeMirror(tv);
+        return;
+      }
+      _snack(tr('Выберите TVCleanzer и нажмите «Начать вещание». Остановить — здесь или красной плашкой вверху экрана.'));
+      return;
+    }
     // the phone's permission first: it opens our port, then the TV is told where to find us
     final r = await Mirror.start(
       host: tv.ipAddress,

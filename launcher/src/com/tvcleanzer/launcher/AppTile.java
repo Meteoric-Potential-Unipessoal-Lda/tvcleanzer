@@ -69,7 +69,8 @@ final class AppTile extends LinearLayout {
         setClickable(true);
         setLongClickable(true);
 
-        float radius = Ui.dp(c, 14);
+        // square cards (dock, «Витрина», icon grids): rounded like a phone app icon
+        float radius = Math.abs(w - h) < w * 0.2f ? Math.max(Ui.dp(c, 14), w * 0.225f) : Ui.dp(c, 14);
         card = new FrameLayout(c);
         card.setBackground(Ui.round(skin.tile, radius));
         card.setOutlineProvider(ViewOutlineProvider.BACKGROUND);

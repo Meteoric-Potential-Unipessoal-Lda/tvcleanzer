@@ -1560,7 +1560,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 boolean banner = d != null;
                 if (small) d = IconArt.icon(pm, t.app);
                 if (d == null) {
-                    android.graphics.Bitmap b = IconArt.tile(IconArt.icon(pm, t.app), cw, ch);
+                    android.graphics.Bitmap b = IconArt.tile(IconArt.icon(pm, t.app), t.app.loadBanner(pm), cw, ch);
                     if (b != null) {
                         android.graphics.drawable.BitmapDrawable bd =
                                 new android.graphics.drawable.BitmapDrawable(getResources(), b);

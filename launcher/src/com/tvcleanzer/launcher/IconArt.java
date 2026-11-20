@@ -17,9 +17,8 @@ import android.util.DisplayMetrics;
 /**
  * Tile art from the app's OWN square icon (every app ships one; TV banners are 16:9 and got
  * cut in square tiles: an owner's photo showed «Google P…», «areHub T»). Nothing is downloaded
- * or bundled: the picture is what the app brought to the TV, as on any phone launcher.
- *  - adaptive icons (Android 8+): their own background fills the card, the picture centred;
- *  - older icons: drawn centred on a plate of their own main colour.
+ * or bundled: the picture is what the app brought to the TV, as on any phone launcher (other
+ * brands' logos are theirs to ship, not ours to copy). See tile() for how each kind is drawn.
  */
 final class IconArt {
     private IconArt() {}
@@ -42,54 +41,100 @@ final class IconArt {
 
     /** A w×h card picture (the card's rounded corners clip it). Null if nothing could be drawn. */
     static Bitmap tile(Drawable icon, int w, int h) {
+        return tile(icon, null, w, h);
+    }
+
+    /**
+     * Drawn like a phone launcher's icon, edge to edge — not a small icon on a plate («обрубки»
+     * owners complained about next to other launchers):
+     *  - adaptive icons: both layers at launcher scale (the 72-of-108 viewport fills the card);
+     *  - a square icon with its own background: fills the card, its baked corners pushed out;
+     *  - a shape (round, logo with transparency): large on a plate of its own colour;
+     *  - a tiny old icon (mdpi only, blurry when blown up) with a TV banner: the banner whole,
+     *    on its own edge colour, so the brand reads instead of a smudge.
+     */
+    static Bitmap tile(Drawable icon, Drawable banner, int w, int h) {
         if (icon == null || w <= 0 || h <= 0) return null;
         try {
             Bitmap out = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(out);
+            boolean square = Math.abs(w - h) < Math.max(w, h) * 0.2f;
             if (Build.VERSION.SDK_INT >= 26 && icon instanceof android.graphics.drawable.AdaptiveIconDrawable) {
                 android.graphics.drawable.AdaptiveIconDrawable ad = (android.graphics.drawable.AdaptiveIconDrawable) icon;
                 Drawable bg = ad.getBackground(), fg = ad.getForeground();
-                // the background layer covers the whole card (square layer, centre-cropped)
-                int side = Math.max(w, h);
+                // a launcher shows the middle 72 of the layers' 108 units
+                int layer = Math.round(Math.max(w, h) * 1.5f);
                 if (bg != null) {
-                    bg.setBounds((w - side) / 2, (h - side) / 2, (w + side) / 2, (h + side) / 2);
+                    bg.setBounds((w - layer) / 2, (h - layer) / 2, (w + layer) / 2, (h + layer) / 2);
                     bg.draw(c);
                 } else {
                     plate(c, w, h, fg == null ? 0xFF2B3446 : mainColor(fg));
                 }
                 if (fg != null) {
-                    // the safe zone (66 of 108 units) ends up about 60 % of the card's height
-                    int s = Math.round(h * 1.0f);
+                    // wide cards: the picture by the height, so it is not cut top and bottom
+                    int s = square ? layer : Math.round(h * 1.35f);
                     fg.setBounds((w - s) / 2, (h - s) / 2, (w + s) / 2, (h + s) / 2);
                     fg.draw(c);
                 }
                 return out;
             }
             int[] info = analyse(icon);
-            plate(c, w, h, info[0]);
-            int s = Math.round(h * (info[1] == 1 ? 0.62f : 0.68f));
-            int l = (w - s) / 2, t = (h - s) / 2;
-            if (info[1] == 1) {
-                // a square icon with its own background: round its corners like an app icon
-                Bitmap ib = Bitmap.createBitmap(s, s, Bitmap.Config.ARGB_8888);
-                Canvas ic = new Canvas(ib);
-                icon.setBounds(0, 0, s, s);
-                icon.draw(ic);
-                Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-                p.setShader(new android.graphics.BitmapShader(ib, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
-                c.save();
-                c.translate(l, t);
-                float r = s * 0.22f;
-                c.drawRoundRect(new RectF(0, 0, s, s), r, r, p);
-                c.restore();
-                ib.recycle();
-            } else {
-                icon.setBounds(l, t, l + s, t + s);
-                icon.draw(c);
+            int natural = Math.max(icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+            boolean tiny = natural > 0 && natural < Math.min(w, h) * 0.55f;
+            if (tiny && banner != null && banner.getIntrinsicWidth() > 0 && banner.getIntrinsicHeight() > 0) {
+                int[] bi = analyse(banner);
+                plate(c, w, h, edgeColor(banner, bi[0]));
+                float k = Math.min(w * 0.92f / banner.getIntrinsicWidth(), h * 0.92f / banner.getIntrinsicHeight());
+                int bw = Math.round(banner.getIntrinsicWidth() * k), bh = Math.round(banner.getIntrinsicHeight() * k);
+                banner.setBounds((w - bw) / 2, (h - bh) / 2, (w + bw) / 2, (h + bh) / 2);
+                banner.draw(c);
+                return out;
             }
+            if (info[1] == 1) {
+                // its own background: edge to edge; a little larger so baked-in corners fall outside
+                int side = Math.round(Math.max(w, h) * 1.08f);
+                Bitmap ib = Bitmap.createBitmap(side, side, Bitmap.Config.ARGB_8888);
+                Canvas ic = new Canvas(ib);
+                icon.setBounds(0, 0, side, side);
+                icon.draw(ic);
+                plate(c, w, h, info[0]);
+                Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+                c.drawBitmap(ib, (w - side) / 2f, (h - side) / 2f, p);
+                ib.recycle();
+                return out;
+            }
+            plate(c, w, h, info[0]);
+            int s = Math.round(Math.min(w, h) * 0.78f);
+            icon.setBounds((w - s) / 2, (h - s) / 2, (w + s) / 2, (h + s) / 2);
+            icon.draw(c);
             return out;
         } catch (Throwable e) {
             return null;
+        }
+    }
+
+    /** The colour along a banner's left edge (its own background), else [fallback]. */
+    private static int edgeColor(Drawable d, int fallback) {
+        try {
+            Bitmap b = Bitmap.createBitmap(32, 18, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            d.setBounds(0, 0, 32, 18);
+            d.draw(c);
+            long r = 0, g = 0, bl = 0;
+            int n = 0;
+            for (int y = 2; y < 16; y++) {
+                int px = b.getPixel(1, y);
+                if ((px >>> 24) < 200) continue;
+                r += (px >> 16) & 0xFF;
+                g += (px >> 8) & 0xFF;
+                bl += px & 0xFF;
+                n++;
+            }
+            b.recycle();
+            if (n < 6) return fallback;
+            return 0xFF000000 | ((int) (r / n) << 16) | ((int) (g / n) << 8) | (int) (bl / n);
+        } catch (Throwable t) {
+            return fallback;
         }
     }
 
