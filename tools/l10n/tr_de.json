@@ -745,5 +745,6 @@
 "Der Fernseher hat nicht geantwortet: Wir haben ihm ein Einschaltsignal übers Netzwerk geschickt. Falls er nicht angeht, aktivieren Sie Wake on LAN in den TV-Einstellungen.",
 "Der Fernseher antwortet nicht. Schalten Sie ihn einmal mit seiner Fernbedienung ein: Danach lernt das Handy, ihn aufzuwecken.",
 "Spiegelung stoppen",
-"Zu wenig Platz auf dem Fernseher für dieses Video: {0} MB nötig, {1} MB frei."
+"Zu wenig Platz auf dem Fernseher für dieses Video: {0} MB nötig, {1} MB frei.",
+"Bildschirmhelligkeit. Manche Fernseher übernehmen sie nur aus ihren eigenen Bildeinstellungen."
 ]

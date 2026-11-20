@@ -745,5 +745,6 @@
 "La TV non rispondeva: le abbiamo inviato un segnale di accensione via rete. Se non si è accesa, attiva Wake on LAN nelle impostazioni della TV.",
 "La TV non risponde. Accendila una volta con il suo telecomando: poi il telefono imparerà a svegliarla.",
 "Interrompi la duplicazione",
-"Spazio insufficiente sulla TV per questo video: servono {0} MB, liberi {1} MB."
+"Spazio insufficiente sulla TV per questo video: servono {0} MB, liberi {1} MB.",
+"Luminosità dello schermo. Alcune TV la prendono solo dalle proprie impostazioni dell'immagine."
 ]

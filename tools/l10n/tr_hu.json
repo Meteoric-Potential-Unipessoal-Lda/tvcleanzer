@@ -745,5 +745,6 @@
 "A tévé nem válaszolt: hálózati bekapcsolási jelet küldtünk neki. Ha nem kapcsolt be, a tévé beállításaiban kapcsolja be a Wake on LAN funkciót.",
 "A tévé nem válaszol. Kapcsolja be egyszer a saját távirányítójával: utána a telefon megtanulja felébreszteni.",
 "Képernyőtükrözés leállítása",
-"Nincs elég hely a tévén ehhez a videóhoz: {0} MB kell, {1} MB szabad."
+"Nincs elég hely a tévén ehhez a videóhoz: {0} MB kell, {1} MB szabad.",
+"Képernyő fényereje. Egyes tévék csak a saját képbeállításaikból veszik."
 ]

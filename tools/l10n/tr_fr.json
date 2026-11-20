@@ -745,5 +745,6 @@
 "Le téléviseur ne répondait pas : nous lui avons envoyé un signal d'allumage par le réseau. S'il ne s'allume pas, activez Wake on LAN dans les réglages de la TV.",
 "Le téléviseur ne répond pas. Allumez-le une fois avec sa télécommande : ensuite le téléphone saura le réveiller.",
 "Arrêter la recopie",
-"Pas assez d'espace sur la TV pour cette vidéo : {0} Mo nécessaires, {1} Mo libres."
+"Pas assez d'espace sur la TV pour cette vidéo : {0} Mo nécessaires, {1} Mo libres.",
+"Luminosité de l'écran. Certains téléviseurs ne la prennent que dans leurs propres réglages d'image."
 ]

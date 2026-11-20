@@ -539,7 +539,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 44;
+  static const bundledLauncherVersion = 45;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1643,12 +1643,15 @@ class AdbPackageManager {
 
   /// Opens the launcher's «Повтор экрана» screen, listening on [port] for the phone with
   /// [token] (launcher 0.43+). False when the launcher on the TV is older.
-  Future<bool> startMirror(TvDevice device, {required int port, required String token}) async {
+  /// [phone]:[phonePort] — the phone's own port, which the TV dials too (launcher 0.45+).
+  Future<bool> startMirror(TvDevice device,
+      {required int port, required String token, String? phone, int phonePort = 0}) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
+      final back = phone != null && phonePort > 0 ? ' --es phone $phone --ei phonePort $phonePort' : '';
       final out = await adb.shell('am start -n $launcherPkg/.MirrorActivity -f 0x10000000 '
-          '--ei port $port --es token $token 2>&1');
+          '--ei port $port --es token $token$back 2>&1');
       return !out.contains('Error') && !out.contains('does not exist');
     } finally {
       adb.close();

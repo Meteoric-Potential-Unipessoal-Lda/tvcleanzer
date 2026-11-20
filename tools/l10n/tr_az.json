@@ -745,5 +745,6 @@
 "Televizor cavab vermədi: ona şəbəkə ilə yandırma siqnalı göndərdik. Yanmadısa, TV parametrlərində «Şəbəkə ilə yandırma» (Wake on LAN) funksiyasını aktiv edin.",
 "Televizor cavab vermir. Onu adi pultla bir dəfə yandırın: bundan sonra telefon onu oyatmağı öyrənəcək.",
 "Ekranın təkrarını dayandır",
-"Televizorda bu video üçün yer azdır: {0} MB lazımdır, {1} MB boşdur."
+"Televizorda bu video üçün yer azdır: {0} MB lazımdır, {1} MB boşdur.",
+"Ekran parlaqlığı. Bəzi televizorlar onu yalnız öz şəkil parametrlərindən götürür."
 ]

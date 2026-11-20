@@ -88,6 +88,20 @@ class RemoteController extends StateNotifier<RemoteState> {
     }
   }
 
+  /// The TV's screen brightness 0–255 (`settings system screen_brightness`); null when the
+  /// firmware does not keep one.
+  Future<int?> brightness(String ip) async {
+    int? v;
+    await _enqueue(ip, () => 'settings get system screen_brightness',
+        onOut: (out) => v = int.tryParse(out.trim()));
+    return v;
+  }
+
+  /// Sets it (manual mode first: automatic brightness would undo it). Many TVs take their
+  /// backlight from the picture settings instead and ignore this.
+  Future<void> setBrightness(String ip, int value) => _enqueue(ip,
+      () => 'settings put system screen_brightness_mode 0; settings put system screen_brightness ${value.clamp(1, 255)}');
+
   /// A long press (the TV's «options» on a tile).
   void longKey(String ip, int code) =>
       _enqueue(ip, () => 'keyevent --longpress $code', input: true).catchError((_) {});

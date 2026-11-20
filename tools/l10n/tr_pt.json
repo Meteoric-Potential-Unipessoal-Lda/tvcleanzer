@@ -745,5 +745,6 @@
 "A TV não respondeu: enviámos um sinal de ligar pela rede. Se não ligou, ative «Ligar pela rede» (Wake on LAN) nas definições da TV.",
 "A TV não responde. Ligue-a uma vez com o comando dela: depois o telefone aprende a acordá-la.",
 "Parar o espelhamento",
-"Não há espaço suficiente na TV para este vídeo: são precisos {0} MB, há {1} MB livres."
+"Não há espaço suficiente na TV para este vídeo: são precisos {0} MB, há {1} MB livres.",
+"Brilho do ecrã. Algumas TVs só o aceitam nas suas próprias definições de imagem."
 ]

@@ -142,7 +142,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    private fun mirrorDone(started: Boolean) {
+    private fun mirrorDone(started: Any) {
         val r = mirrorResult
         mirrorResult = null
         mirrorArgs = null
@@ -170,10 +170,31 @@ class MainActivity : FlutterActivity() {
             .putExtra("audio", a["audio"] == true)
             .putExtra("title", a["title"] as String?)
             .putExtra("stop", a["stopLabel"] as String?)
+        // our own port for the TV to dial, and our address as the TV sees it
+        var phoneIp: String? = null
+        var phonePort = 0
+        try {
+            val srv = java.net.ServerSocket()
+            srv.reuseAddress = true
+            try {
+                srv.bind(java.net.InetSocketAddress(7301))
+            } catch (_: Exception) {
+                srv.bind(java.net.InetSocketAddress(0))
+            }
+            phonePort = srv.localPort
+            MirrorService.phoneServer = srv
+            java.net.DatagramSocket().use { d ->
+                d.connect(java.net.InetAddress.getByName(a["host"] as String), 9) // no packet is sent
+                phoneIp = d.localAddress?.hostAddress
+            }
+        } catch (_: Exception) {
+        }
         try {
             if (Build.VERSION.SDK_INT >= 26) startForegroundService(i) else startService(i)
-            mirrorDone(true)
+            mirrorDone(mapOf("ok" to true, "phone" to phoneIp, "phonePort" to phonePort))
         } catch (e: Exception) {
+            runCatching { MirrorService.phoneServer?.close() }
+            MirrorService.phoneServer = null
             mirrorDone(false)
         }
     }

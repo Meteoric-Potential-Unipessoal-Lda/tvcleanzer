@@ -745,5 +745,6 @@
 "Telewizor nie odpowiadał: wysłaliśmy mu sygnał włączenia przez sieć. Jeśli się nie włączył, w ustawieniach TV włącz Wake on LAN (włączanie przez sieć).",
 "Telewizor nie odpowiada. Włącz go raz zwykłym pilotem: potem telefon nauczy się go budzić.",
 "Zatrzymaj powielanie ekranu",
-"Za mało miejsca na telewizorze na to wideo: potrzeba {0} MB, wolne {1} MB."
+"Za mało miejsca na telewizorze na to wideo: potrzeba {0} MB, wolne {1} MB.",
+"Jasność ekranu. Niektóre telewizory biorą ją tylko z własnych ustawień obrazu."
 ]

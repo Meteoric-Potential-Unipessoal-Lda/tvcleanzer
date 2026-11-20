@@ -20,7 +20,7 @@ class Mirror {
   static final _ended = StreamController<String?>.broadcast();
 
   /// Why mirroring ended: null = stopped on the phone; 'closed' (the TV closed it or the
-  /// Wi-Fi dropped), 'connect', 'token', 'encoder', 'denied'.
+  /// Wi-Fi dropped), 'connect|<system error>', 'token', 'encoder', 'denied'.
   static Stream<String?> get ended => _ended.stream;
 
   static bool _wired = false;
@@ -41,8 +41,9 @@ class Mirror {
     return List.generate(16, (_) => r.nextInt(256).toRadixString(16).padLeft(2, '0')).join();
   }
 
-  /// Asks the phone's permission and starts sending; false when the owner said no.
-  static Future<bool> start({
+  /// Asks the phone's permission and starts sending; null when the owner said no. The result
+  /// carries the phone's address and port for the TV to dial back (some TVs let nothing in).
+  static Future<({String? phone, int phonePort})?> start({
     required String host,
     required String token,
     required bool hd,
@@ -51,19 +52,26 @@ class Mirror {
     required String stopLabel,
   }) async {
     _wire();
-    final ok = await _ch.invokeMethod<bool>('start', {
-          'host': host,
-          'port': port,
-          'token': token,
-          'maxSize': hd ? 1920 : 1280,
-          'bitrate': hd ? 10000000 : 5000000,
-          'audio': audio,
-          'title': title,
-          'stopLabel': stopLabel,
-        }) ??
-        false;
-    running.value = ok;
-    return ok;
+    final r = await _ch.invokeMethod<Object?>('start', {
+      'host': host,
+      'port': port,
+      'token': token,
+      'maxSize': hd ? 1920 : 1280,
+      'bitrate': hd ? 10000000 : 5000000,
+      'audio': audio,
+      'title': title,
+      'stopLabel': stopLabel,
+    });
+    if (r is Map) {
+      running.value = true;
+      return (phone: r['phone'] as String?, phonePort: (r['phonePort'] as num?)?.toInt() ?? 0);
+    }
+    if (r == true) { // already running
+      running.value = true;
+      return (phone: null, phonePort: 0);
+    }
+    running.value = false;
+    return null;
   }
 
   static Future<void> stop() async {

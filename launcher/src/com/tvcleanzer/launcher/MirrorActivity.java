@@ -33,8 +33,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * «Повтор экрана»: the phone's screen (and sound) on the TV. The phone app starts this screen
- * over ADB with a one-time token, then connects to the TV's port and streams H.264 video plus
- * raw PCM sound; we decode straight onto a SurfaceView.
+ * over ADB with a one-time token and streams H.264 video plus raw PCM sound; we decode straight
+ * onto a SurfaceView. Two roads, the first that works wins: the phone connects to our port, and
+ * (0.45+, "phone" extra) we dial the phone's port, for TVs and routers that let nothing in.
  *
  * Stream (big-endian): int magic "TVCM", int version, UTF token; the TV answers one byte
  * (1 = accepted). Then packets: byte type, int length, long pts (µs), payload.
@@ -55,6 +56,7 @@ public class MirrorActivity extends Activity implements SurfaceHolder.Callback {
     private volatile ServerSocket server;
     private volatile Socket sock;
     private volatile boolean closed;
+    private volatile int gen;
     private volatile MediaCodec codec;
     private int vw, vh;
     private volatile Sound sound;
@@ -95,22 +97,28 @@ public class MirrorActivity extends Activity implements SurfaceHolder.Callback {
         token = i.getStringExtra("token");
         if (token == null || token.isEmpty()) { finish(); return; }
         int port = i.getIntExtra("port", PORT);
+        String phone = i.getStringExtra("phone");
+        int phonePort = i.getIntExtra("phonePort", 0);
         Socket old = sock; // the phone starts over
         sock = null;
         closeQuietly(old);
+        final int session = ++gen;
         if (server == null || server.getLocalPort() != port) {
             closeQuietly(server);
+            server = null;
             try {
                 ServerSocket s = new ServerSocket();
                 s.setReuseAddress(true);
                 s.bind(new InetSocketAddress(port));
                 server = s;
+                new Thread(() -> acceptLoop(s), "mirror-accept").start();
             } catch (IOException e) {
-                finish();
-                return;
+                if (phone == null) { finish(); return; } // we can still call the phone ourselves
             }
-            final ServerSocket s = server;
-            new Thread(() -> acceptLoop(s), "mirror-accept").start();
+        }
+        // Some TVs and routers let nothing in to an app's port: then the TV calls the phone.
+        if (phone != null && phonePort > 0) {
+            new Thread(() -> callPhone(session, phone, phonePort), "mirror-call").start();
         }
         hint.setVisibility(View.VISIBLE);
         ui.removeCallbacks(idle);
@@ -121,9 +129,6 @@ public class MirrorActivity extends Activity implements SurfaceHolder.Callback {
         while (!closed && server == s) {
             try {
                 Socket c = s.accept();
-                Socket old = sock;
-                sock = c;
-                closeQuietly(old);
                 new Thread(() -> serve(c), "mirror-read").start();
             } catch (IOException e) {
                 return; // closed
@@ -131,6 +136,23 @@ public class MirrorActivity extends Activity implements SurfaceHolder.Callback {
         }
     }
 
+    /** Dials the phone until it answers (or someone else's connection won, or 20 s passed). */
+    private void callPhone(int session, String host, int port) {
+        long until = System.currentTimeMillis() + 20_000;
+        while (!closed && gen == session && sock == null && System.currentTimeMillis() < until) {
+            Socket c = new Socket();
+            try {
+                c.connect(new InetSocketAddress(host, port), 2000);
+                serve(c); // the whole session when the phone takes this one
+            } catch (IOException e) {
+                closeQuietly(c);
+            }
+            if (sock != null || closed) return;
+            try { Thread.sleep(500); } catch (InterruptedException e) { return; }
+        }
+    }
+
+    /** One connection: the phone's greeting, then the stream. The first good one wins. */
     private void serve(Socket s) {
         try {
             s.setTcpNoDelay(true);
@@ -142,6 +164,10 @@ public class MirrorActivity extends Activity implements SurfaceHolder.Callback {
             in.readInt(); // version
             String t = in.readUTF();
             if (!t.equals(token)) { out.write(0); out.flush(); s.close(); return; }
+            synchronized (this) {
+                if (sock != null) { s.close(); return; } // the other road got there first
+                sock = s;
+            }
             out.write(1);
             out.flush();
             s.setSoTimeout(0);

@@ -745,5 +745,6 @@
 "Tv:n svarade inte: vi skickade en startsignal via nätverket. Om den inte startade, slå på Wake on LAN i tv:ns inställningar.",
 "Tv:n svarar inte. Starta den en gång med dess egen fjärrkontroll: sedan lär sig telefonen att väcka den.",
 "Stoppa skärmspegling",
-"För lite utrymme på tv:n för den här videon: {0} MB behövs, {1} MB ledigt."
+"För lite utrymme på tv:n för den här videon: {0} MB behövs, {1} MB ledigt.",
+"Skärmens ljusstyrka. Vissa tv-apparater tar den bara från sina egna bildinställningar."
 ]

@@ -61,6 +61,9 @@ class MirrorService : Service() {
 
         private var instance: MirrorService? = null
         fun stopNow() = instance?.finish(null)
+
+        /** The phone's own port for the TV to dial (opened by MainActivity before the TV starts). */
+        @Volatile var phoneServer: java.net.ServerSocket? = null
     }
 
     private val main = Handler(Looper.getMainLooper())
@@ -130,16 +133,10 @@ class MirrorService : Service() {
     }
 
     private fun begin(host: String, port: Int, token: String, withSound: Boolean) {
-        val s = connect(host, port) ?: return finish("connect")
+        val s = meet(host, port, token) ?: return
         try {
-            val out = DataOutputStream(BufferedOutputStream(s.getOutputStream(), 1 shl 16))
-            out.writeInt(MAGIC)
-            out.writeInt(1)
-            out.writeUTF(token)
-            out.flush()
-            s.soTimeout = 8000
-            if (DataInputStream(s.getInputStream()).read() != 1) return finish("token")
             s.soTimeout = 0
+            val out = DataOutputStream(BufferedOutputStream(s.getOutputStream(), 1 shl 16))
             socket = s
             sender = Sender(out) { finish("closed") }
             // the TV closing the screen shows up as the end of this stream
@@ -150,7 +147,7 @@ class MirrorService : Service() {
                 finish("closed")
             }, "mirror-watch").start()
         } catch (e: IOException) {
-            return finish("connect")
+            return finish("connect|${e.message}")
         }
         val size = screen()
         lastLandscape = size.x > size.y
@@ -175,21 +172,85 @@ class MirrorService : Service() {
         if (withSound && Build.VERSION.SDK_INT >= 29) startSound()
     }
 
-    /** The TV opens its port a moment after ADB starts the screen: retry for a few seconds. */
-    private fun connect(host: String, port: Int): Socket? {
-        val until = System.currentTimeMillis() + 10_000
-        while (!done && System.currentTimeMillis() < until) {
+    /**
+     * Two roads to the TV, the first that answers wins: we dial the TV's port, and the TV
+     * (launcher 0.45+) dials ours — for TVs and routers that let nothing in to an app's port.
+     * The greeting is the same both ways: we send magic + token, the TV answers 1.
+     */
+    @Volatile private var lastError = "timeout"
+    @Volatile private var tvSaidNo = false
+
+    private fun meet(host: String, port: Int, token: String): Socket? {
+        val won = java.util.concurrent.atomic.AtomicReference<Socket?>(null)
+        val lock = Object()
+        lastError = "timeout"
+        tvSaidNo = false
+        val until = System.currentTimeMillis() + 25_000
+
+        fun greet(s: Socket): Boolean {
             try {
-                val s = Socket()
                 s.tcpNoDelay = true
                 s.sendBufferSize = 1 shl 20
-                s.connect(InetSocketAddress(host, port), 3000)
-                return s
-            } catch (_: IOException) {
-                Thread.sleep(400)
+                s.soTimeout = 8000
+                val out = DataOutputStream(s.getOutputStream())
+                out.writeInt(MAGIC)
+                out.writeInt(1)
+                out.writeUTF(token)
+                out.flush()
+                val answer = s.getInputStream().read()
+                if (answer == 1 && won.compareAndSet(null, s)) {
+                    synchronized(lock) { lock.notifyAll() }
+                    return true
+                }
+                if (answer == 0) tvSaidNo = true
+            } catch (e: IOException) {
+                lastError = e.message ?: e.javaClass.simpleName
+            }
+            runCatching { s.close() }
+            return false
+        }
+
+        val server = phoneServer
+        phoneServer = null
+        if (server != null) {
+            Thread({
+                try {
+                    server.soTimeout = 1000
+                    while (!done && won.get() == null && System.currentTimeMillis() < until) {
+                        val c = try { server.accept() } catch (_: java.net.SocketTimeoutException) { continue }
+                        Thread({ greet(c) }, "mirror-greet").start()
+                    }
+                } catch (_: IOException) {
+                } finally {
+                    runCatching { server.close() }
+                }
+            }, "mirror-listen").start()
+        }
+        Thread({
+            while (!done && won.get() == null && System.currentTimeMillis() < until) {
+                val s = Socket()
+                try {
+                    s.connect(InetSocketAddress(host, port), 3000)
+                    if (greet(s)) return@Thread
+                } catch (e: IOException) {
+                    lastError = e.message ?: e.javaClass.simpleName
+                    runCatching { s.close() }
+                }
+                Thread.sleep(500)
+            }
+        }, "mirror-dial").start()
+
+        synchronized(lock) {
+            while (!done && won.get() == null && System.currentTimeMillis() < until) {
+                lock.wait(250)
             }
         }
-        return null
+        val s = won.get()
+        if (s == null) {
+            runCatching { server?.close() }
+            finish(if (tvSaidNo) "token" else "connect|$lastError")
+        }
+        return s
     }
 
     /** The phone turned: a new picture shape (not when only one app is shared). */

@@ -745,5 +745,6 @@
 "Televizyon yanıt vermedi: ona ağ üzerinden açma sinyali gönderdik. Açılmadıysa TV ayarlarında Wake on LAN'ı (ağ ile açma) etkinleştirin.",
 "Televizyon yanıt vermiyor. Bir kez kendi kumandasıyla açın: sonra telefon onu uyandırmayı öğrenir.",
 "Ekran yansıtmayı durdur",
-"TV'de bu video için yeterli yer yok: {0} MB gerekli, {1} MB boş."
+"TV'de bu video için yeterli yer yok: {0} MB gerekli, {1} MB boş.",
+"Ekran parlaklığı. Bazı televizyonlar bunu yalnızca kendi görüntü ayarlarından alır."
 ]

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -36,6 +37,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   bool _sending = false;
   bool _pad = false; // touchpad instead of the arrows
   String? _favsFor;
+  double? _bright; // 1–255, null until the TV says it has a brightness setting
   List<LauncherApp> _favs = const [];
   int _sleepMin = 0;
   DateTime? _sleepAt;
@@ -46,9 +48,13 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   void initState() {
     super.initState();
     Mirror.sync();
-    _mirrorEnded = Mirror.ended.listen((why) {
+    _mirrorEnded = Mirror.ended.listen((reason) {
+      // 'connect|<system error>': the detail helps when someone sends a screenshot
+      final why = reason?.split('|').first;
+      final detail = reason != null && reason.contains('|') ? reason.substring(reason.indexOf('|') + 1) : '';
       final m = switch (why) {
-        'connect' => tr('Телефон не достучался до телевизора. Проверьте, что они в одной Wi-Fi сети.'),
+        'connect' => '${tr('Телефон не достучался до телевизора. Проверьте, что они в одной Wi-Fi сети.')}'
+            '${detail.isEmpty ? '' : ' ($detail)'}',
         'token' => tr('Телевизор не принял телефон. Попробуйте ещё раз.'),
         'encoder' => tr('Этот телефон не смог сжать видео экрана.'),
         'closed' => tr('Повтор экрана закончился.'),
@@ -78,6 +84,12 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   void _loadFavs(TvDevice tv) {
     if (_favsFor == tv.id) return;
     _favsFor = tv.id;
+    _bright = null;
+    ref.read(remoteProvider.notifier).brightness(tv.id).then((v) {
+      if (mounted && _favsFor == tv.id && v != null && v >= 0 && v <= 255) {
+        setState(() => _bright = v.clamp(1, 255).toDouble());
+      }
+    }).catchError((_) {});
     ref.read(adbServiceProvider).launcherState(tv).then((s) {
       final f = s.apps.where((a) => a.fav >= 0 && !a.hidden).toList()..sort((a, b) => a.fav.compareTo(b.fav));
       if (mounted && _favsFor == tv.id) setState(() => _favs = f);
@@ -284,15 +296,17 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       return;
     }
     final token = Mirror.newToken();
+    final adb = ref.read(adbServiceProvider);
     var ready = false;
     await _run(tr('Готовим телевизор…'), () async {
-      if (!await ref.read(adbServiceProvider).startMirror(tv, port: Mirror.port, token: token)) {
+      if (await adb.launcherVersion(tv) < 43) {
         throw AdbException(tr('Обновите лаунчер на ТВ: повтор экрана есть в новой версии.'));
       }
       ready = true;
     });
     if (!ready || !mounted) return;
-    final started = await Mirror.start(
+    // the phone's permission first: it opens our port, then the TV is told where to find us
+    final r = await Mirror.start(
       host: tv.ipAddress,
       token: token,
       hd: hd,
@@ -300,10 +314,16 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       title: tr('Экран телефона на телевизоре'),
       stopLabel: tr('Остановить'),
     );
-    if (!started) {
-      ref.read(adbServiceProvider).closeMirror(tv);
-      return;
-    }
+    if (r == null || !mounted) return;
+    var shown = false;
+    await _run(tr('Готовим телевизор…'), () async {
+      if (!await adb.startMirror(tv, port: Mirror.port, token: token, phone: r.phone, phonePort: r.phonePort)) {
+        await Mirror.stop();
+        throw AdbException(tr('Обновите лаунчер на ТВ: повтор экрана есть в новой версии.'));
+      }
+      shown = true;
+    });
+    if (!shown) return;
     _snack(tr('Экран телефона на телевизоре. Остановить — здесь, в уведомлении или кнопкой «Назад» на пульте ТВ.'));
   }
 
@@ -440,6 +460,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                     onTap: () => _sleep(tv)),
                 _RoundButton(icon: Icons.screenshot_monitor_rounded, label: tr('Снимок'), onTap: () => _screenshot(tv)),
               ]),
+              if (_bright != null) ...[const Gap(14), _brightRow(tv)],
               if (_favs.isNotEmpty) ...[const Gap(24), _favRow(tv)],
               const Gap(24),
               _textInput(tv),
@@ -466,6 +487,25 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
               style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, letterSpacing: .8, color: AppColors.fgMuted)),
         ),
       );
+
+  /// Screen brightness: sent when the finger lets go (one command, not a hundred).
+  Widget _brightRow(TvDevice tv) => Column(children: [
+        Row(children: [
+          const Icon(Icons.brightness_low_rounded, color: AppColors.fgMid, size: 20),
+          Expanded(
+            child: Slider(
+              min: 1,
+              max: 255,
+              value: _bright!,
+              onChanged: (v) => setState(() => _bright = v),
+              onChangeEnd: (v) => ref.read(remoteProvider.notifier).setBrightness(tv.id, v.round()).catchError((_) {}),
+            ),
+          ),
+          const Icon(Icons.brightness_high_rounded, color: AppColors.fgMid, size: 20),
+        ]),
+        Text(tr('Яркость экрана. Некоторые телевизоры берут её только из своих настроек изображения.'),
+            textAlign: TextAlign.center, style: const TextStyle(fontSize: 11, color: AppColors.fgMuted)),
+      ]);
 
   Widget _favRow(TvDevice tv) => Column(children: [
         _section(tr('Избранное')),
@@ -763,8 +803,19 @@ class _TouchPad extends StatefulWidget {
 
 class _TouchPadState extends State<_TouchPad> {
   static const _step = 48.0; // finger travel per key press
+  static const _slop = 12.0; // less than this is a tap, not a swipe
   Offset _acc = Offset.zero;
   Offset? _dot;
+  int? _pointer;
+  Offset _start = Offset.zero;
+  bool _moved = false, _longDone = false;
+  Timer? _long;
+
+  @override
+  void dispose() {
+    _long?.cancel();
+    super.dispose();
+  }
 
   void _move(Offset d) {
     _acc += d;
@@ -782,25 +833,59 @@ class _TouchPadState extends State<_TouchPad> {
     }
   }
 
+  void _down(PointerDownEvent e) {
+    if (_pointer != null) return; // one finger
+    _pointer = e.pointer;
+    _start = e.localPosition;
+    _acc = Offset.zero;
+    _moved = false;
+    _longDone = false;
+    _long?.cancel();
+    _long = Timer(const Duration(milliseconds: 550), () {
+      if (_moved || _pointer == null) return;
+      _longDone = true;
+      HapticFeedback.mediumImpact();
+      widget.onLongOk();
+    });
+    setState(() => _dot = e.localPosition);
+  }
+
+  void _update(PointerMoveEvent e) {
+    if (e.pointer != _pointer) return;
+    if (!_moved && (e.localPosition - _start).distance > _slop) {
+      _moved = true;
+      _long?.cancel();
+    }
+    if (_moved) _move(e.delta);
+    setState(() => _dot = e.localPosition);
+  }
+
+  void _up(PointerEvent e, {bool cancel = false}) {
+    if (e.pointer != _pointer) return;
+    _pointer = null;
+    _long?.cancel();
+    if (!cancel && !_moved && !_longDone) {
+      HapticFeedback.lightImpact();
+      widget.onKey(Keys.ok);
+    }
+    setState(() => _dot = null);
+  }
+
+  /// Raw pointer events plus an eager recognizer: the pad takes the finger at once, so the
+  /// page around it no longer scrolls up and down when the remote is taller than the screen.
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: () {
-          HapticFeedback.lightImpact();
-          widget.onKey(Keys.ok);
+  Widget build(BuildContext context) => RawGestureDetector(
+        gestures: {
+          EagerGestureRecognizer: GestureRecognizerFactoryWithHandlers<EagerGestureRecognizer>(
+            () => EagerGestureRecognizer(),
+            (_) {},
+          ),
         },
-        onLongPress: () {
-          HapticFeedback.mediumImpact();
-          widget.onLongOk();
-        },
-        onPanStart: (d) => setState(() {
-          _acc = Offset.zero;
-          _dot = d.localPosition;
-        }),
-        onPanUpdate: (d) {
-          _move(d.delta);
-          setState(() => _dot = d.localPosition);
-        },
-        onPanEnd: (_) => setState(() => _dot = null),
+        child: Listener(
+          onPointerDown: _down,
+          onPointerMove: _update,
+          onPointerUp: _up,
+          onPointerCancel: (e) => _up(e, cancel: true),
         child: Container(
           height: 250,
           width: double.infinity,
@@ -828,6 +913,7 @@ class _TouchPadState extends State<_TouchPad> {
                 ),
               ),
           ]),
+        ),
         ),
       );
 }

@@ -745,5 +745,6 @@
 "TV không phản hồi: đã gửi tín hiệu bật qua mạng. Nếu TV không bật, hãy bật Wake on LAN trong cài đặt TV.",
 "TV không phản hồi. Hãy bật nó một lần bằng điều khiển của TV: sau đó điện thoại sẽ học cách đánh thức nó.",
 "Dừng phản chiếu màn hình",
-"TV không đủ dung lượng cho video này: cần {0} MB, còn trống {1} MB."
+"TV không đủ dung lượng cho video này: cần {0} MB, còn trống {1} MB.",
+"Độ sáng màn hình. Một số TV chỉ lấy độ sáng từ cài đặt hình ảnh riêng của chúng."
 ]

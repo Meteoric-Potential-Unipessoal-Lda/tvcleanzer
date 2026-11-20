@@ -745,5 +745,6 @@
 "The TV didn't answer: we sent it a network wake-up signal. If it didn't turn on, enable Wake on LAN in the TV settings.",
 "The TV isn't answering. Turn it on once with its own remote: after that the phone will learn to wake it.",
 "Stop screen mirroring",
-"Not enough space on the TV for this video: {0} MB needed, {1} MB free."
+"Not enough space on the TV for this video: {0} MB needed, {1} MB free.",
+"Screen brightness. Some TVs only take it from their own picture settings."
 ]

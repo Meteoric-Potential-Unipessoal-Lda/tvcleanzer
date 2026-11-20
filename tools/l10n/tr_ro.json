@@ -745,5 +745,6 @@
 "Televizorul nu a răspuns: i-am trimis un semnal de pornire prin rețea. Dacă nu a pornit, activați Wake on LAN în setările TV.",
 "Televizorul nu răspunde. Porniți-l o dată cu telecomanda lui: după aceea telefonul va învăța să-l trezească.",
 "Oprește oglindirea ecranului",
-"Spațiu insuficient pe TV pentru acest video: sunt necesari {0} MB, liberi {1} MB."
+"Spațiu insuficient pe TV pentru acest video: sunt necesari {0} MB, liberi {1} MB.",
+"Luminozitatea ecranului. Unele televizoare o iau doar din propriile setări de imagine."
 ]
