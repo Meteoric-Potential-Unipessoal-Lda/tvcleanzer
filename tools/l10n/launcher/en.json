@@ -116,5 +116,10 @@
 "Лишнего в памяти нет": "Nothing extra in memory",
 "Источники не найдены": "No inputs found",
 "Телевизор не умеет показывать это видео": "The TV can't play this video",
-"Ждём телефон…": "Waiting for the phone…"
+"Ждём телефон…": "Waiting for the phone…",
+"Недавние приложения": "Recent apps",
+"ОК — открыть, «Меню» или долгое ОК — закрыть": "OK — open, Menu or long OK — close",
+"Закрыть все": "Close all",
+"Закрываем…": "Closing…",
+"Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ.": "List unavailable: connect a phone with TVCleanzer to the TV once and it will grant access."
 }

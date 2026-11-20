@@ -539,7 +539,7 @@ class AdbPackageManager {
   static const launcherPkg = 'com.tvcleanzer.launcher';
   static const launcherHome = '$launcherPkg/.HomeActivity';
   /// versionCode of the launcher APK bundled in this app (launcher/AndroidManifest.xml).
-  static const bundledLauncherVersion = 45;
+  static const bundledLauncherVersion = 47;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -795,6 +795,10 @@ class AdbPackageManager {
     // HDMI (runtime permission; refused on some firmwares — then the launcher falls back).
     if (sdk >= 23) {
       await adb.shell('pm grant $launcherPkg com.android.providers.tv.permission.READ_EPG_DATA 2>&1');
+    }
+    // «Запущенные»: the launcher's own recent-apps row reads usage stats (Android 5.1+)
+    if (sdk >= 22) {
+      await adb.shell('appops set $launcherPkg GET_USAGE_STATS allow 2>&1');
     }
     // Where Home already opens us through the HOME setting, the service must not catch keys:
     // that costs key repeat (Haier FF Pro, Xiaomi MOEU1: held Volume moved one step). Tested

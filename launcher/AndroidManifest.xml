@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="45"
-    android:versionName="0.45">
+    android:versionCode="47"
+    android:versionName="0.47">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -10,6 +10,8 @@
     <!-- weather on the clock home screen (Open-Meteo); nothing else goes online -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <!-- «Запущенные»: recently used apps; the phone app turns the access on over ADB (appops) -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
     <!-- the tuner's channel list, to open «ТВ» on the antenna rather than the last HDMI;
          granted by the phone app over ADB (pm grant) -->
     <uses-permission android:name="com.android.providers.tv.permission.READ_EPG_DATA" />
@@ -131,6 +133,15 @@
             android:name=".CastActivity"
             android:theme="@style/HomeTheme"
             android:exported="true"
+            android:screenOrientation="landscape" />
+
+        <!-- «Запущенные»: our recent-apps row (TVs without a recents screen of their own) -->
+        <activity
+            android:name=".RecentsActivity"
+            android:theme="@style/HomeTheme"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <!-- «Повтор экрана»: started by the phone app over ADB with a one-time token -->

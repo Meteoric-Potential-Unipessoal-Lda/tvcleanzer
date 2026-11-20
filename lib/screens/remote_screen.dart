@@ -454,7 +454,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
               ]),
               const Gap(18),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                _RoundButton(icon: Icons.view_carousel_rounded, label: tr('Запущенные'), onTap: () => _key(tv, Keys.recents)),
+                _RoundButton(icon: Icons.view_carousel_rounded, label: tr('Запущенные'), onTap: () => ref.read(remoteProvider.notifier).recents(tv.id).catchError((_) {})),
                 _RoundButton(icon: Icons.settings_rounded, label: tr('Настройки'), onTap: () => _key(tv, Keys.settings)),
                 _RoundButton(icon: Icons.bedtime_rounded,
                     label: _sleepAt == null ? tr('Таймер сна') : tr('{0} мин', ['$_sleepMin']),

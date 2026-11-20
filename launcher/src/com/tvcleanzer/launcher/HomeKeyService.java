@@ -389,10 +389,30 @@ public class HomeKeyService extends AccessibilityService {
     /** On Google TV the running-apps panel belongs to the stock home: don't replace it. */
     private long recentsAt;
 
-    /** The system's «recent apps» screen; false where the firmware has none. */
+    /** Our own «Запущенные» row when the phone gave us usage access (many TVs have no recents
+     *  screen at all), else the system's; false where neither exists. */
     private boolean recents() {
+        if (usageAccess(this)) {
+            try {
+                startActivity(new Intent(this, RecentsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                return true;
+            } catch (Throwable ignored) {}
+        }
         try {
             return performGlobalAction(GLOBAL_ACTION_RECENTS);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    static boolean usageAccess(Context c) {
+        if (android.os.Build.VERSION.SDK_INT < 22) return false;
+        try {
+            android.app.AppOpsManager ops = (android.app.AppOpsManager) c.getSystemService(Context.APP_OPS_SERVICE);
+            @SuppressWarnings("deprecation")
+            int mode = ops.checkOpNoThrow(android.app.AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    android.os.Process.myUid(), c.getPackageName());
+            return mode == android.app.AppOpsManager.MODE_ALLOWED;
         } catch (Throwable t) {
             return false;
         }

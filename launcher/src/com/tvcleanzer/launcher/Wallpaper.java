@@ -62,7 +62,8 @@ final class Wallpaper {
             while (o.outWidth / (sample * 2) >= target) sample *= 2;
             BitmapFactory.Options d = new BitmapFactory.Options();
             d.inSampleSize = sample;
-            d.inPreferredConfig = Bitmap.Config.RGB_565; // half the memory, fine for photos
+            // full colour: RGB_565 showed bands on skies and faces («сжатые» photos in a review)
+            d.inPreferredConfig = Bitmap.Config.ARGB_8888;
             return BitmapFactory.decodeFile(f.getAbsolutePath(), d);
         } catch (Throwable t) {
             return null;

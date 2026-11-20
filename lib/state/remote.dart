@@ -102,6 +102,16 @@ class RemoteController extends StateNotifier<RemoteState> {
   Future<void> setBrightness(String ip, int value) => _enqueue(ip,
       () => 'settings put system screen_brightness_mode 0; settings put system screen_brightness ${value.clamp(1, 255)}');
 
+  /// «Запущенные»: many TVs do nothing on the Recents key, so our launcher (0.47+) shows its
+  /// own row of recent apps; the Recents key only where the launcher is older or missing.
+  Future<void> recents(String ip) async {
+    var opened = false;
+    await _enqueue(ip, () => 'appops set com.tvcleanzer.launcher GET_USAGE_STATS allow >/dev/null 2>&1; '
+        'am start -n com.tvcleanzer.launcher/.RecentsActivity 2>&1',
+        onOut: (out) => opened = !out.contains('Error') && !out.contains('does not exist'));
+    if (!opened) key(ip, Keys.recents);
+  }
+
   /// A long press (the TV's «options» on a tile).
   void longKey(String ip, int code) =>
       _enqueue(ip, () => 'keyevent --longpress $code', input: true).catchError((_) {});

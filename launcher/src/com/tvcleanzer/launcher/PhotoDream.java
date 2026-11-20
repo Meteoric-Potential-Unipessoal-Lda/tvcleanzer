@@ -190,7 +190,7 @@ public class PhotoDream extends DreamService {
                 fadeIn.setAlpha(e);
                 if (fadeOut != null) fadeOut.setAlpha(1f - e);
                 if (t >= 1f) {
-                    if (fadeOut != null) fadeOut.setImageDrawable(null); // only one photo in memory
+                    if (fadeOut != null) { fadeOut.setImageDrawable(null); fadeOut.setBackground(null); } // only one photo in memory
                     fadeIn = null;
                     fadeOut = null;
                 } else {
@@ -216,11 +216,33 @@ public class PhotoDream extends DreamService {
         io.execute(() -> {
             final Bitmap b = Photos.load(this, f);
             if (b != null) b.prepareToDraw(); // upload ahead, so the fade does not stutter
+            // A photo far from the screen's shape (a portrait shot on a wide TV) is shown whole,
+            // on a blurred, darkened copy of itself — cropping it would cut off half the picture.
+            Bitmap back = null;
+            if (b != null) {
+                float sw = getResources().getDisplayMetrics().widthPixels;
+                float sh = Math.max(1, getResources().getDisplayMetrics().heightPixels);
+                float r = b.getWidth() / (float) Math.max(1, b.getHeight()), rs = sw / sh;
+                if (r < rs * 0.7f || r > rs * 1.4f) {
+                    back = Bitmap.createScaledBitmap(b, 24, Math.max(1, Math.round(24 / rs)), true);
+                }
+            }
+            final Bitmap blur = back;
             handler.post(() -> {
                 if (b == null || views == null) return;
                 ImageView in = views[1 - front], out = views[front];
                 front = 1 - front;
-                if (fadeOut != null) fadeOut.setImageDrawable(null); // a fade still running: drop it
+                if (fadeOut != null) { fadeOut.setImageDrawable(null); fadeOut.setBackground(null); } // a fade still running: drop it
+                if (blur != null) {
+                    android.graphics.drawable.BitmapDrawable d = new android.graphics.drawable.BitmapDrawable(getResources(), blur);
+                    d.setFilterBitmap(true);
+                    d.setColorFilter(0xFF6E6E6E, android.graphics.PorterDuff.Mode.MULTIPLY);
+                    in.setBackground(d);
+                    in.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                } else {
+                    in.setBackground(null);
+                    in.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                }
                 in.setImageBitmap(b);
                 in.setAlpha(0f);
                 in.setScaleX(1f);

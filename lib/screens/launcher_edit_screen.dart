@@ -680,7 +680,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   Future<void> _addPhotos() async {
     List<XFile> picked;
     try {
-      picked = await ImagePicker().pickMultiImage(maxWidth: 1920, maxHeight: 1920, imageQuality: 82, limit: 30);
+      picked = await ImagePicker().pickMultiImage(maxWidth: 1920, maxHeight: 1920, imageQuality: 92, limit: 30);
     } catch (e) {
       AppLog.error('pick photos', e);
       _snack(tr('Нет доступа к фото. Разрешите его в настройках телефона.'));
