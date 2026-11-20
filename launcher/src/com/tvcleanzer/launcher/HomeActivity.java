@@ -672,8 +672,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private void openInput(Inputs.Item it) {
         HomeKeyService.quiet(15000);
-        try { startActivity(Inputs.intent(it)); }
-        catch (Exception e) { Toast.makeText(this, T.f("Не удалось открыть {0}", it.label), Toast.LENGTH_SHORT).show(); }
+        if (!Inputs.open(this, it)) Toast.makeText(this, T.f("Не удалось открыть {0}", it.label), Toast.LENGTH_SHORT).show();
     }
 
     /** First Home after a boot: open the app chosen to start with the TV (once per boot). */
@@ -691,7 +690,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // A TV input: the TV is just a screen for a box on HDMI (a chat wish: Sber TV + Mi Stick).
         if (pkg.startsWith("input:")) {
             String id = pkg.substring(6);
-            if (id.startsWith("tv:")) return openAutostart(c, id.substring(3));
+            if (id.startsWith("tv:")) {
+                Inputs.Item tv = Inputs.tv(c, true);
+                return tv != null ? Inputs.open(c, tv) : openAutostart(c, id.substring(3));
+            }
             try {
                 c.startActivity(Inputs.intent(new Inputs.Item(id, id)));
                 return true;
@@ -1458,10 +1460,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             for (int i = 0; i < inputs.size(); i++) {
                 final Inputs.Item it = inputs.get(i);
                 Pill pill = new Pill(this, it.label);
-                pill.setOnClickListener(v -> {
-                    try { startActivity(Inputs.intent(it)); }
-                    catch (Exception e) { Toast.makeText(this, T.f("Не удалось открыть {0}", it.label), Toast.LENGTH_SHORT).show(); }
-                });
+                pill.setOnClickListener(v -> openInput(it));
                 LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i > 0) ip.leftMargin = Ui.dp(this, 12);

@@ -20,8 +20,46 @@ final class Inputs {
         final String id, label;
         /** Set for «ТВ» (opens the TV's live TV app); null for HDMI/AV (tuned by input id). */
         final Intent open;
+        /** «ТВ»: ways to land on the antenna/cable itself, tried before [open]. Launching the TV
+         *  app alone shows its last source — often HDMI 1 (an owner: «выбираю ТВ — включается
+         *  HDMI 1»). */
+        final List<Intent> first = new ArrayList<>();
         Item(String id, String label) { this(id, label, null); }
         Item(String id, String label, Intent open) { this.id = id; this.label = label; this.open = open; }
+    }
+
+    /** Opens [i]: the tuner channel / tuner input first, the TV app as the last resort. */
+    static boolean open(Context c, Item i) {
+        for (Intent t : i.first) {
+            try { c.startActivity(t); return true; } catch (Throwable ignored) {}
+        }
+        try { c.startActivity(intent(i)); return true; } catch (Throwable e) { return false; }
+    }
+
+    /** The first channel of the TV's tuner (needs READ_EPG_DATA, granted by the phone app over
+     *  ADB; without it the query fails and we fall back). */
+    private static Intent firstChannel(Context c, String tunerId, String pkg) {
+        if (tunerId == null) return null;
+        android.database.Cursor cur = null;
+        try {
+            cur = c.getContentResolver().query(TvContract.buildChannelsUriForInput(tunerId),
+                    new String[]{TvContract.Channels._ID}, TvContract.Channels.COLUMN_BROWSABLE + "=1",
+                    null, null);
+            if (cur == null || !cur.moveToFirst()) {
+                if (cur != null) cur.close();
+                cur = c.getContentResolver().query(TvContract.buildChannelsUriForInput(tunerId),
+                        new String[]{TvContract.Channels._ID}, null, null, null);
+            }
+            if (cur == null || !cur.moveToFirst()) return null;
+            Intent i = new Intent(Intent.ACTION_VIEW, TvContract.buildChannelUri(cur.getLong(0)))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (pkg != null) i.setPackage(pkg);
+            return i;
+        } catch (Throwable t) {
+            return null;
+        } finally {
+            if (cur != null) try { cur.close(); } catch (Throwable ignored) {}
+        }
     }
 
     /** Live TV apps of common firmwares, tried after whatever answers "view a channel". */
@@ -35,12 +73,16 @@ final class Inputs {
     static List<Item> load(Context c) {
         List<Item> out = new ArrayList<>();
         boolean tuner = false;
+        String tunerId = null;
         try {
             TvInputManager tim = (TvInputManager) c.getSystemService(Context.TV_INPUT_SERVICE);
             if (tim != null) {
                 for (TvInputInfo info : tim.getTvInputList()) {
                     if (!info.isPassthroughInput()) {
-                        if (info.getType() == TvInputInfo.TYPE_TUNER) tuner = true;
+                        if (info.getType() == TvInputInfo.TYPE_TUNER) {
+                            tuner = true;
+                            if (tunerId == null) tunerId = info.getId();
+                        }
                         continue; // tuners and apps: reached through «ТВ» below
                     }
                     if (info.isHidden(c)) continue;
@@ -53,14 +95,26 @@ final class Inputs {
         } catch (Throwable ignored) {}
         // «ТВ» first: owners looked for the antenna among the sources (a chat question; the
         // CVTE service-menu code is typed in the picture settings while a TV source plays).
-        Item tv = tv(c, tuner);
+        Item tv = tv(c, tuner, tunerId);
         if (tv != null) out.add(0, tv);
         return out;
     }
 
+    /** «ТВ» with its tuner looked up again (for the remote's TV key and autostart). */
+    static Item tv(Context c, boolean tuner) {
+        String tunerId = null;
+        try {
+            TvInputManager tim = (TvInputManager) c.getSystemService(Context.TV_INPUT_SERVICE);
+            if (tim != null) for (TvInputInfo info : tim.getTvInputList()) {
+                if (!info.isPassthroughInput() && info.getType() == TvInputInfo.TYPE_TUNER) { tunerId = info.getId(); break; }
+            }
+        } catch (Throwable ignored) {}
+        return tv(c, tuner || tunerId != null, tunerId);
+    }
+
     /** The app that shows live TV: whoever handles "view a channel", else a known one when
      *  the TV has a tuner. Null on boxes without either. */
-    static Item tv(Context c, boolean tuner) {
+    private static Item tv(Context c, boolean tuner, String tunerId) {
         try {
             PackageManager pm = c.getPackageManager();
             Set<String> cand = new LinkedHashSet<>();
@@ -74,7 +128,18 @@ final class Inputs {
                 Intent i = null;
                 if (Build.VERSION.SDK_INT >= 21) i = pm.getLeanbackLaunchIntentForPackage(p);
                 if (i == null) i = pm.getLaunchIntentForPackage(p);
-                if (i != null) return new Item("tv:" + p, T.t("ТВ"), i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                if (i != null) {
+                    Item item = new Item("tv:" + p, T.t("ТВ"), i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    Intent ch = firstChannel(c, tunerId, p);
+                    if (ch != null && !pm.queryIntentActivities(ch, 0).isEmpty()) item.first.add(ch);
+                    if (tunerId != null) {
+                        // the tuner as an input: MediaTek / AOSP Live TV switch the source to it
+                        Intent src = new Intent(Intent.ACTION_VIEW, TvContract.buildChannelUriForPassthroughInput(tunerId))
+                                .setPackage(p).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        if (!pm.queryIntentActivities(src, 0).isEmpty()) item.first.add(src);
+                    }
+                    return item;
+                }
             }
         } catch (Throwable ignored) {}
         return null;

@@ -251,7 +251,10 @@ public class HomeKeyService extends AccessibilityService {
                 i = new Intent(this, HomeActivity.class).putExtra(HomeActivity.EXTRA_INPUTS, true);
             } else {
                 Inputs.Item tv = Inputs.tv(this, true);
-                if (tv != null) i = Inputs.intent(tv);
+                if (tv == null) return false;
+                quiet(15000);
+                Inputs.open(this, tv);
+                return true;
             }
             if (i == null) return false;
             try { startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); } catch (Throwable ignored) {}
