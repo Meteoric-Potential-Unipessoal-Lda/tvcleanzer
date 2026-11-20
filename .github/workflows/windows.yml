@@ -51,6 +51,11 @@ jobs:
           "ZIP=$zip" >> $env:GITHUB_ENV
           "SHA=$sha" >> $env:GITHUB_ENV
           Write-Host "$zip  sha256 $sha"
+          # The TV launcher on its own (signed, built on the Mac and committed in assets/):
+          # one fixed name, so .../releases/latest/download/TVCleanzer-Launcher.apk always works.
+          Copy-Item assets\launcher\tvcleanzer-launcher.apk dist\TVCleanzer-Launcher.apk
+          $lsha = (Get-FileHash dist\TVCleanzer-Launcher.apk -Algorithm SHA256).Hash.ToLower()
+          "LSHA=$lsha" >> $env:GITHUB_ENV
 
       - uses: actions/upload-artifact@v4
         with:
@@ -61,5 +66,13 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.ZIP }}
-          body: "Windows x64. SHA-256: ${{ env.SHA }}"
+          files: |
+            ${{ env.ZIP }}
+            dist/TVCleanzer-Launcher.apk
+          body: |
+            **TVCleanzer-Launcher.apk** — лаунчер для телевизора отдельно: скачайте браузером прямо на ТВ (или на флешку) и установите. Ссылка на последнюю версию всегда одна: https://github.com/Meteoric-Potential-Unipessoal-Lda/tvcleanzer/releases/latest/download/TVCleanzer-Launcher.apk
+            SHA-256: ${{ env.LSHA }}
+
+            **TVCleanzer-*-windows-x64.zip** — приложение для Windows. SHA-256: ${{ env.SHA }}
+
+            Android и iPhone: Google Play и App Store («TVCleanzer»). APK приложения для телефона — в Telegram-канале автора.
