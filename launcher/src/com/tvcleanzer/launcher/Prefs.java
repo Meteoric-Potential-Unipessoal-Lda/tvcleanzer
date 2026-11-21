@@ -18,7 +18,7 @@ final class Prefs {
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
             AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
-            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", HERO_TITLE = "heroTitle", MEM_PILL = "memPill", STOCK_OFF = "stockOff", KEY_FILTER = "keyFilter", FAV_BOTTOM = "favBottom", SHELF = "shelf",
+            PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", HERO_TITLE = "heroTitle", MEM_PILL = "memPill", STOCK_OFF = "stockOff", KEY_FILTER = "keyFilter", VOL_SMOOTH = "volSmooth", FAV_BOTTOM = "favBottom", SHELF = "shelf",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot", ICONS = "icons",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
             W_CITY = "weatherCity", W_LAT = "weatherLat", W_LON = "weatherLon",
@@ -242,6 +242,17 @@ final class Prefs {
      *  catching keys (that cost owners key repeat: Volume held moved one step). */
     boolean keyFilter()      { return sp.getBoolean(KEY_FILTER, true); }
     void setKeyFilter(boolean v) { sp.edit().putBoolean(KEY_FILTER, v).apply(); }
+    /** «Громкость при зажатии → Меняется плавно»: the owner's word, above what the phone app and
+     *  the Google TV keys would like. The key filter is what costs key repeat (held Volume moves
+     *  one step); without it Home still lands on us, the service replaces the stock screen by its
+     *  window. Not chosen yet = smooth on Xiaomi: most complaints in the chat, and there the
+     *  service's own volume steps don't move the level (PatchWall / Google TV models alike). */
+    boolean volSmooth()      { return sp.contains(VOL_SMOOTH) ? sp.getBoolean(VOL_SMOOTH, false) : xiaomi(); }
+    void setVolSmooth(boolean v) { sp.edit().putBoolean(VOL_SMOOTH, v).apply(); }
+    static boolean xiaomi() {
+        String m = android.os.Build.MANUFACTURER;
+        return m != null && m.toLowerCase(java.util.Locale.ROOT).contains("xiaomi");
+    }
     void setHomePhotos(boolean v) { sp.edit().putBoolean(HOME_PHOTOS, v).apply(); }
     long photoRev()          { return sp.getLong(PHOTO_REV, 0); }
     void bumpPhotos()        { sp.edit().putLong(PHOTO_REV, System.currentTimeMillis()).apply(); }

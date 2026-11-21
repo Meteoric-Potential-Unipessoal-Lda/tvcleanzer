@@ -71,6 +71,11 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.hasExtra("favBottom")) p.setFavBottom(intent.getBooleanExtra("favBottom", false));
         if (intent.hasExtra("shelf")) p.setShelf(intent.getIntExtra("shelf", Prefs.SHELF_GLASS));
         if (intent.hasExtra("stockOff")) p.setStockOff(intent.getBooleanExtra("stockOff", false));
+        if (intent.hasExtra("volSmooth")) {
+            p.setVolSmooth(intent.getBooleanExtra("volSmooth", false));
+            HomeKeyService s = HomeKeyService.running;
+            if (s != null) s.updateKeyFilter();
+        }
         if (intent.hasExtra("keyFilter")) {
             p.setKeyFilter(intent.getBooleanExtra("keyFilter", true));
             HomeKeyService s = HomeKeyService.running;

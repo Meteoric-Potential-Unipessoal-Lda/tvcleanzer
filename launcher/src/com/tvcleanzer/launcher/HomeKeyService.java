@@ -65,13 +65,19 @@ public class HomeKeyService extends AccessibilityService {
             int flag = android.accessibilityservice.AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS;
             Prefs p = new Prefs(this);
             keyMap = p.keyMap();
-            boolean want = p.keyFilter() || stockHomeOff() || !keyMap.isEmpty() || learn != null;
+            boolean want = !keyMap.isEmpty() || learn != null || volumeFiltered(this, p);
             int nf = want ? info.flags | flag : info.flags & ~flag;
             if (nf != info.flags) {
                 info.flags = nf;
                 setServiceInfo(info);
             }
         } catch (Throwable ignored) {}
+    }
+
+    /** Would the filter be on for Home / ⚙ / Source alone (remote-key mapping aside)? Then held
+     *  Volume moves one step. The owner's «Меняется плавно» wins over both reasons. */
+    static boolean volumeFiltered(Context c, Prefs p) {
+        return !p.volSmooth() && (p.keyFilter() || stockHomeOff(c));
     }
 
     private final Set<String> stockHomes = new HashSet<>();
@@ -267,7 +273,7 @@ public class HomeKeyService extends AccessibilityService {
     private boolean stockKey(KeyEvent e) {
         int code = e.getKeyCode();
         if (code != KeyEvent.KEYCODE_SETTINGS && code != KeyEvent.KEYCODE_TV && code != KeyEvent.KEYCODE_TV_INPUT) return false;
-        if (!new Prefs(this).stockOff() && !stockHomeOff()) return false;
+        if (!new Prefs(this).stockOff() && !stockHomeOff(this)) return false;
         if (e.getAction() == KeyEvent.ACTION_UP) {
             Intent i = null;
             if (code == KeyEvent.KEYCODE_SETTINGS) {
@@ -290,8 +296,8 @@ public class HomeKeyService extends AccessibilityService {
 
     /** Google TV's home is switched off (pinned hard, or by hand): nobody else answers ⚙,
      *  TV and Source any more (TCL C7L owner: ⚙ dead after bringing the stock home back and forth). */
-    private boolean stockHomeOff() {
-        PackageManager pm = getPackageManager();
+    static boolean stockHomeOff(Context c) {
+        PackageManager pm = c.getPackageManager();
         boolean any = false;
         for (String p : new String[]{"com.google.android.apps.tv.launcherx", "com.google.android.tvlauncher"}) {
             try {

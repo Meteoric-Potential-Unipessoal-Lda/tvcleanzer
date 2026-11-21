@@ -221,8 +221,11 @@ public class SettingsActivity extends Activity {
         addRow(skin, T.t("Кнопки пульта"), "›", () -> startActivity(new Intent(this, KeyMapActivity.class)));
         // The Home-key service's key filter costs key repeat: held Volume moves one step (many
         // Xiaomi owners). Off = smooth volume; Home then relies on the HOME setting.
-        addToggle(skin, T.t("Громкость при зажатии"), !prefs.keyFilter(), T.t("Меняется плавно"), T.t("По одному шагу"), v -> {
-            prefs.setKeyFilter(!v);
+        // The owner's choice is kept apart from the phone's keyFilter (volSmooth): Google TV models
+        // with their home switched off kept the filter whatever was chosen here (Xiaomi MSSP owners).
+        addToggle(skin, T.t("Громкость при зажатии"), !HomeKeyService.volumeFiltered(this, prefs), T.t("Меняется плавно"), T.t("По одному шагу"), v -> {
+            prefs.setVolSmooth(v);
+            if (!v) prefs.setKeyFilter(true);
             HomeKeyService s = HomeKeyService.running;
             if (s != null) s.updateKeyFilter();
             if (v) Toast.makeText(this, T.t("Если «Домой» перестанет открывать лаунчер, верните «По одному шагу»"),
