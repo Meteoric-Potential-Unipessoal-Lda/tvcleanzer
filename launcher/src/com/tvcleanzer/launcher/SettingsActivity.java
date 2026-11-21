@@ -226,6 +226,7 @@ public class SettingsActivity extends Activity {
         addToggle(skin, T.t("Громкость при зажатии"), !HomeKeyService.volumeFiltered(this, prefs), T.t("Меняется плавно"), T.t("По одному шагу"), v -> {
             prefs.setVolSmooth(v);
             if (!v) prefs.setKeyFilter(true);
+            else prefs.setKeyFilter(false);
             HomeKeyService s = HomeKeyService.running;
             if (s != null) s.updateKeyFilter();
             if (v) Toast.makeText(this, T.t("Если «Домой» перестанет открывать лаунчер, верните «По одному шагу»"),

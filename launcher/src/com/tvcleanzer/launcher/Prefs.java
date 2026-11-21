@@ -245,9 +245,9 @@ final class Prefs {
     /** «Громкость при зажатии → Меняется плавно»: the owner's word, above what the phone app and
      *  the Google TV keys would like. The key filter is what costs key repeat (held Volume moves
      *  one step); without it Home still lands on us, the service replaces the stock screen by its
-     *  window. Not chosen yet = smooth on Xiaomi: most complaints in the chat, and there the
-     *  service's own volume steps don't move the level (PatchWall / Google TV models alike). */
-    boolean volSmooth()      { return sp.contains(VOL_SMOOTH) ? sp.getBoolean(VOL_SMOOTH, false) : xiaomi(); }
+     *  window. Not chosen yet: HomeKeyService.volumeFiltered decides by the TV. */
+    boolean volSmoothSet()   { return sp.contains(VOL_SMOOTH); }
+    boolean volSmooth()      { return sp.getBoolean(VOL_SMOOTH, false); }
     void setVolSmooth(boolean v) { sp.edit().putBoolean(VOL_SMOOTH, v).apply(); }
     static boolean xiaomi() {
         String m = android.os.Build.MANUFACTURER;

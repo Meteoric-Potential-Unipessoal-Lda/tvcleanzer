@@ -75,9 +75,26 @@ public class HomeKeyService extends AccessibilityService {
     }
 
     /** Would the filter be on for Home / ⚙ / Source alone (remote-key mapping aside)? Then held
-     *  Volume moves one step. The owner's «Меняется плавно» wins over both reasons. */
+     *  Volume moves one step. The owner's choice in the settings wins. Not chosen: smooth, except
+     *  where catching keys is the only way something works —
+     *   · Yandex / Sber homes (Alice, Salute): only a seen Home press lets us replace them;
+     *   · Google TV with its home switched off: nobody else answers ⚙, TV and Source.
+     *  Xiaomi is smooth in any case (0.56: most complaints; Google TV models included).
+     *  Owners on Haier MatrixTV, Sony Bravia, DEXP, Xiaomi asked for it in the chat. */
     static boolean volumeFiltered(Context c, Prefs p) {
-        return !p.volSmooth() && (p.keyFilter() || stockHomeOff(c));
+        if (p.volSmoothSet()) return !p.volSmooth() && (p.keyFilter() || stockHomeOff(c));
+        if (Prefs.xiaomi()) return false;
+        return featureHomeOn(c) || stockHomeOff(c);
+    }
+
+    /** Yandex TV / Sber home installed and on. */
+    static boolean featureHomeOn(Context c) {
+        for (String p : FEATURE_HOMES) {
+            try {
+                if (c.getPackageManager().getApplicationInfo(p, 0).enabled) return true;
+            } catch (Throwable ignored) {}
+        }
+        return false;
     }
 
     private final Set<String> stockHomes = new HashSet<>();
@@ -347,7 +364,8 @@ public class HomeKeyService extends AccessibilityService {
                 handler.postDelayed(this, 110);
             }
         };
-        handler.postDelayed(volRepeat, 450);
+        // 600 ms, not 450: a slow remote's UP came after the first step (Dmitry: 2–3 steps a press)
+        handler.postDelayed(volRepeat, 600);
         return false;
     }
 
