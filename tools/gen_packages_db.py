@@ -252,6 +252,11 @@ RU.update({
      'Модуль самой системы Android: рекламу не показывает, лучше не трогать', 'caution'),
  'com.android.federatedcompute.services': ('Обучение рекламы на устройстве',
      'Модуль самой системы Android: рекламу не показывает, лучше не трогать', 'caution'),
+ # Chinese MIUI TV (MiTV-MFTR0 reflashed to Russian, Android 11): stuck on the boot logo after only this
+ # one was disabled (2026-11-21). It is the OneTrack host PatchWall itself installs; CleanYourTV's
+ # Android 11 MFTR0 list leaves it out. Not for the automatic clean.
+ 'com.miui.analytics': ('Аналитика MIUI (OneTrack)',
+     'Сбор статистики, но на китайских Xiaomi без него может не загрузиться главный экран', 'caution'),
 })
 
 # Plain words for what an app does and what stops working (owners said the generic lines tell them nothing).
