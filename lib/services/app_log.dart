@@ -3,7 +3,7 @@ import 'dart:io';
 import '../models/tv_device.dart';
 
 /// Version shown in reports (keep in sync with pubspec.yaml).
-const appVersion = '1.3.64';
+const appVersion = '1.3.65';
 
 /// Small in-memory log of recent problems, for "Сообщить о проблеме".
 class AppLog {
@@ -29,7 +29,7 @@ class AppLog {
       ..writeln('TVCleanzer $appVersion — отчёт о проблеме')
       ..writeln('Устройство: ${Platform.operatingSystem} ${Platform.operatingSystemVersion}');
     if (tv != null) {
-      b.writeln('ТВ: ${tv.shortName.isEmpty ? 'неизвестно' : tv.shortName}, '
+      b.writeln('ТВ: ${tv.modelName.isEmpty ? 'неизвестно' : tv.modelName}, '
           'Android ${tv.androidVer} (SDK ${tv.sdkVersion}), ОЗУ ${tv.ramMb} МБ');
     } else {
       b.writeln('ТВ: не выбран');

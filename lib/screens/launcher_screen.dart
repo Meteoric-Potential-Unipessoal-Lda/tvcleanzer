@@ -54,6 +54,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   bool _bindOk = true;
   String? _weatherErr;  // launcher 0.8+: why the TV could not get the weather
   Timer? _lookDebounce;
+  String? _lookTv;      // id of the TV whose settings the phone now shows (#21)
+  int _gen = 0;         // bumps on a TV switch: a late answer from the old TV is dropped
 
   @override
   void dispose() {
@@ -72,7 +74,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
 
   Future<void> _check({bool silent = false}) async {
     final tv = ref.read(currentTvProvider);
-    if (tv == null || _checking) return;
+    if (tv == null) return;
+    final gen = ++_gen;
+    bool stale() => !mounted || gen != _gen || ref.read(currentTvProvider)?.id != tv.id;
     setState(() {
       _checking = true;
       _error = null;
@@ -80,12 +84,18 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     try {
       final api = ref.read(adbServiceProvider);
       final pkg = await api.currentLauncher(tv);
+      final installed = pkg == AdbPackageManager.launcherPkg || await api.isLauncherInstalled(tv);
+      final version = installed ? await api.launcherVersion(tv) : null;
+      // #21: two TVs, one phone — the answer of the TV we left must not land on the new one
+      if (stale()) return;
       _launcher = pkg;
-      _installed = pkg == AdbPackageManager.launcherPkg || await api.isLauncherInstalled(tv);
-      _version = _installed == true ? await api.launcherVersion(tv) : null;
+      _installed = installed;
+      _version = version;
       _weatherErr = null;
+      if ((_version ?? 0) < 8) _lookTv = tv.id; // too old to report: the phone's copy is all there is
       if ((_version ?? 0) >= 8) {
         final st = await api.launcherState(tv);
+        if (stale()) return;
         // What the TV has now, not the phone's old copy: settings changed on the TV itself
         // (launcher 0.54+) were overwritten by the phone's look on the next change or update
         // («слетают многие настройки», an owner).
@@ -94,6 +104,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           final sk = st.settings['skin'];
           if (sk != null && sk.isNotEmpty) await ref.read(selectedSkinProvider.notifier).select(LauncherSkin.byId(sk));
         }
+        _lookTv = tv.id; // read from this TV (no «style» yet = nothing there to overwrite)
         final e = st.settings['weatherErr']?.toString() ?? '-';
         if (e != '-' && e.isNotEmpty) {
           _weatherErr = e;
@@ -102,9 +113,10 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       }
       _checked = true;
     } catch (_) {
+      if (stale()) return;
       if (!silent) _error = _offline;
     }
-    if (mounted) setState(() => _checking = false);
+    if (mounted && gen == _gen) setState(() => _checking = false);
   }
 
   Future<void> _install() async {
@@ -229,6 +241,14 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     ref.read(launcherLookProvider.notifier).set(look);
     final tv = ref.read(currentTvProvider);
     if (tv == null || _installed != true) return;
+    // #21: the phone still shows another TV's settings (this one did not answer yet):
+    // sending them would copy that TV's launcher onto this one. Read this TV first.
+    if (_lookTv != tv.id) {
+      _check(silent: true);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(tr('Не получилось: телевизор не отвечает.'))));
+      return;
+    }
     _lookDebounce?.cancel();
     _lookDebounce = Timer(const Duration(milliseconds: 400), () {
       ref.read(adbServiceProvider).applyLauncherLook(tv, ref.read(launcherLookProvider)).catchError((_) {
@@ -281,7 +301,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     // another TV chosen (switcher in the title, or on the Cleaning tab): look at that one
     ref.listen<TvDevice?>(currentTvProvider, (prev, next) {
       if (prev?.id == next?.id) return;
+      _lookDebounce?.cancel();
       setState(() {
+        _lookTv = null;
         _checked = false;
         _launcher = null;
         _installed = null;

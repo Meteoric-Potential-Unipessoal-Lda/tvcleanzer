@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
+import '../services/tv_names.dart';
 import '../theme/app_theme.dart';
 import '../screens/home_screen.dart';
 import '../screens/scan_screen.dart';
@@ -11,12 +12,38 @@ import '../screens/terminal_screen.dart';
 import '../state/current_tv.dart';
 
 import '../l10n/l10n.dart';
+/// «Переименовать»: the owner's own name for the TV; empty = the model name again.
+Future<void> renameTv(BuildContext context, WidgetRef ref, TvDevice d) async {
+  final ctl = TextEditingController(text: TvNames.of(d.ipAddress) ?? '');
+  final name = await showDialog<String>(
+    context: context,
+    builder: (c) => AlertDialog(
+      title: Text(tr('Переименовать')),
+      content: TextField(
+        controller: ctl,
+        autofocus: true,
+        maxLength: 40,
+        decoration: InputDecoration(hintText: d.modelName),
+        onSubmitted: (v) => Navigator.pop(c, v),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(c), child: Text(tr('Отмена'))),
+        TextButton(onPressed: () => Navigator.pop(c, ctl.text), child: Text(tr('Готово'))),
+      ],
+    ),
+  );
+  if (name == null) return;
+  await TvNames.set(d.ipAddress, name);
+  ref.read(tvNamesRevProvider.notifier).state++;
+}
+
 class TvCard extends ConsumerWidget {
   final TvDevice device;
   const TvCard({super.key, required this.device});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(tvNamesRevProvider); // a rename shows at once
     final hasRam = device.ramMb > 0;
     final ramPct = hasRam
         ? (1 - device.ramFreeMb / device.ramMb).clamp(0.0, 1.0)
@@ -69,6 +96,7 @@ class TvCard extends ConsumerWidget {
                   tooltip: tr('Ещё'),
                   onSelected: (v) async {
                     if (v == 'remove') ref.read(discoveryProvider.notifier).remove(device);
+                    if (v == 'rename' && context.mounted) await renameTv(context, ref, device);
                     if (v == 'terminal') {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (_) => TerminalScreen(device: device)));
@@ -95,6 +123,7 @@ class TvCard extends ConsumerWidget {
                     }
                   },
                   itemBuilder: (_) => [
+                    PopupMenuItem(value: 'rename', child: Text(tr('Переименовать'))),
                     PopupMenuItem(value: 'terminal', child: Text(tr('Терминал (для разработчиков)'))),
                     PopupMenuItem(value: 'adb_off', child: Text(tr('Выключить отладку на ТВ'))),
                     PopupMenuItem(value: 'remove', child: Text(tr('Убрать из списка'))),

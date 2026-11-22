@@ -4,12 +4,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/l10n.dart';
 import 'services/tip_jar.dart';
+import 'services/tv_names.dart';
 import 'screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initLanguage();
+  await TvNames.load();
 
   // Keep status bar translucent and use light icons on dark bg
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

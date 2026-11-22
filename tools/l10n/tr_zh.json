@@ -764,5 +764,11 @@
 "游戏和视频的声音将传到电视",
 "请先在 TVCleanzer 中点「屏幕镜像」。",
 "屏幕镜像已停止。",
-"选择 TVCleanzer 并点「开始直播」。可在这里或点屏幕顶部的红色标签停止。"
+"选择 TVCleanzer 并点「开始直播」。可在这里或点屏幕顶部的红色标签停止。",
+"重命名",
+"请在电视上开启",
+"这些应用是电视自己关闭的，只能在电视的设置中重新开启。点按“打开”——电视上会打开该应用的页面，在那里选择“启用”。",
+"以及 Hisense VIDAA、Roku、Huawei Vision",
+"这些不是 Android：Samsung — Tizen，LG — webOS，Hisense — VIDAA，Huawei Vision — HarmonyOS。",
+"TCL：如果找不到电视，请在“开发者选项”中再开启“OEM 解锁”。"
 ]

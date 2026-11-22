@@ -14,7 +14,8 @@ void main() {
     expect(_type('192.168.4.239.37155'), '192.168.4.239:37155');
     expect(_type('192.168.4.239 37155'), '192.168.4.239:37155');
     expect(_type('192.168.4'), '192.168.4');
-    expect(_type('192,168.4.2'), '192168.4.2'); // a comma before the full address is dropped
+    expect(_type('192,168,4,2'), '192.168.4.2'); // iPhone's Russian number pad: comma = dot
+    expect(_type('192,168,4,2,5555'), '192.168.4.2:5555');
     expect(_type('1.2.3.4:5:6'), '1.2.3.4:56');
   });
 }

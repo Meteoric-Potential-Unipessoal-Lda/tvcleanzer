@@ -237,7 +237,9 @@ class AddrFormatter extends TextInputFormatter {
     for (final ch in newValue.text.split('')) {
       if (RegExp(r'[0-9]').hasMatch(ch)) {
         b.write(ch);
-      } else if (ch == '.' && !colon && dots < 3) {
+      } else if ((ch == '.' || ch == ',') && !colon && dots < 3) {
+        // iPhone's number pad in Russian has a comma and no dot: it stands for the dot
+        // («в поле IP не ставится точка», three owners)
         dots++;
         b.write('.');
       } else if (RegExp(r'[.:,; ]').hasMatch(ch) && !colon && dots == 3) {

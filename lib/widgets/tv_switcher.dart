@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/l10n.dart';
 import '../models/tv_device.dart';
+import '../services/tv_names.dart';
 import '../screens/home_screen.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
@@ -25,6 +26,7 @@ class TvBanner extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(tvNamesRevProvider); // a rename shows at once
     final tv = ref.watch(currentTvProvider);
     if (tv == null) return const SizedBox.shrink();
     final sw = canSwitch(ref);

@@ -764,5 +764,11 @@
 "Sound from games and videos goes to the TV",
 "First tap «Screen mirroring» in TVCleanzer.",
 "Screen mirroring stopped.",
-"Choose TVCleanzer and tap «Start Broadcast». Stop it here or with the red pill at the top of the screen."
+"Choose TVCleanzer and tap «Start Broadcast». Stop it here or with the red pill at the top of the screen.",
+"Rename",
+"Turn on on the TV",
+"The TV itself switched these apps off, so they can only be turned back on in its settings. Tap “Open” — the app's page opens on the TV, choose “Enable” there.",
+"also Hisense VIDAA, Roku, Huawei Vision",
+"These are not Android: Samsung — Tizen, LG — webOS, Hisense — VIDAA, Huawei Vision — HarmonyOS.",
+"TCL: if the TV isn't found, also turn on “OEM unlocking” in “Developer options”."
 ]

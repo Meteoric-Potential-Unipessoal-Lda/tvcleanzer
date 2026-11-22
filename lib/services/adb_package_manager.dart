@@ -515,10 +515,14 @@ class AdbPackageManager {
           .where((p) => ours.contains(p) && !homes.contains(p) && p != launcherPkg)
           .toList()
         ..sort();
+      final locked = <String>[];
       for (final p in todo) {
         try {
           await adb.shell('pm install-existing $p 2>&1');
-          await adb.shell('pm enable $p 2>&1');
+          final en = await adb.shell('pm enable $p 2>&1');
+          // Haier H55P751UG: Google services switched off by a factory app — only the TV's
+          // own settings may switch them back on
+          if (en.contains('cannot change component state')) locked.add(p);
         } catch (e) {
           AppLog.error('restore all $p', e);
         }
@@ -541,7 +545,8 @@ class AdbPackageManager {
           : "printf '%s\\n' ${failed.join(' ')} > $_hiddenFile");
       return RestoreAllResult(
         restored: back,
-        failed: failed,
+        failed: failed.where((p) => !locked.contains(p)).toList(),
+        locked: locked.where(failed.contains).toList(),
         labels: {
           for (final p in todo)
             if ((db[p]?.label ?? '').isNotEmpty) p: db[p]!.label,
@@ -585,7 +590,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 57;
+  static const bundledLauncherVersion = 58;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {

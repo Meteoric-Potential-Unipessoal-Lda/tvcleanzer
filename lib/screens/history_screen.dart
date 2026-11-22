@@ -125,6 +125,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         if (res.failed.isNotEmpty)
           tr('Не вернулись: {0}. Их больше нет на телевизоре — установите заново из магазина приложений.', [res.failed.map(res.labelOf).join(', ')]),
       ].join(' ');
+      if (res.locked.isNotEmpty && mounted) {
+        setState(() => _restoringAll = false);
+        await _lockedDialog(tv, res);
+      }
     } catch (_) {
       msg = tr('Телевизор не отвечает. Проверьте, что он включён и в той же Wi-Fi сети.');
     }
@@ -132,6 +136,29 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     setState(() => _restoringAll = false);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg), duration: const Duration(seconds: 6)));
   }
+
+  /// Apps the TV itself switched off: ADB can't turn them on, the TV's settings page can.
+  Future<void> _lockedDialog(TvDevice tv, RestoreAllResult res) => showDialog<void>(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: Text(tr('Включите на телевизоре')),
+          content: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(tr('Эти приложения выключил сам телевизор, и включить их можно только в его настройках. Нажмите «Открыть» — на ТВ откроется страница приложения, там выберите «Включить».')),
+              const Gap(12),
+              for (final p in res.locked)
+                Row(children: [
+                  Expanded(child: Text(res.labelOf(p), style: const TextStyle(fontWeight: FontWeight.w600))),
+                  TextButton(
+                    onPressed: () => ref.read(adbServiceProvider).openAppSettings(tv, p),
+                    child: Text(tr('Открыть')),
+                  ),
+                ]),
+            ]),
+          ),
+          actions: [TextButton(onPressed: () => Navigator.pop(c), child: Text(tr('Готово')))],
+        ),
+      );
 
   Widget _empty() => Center(
         child: Padding(

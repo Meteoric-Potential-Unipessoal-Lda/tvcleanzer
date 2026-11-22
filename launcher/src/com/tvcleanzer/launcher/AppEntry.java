@@ -107,6 +107,7 @@ final class AppEntry {
             if (ai == null || into.containsKey(ai.packageName)) continue;
             CharSequence l = ri.loadLabel(pm);
             String label = l == null ? ai.packageName : l.toString();
+            if (factoryApp(ai)) continue;
             if (!leanback && serviceApp(ai, label)) continue;
             into.put(ai.packageName, new AppEntry(ai.packageName, ai.name, label, leanback, ai));
         }
@@ -118,6 +119,19 @@ final class AppEntry {
     private static final java.util.regex.Pattern SERVICE = java.util.regex.Pattern.compile(
             "(^com\\.mstar\\.)|disclaimer|updater|upgrade|(^|\\.)ota(\\.|$)|factory|autotest|aging",
             java.util.regex.Pattern.CASE_INSENSITIVE);
+
+    /** Factory test tools of the firmware, TV-style icon or not: opened by mistake they switch the TV
+     *  into «Factory Mode» (inputs cycle, remote can't pick a source) and switch Google off at every
+     *  boot (Haier H55P751UG: com.cvte.tv.hkcfac, com.cvte.tv.fac.aging, com.at.factory.factorymanager).
+     *  System apps only: a FactoryMenu APK the owner installed himself stays. */
+    private static final java.util.regex.Pattern FACTORY = java.util.regex.Pattern.compile(
+            "^com\\.cvte\\.tv\\.(fac|hkcfac)|^com\\.at\\.factory\\.|factorymenu|factorytest|\\.aging(\\.|$)|hkcfac",
+            java.util.regex.Pattern.CASE_INSENSITIVE);
+
+    static boolean factoryApp(ActivityInfo ai) {
+        return ai.applicationInfo != null && (ai.applicationInfo.flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0
+                && FACTORY.matcher(ai.packageName).find();
+    }
 
     private static boolean serviceApp(ActivityInfo ai, String label) {
         if (ai.applicationInfo == null || (ai.applicationInfo.flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) == 0) return false;

@@ -764,5 +764,11 @@
 "Le son des jeux et des vidéos passera sur la TV",
 "Touchez d’abord « Recopie d’écran » dans TVCleanzer.",
 "Recopie d’écran arrêtée.",
-"Choisissez TVCleanzer et touchez « Commencer la diffusion ». Pour arrêter : ici ou avec la pastille rouge en haut de l’écran."
+"Choisissez TVCleanzer et touchez « Commencer la diffusion ». Pour arrêter : ici ou avec la pastille rouge en haut de l’écran.",
+"Renommer",
+"Activez-les sur la TV",
+"C’est la TV elle-même qui a désactivé ces applis : on ne peut les réactiver que dans ses paramètres. Touchez « Ouvrir » — la page de l’appli s’ouvre sur la TV, choisissez « Activer ».",
+"ainsi que Hisense VIDAA, Roku, Huawei Vision",
+"Ce n’est pas Android : Samsung — Tizen, LG — webOS, Hisense — VIDAA, Huawei Vision — HarmonyOS.",
+"TCL : si la TV n’est pas trouvée, activez aussi « Déverrouillage OEM » dans « Options pour les développeurs »."
 ]

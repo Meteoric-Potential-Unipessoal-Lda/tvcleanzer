@@ -1,3 +1,5 @@
+import '../services/tv_names.dart';
+
 /// Represents an Android TV found on the local network via ADB.
 class TvDevice {
   final String id;          // unique identifier (IP address)
@@ -60,7 +62,11 @@ class TvDevice {
     );
   }
 
-  String get shortName => '$brand $model'.trim();
+  /// The owner's name for this TV if he gave one («Кухня»), else brand and model.
+  String get shortName => TvNames.of(ipAddress) ?? modelName;
+
+  /// Always brand and model (reports «?» need the real model).
+  String get modelName => '$brand $model'.trim();
 
   /// Wireless debugging (TLS, paired by code) rather than plain port 5555.
   bool get isWireless => port != 5555;
@@ -163,8 +169,11 @@ class RestoreAllResult {
   final List<String> failed;
   final Map<String, String> labels; // packageName -> human name (from the database)
   final bool animations;
+  /// Still on the TV but switched off by the firmware itself: ADB may not turn them back on
+  /// («Shell cannot change component state»), the TV's own settings page can.
+  final List<String> locked;
   const RestoreAllResult({required this.restored, required this.failed,
-      required this.labels, required this.animations});
+      required this.labels, required this.animations, this.locked = const []});
   String labelOf(String p) => labels[p] ?? p;
 }
 

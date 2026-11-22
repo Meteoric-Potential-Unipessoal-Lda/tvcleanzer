@@ -764,5 +764,11 @@
 "Ljud från spel och videor går till tv:n",
 "Tryck först på «Skärmspegling» i TVCleanzer.",
 "Skärmspeglingen stoppades.",
-"Välj TVCleanzer och tryck på «Starta sändning». Stoppa här eller med den röda etiketten högst upp på skärmen."
+"Välj TVCleanzer och tryck på «Starta sändning». Stoppa här eller med den röda etiketten högst upp på skärmen.",
+"Byt namn",
+"Slå på dem på tv:n",
+"Tv:n har själv stängt av de här apparna, och de kan bara slås på igen i tv:ns inställningar. Tryck på ”Öppna” – appens sida öppnas på tv:n, välj ”Aktivera” där.",
+"samt Hisense VIDAA, Roku, Huawei Vision",
+"Det här är inte Android: Samsung — Tizen, LG — webOS, Hisense — VIDAA, Huawei Vision — HarmonyOS.",
+"TCL: om tv:n inte hittas, slå även på ”OEM-upplåsning” under ”Utvecklaralternativ”."
 ]
