@@ -898,5 +898,17 @@
 "Hoe haal ik de begroeting weg, maak ik de klok kleiner of verberg ik het geheugen?",
 "Tabblad «Launcher» → uiterlijk van het startscherm: «Begroeting», «Klok bovenaan», «Datum en weer op één regel», «Geheugen op het startscherm». Op de tv hetzelfde: tandwiel → launcherinstellingen.",
 "Wat betekenen de kleuren van het netwerkicoon?",
-"Groen — internet werkt, blauw — VPN staat aan, oranje — netwerk maar geen internet (router, provider of VPN), rood — geen netwerk."
+"Groen — internet werkt, blauw — VPN staat aan, oranje — netwerk maar geen internet (router, provider of VPN), rood — geen netwerk.",
+"Bewegende achtergrond",
+"Een korte video zonder geluid in plaats van de achtergrond van het startscherm: 10–30 seconden, in een lus. Op zwakke tv’s (1 GB geheugen) kan het haperen — zet het dan uit.",
+"De bewegende achtergrond kwam met een nieuwere launcher: werk hem bij op het tabblad «Launcher».",
+"Andere video",
+"Video kiezen",
+"Bewegende achtergrond verwijderd",
+"Video verwijderen",
+"Bewegende achtergrond op het startscherm",
+"De video is te groot: tot {0} MB. Neem een korte clip.",
+"Video versturen: {0}%",
+"Bewegende achtergrond staat: open het startscherm van de tv",
+"De tv liet de video niet opslaan. Werk de launcher op de tv bij en probeer het opnieuw."
 ]

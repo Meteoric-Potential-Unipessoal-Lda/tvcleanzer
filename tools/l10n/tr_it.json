@@ -898,5 +898,17 @@
 "Come tolgo il saluto, rimpicciolisco l’orologio o nascondo la memoria?",
 "Scheda «Launcher» → aspetto della schermata Home: «Saluto», «Orologio in alto», «Data e meteo su una riga», «Memoria nella schermata Home». Lo stesso sul TV: ingranaggio → impostazioni del launcher.",
 "Cosa significano i colori dell’icona di rete?",
-"Verde — internet c’è, blu — VPN attiva, arancione — rete senza internet (router, operatore o VPN), rosso — nessuna rete."
+"Verde — internet c’è, blu — VPN attiva, arancione — rete senza internet (router, operatore o VPN), rosso — nessuna rete.",
+"Sfondo animato",
+"Un breve video senza audio al posto dello sfondo della Home: 10–30 secondi, in loop. Sui TV poco potenti (1 GB di memoria) può scattare — allora disattivalo.",
+"Lo sfondo animato è arrivato con un launcher più recente: aggiornalo nella scheda «Launcher».",
+"Altro video",
+"Scegli video",
+"Sfondo animato rimosso",
+"Rimuovi video",
+"Sfondo animato nella Home",
+"Il video è troppo grande: fino a {0} MB. Usa una clip breve.",
+"Invio del video: {0}%",
+"Sfondo animato attivo: apri la schermata Home del TV",
+"Il TV non ha permesso di salvare il video. Aggiorna il launcher sul TV e riprova."
 ]

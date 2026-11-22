@@ -898,5 +898,17 @@
 "Comment retirer la salutation, réduire l’horloge ou masquer la mémoire ?",
 "Onglet «Launcher» → apparence de l’écran d’accueil : «Salutation», «Horloge en haut», «Date et météo sur une ligne», «Mémoire sur l’écran d’accueil». Pareil sur la TV : roue dentée → réglages du launcher.",
 "Que signifient les couleurs de l’icône réseau ?",
-"Vert — internet fonctionne, bleu — VPN actif, orange — réseau sans internet (routeur, opérateur ou VPN), rouge — pas de réseau."
+"Vert — internet fonctionne, bleu — VPN actif, orange — réseau sans internet (routeur, opérateur ou VPN), rouge — pas de réseau.",
+"Fond animé",
+"Une courte vidéo sans son au lieu du fond d’accueil : 10–30 secondes, en boucle. Sur les TV modestes (1 Go de mémoire), elle peut saccader — désactivez-la alors.",
+"Le fond animé est arrivé avec un launcher plus récent : mettez-le à jour dans l’onglet «Launcher».",
+"Autre vidéo",
+"Choisir une vidéo",
+"Fond animé supprimé",
+"Retirer la vidéo",
+"Fond animé sur l’écran d’accueil",
+"La vidéo est trop lourde : jusqu’à {0} Mo. Prenez un court extrait.",
+"Envoi de la vidéo : {0} %",
+"Le fond animé est en place : ouvrez l’écran d’accueil de la TV",
+"La TV n’a pas permis d’enregistrer la vidéo. Mettez à jour le launcher sur la TV et réessayez."
 ]

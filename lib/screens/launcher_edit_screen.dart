@@ -43,6 +43,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   int _dreamDelay = 0; // minutes before the screensaver starts (0 = unknown)
   String? _photoStep; // photo upload progress
   String? _musicStep; // music upload progress
+  String? _liveStep;  // «Живые обои» upload progress
 
   @override
   void initState() {
@@ -449,7 +450,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
         ),
       ).animate().fadeIn(duration: 250.ms),
       const Gap(16),
-      if (has) ...[
+      if (has || st.settings['liveWall'] == '1') ...[
         Row(children: [
           Text(tr('Затемнение фото'), style: const TextStyle(color: AppColors.fg, fontSize: 14)),
           const Spacer(),
@@ -510,8 +511,108 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
         ),
       ],
       const Gap(28),
+      ..._liveWallBlock(st),
+      const Gap(28),
       ..._photoFrame(st),
     ]);
+  }
+
+  // ── «Живые обои» (launcher 0.61+) ─────────────────────────────────────
+
+  List<Widget> _liveWallBlock(LauncherState st) {
+    final has = st.settings['liveWall'] == '1';
+    final on = st.settings['liveWallOn'] != '0';
+    final busy = _saving || _liveStep != null;
+    return [
+      Text(tr('Живые обои'), style: const TextStyle(color: AppColors.fg, fontSize: 17, fontWeight: FontWeight.w700)),
+      const Gap(6),
+      Text(tr('Короткое видео без звука вместо фона главного экрана: 10–30 секунд, по кругу. На слабых телевизорах (1 ГБ памяти) может подтормаживать — тогда выключите.'),
+          style: const TextStyle(color: AppColors.fgMid, fontSize: 13, height: 1.4)),
+      const Gap(12),
+      if (st.version < AdbPackageManager.liveWallLauncher)
+        Text(tr('Живые обои появились в новой версии лаунчера: обновите его на вкладке «Лаунчер».'),
+            style: const TextStyle(color: AppColors.warn, fontSize: 12, height: 1.4))
+      else ...[
+        if (_liveStep != null) ...[
+          Row(children: [
+            const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)),
+            const Gap(10),
+            Expanded(child: Text(_liveStep!, style: const TextStyle(color: AppColors.fgMid, fontSize: 13))),
+          ]),
+          const Gap(10),
+        ],
+        Row(children: [
+          Expanded(
+            child: FilledButton.icon(
+              icon: const Icon(Icons.video_library_rounded),
+              label: Text(has ? tr('Другое видео') : tr('Выбрать видео')),
+              onPressed: busy ? null : _pickLiveWall,
+            ),
+          ),
+          if (has) ...[
+            const Gap(10),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.fg,
+                side: const BorderSide(color: AppColors.cardBd),
+              ),
+              onPressed: busy ? null : () => _run(tr('Живые обои убраны'), () async {
+                await ref.read(adbServiceProvider).removeLiveWall(widget.tv);
+                await _load();
+              }),
+              child: Text(tr('Убрать видео')),
+            ),
+          ],
+        ]),
+        if (has)
+          Material(
+            type: MaterialType.transparency,
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: on,
+              activeThumbColor: AppColors.accent,
+              title: Text(tr('Живые обои на главном экране'), style: const TextStyle(color: AppColors.fg, fontSize: 14)),
+              onChanged: busy ? null : (v) => _run(tr('Сохранено'), () async {
+                await ref.read(adbServiceProvider).setLiveWallOn(widget.tv, v);
+                await _load();
+              }),
+            ),
+          ),
+      ],
+    ];
+  }
+
+  Future<void> _pickLiveWall() async {
+    XFile? v;
+    try {
+      v = await ImagePicker().pickVideo(source: ImageSource.gallery);
+    } catch (e) {
+      AppLog.error('pick live wall', e);
+    }
+    if (v == null) return;
+    final len = await v.length();
+    if (len > AdbPackageManager.liveWallMaxMb * 1024 * 1024) {
+      _snack(tr('Видео слишком большое: до {0} МБ. Возьмите короткий ролик.', [AdbPackageManager.liveWallMaxMb]));
+      return;
+    }
+    setState(() => _liveStep = tr('Отправляем видео: {0}%', [0]));
+    try {
+      await ref.read(adbServiceProvider).setLiveWall(widget.tv, v.openRead(), len, onProgress: (sent) {
+        if (mounted) {
+          setState(() => _liveStep = tr('Отправляем видео: {0}%', [len == 0 ? 100 : (sent * 100 / len).floor().clamp(0, 100)]));
+        }
+      });
+      HapticFeedback.mediumImpact();
+      _snack(tr('Живые обои стоят: откройте главный экран телевизора'));
+    } on AdbException catch (e) {
+      AppLog.error('live wall', e);
+      _snack(e.message);
+    } catch (e) {
+      AppLog.error('live wall', e);
+      _snack(tr('Не получилось: телевизор не отвечает.'));
+    }
+    if (mounted) setState(() => _liveStep = null);
+    await _load();
   }
 
   // ── Photo frame (launcher 0.15+) ───────────────────────────────────────

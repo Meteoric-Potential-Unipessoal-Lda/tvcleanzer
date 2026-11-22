@@ -185,6 +185,9 @@ final class Prefs {
     boolean homePhotos()     { return sp.getBoolean(HOME_PHOTOS, false); }
     /** Music in the photo frame (when there are tracks); on unless the owner turned it off. */
     boolean frameMusic()     { return sp.getBoolean(FRAME_MUSIC, true); }
+    /** «Живые обои» (0.61+): the phone's video behind the home screen, when there is one. */
+    boolean liveWallOn()     { return sp.getBoolean("liveWallOn", true); }
+    void setLiveWallOn(boolean v) { sp.edit().putBoolean("liveWallOn", v).apply(); }
     void setFrameMusic(boolean v) { sp.edit().putBoolean(FRAME_MUSIC, v).apply(); }
     /** Loading screen with the logo while the launcher starts. */
     boolean splash()         { return sp.getBoolean(SPLASH, true); }

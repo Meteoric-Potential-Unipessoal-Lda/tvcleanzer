@@ -1493,6 +1493,59 @@ class AdbPackageManager {
     }
   }
 
+  // ── «Живые обои» (launcher 0.61+) ────────────────────────────────────────
+
+  static const liveWallLauncher = 61;
+  static const liveWallMaxMb = 150;
+
+  /// A short video looping without sound behind the TV's home screen: streamed into the
+  /// launcher (content write …/wallvideo; Android 10+, the launcher's external dir before).
+  Future<void> setLiveWall(TvDevice device, Stream<List<int>> data, int length,
+      {void Function(int sent)? onProgress}) async {
+    const tmp = '/data/local/tmp/tvcleanzer_wallvideo';
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final freeKb = await _dataFreeKb(adb);
+      final needKb = length * 2 ~/ 1024 + 200 * 1024;
+      if (freeKb > 0 && freeKb < needKb) {
+        throw AdbException(tr('На телевизоре мало места: нужно {0} МБ, свободно {1} МБ.',
+            ['${needKb ~/ 1024}', '${freeKb ~/ 1024}']));
+      }
+      await adb.execInStream('cat > $tmp', data, onProgress: onProgress,
+          timeout: Duration(seconds: max(120, length ~/ (1024 * 1024))));
+      final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first) ?? -1;
+      if (size != length) {
+        await adb.shell('rm -f $tmp');
+        throw AdbException(tr('Файл не дошёл до телевизора. Попробуйте ещё раз.'));
+      }
+      final sdk = int.tryParse((await adb.shell('getprop ro.build.version.sdk')).trim()) ?? 0;
+      var ok = false;
+      if (sdk >= 29) {
+        ok = (await adb.shell('content write --uri content://$launcherPkg.state/wallvideo < $tmp && echo TVC_OK',
+                timeout: Duration(seconds: max(60, length ~/ (10 * 1024 * 1024)))))
+            .contains('TVC_OK');
+      }
+      if (!ok) {
+        ok = (await adb.shell('mkdir -p $_launcherFiles && cp $tmp $_launcherFiles/wallvideo.mp4 '
+                '&& chmod 666 $_launcherFiles/wallvideo.mp4 && echo TVC_OK',
+                timeout: Duration(seconds: max(60, length ~/ (10 * 1024 * 1024)))))
+            .contains('TVC_OK');
+      }
+      await adb.shell('rm -f $tmp');
+      if (!ok) {
+        throw AdbException(tr('Телевизор не дал сохранить видео. Обновите лаунчер на ТВ и попробуйте снова.'));
+      }
+      await _broadcast(adb, '--es liveWall set --ez liveWallOn true');
+    } finally {
+      adb.close();
+    }
+  }
+
+  Future<void> removeLiveWall(TvDevice device) => _apply(device, '--es liveWall none');
+
+  Future<void> setLiveWallOn(TvDevice device, bool on) => _apply(device, '--ez liveWallOn $on');
+
   Future<void> removeWallpaper(TvDevice device) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {

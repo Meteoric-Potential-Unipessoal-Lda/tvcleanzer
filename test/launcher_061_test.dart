@@ -27,4 +27,11 @@ void main() {
     expect(AdbPackageManager.musicExt('noext'), 'mp3');
     expect(AdbPackageManager.musicLauncher, lessThanOrEqualTo(AdbPackageManager.bundledLauncherVersion));
   });
+
+  test('live wallpaper and voice search helpers', () {
+    expect(AdbPackageManager.liveWallLauncher, lessThanOrEqualTo(AdbPackageManager.bundledLauncherVersion));
+    expect(AdbPackageManager.started('Starting: Intent { act=android.intent.action.SEARCH }'), isTrue);
+    expect(AdbPackageManager.started('Warning: Activity not started, intent has been delivered to currently running top-most instance.'), isTrue);
+    expect(AdbPackageManager.started('Error: Activity not started, unable to resolve Intent'), isFalse);
+  });
 }

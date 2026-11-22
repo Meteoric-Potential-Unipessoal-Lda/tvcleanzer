@@ -898,5 +898,17 @@
 "Cum scot salutul, micșorez ceasul sau ascund memoria?",
 "Fila «Launcher» → aspectul ecranului principal: «Salut», «Ceasul de sus», «Data și vremea pe un rând», «Memoria pe ecranul principal». La fel pe televizor: rotiță → setările launcherului.",
 "Ce înseamnă culorile pictogramei de rețea?",
-"Verde — e internet, albastru — VPN pornit, portocaliu — e rețea, dar fără internet (router, furnizor sau VPN), roșu — fără rețea."
+"Verde — e internet, albastru — VPN pornit, portocaliu — e rețea, dar fără internet (router, furnizor sau VPN), roșu — fără rețea.",
+"Fundal animat",
+"Un videoclip scurt fără sunet în locul fundalului ecranului principal: 10–30 de secunde, în buclă. Pe televizoarele slabe (1 GB memorie) poate sacada — atunci oprește-l.",
+"Fundalul animat a venit cu un launcher mai nou: actualizează-l în fila «Launcher».",
+"Alt videoclip",
+"Alege videoclipul",
+"Fundalul animat a fost scos",
+"Scoate videoclipul",
+"Fundal animat pe ecranul principal",
+"Videoclipul e prea mare: până la {0} MB. Ia un clip scurt.",
+"Trimitem videoclipul: {0}%",
+"Fundalul animat e pus: deschide ecranul principal al televizorului",
+"Televizorul nu a permis salvarea videoclipului. Actualizează launcherul pe TV și încearcă din nou."
 ]

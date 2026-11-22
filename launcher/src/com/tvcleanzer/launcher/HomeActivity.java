@@ -155,6 +155,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         resumed = true;
         if (prefs.nextSkinIfDue()) dirty = true; // «Менять тему сама»
         if (dirty) { dirty = false; build(); } else startAmbient();
+        if (liveWall != null) liveWall.play();
         maybeAutostart();
         main.removeCallbacks(weatherTick);
         main.post(weatherTick);
@@ -747,6 +748,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         main.removeCallbacks(memTick);
         main.removeCallbacks(homePhotoTick);
         stopAmbient();
+        if (liveWall != null) liveWall.stop(); // the decoder goes back to the app in front
         super.onPause();
     }
 
@@ -1011,6 +1013,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // Own photo as background: decode off the UI thread, then redraw.
         // With "change the home background" on, the photo-frame photos take turns instead.
         final List<java.io.File> photoList = !kids && prefs.homePhotos() ? Photos.list(this) : new ArrayList<java.io.File>();
+        // «Живые обои»: the phone's video under everything (not with home photos, not for kids)
+        final boolean live = !kids && photoList.isEmpty() && prefs.liveWallOn() && LiveWall.exists(this);
+        showLiveWall(live, prefs.wallpaperRev());
         String key = photoList.isEmpty() ? "w" + prefs.wallpaperRev() : "p" + prefs.photoRev();
         if (!key.equals(wallKey)) {
             wallKey = key;
@@ -1035,9 +1040,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         stopAmbient();
         ambientGlows.clear();
         root.removeAllViews();
-        root.setBackground(Ui.background(skin));
+        root.setBackground(live ? null : Ui.background(skin));
 
-        if (wallBitmap != null) {
+        if (live) {
+            wallView = null;
+            View dim = new View(this);
+            dim.setBackgroundColor(Math.round(prefs.wallDim() * 2.55f) << 24);
+            root.addView(dim, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        } else if (wallBitmap != null) {
             android.widget.ImageView wp = new android.widget.ImageView(this);
             wp.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
             wp.setImageBitmap(wallBitmap);
@@ -1436,6 +1447,32 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (memPill != null && !freeing) memPill.setText(Memory.label(this));
     }
     private boolean freeing;
+
+    // ── «Живые обои» (0.61+): a video view under [root] in [frame], kept across redraws ──
+    private LiveWall liveWall;
+    private long liveRev;
+
+    private void showLiveWall(boolean on, long rev) {
+        if (!on) {
+            if (liveWall != null) {
+                liveWall.stop();
+                frame.removeView(liveWall);
+                liveWall = null;
+            }
+            return;
+        }
+        if (liveWall == null) {
+            liveWall = new LiveWall(this);
+            frame.addView(liveWall, 0, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            frame.setBackground(Ui.background(prefs.skin())); // until the first frame
+            liveRev = rev;
+        } else if (rev != liveRev) {
+            liveRev = rev;
+            liveWall.reload();
+        }
+        if (resumed) liveWall.play();
+    }
     private int netPillColour;
 
     /** Network changes as they happen (Android 7+): VPN on/off and «no internet» send no

@@ -898,5 +898,17 @@
 "Selamlamayı nasıl kaldırırım, saati küçültürüm veya belleği gizlerim?",
 "«Başlatıcı» sekmesi → ana ekran görünümü: «Selamlama», «Üstteki saat», «Tarih ve hava tek satırda», «Ana ekranda bellek». TV’de de aynı: dişli → başlatıcı ayarları.",
 "Ağ simgesinin renkleri ne anlama geliyor?",
-"Yeşil — internet var, mavi — VPN açık, turuncu — ağ var ama internet yok (modem, sağlayıcı veya VPN), kırmızı — ağ yok."
+"Yeşil — internet var, mavi — VPN açık, turuncu — ağ var ama internet yok (modem, sağlayıcı veya VPN), kırmızı — ağ yok.",
+"Canlı arka plan",
+"Ana ekran arka planı yerine sessiz kısa video: 10–30 saniye, döngüde. Zayıf TV’lerde (1 GB bellek) takılabilir — o zaman kapatın.",
+"Canlı arka plan daha yeni bir başlatıcıyla geldi: «Başlatıcı» sekmesinden güncelleyin.",
+"Başka video",
+"Video seç",
+"Canlı arka plan kaldırıldı",
+"Videoyu kaldır",
+"Ana ekranda canlı arka plan",
+"Video çok büyük: en fazla {0} MB. Kısa bir klip seçin.",
+"Video gönderiliyor: %{0}",
+"Canlı arka plan hazır: TV’nin ana ekranını açın",
+"Televizör videoyu kaydetmeye izin vermedi. TV’deki başlatıcıyı güncelleyip tekrar deneyin."
 ]

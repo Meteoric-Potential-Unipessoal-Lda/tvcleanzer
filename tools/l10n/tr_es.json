@@ -898,5 +898,17 @@
 "¿Cómo quito el saludo, achico el reloj u oculto la memoria?",
 "Pestaña «Launcher» → aspecto de la pantalla de inicio: «Saludo», «Reloj arriba», «Fecha y tiempo en una línea», «Memoria en la pantalla de inicio». Lo mismo en la tele: engranaje → ajustes del launcher.",
 "¿Qué significan los colores del icono de red?",
-"Verde — hay internet, azul — VPN activa, naranja — hay red pero no internet (router, proveedor o VPN), rojo — sin red."
+"Verde — hay internet, azul — VPN activa, naranja — hay red pero no internet (router, proveedor o VPN), rojo — sin red.",
+"Fondo animado",
+"Un vídeo corto sin sonido en lugar del fondo de inicio: 10–30 segundos, en bucle. En teles modestas (1 GB de memoria) puede ir a tirones — entonces desactívalo.",
+"El fondo animado llegó con un launcher más nuevo: actualízalo en la pestaña «Launcher».",
+"Otro vídeo",
+"Elegir vídeo",
+"Fondo animado eliminado",
+"Quitar vídeo",
+"Fondo animado en la pantalla de inicio",
+"El vídeo es demasiado grande: hasta {0} MB. Usa un clip corto.",
+"Enviando el vídeo: {0}%",
+"Fondo animado puesto: abre la pantalla de inicio de la tele",
+"La tele no permitió guardar el vídeo. Actualiza el launcher en la tele e inténtalo de nuevo."
 ]

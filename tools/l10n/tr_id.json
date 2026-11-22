@@ -898,5 +898,17 @@
 "Bagaimana menghapus salam, mengecilkan jam, atau menyembunyikan memori?",
 "Tab «Launcher» → tampilan layar utama: «Salam», «Jam di atas», «Tanggal dan cuaca dalam satu baris», «Memori di layar utama». Sama di TV: roda gigi → pengaturan launcher.",
 "Apa arti warna ikon jaringan?",
-"Hijau — ada internet, biru — VPN aktif, oranye — ada jaringan tapi tanpa internet (router, penyedia, atau VPN), merah — tidak ada jaringan."
+"Hijau — ada internet, biru — VPN aktif, oranye — ada jaringan tapi tanpa internet (router, penyedia, atau VPN), merah — tidak ada jaringan.",
+"Wallpaper hidup",
+"Video pendek tanpa suara sebagai latar layar utama: 10–30 detik, berulang. Di TV yang lemah (memori 1 GB) bisa tersendat — matikan saja.",
+"Wallpaper hidup hadir di launcher yang lebih baru: perbarui di tab «Launcher».",
+"Video lain",
+"Pilih video",
+"Wallpaper hidup dihapus",
+"Hapus video",
+"Wallpaper hidup di layar utama",
+"Video terlalu besar: maksimal {0} MB. Pilih klip pendek.",
+"Mengirim video: {0}%",
+"Wallpaper hidup terpasang: buka layar utama TV",
+"TV tidak mengizinkan video disimpan. Perbarui launcher di TV lalu coba lagi."
 ]

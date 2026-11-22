@@ -898,5 +898,17 @@
 "Como tiro a saudação, reduzo o relógio ou escondo a memória?",
 "Separador «Launcher» → aspeto do ecrã inicial: «Saudação», «Relógio em cima», «Data e tempo numa linha», «Memória no ecrã inicial». O mesmo na TV: roda dentada → definições do launcher.",
 "O que significam as cores do ícone de rede?",
-"Verde — há internet, azul — VPN ligada, laranja — há rede mas sem internet (router, operador ou VPN), vermelho — sem rede."
+"Verde — há internet, azul — VPN ligada, laranja — há rede mas sem internet (router, operador ou VPN), vermelho — sem rede.",
+"Fundo animado",
+"Um vídeo curto sem som em vez do fundo do ecrã inicial: 10–30 segundos, em ciclo. Em TVs fracas (1 GB de memória) pode engasgar — então desligue.",
+"O fundo animado chegou com um launcher mais recente: atualize-o no separador «Launcher».",
+"Outro vídeo",
+"Escolher vídeo",
+"Fundo animado removido",
+"Remover vídeo",
+"Fundo animado no ecrã inicial",
+"O vídeo é demasiado grande: até {0} MB. Use um clip curto.",
+"A enviar o vídeo: {0}%",
+"Fundo animado ativo: abra o ecrã inicial da TV",
+"A TV não deixou guardar o vídeo. Atualize o launcher na TV e tente novamente."
 ]

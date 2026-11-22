@@ -898,5 +898,17 @@
 "Wie entferne ich die Begrüßung, verkleinere die Uhr oder blende den Speicher aus?",
 "Tab «Launcher» → Aussehen des Startbildschirms: «Begrüßung», «Uhr oben», «Datum und Wetter in einer Zeile», «Speicher auf dem Startbildschirm». Dasselbe am TV: Zahnrad → Launcher-Einstellungen.",
 "Was bedeuten die Farben des Netzwerksymbols?",
-"Grün — Internet da, Blau — VPN aktiv, Orange — Netz da, aber kein Internet (Router, Anbieter oder VPN), Rot — kein Netz."
+"Grün — Internet da, Blau — VPN aktiv, Orange — Netz da, aber kein Internet (Router, Anbieter oder VPN), Rot — kein Netz.",
+"Live-Hintergrund",
+"Ein kurzes Video ohne Ton statt des Hintergrunds: 10–30 Sekunden, in Schleife. Auf schwachen TVs (1 GB Speicher) kann es ruckeln — dann ausschalten.",
+"Der Live-Hintergrund kam mit einem neueren Launcher: auf dem Tab «Launcher» aktualisieren.",
+"Anderes Video",
+"Video wählen",
+"Live-Hintergrund entfernt",
+"Video entfernen",
+"Live-Hintergrund auf dem Startbildschirm",
+"Das Video ist zu groß: bis {0} MB. Nimm einen kurzen Clip.",
+"Video wird gesendet: {0}%",
+"Live-Hintergrund ist aktiv: Startbildschirm des TV öffnen",
+"Der TV hat das Speichern des Videos verweigert. Launcher auf dem TV aktualisieren und erneut versuchen."
 ]

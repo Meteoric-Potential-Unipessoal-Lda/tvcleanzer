@@ -420,6 +420,10 @@ class DemoAdbClient extends AdbClient {
       s.photos++;
       return 'TVC_OK\n';
     }
+    if (c.startsWith('content write') && c.contains('/wallvideo') && s.launcherInstalled && s.tmpFile >= 0) {
+      s.look['liveWall'] = '1';
+      return 'TVC_OK\n';
+    }
     if (c.startsWith('content write') && c.contains('/music/') && s.launcherInstalled && s.tmpFile >= 0) {
       s.music++;
       return 'TVC_OK\n';
@@ -477,6 +481,7 @@ class DemoAdbClient extends AdbClient {
     if (c.contains('--es wallpaper set')) _s.wallpaper = true;
     if (c.contains('--es photos clear')) _s.photos = 0;
     if (c.contains('--es music clear')) _s.music = 0;
+    if (c.contains('--es liveWall none')) _s.look['liveWall'] = '0';
     final pd = RegExp(r"--es prevDream '([^']*)'").firstMatch(c);
     if (pd != null) _s.look['prevDream'] = pd.group(1)!.isEmpty ? '-' : pd.group(1)!;
     final wc = RegExp(r"--es weatherCity ('[^']*'|\S+)").firstMatch(c);
@@ -489,7 +494,7 @@ class DemoAdbClient extends AdbClient {
       final v = au.group(1)!.replaceAll("'", '');
       _s.look['autostart'] = v == '""' || v.isEmpty ? '-' : v;
     }
-    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon|photoSec|homePhotos|frameMusic|greeting|barClock|oneLine|appsBelow|icons|heroTitle|memPill|cleanBar|skinAuto|ambientSec) (\S+)').allMatches(c)) {
+    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon|photoSec|homePhotos|frameMusic|liveWallOn|greeting|barClock|oneLine|appsBelow|icons|heroTitle|memPill|cleanBar|skinAuto|ambientSec) (\S+)').allMatches(c)) {
       final v = m.group(2)!;
       _s.look[m.group(1)!] = v == 'true' ? '1' : v == 'false' ? '0' : v;
     }

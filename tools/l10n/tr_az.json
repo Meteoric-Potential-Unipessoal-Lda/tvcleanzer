@@ -898,5 +898,17 @@
 "Salamlamanı necə götürüm, saatı kiçildim və ya yaddaşı gizlədim?",
 "«Launcher» bölməsi → ana ekranın görünüşü: «Salamlama», «Yuxarıda saat», «Tarix və hava bir sətirdə», «Əsas ekranda yaddaş». Televizorda da eyni: dişli çarx → launcher ayarları.",
 "Şəbəkə nişanının rəngləri nə deməkdir?",
-"Yaşıl — internet var, mavi — VPN işləyir, narıncı — şəbəkə var, internet yoxdur (router, provayder və ya VPN), qırmızı — şəbəkə yoxdur."
+"Yaşıl — internet var, mavi — VPN işləyir, narıncı — şəbəkə var, internet yoxdur (router, provayder və ya VPN), qırmızı — şəbəkə yoxdur.",
+"Canlı fon",
+"Ana ekran fonu əvəzinə səssiz qısa video: 10–30 saniyə, dövrə ilə. Zəif televizorlarda (1 GB yaddaş) ləngiyə bilər — onda söndürün.",
+"Canlı fon launcherin yeni versiyasında gəldi: onu «Launcher» bölməsində yeniləyin.",
+"Başqa video",
+"Video seç",
+"Canlı fon götürüldü",
+"Videonu götür",
+"Ana ekranda canlı fon",
+"Video çox böyükdür: {0} MB-a qədər. Qısa klip götürün.",
+"Video göndərilir: {0}%",
+"Canlı fon quruldu: televizorun ana ekranını açın",
+"Televizor videonu saxlamağa icazə vermədi. Televizordakı launcheri yeniləyib yenidən cəhd edin."
 ]

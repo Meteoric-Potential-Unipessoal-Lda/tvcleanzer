@@ -34,6 +34,8 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"kids", p.kids() ? 1 : 0});
             c.addRow(new Object[]{"pin", p.hasPin() ? 1 : 0});
             c.addRow(new Object[]{"wallpaper", Wallpaper.exists(getContext()) ? 1 : 0});
+            c.addRow(new Object[]{"liveWall", LiveWall.exists(getContext()) ? 1 : 0});
+            c.addRow(new Object[]{"liveWallOn", p.liveWallOn() ? 1 : 0});
             c.addRow(new Object[]{"version", version()});
             c.addRow(new Object[]{"anim", p.anim()});
             c.addRow(new Object[]{"ringAccent", p.ringAccent() ? 1 : 0});
@@ -100,6 +102,11 @@ public class StateProvider extends ContentProvider {
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         String seg = uri.getLastPathSegment();
         java.util.List<String> parts = uri.getPathSegments();
+        if (getContext() != null && mode.contains("w") && "wallvideo".equals(seg)) {
+            // «Живые обои» (0.61+); ConfigReceiver --es liveWall set redraws the home screen
+            return ParcelFileDescriptor.open(LiveWall.internal(getContext()), ParcelFileDescriptor.MODE_WRITE_ONLY
+                    | ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_TRUNCATE);
+        }
         if (getContext() != null && mode.contains("w") && !parts.isEmpty() && "music".equals(parts.get(0))) {
             // a track for the photo frame (0.61+): .../music/<ext>; ConfigReceiver --es music added trims
             File f = Music.newFile(getContext(), parts.size() > 1 ? parts.get(1) : "mp3");

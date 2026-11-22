@@ -898,5 +898,17 @@
 "Hogyan veszem le a köszöntést, kicsinyítem az órát vagy rejtem el a memóriát?",
 "«Launcher» lap → a kezdőképernyő kinézete: «Üdvözlés», «Óra felül», «Dátum és időjárás egy sorban», «Memória a kezdőképernyőn». A tévén ugyanígy: fogaskerék → launcher beállításai.",
 "Mit jelentenek a hálózati ikon színei?",
-"Zöld — van internet, kék — VPN működik, narancs — van hálózat, de nincs internet (router, szolgáltató vagy VPN), piros — nincs hálózat."
+"Zöld — van internet, kék — VPN működik, narancs — van hálózat, de nincs internet (router, szolgáltató vagy VPN), piros — nincs hálózat.",
+"Élő háttér",
+"Rövid, hang nélküli videó a kezdőképernyő háttere helyett: 10–30 másodperc, ismétlődve. Gyenge tévéken (1 GB memória) akadozhat — akkor kapcsolja ki.",
+"Az élő háttér újabb launcherrel jött: frissítse a «Launcher» lapon.",
+"Másik videó",
+"Videó kiválasztása",
+"Élő háttér eltávolítva",
+"Videó eltávolítása",
+"Élő háttér a kezdőképernyőn",
+"A videó túl nagy: legfeljebb {0} MB. Válasszon rövid klipet.",
+"Videó küldése: {0}%",
+"Az élő háttér beállítva: nyissa meg a tévé kezdőképernyőjét",
+"A tévé nem engedte menteni a videót. Frissítse a launchert a tévén, és próbálja újra."
 ]

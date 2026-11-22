@@ -898,5 +898,17 @@
 "How do I remove the greeting, make the clock smaller or hide the memory pill?",
 "«Launcher» tab → home screen look: «Greeting», «Clock at the top», «Date and weather on one line», «Memory on the home screen». The same on the TV: gear → launcher settings.",
 "What do the network icon colours mean?",
-"Green — internet works, blue — a VPN is on, orange — connected but no internet (router, provider or VPN), red — no network."
+"Green — internet works, blue — a VPN is on, orange — connected but no internet (router, provider or VPN), red — no network.",
+"Live wallpaper",
+"A short silent video instead of the home screen background: 10–30 seconds, on a loop. On weak TVs (1 GB of memory) it may stutter — then turn it off.",
+"Live wallpaper came with a newer launcher: update it on the «Launcher» tab.",
+"Another video",
+"Choose a video",
+"Live wallpaper removed",
+"Remove video",
+"Live wallpaper on the home screen",
+"The video is too big: up to {0} MB. Take a short clip.",
+"Sending the video: {0}%",
+"Live wallpaper is on: open the TV’s home screen",
+"The TV didn’t let us save the video. Update the launcher on the TV and try again."
 ]

@@ -898,5 +898,17 @@
 "Jak odebrat pozdrav, zmenšit hodiny nebo skrýt paměť?",
 "Karta «Launcher» → vzhled domovské obrazovky: «Pozdrav», «Hodiny nahoře», «Datum a počasí na jednom řádku», «Paměť na hlavní obrazovce». V televizi stejně: ozubené kolo → nastavení launcheru.",
 "Co znamenají barvy ikony sítě?",
-"Zelená — internet je, modrá — běží VPN, oranžová — síť je, ale bez internetu (router, poskytovatel nebo VPN), červená — žádná síť."
+"Zelená — internet je, modrá — běží VPN, oranžová — síť je, ale bez internetu (router, poskytovatel nebo VPN), červená — žádná síť.",
+"Živá tapeta",
+"Krátké video bez zvuku místo pozadí domovské obrazovky: 10–30 sekund, dokola. Na slabších televizích (1 GB paměti) se může sekat — pak ji vypněte.",
+"Živá tapeta přišla s novějším launcherem: aktualizujte ho na kartě «Launcher».",
+"Jiné video",
+"Vybrat video",
+"Živá tapeta odebrána",
+"Odebrat video",
+"Živá tapeta na domovské obrazovce",
+"Video je moc velké: do {0} MB. Vezměte krátký klip.",
+"Posíláme video: {0} %",
+"Živá tapeta je nastavená: otevřete domovskou obrazovku televize",
+"Televize nedovolila video uložit. Aktualizujte launcher na TV a zkuste to znovu."
 ]

@@ -898,5 +898,17 @@
 "Hur tar jag bort hälsningen, gör klockan mindre eller döljer minnet?",
 "Fliken «Launcher» → startskärmens utseende: «Hälsning», «Klocka överst», «Datum och väder på en rad», «Minne på hemskärmen». Samma på tv:n: kugghjul → launcherinställningar.",
 "Vad betyder färgerna på nätverksikonen?",
-"Grönt — internet fungerar, blått — VPN är på, orange — nätverk men inget internet (router, leverantör eller VPN), rött — inget nätverk."
+"Grönt — internet fungerar, blått — VPN är på, orange — nätverk men inget internet (router, leverantör eller VPN), rött — inget nätverk.",
+"Levande bakgrund",
+"En kort video utan ljud i stället för startskärmens bakgrund: 10–30 sekunder, i en slinga. På svaga tv-apparater (1 GB minne) kan det hacka — stäng då av.",
+"Levande bakgrund kom med en nyare launcher: uppdatera den på fliken «Launcher».",
+"Annan video",
+"Välj video",
+"Levande bakgrund borttagen",
+"Ta bort video",
+"Levande bakgrund på startskärmen",
+"Videon är för stor: högst {0} MB. Välj ett kort klipp.",
+"Skickar videon: {0} %",
+"Levande bakgrund är på: öppna tv:ns startskärm",
+"Tv:n lät inte videon sparas. Uppdatera launchern på tv:n och försök igen."
 ]

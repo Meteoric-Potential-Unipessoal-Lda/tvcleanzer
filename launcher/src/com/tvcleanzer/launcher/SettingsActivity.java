@@ -205,6 +205,18 @@ public class SettingsActivity extends Activity {
                 Toast.makeText(this, T.t("Обои убраны"), Toast.LENGTH_SHORT).show();
             });
         }
+        if (LiveWall.exists(this)) {
+            // «Живые обои» come from the phone (TVCleanzer → Лаунчер → Обои)
+            addToggle(skin, T.t("Живые обои"), prefs.liveWallOn(), T.t("Включены"), T.t("Выключены"), v -> {
+                prefs.setLiveWallOn(v);
+                prefs.bumpWallpaper();
+            });
+            addRow(skin, T.t("Убрать живые обои"), "", () -> {
+                LiveWall.delete(this);
+                prefs.bumpWallpaper();
+                Toast.makeText(this, T.t("Живые обои убраны"), Toast.LENGTH_SHORT).show();
+            });
+        }
         int nPhotos = Photos.count(this);
         addRow(skin, T.t("Фоторамка"), nPhotos == 0 ? T.t("Добавить фото") : T.f("Фото: {0}", nPhotos), () -> startActivity(
                 new Intent(this, FilesActivity.class).putExtra(FilesActivity.MODE, FilesActivity.PHOTOS)));

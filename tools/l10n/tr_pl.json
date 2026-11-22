@@ -898,5 +898,17 @@
 "Jak usunąć powitanie, zmniejszyć zegar albo ukryć pamięć?",
 "Karta «Launcher» → wygląd ekranu głównego: «Powitanie», «Zegar u góry», «Data i pogoda w jednej linii», «Pamięć na ekranie głównym». To samo na telewizorze: koło zębate → ustawienia launchera.",
 "Co oznaczają kolory ikony sieci?",
-"Zielony — jest internet, niebieski — działa VPN, pomarańczowy — jest sieć, ale bez internetu (router, dostawca lub VPN), czerwony — brak sieci."
+"Zielony — jest internet, niebieski — działa VPN, pomarańczowy — jest sieć, ale bez internetu (router, dostawca lub VPN), czerwony — brak sieci.",
+"Żywa tapeta",
+"Krótkie wideo bez dźwięku zamiast tła ekranu głównego: 10–30 sekund, w pętli. Na słabszych telewizorach (1 GB pamięci) może się przycinać — wtedy wyłącz.",
+"Żywa tapeta pojawiła się w nowszym launcherze: zaktualizuj go na karcie «Launcher».",
+"Inne wideo",
+"Wybierz wideo",
+"Żywa tapeta usunięta",
+"Usuń wideo",
+"Żywa tapeta na ekranie głównym",
+"Wideo jest za duże: do {0} MB. Weź krótki klip.",
+"Wysyłamy wideo: {0}%",
+"Żywa tapeta ustawiona: otwórz ekran główny telewizora",
+"Telewizor nie pozwolił zapisać wideo. Zaktualizuj launcher na TV i spróbuj ponownie."
 ]

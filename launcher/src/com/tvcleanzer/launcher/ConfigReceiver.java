@@ -114,6 +114,11 @@ public class ConfigReceiver extends BroadcastReceiver {
             if ("none".equals(intent.getStringExtra("wallpaper"))) Wallpaper.delete(context);
             p.bumpWallpaper(); // the phone wrote a new file (or removed it)
         }
+        if (intent.hasExtra("liveWall")) {
+            if ("none".equals(intent.getStringExtra("liveWall"))) LiveWall.delete(context);
+            p.bumpWallpaper(); // a new video (or none): the home screen picks it up
+        }
+        if (intent.hasExtra("liveWallOn")) p.setLiveWallOn(intent.getBooleanExtra("liveWallOn", true));
 
         String pin = intent.getStringExtra("pin");
         if (Pin.valid(pin)) p.setPin(pin);

@@ -898,5 +898,17 @@
 "Salomlashuvni olib tashlash, soatni kichraytirish yoki xotirani yashirish qanday?",
 "«Launcher» bo‘limi → bosh ekran ko‘rinishi: «Salomlashuv», «Yuqoridagi soat», «Sana va ob-havo bir qatorda», «Bosh ekranda xotira». Televizorda ham xuddi shunday: tishli g‘ildirak → launcher sozlamalari.",
 "Tarmoq belgisining ranglari nimani bildiradi?",
-"Yashil — internet bor, ko‘k — VPN ishlayapti, to‘q sariq — tarmoq bor, internet yo‘q (router, provayder yoki VPN), qizil — tarmoq yo‘q."
+"Yashil — internet bor, ko‘k — VPN ishlayapti, to‘q sariq — tarmoq bor, internet yo‘q (router, provayder yoki VPN), qizil — tarmoq yo‘q.",
+"Jonli fon",
+"Bosh ekran foni o‘rniga ovozsiz qisqa video: 10–30 soniya, takrorlanadi. Kuchsiz televizorlarda (1 GB xotira) qotishi mumkin — unda o‘chiring.",
+"Jonli fon launcherning yangi versiyasida paydo bo‘ldi: uni «Launcher» bo‘limida yangilang.",
+"Boshqa video",
+"Video tanlash",
+"Jonli fon olib tashlandi",
+"Videoni olib tashlash",
+"Bosh ekrandagi jonli fon",
+"Video juda katta: {0} MB gacha. Qisqa rolik oling.",
+"Video yuborilmoqda: {0}%",
+"Jonli fon o‘rnatildi: televizorning bosh ekranini oching",
+"Televizor videoni saqlashga ruxsat bermadi. Televizordagi launcherni yangilab, yana urinib ko‘ring."
 ]
