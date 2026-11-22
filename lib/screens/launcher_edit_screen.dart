@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -41,6 +42,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   String _dream = ''; // the TV's screensaver component
   int _dreamDelay = 0; // minutes before the screensaver starts (0 = unknown)
   String? _photoStep; // photo upload progress
+  String? _musicStep; // music upload progress
 
   @override
   void initState() {
@@ -521,7 +523,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
     final sec = int.tryParse(st.settings['photoSec'] ?? '') ?? 30;
     final home = st.settings['homePhotos'] == '1';
     final on = _dream.contains('PhotoDream');
-    final busy = _saving || _photoStep != null;
+    final busy = _saving || _photoStep != null || _musicStep != null;
     return [
       Text(tr('Фоторамка'),
           style: const TextStyle(color: AppColors.fg, fontSize: 17, fontWeight: FontWeight.w700)),
@@ -603,6 +605,8 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
             }),
           ),
         ],
+        const Gap(16),
+        ..._musicBlock(st, busy),
         const Gap(8),
         if (on) ...[
           Row(children: [
@@ -675,6 +679,122 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
       ],
       const Gap(24),
     ];
+  }
+
+  /// Music in the photo frame (launcher 0.61+): the owner's tracks, shuffled, while the frame is on.
+  List<Widget> _musicBlock(LauncherState st, bool busy) {
+    final n = int.tryParse(st.settings['music'] ?? '') ?? 0;
+    final playing = st.settings['frameMusic'] != '0';
+    return [
+      Text(tr('Музыка в фоторамке'),
+          style: const TextStyle(color: AppColors.fg, fontSize: 15, fontWeight: FontWeight.w600)),
+      const Gap(4),
+      Text(tr('Играет, пока на экране фоторамка. Громкость — пультом телевизора.'),
+          style: const TextStyle(color: AppColors.fgMid, fontSize: 13, height: 1.4)),
+      const Gap(8),
+      if (st.version < AdbPackageManager.musicLauncher)
+        Text(tr('Музыка в фоторамке появилась в новой версии лаунчера: обновите его на вкладке «Лаунчер».'),
+            style: const TextStyle(color: AppColors.warn, fontSize: 12, height: 1.4))
+      else ...[
+        Text(tr('На телевизоре треков: {0}', [n]), style: const TextStyle(color: AppColors.fg, fontSize: 14)),
+        if (_musicStep != null) ...[
+          const Gap(8),
+          Row(children: [
+            const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)),
+            const Gap(10),
+            Expanded(child: Text(_musicStep!, style: const TextStyle(color: AppColors.fgMid, fontSize: 13))),
+          ]),
+        ],
+        const Gap(10),
+        Row(children: [
+          Expanded(
+            child: FilledButton.icon(
+              icon: const Icon(Icons.library_music_rounded),
+              label: Text(tr('Добавить музыку')),
+              onPressed: busy ? null : _addMusic,
+            ),
+          ),
+          if (n > 0) ...[
+            const Gap(10),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.fg,
+                side: const BorderSide(color: AppColors.cardBd),
+              ),
+              onPressed: busy ? null : () => _run(tr('Музыка удалена'), () async {
+                await ref.read(adbServiceProvider).clearMusic(widget.tv);
+                await _load();
+              }),
+              child: Text(tr('Удалить музыку')),
+            ),
+          ],
+        ]),
+        if (n > 0)
+          Material(
+            type: MaterialType.transparency,
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: playing,
+              activeThumbColor: AppColors.accent,
+              title: Text(tr('Играет вместе с фото'), style: const TextStyle(color: AppColors.fg, fontSize: 14)),
+              onChanged: busy ? null : (v) => _run(tr('Сохранено'), () async {
+                await ref.read(adbServiceProvider).setFrameMusic(widget.tv, v);
+                await _load();
+              }),
+            ),
+          ),
+        const Gap(4),
+        Text(tr('MP3, M4A, FLAC и другие, до 30 треков. Можно и без фото: тогда играет под часы.'),
+            style: const TextStyle(color: AppColors.fgMuted, fontSize: 12, height: 1.4)),
+      ],
+    ];
+  }
+
+  Future<void> _addMusic() async {
+    FilePickerResult? res;
+    try {
+      res = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: const ['mp3', 'm4a', 'aac', 'ogg', 'flac', 'wav'],
+          allowMultiple: true,
+          withData: false);
+    } catch (e) {
+      AppLog.error('pick music', e);
+    }
+    final files = (res?.files ?? const <PlatformFile>[]).where((f) => f.path != null).take(30).toList();
+    if (files.isEmpty) return;
+    final tracks = <({String name, int length, Stream<List<int>> Function() open})>[];
+    for (final f in files) {
+      final file = File(f.path!);
+      try {
+        tracks.add((name: f.name, length: await file.length(), open: () => file.openRead()));
+      } catch (e) {
+        AppLog.error('read track', e);
+      }
+    }
+    if (!mounted) return;
+    if (tracks.isEmpty) {
+      _snack(tr('Не удалось прочитать файл. Сохраните его в «Файлы» и попробуйте снова.'));
+      return;
+    }
+    setState(() => _musicStep = tr('Отправляем трек {0} из {1}…', [1, tracks.length]));
+    try {
+      final n = await ref.read(adbServiceProvider).addMusic(widget.tv, tracks, onProgress: (done, total) {
+        if (mounted && done < total) {
+          setState(() => _musicStep = tr('Отправляем трек {0} из {1}…', [done + 1, total]));
+        }
+      });
+      HapticFeedback.mediumImpact();
+      _snack(tr('Музыка добавлена: {0}', [n]));
+    } on AdbException catch (e) {
+      AppLog.error('music', e);
+      _snack(e.message);
+    } catch (e) {
+      AppLog.error('music', e);
+      _snack(tr('Не получилось: телевизор не отвечает.'));
+    }
+    if (mounted) setState(() => _musicStep = null);
+    await _load();
   }
 
   Future<void> _addPhotos() async {

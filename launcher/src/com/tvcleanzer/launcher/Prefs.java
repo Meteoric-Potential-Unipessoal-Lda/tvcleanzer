@@ -17,7 +17,7 @@ final class Prefs {
             FAVORITES = "favorites", HIDDEN = "hidden",
             WALL_REV = "wallpaperRev", KIDS = "kids", KIDS_APPS = "kidsApps", PIN = "pinHash",
             ANIM = "anim", RING_ACCENT = "ringAccent", TILES = "tileSize", WALL_DIM = "wallDim",
-            AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", PHOTO_REV = "photoRev",
+            AMBIENT = "ambient", INPUTS_POS = "inputsPos", FAV_COLS = "favCols", PHOTO_SEC = "photoSec", HOME_PHOTOS = "homePhotos", FRAME_MUSIC = "frameMusic", PHOTO_REV = "photoRev",
             PREV_DREAM = "prevDream", AUTOSTART = "autostart", SPLASH = "splash", APPS_BELOW = "appsBelow", HERO_TITLE = "heroTitle", MEM_PILL = "memPill", STOCK_OFF = "stockOff", KEY_FILTER = "keyFilter", VOL_SMOOTH = "volSmooth", FAV_BOTTOM = "favBottom", SHELF = "shelf",
             ORDER = "order", AUTOSTART_BOOT = "autostartBoot", ICONS = "icons",
             STYLE = "style", CLOCK_POS = "clockPos", CLOCK_SIZE = "clockSize", CLOCK_FONT = "clockFont",
@@ -183,6 +183,9 @@ final class Prefs {
     void setPhotoSec(int v)  { sp.edit().putInt(PHOTO_SEC, clamp(v, 10, 600)).apply(); }
     /** The home background changes through the photos too (off by default). */
     boolean homePhotos()     { return sp.getBoolean(HOME_PHOTOS, false); }
+    /** Music in the photo frame (when there are tracks); on unless the owner turned it off. */
+    boolean frameMusic()     { return sp.getBoolean(FRAME_MUSIC, true); }
+    void setFrameMusic(boolean v) { sp.edit().putBoolean(FRAME_MUSIC, v).apply(); }
     /** Loading screen with the logo while the launcher starts. */
     boolean splash()         { return sp.getBoolean(SPLASH, true); }
     void setSplash(boolean v) { sp.edit().putBoolean(SPLASH, v).apply(); }
@@ -190,6 +193,14 @@ final class Prefs {
     boolean appsBelow()      { return sp.getBoolean(APPS_BELOW, false); }
     /** «Витрина»: the focused app's name in large letters above the tiles (0.33+). */
     boolean heroTitle()      { return sp.getBoolean(HERO_TITLE, true); }
+    /** Top bar (0.61+): the greeting line, the clock size (0 large, 1 medium, 2 small), date and
+     *  weather on one line beside the clock. */
+    boolean greeting()       { return sp.getBoolean("greeting", true); }
+    void setGreeting(boolean v) { sp.edit().putBoolean("greeting", v).apply(); }
+    int barClock()           { return clamp(sp.getInt("barClock", 0), 0, 2); }
+    void setBarClock(int v)  { sp.edit().putInt("barClock", clamp(v, 0, 2)).apply(); }
+    boolean oneLine()        { return sp.getBoolean("oneLine", false); }
+    void setOneLine(boolean v) { sp.edit().putBoolean("oneLine", v).apply(); }
     void setHeroTitle(boolean v) { sp.edit().putBoolean(HERO_TITLE, v).apply(); }
     /** RAM pill on the home screen; pressing it closes background apps (0.36+). */
     boolean memPill()        { return sp.getBoolean(MEM_PILL, true); }

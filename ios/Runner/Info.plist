@@ -45,6 +45,10 @@
 		<string>TVCleanzer</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 	<string>Pick photos and videos to show on your TV or to use as the background of the TV launcher. / Выберите фото и видео, чтобы показать их на телевизоре или поставить фоном лаунчера.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Say text or a search for the TV: the phone listens only after you tap the microphone in the remote. / Скажите текст или поиск для телевизора: телефон слушает, только когда вы нажали микрофон в пульте.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Turns what you say into text for the TV (search, logins, messages). / Превращает сказанное в текст для телевизора: поиск, логины, сообщения.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Save a screenshot of your TV screen to your photos. / Сохранить снимок экрана телевизора в фото.</string>
 	<key>NSCameraUsageDescription</key>

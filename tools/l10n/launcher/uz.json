@@ -197,5 +197,13 @@
 "Автоматически": "Avtomatik",
 "Что открывать по «ТВ»": "«TV» nimani ochadi",
 "Экран гаснет без пульта": "Pultsiz ekran o‘chadi",
-"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Ruxsat yo‘q. Telefondagi TVCleanzer’da: «Launcher» bo‘limi → «Yana bosh qilish»."
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Ruxsat yo‘q. Telefondagi TVCleanzer’da: «Launcher» bo‘limi → «Yana bosh qilish».",
+"Дата и погода": "Sana va ob-havo",
+"Музыка убрана": "Musiqa olib tashlandi",
+"Без музыки": "Musiqasiz",
+"Убрать музыку": "Musiqani olib tashlash",
+"нет интернета": "internet yo‘q",
+"Играет": "Chalmoqda",
+"В одну строку": "Bir qatorda",
+"Столбиком": "Ustun bo‘lib"
 }

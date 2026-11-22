@@ -41,6 +41,85 @@ public class PhotoDream extends DreamService {
     private View shade;
     private boolean clockOnly;
 
+    // ── Music (0.61+): the owner's tracks, shuffled, while the frame is on screen ──
+    private android.media.MediaPlayer player;
+    private List<File> tracks;
+    private int track;
+    private int failures;
+    private float level;
+
+    private final Runnable musicFade = new Runnable() {
+        @Override public void run() {
+            if (player == null) return;
+            level = Math.min(1f, level + 0.05f);
+            try { player.setVolume(level, level); } catch (Exception ignored) {}
+            if (level < 1f) handler.postDelayed(this, 100);
+        }
+    };
+
+    private void startMusic() {
+        if (!prefs.frameMusic()) return;
+        tracks = Music.list(this);
+        if (tracks.isEmpty()) return;
+        java.util.Collections.shuffle(tracks, random);
+        track = 0;
+        failures = 0;
+        level = 0f;
+        play();
+    }
+
+    /** Plays [track]; a file that won't play is skipped, and after a full round of them the music stops. */
+    private void play() {
+        if (tracks == null || tracks.isEmpty()) return;
+        while (failures < tracks.size()) {
+            File f = tracks.get(track % tracks.size());
+            track++;
+            android.media.MediaPlayer m = new android.media.MediaPlayer();
+            try {
+                m.setAudioAttributes(new android.media.AudioAttributes.Builder()
+                        .setUsage(android.media.AudioAttributes.USAGE_MEDIA)
+                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_MUSIC).build());
+                m.setDataSource(f.getAbsolutePath());
+                m.prepare();
+                m.setVolume(level, level);
+                m.setOnCompletionListener(mp -> {
+                    failures = 0;
+                    release(mp);
+                    play();
+                });
+                m.setOnErrorListener((mp, what, extra) -> {
+                    failures++;
+                    release(mp);
+                    handler.post(this::play);
+                    return true;
+                });
+                m.start();
+                player = m;
+                handler.removeCallbacks(musicFade);
+                handler.post(musicFade);
+                return;
+            } catch (Exception e) {
+                failures++;
+                m.release();
+            }
+        }
+    }
+
+    private void release(android.media.MediaPlayer mp) {
+        if (player == mp) player = null;
+        try { mp.release(); } catch (Exception ignored) {}
+    }
+
+    private void stopMusic() {
+        android.media.MediaPlayer m = player;
+        player = null;
+        tracks = null;
+        if (m != null) {
+            try { m.stop(); } catch (Exception ignored) {}
+            m.release();
+        }
+    }
+
     private final Runnable next = new Runnable() {
         @Override public void run() {
             showNext();
@@ -171,6 +250,7 @@ public class PhotoDream extends DreamService {
         io.execute(() -> {
             if (Weather.refreshIfStale(prefs)) handler.post(this::updateWeather);
         });
+        startMusic();
     }
 
     // Our own frame-by-frame fade and zoom: View animations obey the TV's "animation scale",
@@ -266,12 +346,14 @@ public class PhotoDream extends DreamService {
     @Override
     public void onDreamingStopped() {
         handler.removeCallbacksAndMessages(null);
+        stopMusic();
         super.onDreamingStopped();
     }
 
     @Override
     public void onDetachedFromWindow() {
         handler.removeCallbacksAndMessages(null);
+        stopMusic();
         io.shutdownNow();
         views = null;
         super.onDetachedFromWindow();

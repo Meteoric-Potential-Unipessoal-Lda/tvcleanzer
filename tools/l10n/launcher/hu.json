@@ -197,5 +197,13 @@
 "Автоматически": "Automatikus",
 "Что открывать по «ТВ»": "Mit nyisson a «TV»",
 "Экран гаснет без пульта": "Képernyő ki távirányító nélkül",
-"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Nincs engedély. A telefonon a TVCleanzerben: «Launcher» lap → «Legyen újra kezdőképernyő»."
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Nincs engedély. A telefonon a TVCleanzerben: «Launcher» lap → «Legyen újra kezdőképernyő».",
+"Дата и погода": "Dátum és időjárás",
+"Музыка убрана": "Zene eltávolítva",
+"Без музыки": "Zene nélkül",
+"Убрать музыку": "Zene eltávolítása",
+"нет интернета": "nincs internet",
+"Играет": "Szól",
+"В одну строку": "Egy sorban",
+"Столбиком": "Egymás alatt"
 }

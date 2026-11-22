@@ -14,7 +14,7 @@ import android.view.View;
 final class TopIcon extends View {
     static final int WIFI = 0, ETHERNET = 1, VPN = 2, OFFLINE = 3, TV = 4;
     /** Green: online; orange: no network or no internet; blue: through a VPN. */
-    static final int OK = 0xFF4ADE80, BAD = 0xFFFB923C, VPN_COLOR = 0xFF60A5FA;
+    static final int OK = 0xFF4ADE80, BAD = 0xFFFB923C, VPN_COLOR = 0xFF60A5FA, OFF = 0xFFF87171;
 
     private final Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint ink = new Paint(Paint.ANTI_ALIAS_FLAG);

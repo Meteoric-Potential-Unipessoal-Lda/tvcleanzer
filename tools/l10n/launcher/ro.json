@@ -197,5 +197,13 @@
 "Автоматически": "Automat",
 "Что открывать по «ТВ»": "Ce deschide «TV»",
 "Экран гаснет без пульта": "Ecranul se stinge fără telecomandă",
-"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Fără permisiune. Pe telefon, în TVCleanzer: fila «Launcher» → «Fă-l din nou principal»."
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Fără permisiune. Pe telefon, în TVCleanzer: fila «Launcher» → «Fă-l din nou principal».",
+"Дата и погода": "Data și vremea",
+"Музыка убрана": "Muzica a fost scoasă",
+"Без музыки": "Fără muzică",
+"Убрать музыку": "Scoate muzica",
+"нет интернета": "fără internet",
+"Играет": "Cântă",
+"В одну строку": "Pe un rând",
+"Столбиком": "În coloană"
 }

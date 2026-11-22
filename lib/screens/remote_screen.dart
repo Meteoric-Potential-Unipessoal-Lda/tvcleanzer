@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -15,6 +16,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/tv_device.dart';
 import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
+import '../services/app_log.dart';
 import '../services/demo_tv.dart';
 import '../services/mirror.dart';
 import '../state/current_tv.dart';
@@ -66,6 +68,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   @override
   void dispose() {
     _mirrorEnded?.cancel();
+    _speech.cancel();
     _text.dispose();
     _focus.dispose();
     super.dispose();
@@ -108,6 +111,58 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       // status card shows the error
     }
     if (mounted) setState(() => _sending = false);
+  }
+
+  // ── «Сказать голосом»: the phone's own speech recognizer fills the text field ──
+  final _speech = SpeechToText();
+  bool? _speechReady;
+  bool _listening = false;
+
+  Future<void> _voice() async {
+    if (_listening) {
+      await _speech.stop();
+      if (mounted) setState(() => _listening = false);
+      return;
+    }
+    try {
+      _speechReady ??= await _speech.initialize(
+        onError: (_) {
+          if (mounted) setState(() => _listening = false);
+        },
+        onStatus: (s) {
+          if ((s == 'done' || s == 'notListening') && mounted) setState(() => _listening = false);
+        },
+      );
+    } catch (e) {
+      AppLog.error('speech init', e);
+      _speechReady = false;
+    }
+    if (_speechReady != true) {
+      _speechReady = null; // ask again next time: the owner may allow it in the settings
+      _snack(tr('Голосовой ввод недоступен: разрешите микрофон и распознавание речи в настройках телефона.'));
+      return;
+    }
+    HapticFeedback.selectionClick();
+    setState(() => _listening = true);
+    try {
+      await _speech.listen(
+        listenOptions: SpeechListenOptions(partialResults: true, cancelOnError: true, listenMode: ListenMode.search),
+        pauseFor: const Duration(seconds: 3),
+        listenFor: const Duration(seconds: 30),
+        onResult: (r) {
+          if (!mounted) return;
+          final words = r.recognizedWords;
+          _text.value = TextEditingValue(text: words, selection: TextSelection.collapsed(offset: words.length));
+          if (r.finalResult) {
+            setState(() => _listening = false);
+            if (words.trim().isNotEmpty) _snack(tr('Готово: ➤ — набрать на телевизоре, 🔍 — искать'));
+          }
+        },
+      );
+    } catch (e) {
+      AppLog.error('speech listen', e);
+      if (mounted) setState(() => _listening = false);
+    }
   }
 
   Future<void> _search(TvDevice tv) async {
@@ -669,7 +724,13 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
             onSubmitted: (_) => _sendText(tv),
             style: const TextStyle(color: AppColors.fg),
             decoration: InputDecoration(
-              hintText: tr('Текст или поиск на ТВ'),
+              hintText: _listening ? tr('Говорите…') : tr('Текст или поиск на ТВ'),
+              suffixIcon: IconButton(
+                tooltip: tr('Сказать голосом'),
+                onPressed: _voice,
+                icon: Icon(_listening ? Icons.mic_rounded : Icons.mic_none_rounded,
+                    color: _listening ? AppColors.accent : AppColors.fgMid),
+              ),
               hintStyle: const TextStyle(color: AppColors.fgMuted),
               filled: true,
               fillColor: AppColors.bgCard,

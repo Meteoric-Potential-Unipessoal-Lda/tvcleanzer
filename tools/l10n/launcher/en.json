@@ -197,5 +197,13 @@
 "Автоматически": "Automatic",
 "Что открывать по «ТВ»": "What «TV» opens",
 "Экран гаснет без пульта": "Screen goes dark without the remote",
-"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "No permission. On the phone in TVCleanzer: «Launcher» tab → «Make it the home screen again»."
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "No permission. On the phone in TVCleanzer: «Launcher» tab → «Make it the home screen again».",
+"Дата и погода": "Date and weather",
+"Музыка убрана": "Music removed",
+"Без музыки": "No music",
+"Убрать музыку": "Remove music",
+"нет интернета": "no internet",
+"Играет": "Plays",
+"В одну строку": "On one line",
+"Столбиком": "In a column"
 }

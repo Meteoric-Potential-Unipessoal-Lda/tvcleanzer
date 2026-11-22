@@ -197,5 +197,13 @@
 "Автоматически": "Automaticky",
 "Что открывать по «ТВ»": "Co otevírá «TV»",
 "Экран гаснет без пульта": "Obrazovka zhasne bez ovladače",
-"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Chybí oprávnění. V telefonu v TVCleanzer: karta «Launcher» → «Znovu nastavit jako hlavní»."
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Chybí oprávnění. V telefonu v TVCleanzer: karta «Launcher» → «Znovu nastavit jako hlavní».",
+"Дата и погода": "Datum a počasí",
+"Музыка убрана": "Hudba odebrána",
+"Без музыки": "Bez hudby",
+"Убрать музыку": "Odebrat hudbu",
+"нет интернета": "bez internetu",
+"Играет": "Hraje",
+"В одну строку": "Na jednom řádku",
+"Столбиком": "Pod sebou"
 }

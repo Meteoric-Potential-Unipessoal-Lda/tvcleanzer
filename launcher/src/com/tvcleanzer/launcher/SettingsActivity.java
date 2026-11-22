@@ -114,6 +114,10 @@ public class SettingsActivity extends Activity {
         }
         addToggle(skin, T.t("Названия разделов"), prefs.sectionTitles(), T.t("Показывать"), T.t("Скрыто"), prefs::setSectionTitles);
         addToggle(skin, T.t("Память на главном экране"), prefs.memPill(), T.t("Показывать"), T.t("Скрыто"), prefs::setMemPill);
+        addToggle(skin, T.t("Приветствие"), prefs.greeting(), T.t("Показывать"), T.t("Скрыто"), prefs::setGreeting);
+        addChoice(skin, T.t("Часы вверху"), new String[]{T.t("Крупные"), T.t("Средние"), T.t("Мелкие")},
+                prefs.barClock(), prefs::setBarClock);
+        addToggle(skin, T.t("Дата и погода"), prefs.oneLine(), T.t("В одну строку"), T.t("Столбиком"), prefs::setOneLine);
         addToggle(skin, T.t("Заставка при запуске"), prefs.splash(), T.t("Логотип, пока лаунчер загружается"), T.t("Выключена"),
                 prefs::setSplash);
 
@@ -214,6 +218,14 @@ public class SettingsActivity extends Activity {
                 Photos.clear(this);
                 prefs.bumpPhotos();
                 Toast.makeText(this, T.t("Фото убраны"), Toast.LENGTH_SHORT).show();
+            });
+        }
+        if (Music.count(this) > 0) {
+            addToggle(skin, T.t("Музыка в фоторамке"), prefs.frameMusic(), T.t("Играет"), T.t("Без музыки"),
+                    prefs::setFrameMusic);
+            addRow(skin, T.t("Убрать музыку"), "", () -> {
+                Music.clear(this);
+                Toast.makeText(this, T.t("Музыка убрана"), Toast.LENGTH_SHORT).show();
             });
         }
 

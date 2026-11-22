@@ -197,5 +197,13 @@
 "Автоматически": "Automático",
 "Что открывать по «ТВ»": "O que «TV» abre",
 "Экран гаснет без пульта": "O ecrã apaga-se sem o comando",
-"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Sem permissão. No telemóvel, no TVCleanzer: separador «Launcher» → «Tornar principal outra vez»."
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Sem permissão. No telemóvel, no TVCleanzer: separador «Launcher» → «Tornar principal outra vez».",
+"Дата и погода": "Data e tempo",
+"Музыка убрана": "Música removida",
+"Без музыки": "Sem música",
+"Убрать музыку": "Remover música",
+"нет интернета": "sem internet",
+"Играет": "Toca",
+"В одну строку": "Numa linha",
+"Столбиком": "Em coluna"
 }

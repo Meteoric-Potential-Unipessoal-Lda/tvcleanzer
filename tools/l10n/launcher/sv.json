@@ -197,5 +197,13 @@
 "Автоматически": "Automatiskt",
 "Что открывать по «ТВ»": "Vad «TV» öppnar",
 "Экран гаснет без пульта": "Skärmen släcks utan fjärrkontroll",
-"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Ingen behörighet. På telefonen i TVCleanzer: fliken «Launcher» → «Gör till startskärm igen»."
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Ingen behörighet. På telefonen i TVCleanzer: fliken «Launcher» → «Gör till startskärm igen».",
+"Дата и погода": "Datum och väder",
+"Музыка убрана": "Musiken togs bort",
+"Без музыки": "Ingen musik",
+"Убрать музыку": "Ta bort musik",
+"нет интернета": "inget internet",
+"Играет": "Spelas",
+"В одну строку": "På en rad",
+"Столбиком": "I en kolumn"
 }

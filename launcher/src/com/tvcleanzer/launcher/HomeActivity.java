@@ -134,6 +134,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         registerReceiver(packages, f);
         // after a reboot Wi-Fi comes up after the home screen: keep the pill (and weather) current
         try { registerReceiver(netChanged, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")); } catch (Exception ignored) {}
+        watchNetwork();
         reloadApps();
         maybeChooseInput(getIntent());
     }
@@ -143,6 +144,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         prefs.sp.unregisterOnSharedPreferenceChangeListener(this);
         try { unregisterReceiver(packages); } catch (Exception ignored) {}
         try { unregisterReceiver(netChanged); } catch (Exception ignored) {}
+        unwatchNetwork();
         io.shutdownNow();
         super.onDestroy();
     }
@@ -1261,34 +1263,42 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         greet.setText(greeting().toUpperCase());
         greet.setLetterSpacing(0.16f);
         greet.setPadding(0, 0, Ui.dp(this, 8), 0);
-        left.addView(greet);
+        // «Приветствие» off: no greeting line (owners asked to drop it, 0.61)
+        if (prefs.greeting()) left.addView(greet); else greetView = null;
 
+        final boolean oneLine = prefs.oneLine();
+        final int clockSp = new int[]{64, 46, 32}[prefs.barClock()];
         LinearLayout timeRow = new LinearLayout(this);
         timeRow.setOrientation(LinearLayout.HORIZONTAL);
         timeRow.setGravity(Gravity.CENTER_VERTICAL);
-        timeRow.addView(bigClock(64));
+        timeRow.addView(bigClock(clockSp));
 
         View divider = new View(this);
         divider.setBackgroundColor(0x40FFFFFF);
-        LinearLayout.LayoutParams dvp = new LinearLayout.LayoutParams(Ui.dp(this, 1), Ui.dp(this, 44));
+        LinearLayout.LayoutParams dvp = new LinearLayout.LayoutParams(Ui.dp(this, 1),
+                Ui.dp(this, oneLine ? Math.min(28, clockSp * 0.6f) : Math.min(44, clockSp * 0.75f)));
         dvp.leftMargin = Ui.dp(this, 20);
         dvp.rightMargin = Ui.dp(this, 20);
         timeRow.addView(divider, dvp);
 
         // Day and date as two one-line clocks: one two-line clock with letter spacing was measured
         // a few pixels short on some TVs and broke «ВОСКРЕСЕНЬЕ» into «ВОСКРЕСЕНЬ / Е».
+        // «Дата и погода: в одну строку»: «ПЯТНИЦА, 22 НОЯБРЯ  ☁ +5°» beside the clock
         LinearLayout dateCol = new LinearLayout(this);
-        dateCol.setOrientation(LinearLayout.VERTICAL);
-        dateCol.addView(dateLine("EEEE"));
-        TextClock dayMonth = dateLine("d MMMM");
-        LinearLayout.LayoutParams dml = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dml.topMargin = Ui.dp(this, 3);
-        dateCol.addView(dayMonth, dml);
+        dateCol.setOrientation(oneLine ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
+        dateCol.setGravity(Gravity.CENTER_VERTICAL);
+        dateCol.addView(dateLine(oneLine ? "EEEE, d MMMM" : "EEEE"));
+        if (!oneLine) {
+            TextClock dayMonth = dateLine("d MMMM");
+            LinearLayout.LayoutParams dml = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dml.topMargin = Ui.dp(this, 3);
+            dateCol.addView(dayMonth, dml);
+        }
         weatherView = Ui.text(this, 15, 0xB3FFFFFF, "sans-serif-medium");
         LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        wl.topMargin = Ui.dp(this, 4);
+        if (oneLine) wl.leftMargin = Ui.dp(this, 18); else wl.topMargin = Ui.dp(this, 4);
         dateCol.addView(weatherView, wl);
         updateWeatherView();
         timeRow.addView(dateCol);
@@ -1415,7 +1425,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
         if (netPill != null) {
             CharSequence n = networkLabel();
-            if (!n.toString().equals(netPill.getText().toString())) netPill.setText(n);
+            int colour = netState()[1];
+            if (!n.toString().equals(netPill.getText().toString()) || colour != netPillColour) netPill.setText(n);
+            netPillColour = colour;
         }
         if (netIcon != null) {
             int[] ns = netState();
@@ -1424,6 +1436,40 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (memPill != null && !freeing) memPill.setText(Memory.label(this));
     }
     private boolean freeing;
+    private int netPillColour;
+
+    /** Network changes as they happen (Android 7+): VPN on/off and «no internet» send no
+     *  CONNECTIVITY_CHANGE, the pill waited for the 10-second tick or showed old news. */
+    private Object netCallback;
+    private final Runnable netRefresh = this::refreshStatus;
+
+    private void watchNetwork() {
+        if (android.os.Build.VERSION.SDK_INT < 24) return;
+        try {
+            android.net.ConnectivityManager cm =
+                    (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            android.net.ConnectivityManager.NetworkCallback cb = new android.net.ConnectivityManager.NetworkCallback() {
+                private void later() {
+                    main.removeCallbacks(netRefresh);
+                    main.postDelayed(netRefresh, 700);
+                }
+                @Override public void onAvailable(android.net.Network n) { later(); }
+                @Override public void onLost(android.net.Network n) { later(); }
+                @Override public void onCapabilitiesChanged(android.net.Network n, android.net.NetworkCapabilities c) { later(); }
+            };
+            cm.registerDefaultNetworkCallback(cb);
+            netCallback = cb;
+        } catch (Throwable ignored) {}
+    }
+
+    private void unwatchNetwork() {
+        if (netCallback == null || android.os.Build.VERSION.SDK_INT < 24) return;
+        try {
+            ((android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE))
+                    .unregisterNetworkCallback((android.net.ConnectivityManager.NetworkCallback) netCallback);
+        } catch (Throwable ignored) {}
+        netCallback = null;
+    }
 
     /** RAM pill: closes background apps, then says how much came free. */
     private void freeMemory() {
@@ -1451,7 +1497,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private final BroadcastReceiver netChanged = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) {
             main.postDelayed(() -> {
-                if (netPill != null) netPill.setText(networkLabel());
+                refreshStatus();
                 refreshWeather();
             }, 1500);
         }
@@ -1467,57 +1513,77 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         return false;
     }
 
-    /** {glyph, colour} for the network icon: VPN (blue lock), Wi-Fi / Ethernet in green when
-     *  online, orange when there is no network or the network has no internet. */
+    /** What the network pill / icon shows: 0 no network, 1 network without internet, 2 online, 3 VPN. */
+    static final int NET_OFF = 0, NET_NO_INTERNET = 1, NET_OK = 2, NET_VPN = 3;
+
+    /** {glyph, colour, kind, vpn 0/1, link: 0 other, 1 Wi-Fi, 2 Ethernet} for the network icon and pill.
+     *  One colour per state everywhere (owners asked to tell them apart at a glance, 0.61):
+     *  green online, blue VPN, orange connected without internet, red no network. */
     @SuppressWarnings("deprecation")
     private int[] netState() {
         try {
             android.net.ConnectivityManager cm =
                     (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
             android.net.NetworkInfo ni = cm == null ? null : cm.getActiveNetworkInfo();
-            if (ni == null || !ni.isConnected()) return new int[]{TopIcon.OFFLINE, TopIcon.BAD};
-            if (vpnOn(cm) || ni.getType() == android.net.ConnectivityManager.TYPE_VPN) {
-                return new int[]{TopIcon.VPN, TopIcon.VPN_COLOR};
-            }
-            int glyph = ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET ? TopIcon.ETHERNET : TopIcon.WIFI;
+            if (ni == null || !ni.isConnected()) return new int[]{TopIcon.OFFLINE, TopIcon.OFF, NET_OFF, 0, 0};
+            boolean vpn = vpnOn(cm) || ni.getType() == android.net.ConnectivityManager.TYPE_VPN;
+            int link = linkOf(cm, ni);
             boolean online = true;
             if (android.os.Build.VERSION.SDK_INT >= 23) {
                 android.net.NetworkCapabilities nc = cm.getNetworkCapabilities(cm.getActiveNetwork());
                 online = nc == null || nc.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED);
             }
-            return new int[]{glyph, online ? TopIcon.OK : TopIcon.BAD};
+            if (vpn) {
+                return new int[]{TopIcon.VPN, online ? TopIcon.VPN_COLOR : TopIcon.BAD,
+                        online ? NET_VPN : NET_NO_INTERNET, 1, link};
+            }
+            int glyph = link == 2 ? TopIcon.ETHERNET : TopIcon.WIFI;
+            return new int[]{glyph, online ? TopIcon.OK : TopIcon.BAD, online ? NET_OK : NET_NO_INTERNET, 0, link};
         } catch (Throwable t) {
-            return new int[]{TopIcon.WIFI, 0};
+            return new int[]{TopIcon.WIFI, 0, NET_OK, 0, 1};
         }
     }
 
+    /** Wi-Fi or Ethernet under the active network (with a VPN on, the active one is the VPN). */
     @SuppressWarnings("deprecation")
+    private static int linkOf(android.net.ConnectivityManager cm, android.net.NetworkInfo ni) {
+        if (ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET) return 2;
+        if (ni.getType() == android.net.ConnectivityManager.TYPE_WIFI) return 1;
+        try {
+            for (android.net.Network n : cm.getAllNetworks()) {
+                android.net.NetworkCapabilities nc = cm.getNetworkCapabilities(n);
+                if (nc == null || nc.hasTransport(android.net.NetworkCapabilities.TRANSPORT_VPN)) continue;
+                if (nc.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET)) return 2;
+                if (nc.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI)) return 1;
+            }
+        } catch (Throwable ignored) {}
+        return 0;
+    }
+
+    /** The network pill's text: a dot in the state colour, the link, «нет интернета» when it
+     *  has none, and the «🔒 VPN» badge. */
     private CharSequence networkLabel() {
         try {
-            android.net.ConnectivityManager cm =
-                    (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-            android.net.NetworkInfo ni = cm == null ? null : cm.getActiveNetworkInfo();
-            if (ni == null || !ni.isConnected()) return T.t("Нет сети");
-            // The stock home showed «VPN is on» (Xiaomi, Haier owners missed it); ByeDPI and other
-            // local VPNs count too. Shown as a green «🔒 VPN» badge right in the network pill.
-            boolean vpn = vpnOn(cm) || ni.getType() == android.net.ConnectivityManager.TYPE_VPN;
-            String name;
-            if (ni.getType() == android.net.ConnectivityManager.TYPE_ETHERNET) name = "Ethernet";
-            else if (ni.getType() == android.net.ConnectivityManager.TYPE_WIFI) name = "Wi-Fi";
-            else name = T.t("В сети");
-            if (!vpn) return name;
-            android.text.SpannableStringBuilder sb = new android.text.SpannableStringBuilder(name);
-            int at = sb.length();
-            sb.append('\uFFFC');
-            sb.setSpan(new VpnBadge(getResources().getDisplayMetrics().density), at, at + 1,
+            int[] s = netState();
+            android.text.SpannableStringBuilder sb = new android.text.SpannableStringBuilder("\u25CF  ");
+            sb.setSpan(new android.text.style.ForegroundColorSpan(s[1] == 0 ? TopIcon.OK : s[1]), 0, 1,
                     android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (s[2] == NET_OFF) return sb.append(T.t("Нет сети"));
+            sb.append(s[4] == 2 ? "Ethernet" : s[4] == 1 ? "Wi-Fi" : T.t("В сети"));
+            if (s[2] == NET_NO_INTERNET) sb.append(" \u00B7 ").append(T.t("нет интернета"));
+            if (s[3] == 1) {
+                int at = sb.length();
+                sb.append('\uFFFC');
+                sb.setSpan(new VpnBadge(getResources().getDisplayMetrics().density), at, at + 1,
+                        android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             return sb;
         } catch (Throwable t) {
             return T.t("Сеть");
         }
     }
 
-    /** Green capsule with a padlock and «VPN», drawn inside the network pill's text. */
+    /** Blue capsule with a padlock and «VPN» (the VPN colour everywhere), drawn inside the network pill's text. */
     static final class VpnBadge extends android.text.style.ReplacementSpan {
         private final float dp;
         private final android.graphics.Paint p = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
@@ -1544,7 +1610,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             float cy = y + (paint.ascent() + paint.descent()) / 2f;
             float l = x + 9 * dp, w = boxW();
             p.setStyle(android.graphics.Paint.Style.FILL);
-            p.setColor(0xFF22B455);
+            p.setColor(TopIcon.VPN_COLOR);
             c.drawRoundRect(new android.graphics.RectF(l, cy - h / 2, l + w, cy + h / 2), h / 2, h / 2, p);
             // padlock: shackle arc + body
             float lw = lockW(), lx = l + 7 * dp;

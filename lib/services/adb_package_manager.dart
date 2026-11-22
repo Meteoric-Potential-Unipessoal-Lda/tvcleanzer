@@ -639,7 +639,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 60;
+  static const bundledLauncherVersion = 61;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1556,6 +1556,72 @@ class AdbPackageManager {
   }
 
   Future<void> clearPhotos(TvDevice device) => _apply(device, '--es photos clear');
+
+  // ── Music in the photo frame (launcher 0.61+) ────────────────────────────
+
+  static const musicExts = ['mp3', 'm4a', 'aac', 'ogg', 'oga', 'opus', 'flac', 'wav'];
+  static const musicLauncher = 61;
+
+  /// Extension the launcher keeps the track under ('mp3' when unknown).
+  static String musicExt(String name) {
+    final e = name.contains('.') ? name.split('.').last.toLowerCase() : '';
+    return musicExts.contains(e) ? e : 'mp3';
+  }
+
+  /// Sends tracks one by one, read from disk piece by piece: /data/local/tmp, then into the
+  /// launcher (content write …/music/<ext> on Android 10+, its external files dir before that).
+  /// Returns how many the TV kept.
+  Future<int> addMusic(TvDevice device, List<({String name, int length, Stream<List<int>> Function() open})> tracks,
+      {void Function(int done, int total)? onProgress}) async {
+    const tmp = '/data/local/tmp/tvcleanzer_music';
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final total = tracks.fold<int>(0, (a, t) => a + t.length);
+      final freeKb = await _dataFreeKb(adb);
+      final needKb = total ~/ 1024 * 2 + 200 * 1024; // the copy in tmp + the launcher's own + room
+      if (freeKb > 0 && freeKb < needKb) {
+        throw AdbException(tr('На телевизоре мало места: нужно {0} МБ, свободно {1} МБ.',
+            ['${needKb ~/ 1024}', '${freeKb ~/ 1024}']));
+      }
+      final sdk = int.tryParse((await adb.shell('getprop ro.build.version.sdk')).trim()) ?? 0;
+      var stored = 0;
+      for (var i = 0; i < tracks.length; i++) {
+        onProgress?.call(i, tracks.length);
+        final t = tracks[i];
+        final ext = musicExt(t.name);
+        await adb.execInStream('cat > $tmp', t.open(),
+            timeout: Duration(seconds: max(120, t.length ~/ (1024 * 1024))));
+        final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first);
+        if (size != t.length) continue;
+        var ok = false;
+        if (sdk >= 29) {
+          ok = (await adb.shell('content write --uri content://$launcherPkg.state/music/$ext < $tmp && echo TVC_OK'))
+              .contains('TVC_OK');
+        }
+        if (!ok) {
+          final name = 'm${DateTime.now().millisecondsSinceEpoch}_$i.$ext';
+          ok = (await adb.shell('mkdir -p $_launcherFiles/music && cp $tmp $_launcherFiles/music/$name '
+                  '&& chmod 666 $_launcherFiles/music/$name && echo TVC_OK'))
+              .contains('TVC_OK');
+        }
+        if (ok) stored++;
+      }
+      await adb.shell('rm -f $tmp');
+      await _broadcast(adb, '--es music added');
+      onProgress?.call(tracks.length, tracks.length);
+      if (stored == 0) {
+        throw AdbException(tr('Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.'));
+      }
+      return stored;
+    } finally {
+      adb.close();
+    }
+  }
+
+  Future<void> clearMusic(TvDevice device) => _apply(device, '--es music clear');
+
+  Future<void> setFrameMusic(TvDevice device, bool on) => _apply(device, '--ez frameMusic $on');
 
   Future<void> setPhotoOptions(TvDevice device, {int? seconds, bool? homePhotos}) => _apply(device,
       [if (seconds != null) '--ei photoSec $seconds', if (homePhotos != null) '--ez homePhotos $homePhotos'].join(' '));

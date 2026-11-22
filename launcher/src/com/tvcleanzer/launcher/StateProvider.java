@@ -59,10 +59,15 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"autostart", p.autostart().isEmpty() ? "-" : p.autostart()});
             c.addRow(new Object[]{"photos", Photos.count(getContext())});
             c.addRow(new Object[]{"photoSec", p.photoSec()});
+            c.addRow(new Object[]{"music", Music.count(getContext())});
+            c.addRow(new Object[]{"frameMusic", p.frameMusic() ? 1 : 0});
             c.addRow(new Object[]{"homePhotos", p.homePhotos() ? 1 : 0});
             c.addRow(new Object[]{"splash", p.splash() ? 1 : 0});
             c.addRow(new Object[]{"appsBelow", p.appsBelow() ? 1 : 0});
             c.addRow(new Object[]{"heroTitle", p.heroTitle() ? 1 : 0});
+            c.addRow(new Object[]{"greeting", p.greeting() ? 1 : 0});
+            c.addRow(new Object[]{"barClock", p.barClock()});
+            c.addRow(new Object[]{"oneLine", p.oneLine() ? 1 : 0});
             c.addRow(new Object[]{"memPill", p.memPill() ? 1 : 0});
             c.addRow(new Object[]{"cleanBar", p.cleanBar() ? 1 : 0});
             c.addRow(new Object[]{"favBottom", p.favBottom() ? 1 : 0});
@@ -94,6 +99,13 @@ public class StateProvider extends ContentProvider {
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         String seg = uri.getLastPathSegment();
+        java.util.List<String> parts = uri.getPathSegments();
+        if (getContext() != null && mode.contains("w") && !parts.isEmpty() && "music".equals(parts.get(0))) {
+            // a track for the photo frame (0.61+): .../music/<ext>; ConfigReceiver --es music added trims
+            File f = Music.newFile(getContext(), parts.size() > 1 ? parts.get(1) : "mp3");
+            return ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_WRITE_ONLY
+                    | ParcelFileDescriptor.MODE_CREATE | ParcelFileDescriptor.MODE_TRUNCATE);
+        }
         if (getContext() != null && mode.contains("w") && "cast".equals(seg)) {
             // a photo / video for the TV screen, from the phone's remote (0.42+)
             return ParcelFileDescriptor.open(CastActivity.file(getContext()), ParcelFileDescriptor.MODE_WRITE_ONLY

@@ -68,12 +68,19 @@ public class ConfigReceiver extends BroadcastReceiver {
             if ("clear".equals(what)) Photos.clear(context); else Photos.trim(context);
             p.bumpPhotos();
         }
+        if (intent.hasExtra("music")) {
+            if ("clear".equals(intent.getStringExtra("music"))) Music.clear(context); else Music.trim(context);
+        }
+        if (intent.hasExtra("frameMusic")) p.setFrameMusic(intent.getBooleanExtra("frameMusic", true));
         if (intent.hasExtra("photoSec")) p.setPhotoSec(intent.getIntExtra("photoSec", 30));
         if (intent.hasExtra("homePhotos")) p.setHomePhotos(intent.getBooleanExtra("homePhotos", false));
         if (intent.hasExtra("splash")) p.setSplash(intent.getBooleanExtra("splash", true));
         if (intent.hasExtra("memPill")) p.setMemPill(intent.getBooleanExtra("memPill", true));
         if (intent.hasExtra("cleanBar")) p.setCleanBar(intent.getBooleanExtra("cleanBar", false));
         if (intent.hasExtra("heroTitle")) p.setHeroTitle(intent.getBooleanExtra("heroTitle", true));
+        if (intent.hasExtra("greeting")) p.setGreeting(intent.getBooleanExtra("greeting", true));
+        if (intent.hasExtra("barClock")) p.setBarClock(intent.getIntExtra("barClock", 0));
+        if (intent.hasExtra("oneLine")) p.setOneLine(intent.getBooleanExtra("oneLine", false));
         if (intent.hasExtra("appsBelow")) p.setAppsBelow(intent.getBooleanExtra("appsBelow", false));
         if (intent.hasExtra("favBottom")) p.setFavBottom(intent.getBooleanExtra("favBottom", false));
         if (intent.hasExtra("shelf")) p.setShelf(intent.getIntExtra("shelf", Prefs.SHELF_GLASS));

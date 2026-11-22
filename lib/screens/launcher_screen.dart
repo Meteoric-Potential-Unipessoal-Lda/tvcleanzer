@@ -418,6 +418,15 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             (v) => _setLook(look.copyWith(memPill: v))),
         sw(tr('Только шестерёнка вверху'), tr('Без плашек сети и «Настройки ТВ»: шестерёнка открывает настройки ТВ, удержание — настройки лаунчера'),
             look.cleanBar, (v) => _setLook(look.copyWith(cleanBar: v))),
+        if (look.style == 0) ...[
+          sw(tr('Приветствие'), tr('«Добрый вечер» над часами'), look.greeting,
+              (v) => _setLook(look.copyWith(greeting: v))),
+          sw(tr('Дата и погода в одну строку'), tr('Рядом с часами, а не столбиком'), look.oneLine,
+              (v) => _setLook(look.copyWith(oneLine: v))),
+          const Gap(6),
+          seg(tr('Часы вверху'), [tr('Крупные'), tr('Средние'), tr('Мелкие')], look.barClock,
+              (v) => _setLook(look.copyWith(barClock: v))),
+        ],
         const Gap(8),
         if (look.style == 2) ...[
           sw(tr('Название приложения над плитками'), null, look.heroTitle,
