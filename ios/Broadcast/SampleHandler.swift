@@ -253,7 +253,10 @@ final class SampleHandler: RPBroadcastSampleHandler {
       orientation = v
     }
     let sw = CVPixelBufferGetWidth(src), sh = CVPixelBufferGetHeight(src)
-    let turn = orientation == .left || orientation == .right || orientation == .leftMirrored || orientation == .rightMirrored
+    // iOS 15 has no VTPixelRotationSession: the frame goes as it comes (sideways in landscape),
+    // never squeezed into a turned shape
+    var turn = orientation == .left || orientation == .right || orientation == .leftMirrored || orientation == .rightMirrored
+    if #unavailable(iOS 16.0) { turn = false }
     // the picture's shape on the TV
     let (ow, oh) = turn ? (sh, sw) : (sw, sh)
     let scale = min(1.0, Double(maxLong) / Double(max(ow, oh)), Double(maxLong) * 9.0 / 16.0 / Double(min(ow, oh)))
@@ -310,8 +313,11 @@ final class SampleHandler: RPBroadcastSampleHandler {
     let rSession = rObj as! VTPixelRotationSession
     let angle: CFString
     switch orientation {
-    case .right, .rightMirrored: angle = kVTRotation_CW90
-    case .left, .leftMirrored: angle = kVTRotation_CCW90
+    // ReplayKit's tag says which way the phone is held, not EXIF's «how the data is turned»:
+    // .left needs a clockwise turn (as WebRTC / LiveKit / Agora read it). The other way round
+    // the landscape picture came out upside down on the TV (#41, DEXP).
+    case .left, .leftMirrored: angle = kVTRotation_CW90
+    case .right, .rightMirrored: angle = kVTRotation_CCW90
     case .down, .downMirrored: angle = kVTRotation_180
     default: return small
     }
