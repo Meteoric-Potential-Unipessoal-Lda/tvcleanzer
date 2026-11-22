@@ -21,6 +21,9 @@
     <!-- the TV's system language, set from the phone (Locales): granted over ADB (pm grant),
          never asked on the TV -->
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <!-- «Экран гаснет без пульта» in the launcher settings: the TV's screen timeout;
+         allowed by the phone app over ADB (appops WRITE_SETTINGS) -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />

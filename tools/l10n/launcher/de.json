@@ -195,5 +195,7 @@
 "Ночному режиму нужна служба «Домой»": "Der Nachtmodus braucht den Home-Tasten-Dienst",
 "Настройки лаунчера": "Launcher-Einstellungen",
 "Автоматически": "Automatisch",
-"Что открывать по «ТВ»": "Was «TV» öffnet"
+"Что открывать по «ТВ»": "Was «TV» öffnet",
+"Экран гаснет без пульта": "Bildschirm aus ohne Fernbedienung",
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Keine Berechtigung. Am Handy in TVCleanzer: Tab «Launcher» → «Wieder als Startbildschirm»."
 }

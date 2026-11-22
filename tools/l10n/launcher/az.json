@@ -195,5 +195,7 @@
 "Ночному режиму нужна служба «Домой»": "Gecə rejimi üçün «Ev» xidməti lazımdır",
 "Настройки лаунчера": "Launcher ayarları",
 "Автоматически": "Avtomatik",
-"Что открывать по «ТВ»": "«TV» nəyi açır"
+"Что открывать по «ТВ»": "«TV» nəyi açır",
+"Экран гаснет без пульта": "Pultsuz ekran sönür",
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "İcazə yoxdur. Telefondakı TVCleanzer-də: «Launcher» bölməsi → «Yenidən əsas et»."
 }

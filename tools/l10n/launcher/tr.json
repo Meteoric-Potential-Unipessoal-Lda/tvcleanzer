@@ -195,5 +195,7 @@
 "Ночному режиму нужна служба «Домой»": "Gece modu için Ana Sayfa tuşu hizmeti gerekir",
 "Настройки лаунчера": "Başlatıcı ayarları",
 "Автоматически": "Otomatik",
-"Что открывать по «ТВ»": "«TV» neyi açar"
+"Что открывать по «ТВ»": "«TV» neyi açar",
+"Экран гаснет без пульта": "Kumandasız ekran kapanır",
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "İzin yok. Telefonda TVCleanzer’da: «Başlatıcı» sekmesi → «Yeniden ana ekran yap»."
 }

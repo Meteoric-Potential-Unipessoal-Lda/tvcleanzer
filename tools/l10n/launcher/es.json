@@ -195,5 +195,7 @@
 "Ночному режиму нужна служба «Домой»": "El modo nocturno necesita el servicio del botón Inicio",
 "Настройки лаунчера": "Ajustes del launcher",
 "Автоматически": "Automático",
-"Что открывать по «ТВ»": "Qué abre «TV»"
+"Что открывать по «ТВ»": "Qué abre «TV»",
+"Экран гаснет без пульта": "La pantalla se apaga sin el mando",
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Sin permiso. En el teléfono, en TVCleanzer: pestaña «Launcher» → «Hacerlo principal otra vez»."
 }

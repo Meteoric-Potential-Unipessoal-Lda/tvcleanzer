@@ -195,5 +195,7 @@
 "Ночному режиму нужна служба «Домой»": "Tryb nocny potrzebuje usługi przycisku Home",
 "Настройки лаунчера": "Ustawienia launchera",
 "Автоматически": "Automatycznie",
-"Что открывать по «ТВ»": "Co otwiera «TV»"
+"Что открывать по «ТВ»": "Co otwiera «TV»",
+"Экран гаснет без пульта": "Ekran gaśnie bez pilota",
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Brak uprawnienia. Na telefonie w TVCleanzer: karta «Launcher» → «Ustaw ponownie jako główny»."
 }

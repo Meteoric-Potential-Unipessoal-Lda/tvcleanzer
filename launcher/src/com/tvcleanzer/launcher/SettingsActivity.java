@@ -272,6 +272,26 @@ public class SettingsActivity extends Activity {
             addRow(skin, T.t("Экран «Запущенные»"), HomeKeyService.usageAccess(this) ? T.t("Есть доступ") : T.t("Дать доступ"),
                     () -> openSettings(Settings.ACTION_USAGE_ACCESS_SETTINGS));
         }
+        // «Экран гаснет без пульта» (0.59): the TV's own screen timeout, right here. With no
+        // screensaver the TV goes to sleep then — mid-film in IPTV players and browsers
+        // («после чистки телек сам отрубается», many owners). The phone app lets us write it
+        // (appops WRITE_SETTINGS at «Сделать главным»).
+        java.util.List<Integer> offs = new java.util.ArrayList<>(java.util.Arrays.asList(10, 30, 60, 120, 240, -1));
+        final int curOff = screenOffMin();
+        if (curOff > 0 && !offs.contains(curOff)) {
+            int at = 0;
+            while (at < offs.size() - 1 && offs.get(at) < curOff) at++;
+            offs.add(at, curOff);
+        }
+        final String[] offNames = new String[offs.size()];
+        for (int i = 0; i < offs.size(); i++) offNames[i] = offLabel(offs.get(i));
+        final java.util.List<Integer> offList = offs;
+        addChoice(skin, T.t("Экран гаснет без пульта"), offNames, Math.max(0, offs.indexOf(curOff)), i -> {
+            if (!setScreenOff(offList.get(i))) {
+                Toast.makeText(this, T.t("Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз»."),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
         addRow(skin, T.t("Заставка ТВ"), T.t("Открыть"), () -> openSettings(Settings.ACTION_DREAM_SETTINGS));
         addRow(skin, T.t("Настройки телевизора"), T.t("Открыть"), () -> openSettings(Settings.ACTION_SETTINGS));
         addRow(skin, T.t("О лаунчере"), "TVCleanzer Launcher " + version() + " · " + AUTHOR_LINK, this::showAuthor);
@@ -280,6 +300,31 @@ public class SettingsActivity extends Activity {
         while (fi < list.getChildCount() - 1 && !list.getChildAt(fi).isFocusable()) fi++;
         View v = list.getChildAt(fi);
         if (v != null) v.requestFocus();
+    }
+
+    private static String offLabel(int m) {
+        return m < 0 ? T.t("Никогда") : m < 60 || m % 60 != 0 ? T.f("{0} мин", m) : T.f("{0} ч", m / 60);
+    }
+
+    /** The screen timeout in minutes: -1 never, 0 unknown. */
+    private int screenOffMin() {
+        try {
+            int ms = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT);
+            return ms >= Integer.MAX_VALUE / 2 ? -1 : Math.max(1, Math.round(ms / 60000f));
+        } catch (Throwable t) {
+            return 0;
+        }
+    }
+
+    private boolean setScreenOff(int minutes) {
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 23 && !Settings.System.canWrite(this)) return false;
+            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT,
+                    minutes < 0 ? Integer.MAX_VALUE : minutes * 60000);
+            return true;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     // ── Author: quietly, at the bottom of Settings ───────────────────────────

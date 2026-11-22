@@ -195,5 +195,7 @@
 "Ночному режиму нужна служба «Домой»": "Nattläget behöver tjänsten för hemknappen",
 "Настройки лаунчера": "Launcherns inställningar",
 "Автоматически": "Automatiskt",
-"Что открывать по «ТВ»": "Vad «TV» öppnar"
+"Что открывать по «ТВ»": "Vad «TV» öppnar",
+"Экран гаснет без пульта": "Skärmen släcks utan fjärrkontroll",
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Ingen behörighet. På telefonen i TVCleanzer: fliken «Launcher» → «Gör till startskärm igen»."
 }

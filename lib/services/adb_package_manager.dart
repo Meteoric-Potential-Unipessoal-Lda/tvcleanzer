@@ -937,6 +937,10 @@ class AdbPackageManager {
     if (sdk >= 22) {
       await adb.shell('appops set $launcherPkg GET_USAGE_STATS allow 2>&1');
     }
+    // «Экран гаснет без пульта» in the launcher's own settings (0.59): the screen timeout
+    if (sdk >= 23) {
+      await adb.shell('appops set $launcherPkg WRITE_SETTINGS allow 2>&1');
+    }
     // Where Home already opens us through the HOME setting, the service must not catch keys:
     // that costs key repeat — held Volume moves one step (Haier FF Pro, Xiaomi MOEU1, and many
     // Xiaomi owners in the chat: held «−» no longer went down to mute). Xiaomi was kept on the

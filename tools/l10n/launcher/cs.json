@@ -195,5 +195,7 @@
 "Ночному режиму нужна служба «Домой»": "Noční režim potřebuje službu tlačítka Domů",
 "Настройки лаунчера": "Nastavení launcheru",
 "Автоматически": "Automaticky",
-"Что открывать по «ТВ»": "Co otevírá «TV»"
+"Что открывать по «ТВ»": "Co otevírá «TV»",
+"Экран гаснет без пульта": "Obrazovka zhasne bez ovladače",
+"Нет разрешения. На телефоне в TVCleanzer: вкладка «Лаунчер» → «Сделать главным ещё раз».": "Chybí oprávnění. V telefonu v TVCleanzer: karta «Launcher» → «Znovu nastavit jako hlavní»."
 }
