@@ -223,7 +223,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: i < 4 ? AppColors.accent.withValues(alpha: .35) : AppColors.cardBd),
               ),
-              child: ListTile(
+              child: Material(type: MaterialType.transparency, child: ListTile(
                 leading: CircleAvatar(
                   radius: 14,
                   backgroundColor: AppColors.accentDim,
@@ -240,7 +240,7 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
                     child: const Icon(Icons.drag_handle_rounded, color: AppColors.fgMid),
                   ),
                 ]),
-              ),
+              )),
             ),
           ),
         ),
@@ -342,14 +342,14 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: AppColors.cardBd),
             ),
-            child: SwitchListTile(
+            child: Material(type: MaterialType.transparency, child: SwitchListTile(
               value: _kids,
               activeThumbColor: AppColors.accent,
               onChanged: (v) => setState(() => _kids = v),
               title: Text(tr('Детский режим')),
               subtitle: Text(tr('На ТВ останутся только выбранные приложения. Выйти — по PIN.'),
                   style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
-            ),
+            )),
           ),
           const Gap(12),
           TextField(

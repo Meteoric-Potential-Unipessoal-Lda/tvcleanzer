@@ -368,7 +368,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.cardBd),
         ),
-        child: child,
+        // ListTile / SwitchListTile paint on the nearest Material: without this one the card's
+        // colour hides their splashes (debug assertion «ListTile background color … invisible»)
+        child: Material(type: MaterialType.transparency, child: child),
       );
 
   Widget _lookCard(LauncherLook look) {
