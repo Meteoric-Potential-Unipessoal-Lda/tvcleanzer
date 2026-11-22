@@ -146,9 +146,13 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     setState(() => _listening = true);
     try {
       await _speech.listen(
-        listenOptions: SpeechListenOptions(partialResults: true, cancelOnError: true, listenMode: ListenMode.search),
-        pauseFor: const Duration(seconds: 3),
-        listenFor: const Duration(seconds: 30),
+        listenOptions: SpeechListenOptions(
+          partialResults: true,
+          cancelOnError: true,
+          listenMode: ListenMode.search,
+          pauseFor: const Duration(seconds: 3),
+          listenFor: const Duration(seconds: 30),
+        ),
         onResult: (r) {
           if (!mounted) return;
           final words = r.recognizedWords;
