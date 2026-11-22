@@ -2285,7 +2285,9 @@ class AdbPackageManager {
         final url = 'https://www.youtube.com/results?search_query=${Uri.encodeQueryComponent(query)}';
         out = await adb.shell('am start -a android.intent.action.VIEW -d ${_sq(url)} $youtubeTv 2>&1');
         if (started(out)) return youtubeTv;
-      } else if (front != null && front != launcherPkg && front != 'android' && !front.contains('systemui')) {
+      } else if (front != null && front != launcherPkg && front != 'android' &&
+          !RegExp(r'systemui|launcher|tvhome|\.home').hasMatch(front)) {
+        // an app, not a home screen: home screens go to the TV's own search below
         final out = await adb.shell('am start -a android.intent.action.SEARCH -p $front --es query $q 2>&1');
         if (started(out)) return front;
       }
