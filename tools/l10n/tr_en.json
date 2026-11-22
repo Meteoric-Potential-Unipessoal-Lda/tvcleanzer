@@ -839,5 +839,22 @@
 "How do I move, hide or add an app to favourites?",
 "On the TV hold OK on the app: «Add to favourites», «Move» (with the arrows, OK when done), «Hide from the home screen». Hidden apps come back in the launcher settings → «Hidden apps».",
 "How do I get the stock home screen back?",
-"«Launcher» tab → «Restore the standard launcher». Don't remove our launcher in the TV's settings: if the stock home was switched off, you'd be left with a black screen."
+"«Launcher» tab → «Restore the standard launcher». Don't remove our launcher in the TV's settings: if the stock home was switched off, you'd be left with a black screen.",
+"The TV may go dark during a film",
+"The screen turns off after {0} min without the remote and there is no screensaver — then the TV switches off completely. Set 4 hours?",
+"Done: the screen goes dark after 4 h without the remote.",
+"Set 4 hours",
+"Other time",
+"The TV's screensaver. Without it the TV switches itself off after a few minutes without the remote — even during a film.",
+"Screen and sleep",
+"Never",
+"{0} h",
+"How long without remote presses before the screen goes dark. Video apps usually keep it on, but some (IPTV, the browser) don't: if the TV goes dark during a film, set 2–4 hours.",
+"Now: the screen stays on",
+"Now: after {0}",
+"Then the screensaver starts.",
+"No screensaver — the TV switches off on this timer.",
+"«Never»: the screen won't go dark even if the TV is left on.",
+"The TV turns itself off or goes dark during a film",
+"It's the screen timer: after some minutes without the remote the screen goes dark, and with no screensaver the TV switches off. Video apps usually prevent this, but IPTV players and the browser don't. «⋮» next to the TV → «Screen and sleep» → set 2–4 hours."
 ]

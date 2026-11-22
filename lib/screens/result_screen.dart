@@ -8,6 +8,7 @@ import '../services/adb_package_manager.dart';
 import '../state/history.dart';
 import '../theme/app_theme.dart';
 import '../widgets/support_card.dart';
+import '../widgets/tv_sleep_sheet.dart';
 
 import '../l10n/l10n.dart';
 class ResultScreen extends ConsumerStatefulWidget {
@@ -22,6 +23,69 @@ class ResultScreen extends ConsumerStatefulWidget {
 class _ResultScreenState extends ConsumerState<ResultScreen> {
   bool _rolling = false;      // rollback in progress
   bool _rollbackDone = false; // rollback succeeded
+  /// The TV's screen timeout after the cleaning, when it would switch the TV off mid-film:
+  /// no screensaver and under an hour («после чистки телек сам отрубается»).
+  int? _shortSleepMin;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSleep();
+  }
+
+  Future<void> _checkSleep() async {
+    try {
+      final s = await ref.read(adbServiceProvider).screenSleep(widget.device);
+      if (mounted && !s.screensaver && s.minutes > 0 && s.minutes < 60) {
+        setState(() => _shortSleepMin = s.minutes);
+      }
+    } catch (_) {}
+  }
+
+  Widget _sleepCard() => Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.warn.withValues(alpha: .08),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.warn.withValues(alpha: .3)),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            const Icon(Icons.bedtime_rounded, color: AppColors.warn, size: 20),
+            const Gap(8),
+            Expanded(child: Text(tr('Телевизор может гаснуть во время фильма'),
+                style: const TextStyle(color: AppColors.fg, fontWeight: FontWeight.w700))),
+          ]),
+          const Gap(6),
+          Text(tr('Экран выключается через {0} мин без нажатий пульта, а заставки нет — тогда телевизор выключается совсем. Поставить 4 часа?', [_shortSleepMin]),
+              style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.4)),
+          const Gap(10),
+          Row(children: [
+            FilledButton(
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                try {
+                  await ref.read(adbServiceProvider)
+                      .setScreenSleep(widget.device, AdbPackageManager.longScreenOffMin);
+                  if (mounted) setState(() => _shortSleepMin = null);
+                  messenger.showSnackBar(SnackBar(content: Text(tr('Готово: экран гаснет через 4 ч без пульта.'))));
+                } catch (_) {
+                  messenger.showSnackBar(SnackBar(content: Text(tr('Не получилось: телевизор не отвечает.'))));
+                }
+              },
+              child: Text(tr('Поставить 4 часа')),
+            ),
+            const Gap(8),
+            TextButton(
+              onPressed: () async {
+                await showScreenSleepSheet(context, widget.device);
+                if (mounted) setState(() => _shortSleepMin = null);
+              },
+              child: Text(tr('Другое время')),
+            ),
+          ]),
+        ]),
+      );
 
   Future<void> _openOnTv(String pkg) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -117,6 +181,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           const Gap(12),
           _stat(tr('Сохранено в «Истории»'), tr('можно вернуть'), Icons.history_rounded, AppColors.ok, fullWidth: true)
             .animate().fadeIn(delay: 500.ms),
+        ],
+
+        if (_shortSleepMin != null) ...[
+          const Gap(16),
+          _sleepCard().animate().fadeIn(duration: 300.ms),
         ],
 
         if (hasFailures) ...[

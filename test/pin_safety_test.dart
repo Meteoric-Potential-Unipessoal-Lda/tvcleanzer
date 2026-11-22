@@ -46,4 +46,12 @@ void main() {
     expect(AdbPackageManager.keyboardName('com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME'), 'Gboard');
     expect(AdbPackageManager.keyboardName('com.example.ime/.Svc'), 'com.example.ime');
   });
+
+  test('screen timeout for «Экран и сон»: minutes, never, unknown', () {
+    expect(AdbPackageManager.sleepMinutes(600000), 10);
+    expect(AdbPackageManager.sleepMinutes(14400000), 240);
+    expect(AdbPackageManager.sleepMinutes(AdbPackageManager.neverMs), -1);
+    expect(AdbPackageManager.sleepMinutes(0), 0);
+    expect(AdbPackageManager.sleepMinutes(-1), 0);
+  });
 }

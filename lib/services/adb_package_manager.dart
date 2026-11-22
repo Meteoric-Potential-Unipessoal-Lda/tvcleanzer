@@ -141,6 +141,11 @@ class AdbPackageManager {
         homes.addAll(old['HOME']!);
         launchable..addAll(old['LEANBACK_LAUNCHER']!)..addAll(old['LAUNCHER']!);
       }
+      // The TV's screensaver: without it Android puts the TV to sleep at the screen timeout,
+      // so it switched itself off after a few minutes without the remote — during a film in an
+      // IPTV player or a browser too («после чистки телек сам отрубается», many owners).
+      final dreamPkg = (await adb.shell('settings get secure screensaver_components'))
+          .trim().split(',').first.split('/').first;
       // Memory each package uses right now (what removing it frees).
       final ramKb = _parsePsRss(await adb.shell('ps -A -o RSS,NAME 2>/dev/null || ps'));
 
@@ -167,6 +172,10 @@ class AdbPackageManager {
           }
         } else if (entry == null) {
           label = realNames[name];
+        }
+        if (name == dreamPkg && name != launcherPkg && verdict == PackageVerdict.remove) {
+          verdict = PackageVerdict.caution;
+          reason = tr('Заставка телевизора. Без неё ТВ сам выключается через несколько минут без пульта — даже во время фильма.');
         }
         if (cn && verdict != PackageVerdict.system) {
           if (_xiaomiOwn(name)) {
@@ -445,11 +454,18 @@ class AdbPackageManager {
       // The firmware's screensaver was removed: switch to our clock, otherwise
       // StarOS re-enables its own screensaver at boot while it stays selected.
       final dreamPkg = dream.split(',').first.split('/').first;
-      if (removed.contains(dreamPkg) && installed.contains(launcherPkg)) {
-        final v = await adb.shell('dumpsys package $launcherPkg | grep -m1 versionCode');
-        if ((int.tryParse(RegExp(r'versionCode=(\d+)').firstMatch(v)?.group(1) ?? '') ?? 0) >= 5) {
-          await adb.shell('settings put secure screensaver_components $launcherPkg/.ClockDream');
+      if (removed.contains(dreamPkg)) {
+        var clock = false;
+        if (installed.contains(launcherPkg)) {
+          final v = await adb.shell('dumpsys package $launcherPkg | grep -m1 versionCode');
+          if ((int.tryParse(RegExp(r'versionCode=(\d+)').firstMatch(v)?.group(1) ?? '') ?? 0) >= 5) {
+            await adb.shell('settings put secure screensaver_components $launcherPkg/.ClockDream');
+            clock = true;
+          }
         }
+        // No screensaver left: the TV would go to sleep at the screen timeout (often 10 min),
+        // in the middle of a film. A longer one instead; the old value comes back with «Вернуть».
+        if (!clock) await _longerScreenTimeout(adb);
       }
     } finally {
       adb.close();
@@ -497,6 +513,10 @@ class AdbPackageManager {
         } catch (_) {
           failures++;
         }
+      }
+      final old = int.tryParse((await adb.shell('cat $_screenOffFile 2>/dev/null')).trim());
+      if (old != null && old > 0) {
+        await adb.shell('settings put system screen_off_timeout $old; rm -f $_screenOffFile');
       }
       // Check what really came back: "Готово" was shown for an app that was gone for good.
       final enabled = _parsePackageList(await adb.shell('pm list packages -e')).toSet();
@@ -1571,6 +1591,63 @@ class AdbPackageManager {
       }
       await adb.shell('settings put secure screensaver_components $photoDream');
       await adb.shell('settings put secure screensaver_enabled 1');
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// The screen timeout before [clean] made it longer (put back by [rollback]).
+  static const _screenOffFile = '/data/local/tmp/tvcleanzer_screen_off';
+
+  /// Screen timeout after the screensaver was cleaned away: at least [longScreenOffMin].
+  Future<void> _longerScreenTimeout(AdbClient adb) async {
+    try {
+      final ms = int.tryParse((await adb.shell('settings get system screen_off_timeout')).trim()) ?? 0;
+      if (ms <= 0 || ms >= longScreenOffMin * 60000) return;
+      await adb.shell('[ -f $_screenOffFile ] || echo $ms > $_screenOffFile; '
+          'settings put system screen_off_timeout ${longScreenOffMin * 60000}');
+      AppLog.error('screen timeout', 'screensaver removed: ${ms ~/ 60000} min → $longScreenOffMin min');
+    } catch (e) {
+      AppLog.error('screen timeout', e);
+    }
+  }
+
+  /// What [clean] sets when no screensaver is left, and the «Экран и сон» suggestion: 4 hours.
+  static const longScreenOffMin = 240;
+
+  /// «Never» for the screen timeout (Android's largest value).
+  static const neverMs = 2147483647;
+
+  /// How the TV goes dark without the remote: minutes of the screen timeout (0 unknown,
+  /// -1 never) and whether a working screensaver comes then (otherwise the TV goes to sleep).
+  Future<({int minutes, bool screensaver})> screenSleep(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final ms = int.tryParse((await adb.shell('settings get system screen_off_timeout')).trim()) ?? 0;
+      final comp = (await adb.shell('settings get secure screensaver_components')).trim();
+      final on = (await adb.shell('settings get secure screensaver_enabled')).trim() != '0';
+      final pkg = comp.split(',').first.split('/').first;
+      var saver = false;
+      if (on && _pkgName.hasMatch(pkg)) {
+        saver = _parsePackageList(await adb.shell('pm list packages -e $pkg')).contains(pkg);
+      }
+      return (minutes: sleepMinutes(ms), screensaver: saver);
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// screen_off_timeout (ms) → minutes for the UI: 0 unknown, -1 never.
+  static int sleepMinutes(int ms) => ms <= 0 ? 0 : ms >= neverMs ~/ 2 ? -1 : (ms / 60000).round();
+
+  /// Sets the screen timeout; [minutes] -1 = never.
+  Future<void> setScreenSleep(TvDevice device, int minutes) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('settings put system screen_off_timeout ${minutes < 0 ? neverMs : minutes * 60000}; '
+          'rm -f $_screenOffFile');
     } finally {
       adb.close();
     }

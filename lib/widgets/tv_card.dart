@@ -11,6 +11,7 @@ import '../screens/scan_screen.dart';
 import '../screens/terminal_screen.dart';
 import '../state/current_tv.dart';
 import 'tv_language_sheet.dart';
+import 'tv_sleep_sheet.dart';
 
 import '../l10n/l10n.dart';
 /// «Переименовать»: the owner's own name for the TV; empty = the model name again.
@@ -101,6 +102,10 @@ class TvCard extends ConsumerWidget {
                       await renameTv(context, ref, device);
                       return;
                     }
+                    if (v == 'sleep') {
+                      await showScreenSleepSheet(context, device);
+                      return;
+                    }
                     if (v == 'lang') {
                       await showTvLanguageSheet(context, device);
                       return;
@@ -133,6 +138,7 @@ class TvCard extends ConsumerWidget {
                   itemBuilder: (_) => [
                     PopupMenuItem(value: 'rename', child: Text(tr('Переименовать'))),
                     PopupMenuItem(value: 'lang', child: Text(tr('Язык и клавиатура ТВ'))),
+                    PopupMenuItem(value: 'sleep', child: Text(tr('Экран и сон'))),
                     PopupMenuItem(value: 'terminal', child: Text(tr('Терминал (для разработчиков)'))),
                     PopupMenuItem(value: 'adb_off', child: Text(tr('Выключить отладку на ТВ'))),
                     PopupMenuItem(value: 'remove', child: Text(tr('Убрать из списка'))),
