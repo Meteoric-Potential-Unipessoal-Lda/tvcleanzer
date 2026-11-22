@@ -887,5 +887,16 @@
 "Médios",
 "A TV não deixou guardar a música. Atualize o launcher na TV e tente novamente.",
 "🎤 — diga e é pesquisado na app no ecrã (YouTube e outras). ➤ escreve o texto na TV.",
-"A guardar na TV…"
+"A guardar na TV…",
+"Funcionalidades",
+"Como envio uma lista IPTV ou um filme para a TV sem pen?",
+"Separador «Apps» → «Enviar um ficheiro para a TV» → «Escolher ficheiro». O ficheiro aparece na TV em «Download» → «TVCleanzer». Depois adicione a lista na app IPTV: «Adicionar lista» → «Ficheiro».",
+"Como pesquiso por voz?",
+"«Comando» → o microfone no campo de texto → diga o que procurar. A pesquisa abre na app que está agora no ecrã da TV (YouTube e outras). O botão ➤ escreve o texto num campo da TV.",
+"Como ligo a música na moldura de fotos?",
+"Separador «Launcher» → «Moldura de fotos» → «Adicionar música». Toca enquanto a moldura está no ecrã e, sem fotos, com o relógio. Volume com o comando da TV.",
+"Como tiro a saudação, reduzo o relógio ou escondo a memória?",
+"Separador «Launcher» → aspeto do ecrã inicial: «Saudação», «Relógio em cima», «Data e tempo numa linha», «Memória no ecrã inicial». O mesmo na TV: roda dentada → definições do launcher.",
+"O que significam as cores do ícone de rede?",
+"Verde — há internet, azul — VPN ligada, laranja — há rede mas sem internet (router, operador ou VPN), vermelho — sem rede."
 ]

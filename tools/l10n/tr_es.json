@@ -887,5 +887,16 @@
 "Medianos",
 "La tele no permitió guardar la música. Actualiza el launcher en la tele e inténtalo de nuevo.",
 "🎤 — dilo y se busca en la app en pantalla (YouTube y otras). ➤ escribe el texto en la tele.",
-"Guardando en la tele…"
+"Guardando en la tele…",
+"Funciones",
+"¿Cómo paso una lista IPTV o una película a la tele sin USB?",
+"Pestaña «Apps» → «Enviar un archivo a la tele» → «Elegir archivo». El archivo aparece en la tele en «Download» → «TVCleanzer». Luego añade la lista en tu app IPTV: «Añadir lista» → «Archivo».",
+"¿Cómo busco por voz?",
+"«Mando» → el micrófono en el campo de texto → di qué buscar. La búsqueda se abre en la app que está ahora en la tele (YouTube y otras). El botón ➤ escribe el texto en un campo de la tele.",
+"¿Cómo activo la música en el marco de fotos?",
+"Pestaña «Launcher» → «Marco de fotos» → «Añadir música». Suena mientras el marco está en pantalla y, sin fotos, con el reloj. Volumen con el mando de la tele.",
+"¿Cómo quito el saludo, achico el reloj u oculto la memoria?",
+"Pestaña «Launcher» → aspecto de la pantalla de inicio: «Saludo», «Reloj arriba», «Fecha y tiempo en una línea», «Memoria en la pantalla de inicio». Lo mismo en la tele: engranaje → ajustes del launcher.",
+"¿Qué significan los colores del icono de red?",
+"Verde — hay internet, azul — VPN activa, naranja — hay red pero no internet (router, proveedor o VPN), rojo — sin red."
 ]

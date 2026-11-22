@@ -887,5 +887,16 @@
 "Medium",
 "The TV didn’t let us save the music. Update the launcher on the TV and try again.",
 "🎤 — say it and it’s searched in the app on screen (YouTube and others). ➤ types the text on the TV.",
-"Saving on the TV…"
+"Saving on the TV…",
+"Features",
+"How do I put an IPTV playlist or a film on the TV without a USB stick?",
+"«Apps» tab → «Send a file to the TV» → «Choose a file». The file appears on the TV in «Download» → «TVCleanzer». Then add the playlist in your IPTV app: «Add playlist» → «File».",
+"How do I search by voice?",
+"«Remote» → the microphone in the text field → say what to find. The search opens in the app that’s on the TV screen right now (YouTube and others). The ➤ button types the text into a text field on the TV.",
+"How do I turn on music in the photo frame?",
+"«Launcher» tab → «Photo frame» → «Add music». It plays while the photo frame is on screen, and without photos — under the clock. Volume with the TV remote.",
+"How do I remove the greeting, make the clock smaller or hide the memory pill?",
+"«Launcher» tab → home screen look: «Greeting», «Clock at the top», «Date and weather on one line», «Memory on the home screen». The same on the TV: gear → launcher settings.",
+"What do the network icon colours mean?",
+"Green — internet works, blue — a VPN is on, orange — connected but no internet (router, provider or VPN), red — no network."
 ]

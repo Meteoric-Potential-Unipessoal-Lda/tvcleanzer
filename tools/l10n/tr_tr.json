@@ -887,5 +887,16 @@
 "Orta",
 "Televizör müziği kaydetmeye izin vermedi. TV’deki başlatıcıyı güncelleyip tekrar deneyin.",
 "🎤 — söyleyin, ekrandaki uygulamada aranır (YouTube vb.). ➤ metni TV’de yazar.",
-"TV’ye kaydediliyor…"
+"TV’ye kaydediliyor…",
+"Özellikler",
+"IPTV listesini veya bir filmi USB bellek olmadan TV’ye nasıl atarım?",
+"«Uygulamalar» sekmesi → «TV’ye dosya gönder» → «Dosya seç». Dosya TV’de «Download» → «TVCleanzer» içinde görünür. Listeyi sonra IPTV uygulamasında ekleyin: «Liste ekle» → «Dosya».",
+"Sesle nasıl ararım?",
+"«Kumanda» → metin alanındaki mikrofon → ne aranacağını söyleyin. Arama, şu an TV ekranındaki uygulamada açılır (YouTube vb.). ➤ düğmesi metni TV’deki giriş alanına yazar.",
+"Fotoğraf çerçevesinde müziği nasıl açarım?",
+"«Başlatıcı» sekmesi → «Fotoğraf çerçevesi» → «Müzik ekle». Çerçeve ekrandayken, fotoğraf yoksa saatle çalar. Ses, TV kumandasıyla.",
+"Selamlamayı nasıl kaldırırım, saati küçültürüm veya belleği gizlerim?",
+"«Başlatıcı» sekmesi → ana ekran görünümü: «Selamlama», «Üstteki saat», «Tarih ve hava tek satırda», «Ana ekranda bellek». TV’de de aynı: dişli → başlatıcı ayarları.",
+"Ağ simgesinin renkleri ne anlama geliyor?",
+"Yeşil — internet var, mavi — VPN açık, turuncu — ağ var ama internet yok (modem, sağlayıcı veya VPN), kırmızı — ağ yok."
 ]

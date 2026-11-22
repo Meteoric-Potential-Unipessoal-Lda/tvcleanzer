@@ -887,5 +887,16 @@
 "Mellan",
 "Tv:n lät inte musiken sparas. Uppdatera launchern på tv:n och försök igen.",
 "🎤 — säg det så söks det i appen på skärmen (YouTube m.fl.). ➤ skriver texten på tv:n.",
-"Sparar på tv:n…"
+"Sparar på tv:n…",
+"Funktioner",
+"Hur får jag en IPTV-spellista eller film till tv:n utan USB-minne?",
+"Fliken «Appar» → «Skicka en fil till tv:n» → «Välj fil». Filen hamnar på tv:n i «Download» → «TVCleanzer». Lägg sedan till spellistan i IPTV-appen: «Lägg till spellista» → «Fil».",
+"Hur söker jag med rösten?",
+"«Fjärrkontroll» → mikrofonen i textfältet → säg vad du söker. Sökningen öppnas i appen som visas på tv:n nu (YouTube m.fl.). Knappen ➤ skriver texten i ett inmatningsfält på tv:n.",
+"Hur slår jag på musik i fotoramen?",
+"Fliken «Launcher» → «Fotoram» → «Lägg till musik». Spelas medan fotoramen visas, och utan foton till klockan. Volym med tv:ns fjärrkontroll.",
+"Hur tar jag bort hälsningen, gör klockan mindre eller döljer minnet?",
+"Fliken «Launcher» → startskärmens utseende: «Hälsning», «Klocka överst», «Datum och väder på en rad», «Minne på hemskärmen». Samma på tv:n: kugghjul → launcherinställningar.",
+"Vad betyder färgerna på nätverksikonen?",
+"Grönt — internet fungerar, blått — VPN är på, orange — nätverk men inget internet (router, leverantör eller VPN), rött — inget nätverk."
 ]

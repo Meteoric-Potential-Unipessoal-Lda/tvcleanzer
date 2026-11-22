@@ -887,5 +887,16 @@
 "Közepes",
 "A tévé nem engedte menteni a zenét. Frissítse a launchert a tévén, és próbálja újra.",
 "🎤 — mondja ki, és a képernyőn lévő alkalmazásban keresi (YouTube stb.). ➤ beírja a szöveget a tévén.",
-"Mentés a tévére…"
+"Mentés a tévére…",
+"Funkciók",
+"Hogyan küldhetek IPTV-listát vagy filmet a tévére pendrive nélkül?",
+"«Alkalmazások» lap → «Fájl küldése a tévére» → «Fájl kiválasztása». A fájl a tévén a «Download» → «TVCleanzer» mappában jelenik meg. A listát utána az IPTV-alkalmazásban adja hozzá: «Lista hozzáadása» → «Fájl».",
+"Hogyan kereshetek hanggal?",
+"«Távirányító» → mikrofon a szövegmezőben → mondja ki, mit keres. A keresés abban az alkalmazásban nyílik meg, amely most a tévé képernyőjén van (YouTube stb.). A ➤ gomb beírja a szöveget a tévé beviteli mezőjébe.",
+"Hogyan kapcsolom be a zenét a fotókeretben?",
+"«Launcher» lap → «Fotókeret» → «Zene hozzáadása». Szól, amíg a fotókeret a képernyőn van, fotók nélkül pedig az órához. Hangerő a tévé távirányítójával.",
+"Hogyan veszem le a köszöntést, kicsinyítem az órát vagy rejtem el a memóriát?",
+"«Launcher» lap → a kezdőképernyő kinézete: «Üdvözlés», «Óra felül», «Dátum és időjárás egy sorban», «Memória a kezdőképernyőn». A tévén ugyanígy: fogaskerék → launcher beállításai.",
+"Mit jelentenek a hálózati ikon színei?",
+"Zöld — van internet, kék — VPN működik, narancs — van hálózat, de nincs internet (router, szolgáltató vagy VPN), piros — nincs hálózat."
 ]

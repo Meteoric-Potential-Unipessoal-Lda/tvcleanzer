@@ -887,5 +887,16 @@
 "O‘rtacha",
 "Televizor musiqani saqlashga ruxsat bermadi. Televizordagi launcherni yangilab, yana urinib ko‘ring.",
 "🎤 — ayting, u ekrandagi ilovada qidiriladi (YouTube, VK Video…). ➤ — matnni televizorda yozish.",
-"Televizorga saqlanmoqda…"
+"Televizorga saqlanmoqda…",
+"Imkoniyatlar",
+"IPTV pleylist yoki filmni fleshkasiz qanday tashlayman?",
+"«Ilovalar» bo‘limi → «Televizorga fayl yuborish» → «Faylni tanlash». Fayl televizorda «Download» → «TVCleanzer» ichida paydo bo‘ladi. Pleylistni keyin IPTV ilovasida qo‘shing: «Pleylist qo‘shish» → «Fayl».",
+"Ovoz bilan qanday qidiraman?",
+"«Pult» → matn maydonidagi mikrofon → nima topishni ayting. Qidiruv hozir televizor ekranidagi ilovada ochiladi (YouTube, VK Video…). ➤ tugmasi matnni televizordagi kiritish maydoniga yozadi.",
+"Fotoramkada musiqani qanday yoqaman?",
+"«Launcher» bo‘limi → «Fotoramka» → «Musiqa qo‘shish». Musiqa ekranda fotoramka turganda, fotosiz esa — soat bilan chaladi. Ovoz — televizor pulti bilan.",
+"Salomlashuvni olib tashlash, soatni kichraytirish yoki xotirani yashirish qanday?",
+"«Launcher» bo‘limi → bosh ekran ko‘rinishi: «Salomlashuv», «Yuqoridagi soat», «Sana va ob-havo bir qatorda», «Bosh ekranda xotira». Televizorda ham xuddi shunday: tishli g‘ildirak → launcher sozlamalari.",
+"Tarmoq belgisining ranglari nimani bildiradi?",
+"Yashil — internet bor, ko‘k — VPN ishlayapti, to‘q sariq — tarmoq bor, internet yo‘q (router, provayder yoki VPN), qizil — tarmoq yo‘q."
 ]
