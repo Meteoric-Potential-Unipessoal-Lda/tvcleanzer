@@ -118,7 +118,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   bool? _speechReady;
   bool _listening = false;
 
-  Future<void> _voice() async {
+  Future<void> _voice(TvDevice tv) async {
     if (_listening) {
       await _speech.stop();
       if (mounted) setState(() => _listening = false);
@@ -159,7 +159,9 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
           _text.value = TextEditingValue(text: words, selection: TextSelection.collapsed(offset: words.length));
           if (r.finalResult) {
             setState(() => _listening = false);
-            if (words.trim().isNotEmpty) _snack(tr('Готово: ➤ — набрать на телевизоре, 🔍 — искать'));
+            // what people say into a TV remote is a search: find it in the app on screen
+            // (YouTube took no typed Russian text, tester 22.11); ➤ still types it if needed
+            if (words.trim().isNotEmpty) _search(tv, keep: true);
           }
         },
       );
@@ -169,14 +171,14 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     }
   }
 
-  Future<void> _search(TvDevice tv) async {
+  Future<void> _search(TvDevice tv, {bool keep = false}) async {
     final value = _text.text.trim();
     if (value.isEmpty) {
       _key(tv, 84); // the Search key: the TV's own search screen
       return;
     }
     await _run(tr('Ищем на ТВ…'), () => ref.read(adbServiceProvider).tvSearch(tv, value));
-    _text.clear();
+    if (!keep) _text.clear();
   }
 
   /// Runs a one-off TV command with a «busy» line; errors become a snackbar.
@@ -210,6 +212,9 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
           if (mounted) {
             setState(() => _busy = '${tr('Отправляем на ТВ…')} ${(sent * 100 / len).round()}%');
           }
+        }, onSaving: () {
+          // a big film takes a while to settle on the TV after 100 %
+          if (mounted) setState(() => _busy = tr('Сохраняем на телевизоре…'));
         }));
   }
 
@@ -557,7 +562,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
               const Gap(24),
               _textInput(tv),
               const Gap(6),
-              Text(tr('Можно голосом: нажмите микрофон на клавиатуре телефона и продиктуйте.'),
+              Text(tr('🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.'),
                   style: const TextStyle(fontSize: 11.5, color: AppColors.fgMuted)),
               const Gap(24),
               _castRow(tv),
@@ -731,7 +736,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
               hintText: _listening ? tr('Говорите…') : tr('Текст или поиск на ТВ'),
               suffixIcon: IconButton(
                 tooltip: tr('Сказать голосом'),
-                onPressed: _voice,
+                onPressed: () => _voice(tv),
                 icon: Icon(_listening ? Icons.mic_rounded : Icons.mic_none_rounded,
                     color: _listening ? AppColors.accent : AppColors.fgMid),
               ),

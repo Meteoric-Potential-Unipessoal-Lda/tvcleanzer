@@ -889,6 +889,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Clock at the top',
     'Средние': 'Medium',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'The TV didn’t let us save the music. Update the launcher on the TV and try again.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — say it and it’s searched in the app on screen (YouTube and others). ➤ types the text on the TV.',
+    'Сохраняем на телевизоре…': 'Saving on the TV…',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -1778,6 +1780,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Годинник угорі',
     'Средние': 'Середні',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Телевізор не дав зберегти музику. Оновіть лаунчер на ТБ і спробуйте знову.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — скажіть, і це знайдеться в застосунку на екрані (YouTube, VK Відео…). ➤ — набрати текст на телевізорі.',
+    'Сохраняем на телевизоре…': 'Зберігаємо на телевізорі…',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -2667,6 +2671,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Reloj arriba',
     'Средние': 'Medianos',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'La tele no permitió guardar la música. Actualiza el launcher en la tele e inténtalo de nuevo.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — dilo y se busca en la app en pantalla (YouTube y otras). ➤ escribe el texto en la tele.',
+    'Сохраняем на телевизоре…': 'Guardando en la tele…',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -3556,6 +3562,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Relógio em cima',
     'Средние': 'Médios',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'A TV não deixou guardar a música. Atualize o launcher na TV e tente novamente.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — diga e é pesquisado na app no ecrã (YouTube e outras). ➤ escreve o texto na TV.',
+    'Сохраняем на телевизоре…': 'A guardar na TV…',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -4445,6 +4453,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Uhr oben',
     'Средние': 'Mittel',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Der TV hat das Speichern der Musik verweigert. Launcher auf dem TV aktualisieren und erneut versuchen.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — sagen, und es wird in der App auf dem Bildschirm gesucht (YouTube u. a.). ➤ tippt den Text auf dem TV.',
+    'Сохраняем на телевизоре…': 'Wird auf dem TV gespeichert…',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -5334,6 +5344,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Horloge en haut',
     'Средние': 'Moyennes',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'La TV n’a pas permis d’enregistrer la musique. Mettez à jour le launcher sur la TV et réessayez.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — dites-le et c’est cherché dans l’appli à l’écran (YouTube et autres). ➤ tape le texte sur la TV.',
+    'Сохраняем на телевизоре…': 'Enregistrement sur la TV…',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -6223,6 +6235,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Orologio in alto',
     'Средние': 'Medi',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Il TV non ha permesso di salvare la musica. Aggiorna il launcher sul TV e riprova.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — dillo e viene cercato nell’app sullo schermo (YouTube e altre). ➤ scrive il testo sul TV.',
+    'Сохраняем на телевизоре…': 'Salvataggio sul TV…',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -7112,6 +7126,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Гадзіннік уверсе',
     'Средние': 'Сярэднія',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Тэлевізар не даў захаваць музыку. Абнавіце лаўнчар на ТБ і паспрабуйце зноў.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — скажыце, і гэта знойдзецца ў праграме на экране (YouTube, VK Відэа…). ➤ — набраць тэкст на тэлевізары.',
+    'Сохраняем на телевизоре…': 'Захоўваем на тэлевізары…',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -8001,6 +8017,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Жоғарыдағы сағат',
     'Средние': 'Орташа',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Теледидар музыканы сақтауға рұқсат бермеді. Теледидардағы лаунчерді жаңартып, қайталап көріңіз.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — айтыңыз, ол экрандағы қолданбадан ізделеді (YouTube, VK Видео…). ➤ — мәтінді теледидарда теру.',
+    'Сохраняем на телевизоре…': 'Теледидарға сақтап жатырмыз…',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -8890,6 +8908,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Yuqoridagi soat',
     'Средние': 'O‘rtacha',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Televizor musiqani saqlashga ruxsat bermadi. Televizordagi launcherni yangilab, yana urinib ko‘ring.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — ayting, u ekrandagi ilovada qidiriladi (YouTube, VK Video…). ➤ — matnni televizorda yozish.',
+    'Сохраняем на телевизоре…': 'Televizorga saqlanmoqda…',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -9779,6 +9799,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Ժամացույցը վերևում',
     'Средние': 'Միջին',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Հեռուստացույցը թույլ չտվեց պահպանել երաժշտությունը։ Թարմացրեք գործարկիչը հեռուստացույցում և փորձեք կրկին։',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — ասեք, և այն կփնտրվի էկրանի հավելվածում (YouTube և այլն)։ ➤ — հավաքել տեքստը հեռուստացույցում։',
+    'Сохраняем на телевизоре…': 'Պահպանում ենք հեռուստացույցում…',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -10668,6 +10690,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Yuxarıda saat',
     'Средние': 'Orta',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Televizor musiqini saxlamağa icazə vermədi. Televizordakı launcheri yeniləyib yenidən cəhd edin.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — deyin, ekrandakı tətbiqdə axtarılacaq (YouTube və s.). ➤ — mətni televizorda yazmaq.',
+    'Сохраняем на телевизоре…': 'Televizorda saxlanılır…',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -11557,6 +11581,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'საათი ზემოთ',
     'Средние': 'საშუალო',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'ტელევიზორმა მუსიკის შენახვა არ დაუშვა. განაახლეთ ლაუნჩერი ტელევიზორზე და სცადეთ ხელახლა.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — თქვით და მოიძებნება ეკრანზე გახსნილ აპში (YouTube და სხვ.). ➤ — ტექსტის აკრეფა ტელევიზორზე.',
+    'Сохраняем на телевизоре…': 'ვინახავთ ტელევიზორზე…',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -12446,6 +12472,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Үстүнкү саат',
     'Средние': 'Орточо',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Сыналгы музыканы сактоого уруксат берген жок. Сыналгыдагы лаунчерди жаңыртып, кайра аракет кылыңыз.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — айтыңыз, ал экрандагы колдонмодон изделет (YouTube, VK Видео…). ➤ — текстти сыналгыда терүү.',
+    'Сохраняем на телевизоре…': 'Сыналгыга сактап жатабыз…',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -13335,6 +13363,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Üstteki saat',
     'Средние': 'Orta',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Televizör müziği kaydetmeye izin vermedi. TV’deki başlatıcıyı güncelleyip tekrar deneyin.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — söyleyin, ekrandaki uygulamada aranır (YouTube vb.). ➤ metni TV’de yazar.',
+    'Сохраняем на телевизоре…': 'TV’ye kaydediliyor…',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -14224,6 +14254,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Zegar u góry',
     'Средние': 'Średnie',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Telewizor nie pozwolił zapisać muzyki. Zaktualizuj launcher na TV i spróbuj ponownie.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — powiedz, a zostanie wyszukane w aplikacji na ekranie (YouTube i inne). ➤ wpisuje tekst na telewizorze.',
+    'Сохраняем на телевизоре…': 'Zapisujemy na telewizorze…',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -15113,6 +15145,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Ceasul de sus',
     'Средние': 'Medii',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Televizorul nu a permis salvarea muzicii. Actualizează launcherul pe TV și încearcă din nou.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — spune și se caută în aplicația de pe ecran (YouTube și altele). ➤ scrie textul pe televizor.',
+    'Сохраняем на телевизоре…': 'Salvăm pe televizor…',
   },
   'zh': {
     'Полночь': '午夜',
@@ -16002,6 +16036,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': '顶部时钟',
     'Средние': '中',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': '电视不允许保存音乐。请更新电视上的启动器后重试。',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — 说出来，就会在屏幕上的应用里搜索（YouTube 等）。➤ — 在电视上输入文字。',
+    'Сохраняем на телевизоре…': '正在保存到电视…',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -16891,6 +16927,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': '上部の時計',
     'Средние': '中',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'テレビが音楽の保存を許可しませんでした。テレビのランチャーを更新してもう一度お試しください。',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — 話すと画面のアプリ（YouTube など）で検索します。➤ — テレビに文字を入力。',
+    'Сохраняем на телевизоре…': 'テレビに保存中…',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -17780,6 +17818,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': '상단 시계',
     'Средние': '중간',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'TV가 음악 저장을 허용하지 않았습니다. TV 런처를 업데이트하고 다시 시도하세요.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — 말하면 화면의 앱(YouTube 등)에서 검색합니다. ➤ — TV에 텍스트 입력.',
+    'Сохраняем на телевизоре…': 'TV에 저장 중…',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -18669,6 +18709,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'ऊपर की घड़ी',
     'Средние': 'मध्यम',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'टीवी ने संगीत सेव नहीं करने दिया। टीवी पर लॉन्चर अपडेट करके फिर कोशिश करें।',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — बोलिए, स्क्रीन वाले ऐप (YouTube आदि) में खोजा जाएगा। ➤ — टीवी पर टेक्स्ट टाइप करें।',
+    'Сохраняем на телевизоре…': 'टीवी पर सेव कर रहे हैं…',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -19558,6 +19600,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Jam di atas',
     'Средние': 'Sedang',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'TV tidak mengizinkan musik disimpan. Perbarui launcher di TV lalu coba lagi.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — ucapkan, lalu dicari di aplikasi yang tampil (YouTube, dll.). ➤ mengetik teks di TV.',
+    'Сохраняем на телевизоре…': 'Menyimpan di TV…',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -20447,6 +20491,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Đồng hồ phía trên',
     'Средние': 'Vừa',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'TV không cho lưu nhạc. Cập nhật launcher trên TV rồi thử lại.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — hãy nói, sẽ tìm trong ứng dụng đang mở (YouTube…). ➤ — gõ chữ lên TV.',
+    'Сохраняем на телевизоре…': 'Đang lưu trên TV…',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -21336,6 +21382,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'นาฬิกาด้านบน',
     'Средние': 'กลาง',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'ทีวีไม่อนุญาตให้บันทึกเพลง อัปเดตลอนเชอร์บนทีวีแล้วลองอีกครั้ง',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — พูดได้เลย จะค้นหาในแอปที่เปิดอยู่ (YouTube ฯลฯ) ➤ — พิมพ์ข้อความบนทีวี',
+    'Сохраняем на телевизоре…': 'กำลังบันทึกลงทีวี…',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -22225,6 +22273,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Klok bovenaan',
     'Средние': 'Middel',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'De tv liet de muziek niet opslaan. Werk de launcher op de tv bij en probeer het opnieuw.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — zeg het en het wordt gezocht in de app in beeld (YouTube e.a.). ➤ typt de tekst op de tv.',
+    'Сохраняем на телевизоре…': 'Opslaan op de tv…',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -23114,6 +23164,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Hodiny nahoře',
     'Средние': 'Střední',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Televize nedovolila hudbu uložit. Aktualizujte launcher na TV a zkuste to znovu.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — řekněte to a vyhledá se to v aplikaci na obrazovce (YouTube aj.). ➤ napíše text do televize.',
+    'Сохраняем на телевизоре…': 'Ukládáme do televize…',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -24003,6 +24055,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Ρολόι επάνω',
     'Средние': 'Μεσαία',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Η τηλεόραση δεν επέτρεψε την αποθήκευση της μουσικής. Ενημερώστε τον launcher στην τηλεόραση και δοκιμάστε ξανά.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — πείτε το και αναζητείται στην εφαρμογή της οθόνης (YouTube κ.ά.). ➤ πληκτρολογεί το κείμενο στην τηλεόραση.',
+    'Сохраняем на телевизоре…': 'Αποθήκευση στην τηλεόραση…',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -24892,6 +24946,8 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Óra felül',
     'Средние': 'Közepes',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'A tévé nem engedte menteni a zenét. Frissítse a launchert a tévén, és próbálja újra.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — mondja ki, és a képernyőn lévő alkalmazásban keresi (YouTube stb.). ➤ beírja a szöveget a tévén.',
+    'Сохраняем на телевизоре…': 'Mentés a tévére…',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -25781,5 +25837,7 @@ const Map<String, Map<String, String>> translations = {
     'Часы вверху': 'Klocka överst',
     'Средние': 'Mellan',
     'Телевизор не дал сохранить музыку. Обновите лаунчер на ТВ и попробуйте снова.': 'Tv:n lät inte musiken sparas. Uppdatera launchern på tv:n och försök igen.',
+    '🎤 — скажите, и это найдётся в приложении на экране (YouTube, VK Видео…). ➤ — набрать текст на телевизоре.': '🎤 — säg det så söks det i appen på skärmen (YouTube m.fl.). ➤ skriver texten på tv:n.',
+    'Сохраняем на телевизоре…': 'Sparar på tv:n…',
   },
 };

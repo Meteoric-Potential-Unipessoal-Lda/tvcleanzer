@@ -2118,9 +2118,10 @@ class AdbPackageManager {
   /// fit in the phone's memory; the TV needs room for two copies for a moment (the upload,
   /// then the launcher's own). Throws with a readable message when space or the launcher is short.
   Future<void> castFile(TvDevice device, Stream<List<int>> data, int length, {required bool video,
-      void Function(int sent)? onProgress}) async {
+      void Function(int sent)? onProgress, void Function()? onSaving}) async {
     const tmp = '/data/local/tmp/tvcleanzer_cast';
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    var waiting = false;
     try {
       await adb.connect();
       await adb.shell('rm -f $tmp');
@@ -2130,7 +2131,13 @@ class AdbPackageManager {
         throw AdbException(tr('На телевизоре мало места для этого видео: нужно {0} МБ, свободно {1} МБ.',
             ['${needKb ~/ 1024}', '${freeKb ~/ 1024}']));
       }
+      if (video) {
+        // the TV says «загружается» at once (launcher 0.61+; older ones just close this screen)
+        await adb.shell('am start -n $launcherPkg/.CastActivity -f 0x10008000 --es type wait >/dev/null 2>&1');
+        waiting = true;
+      }
       await adb.execInStream('cat > $tmp', data, onProgress: onProgress, timeout: const Duration(seconds: 120));
+      onSaving?.call();
       final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first) ?? -1;
       if (size != length) {
         await adb.shell('rm -f $tmp');
@@ -2146,10 +2153,16 @@ class AdbPackageManager {
       }
       final out = await adb.shell('am start -n $launcherPkg/.CastActivity -f 0x10008000 '
           '--es type ${video ? 'video' : 'image'} 2>&1');
+      waiting = false;
       if (out.contains('Error')) {
         throw AdbException(tr('Обновите лаунчер на ТВ: показ фото и видео с телефона есть в новой версии.'));
       }
     } finally {
+      if (waiting) {
+        // the upload broke off: take the «загружается» screen away
+        await adb.shell('am start -n $launcherPkg/.CastActivity -f 0x10008000 --es type close >/dev/null 2>&1')
+            .catchError((_) => '');
+      }
       adb.close();
     }
   }
@@ -2196,12 +2209,36 @@ class AdbPackageManager {
   }
 
   /// The TV's own search with [query] (Android TV / Google TV); else the Search key.
-  Future<void> tvSearch(TvDevice device, String query) async {
+  static const youtubeTv = 'com.google.android.youtube.tv';
+
+  /// Did `am start` reach an activity? («Warning: … delivered to currently running» is fine.)
+  static bool started(String out) =>
+      !RegExp(r'Error|Exception|unable to resolve|No Activity found', caseSensitive: false).hasMatch(out);
+
+  /// Searches for [query] where the owner is: in the app on screen (YouTube, VK Видео,
+  /// Кинопоиск… take a SEARCH intent with the words), else in the TV's own search. Typing
+  /// Russian text into YouTube's search box can't work (it ignores Paste) — this does (tester, 22.11).
+  /// Returns the package that got the search ('' = the TV's search).
+  Future<String> tvSearch(TvDevice device, String query) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
-      final out = await adb.shell('am start -a android.search.action.GLOBAL_SEARCH --es query ${_sq(query)} 2>&1');
-      if (out.contains('Error')) await adb.shell('input keyevent 84');
+      final q = _sq(query);
+      final front = await _frontPackage(adb);
+      if (front == youtubeTv) {
+        var out = await adb.shell('am start -a android.intent.action.SEARCH '
+            '-n $youtubeTv/com.google.android.apps.youtube.tv.activity.ShellActivity --es query $q 2>&1');
+        if (started(out)) return youtubeTv;
+        final url = 'https://www.youtube.com/results?search_query=${Uri.encodeQueryComponent(query)}';
+        out = await adb.shell('am start -a android.intent.action.VIEW -d ${_sq(url)} $youtubeTv 2>&1');
+        if (started(out)) return youtubeTv;
+      } else if (front != null && front != launcherPkg && front != 'android' && !front.contains('systemui')) {
+        final out = await adb.shell('am start -a android.intent.action.SEARCH -p $front --es query $q 2>&1');
+        if (started(out)) return front;
+      }
+      final out = await adb.shell('am start -a android.search.action.GLOBAL_SEARCH --es query $q 2>&1');
+      if (!started(out)) await adb.shell('input keyevent 84');
+      return '';
     } finally {
       adb.close();
     }

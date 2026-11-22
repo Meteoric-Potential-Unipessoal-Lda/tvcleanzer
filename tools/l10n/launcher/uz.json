@@ -205,5 +205,8 @@
 "нет интернета": "internet yo‘q",
 "Играет": "Chalmoqda",
 "В одну строку": "Bir qatorda",
-"Столбиком": "Ustun bo‘lib"
+"Столбиком": "Ustun bo‘lib",
+"Видео загружается с телефона…": "Video telefondan yuklanmoqda…",
+"Открываем видео…": "Video ochilmoqda…",
+"ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — pauza · ◀ ▶ — 10 soniya · ▲ ▼ — bir daqiqa · «Orqaga» — yopish"
 }
