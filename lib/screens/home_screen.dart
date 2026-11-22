@@ -19,6 +19,7 @@ import 'pair_screen.dart';
 import 'scan_screen.dart';
 
 import '../l10n/l10n.dart';
+import 'faq_screen.dart';
 // ─── Providers ───────────────────────────────────────────────────────────────
 
 /// Singleton TvDiscovery — reuses the shared AdbPackageManager instance.
@@ -349,6 +350,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         label: Text(tr('Как включить отладку на моём ТВ?')),
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (_) => const HelpScreen())),
+      ),
+      TextButton.icon(
+        icon: const Icon(Icons.quiz_rounded, size: 18),
+        label: Text(tr('Частые вопросы')),
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const FaqScreen())),
       ),
     ]),
   );

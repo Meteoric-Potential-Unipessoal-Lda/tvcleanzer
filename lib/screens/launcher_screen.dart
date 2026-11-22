@@ -583,7 +583,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             const Icon(Icons.new_releases_rounded, size: 18, color: AppColors.warn),
             const Gap(8),
             Expanded(
-              child: Text(tr('Есть новая версия лаунчера: вид «Витрина», настоящие иконки приложений и новые темы. Нажмите «Обновить лаунчер на ТВ».'),
+              child: Text(tr('Есть новая версия лаунчера: исправления и новые функции. Нажмите оранжевую кнопку ниже — настройки и избранное сохранятся.'),
                   style: const TextStyle(fontSize: 13, color: AppColors.warn, height: 1.4)),
             ),
           ]),
@@ -625,6 +625,25 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                   width: double.infinity,
                   child: installed
                       ? Column(children: [
+                          // #6: the update was the third grey button of four — owners never found
+                          // it and kept a launcher without Витрина or round icons. When there is a
+                          // newer one it comes first, in orange.
+                          if (_outdated) ...[
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton.icon(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: AppColors.warn,
+                                  foregroundColor: Colors.black,
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                ),
+                                icon: const Icon(Icons.system_update_alt_rounded),
+                                label: Text('${tr('Обновить лаунчер на ТВ')} · 0.$v → 0.${AdbPackageManager.bundledLauncherVersion}'),
+                                onPressed: tv == null ? null : _install,
+                              ),
+                            ),
+                            const Gap(10),
+                          ],
                           SizedBox(
                             width: double.infinity,
                             child: FilledButton.icon(
@@ -648,20 +667,22 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                               onPressed: tv == null ? null : _rebind,
                             ),
                           ),
-                          const Gap(10),
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton.icon(
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.fg,
-                                side: const BorderSide(color: AppColors.cardBd),
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                          if (!_outdated) ...[
+                            const Gap(10),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: AppColors.fg,
+                                  side: const BorderSide(color: AppColors.cardBd),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                                icon: const Icon(Icons.refresh_rounded),
+                                label: Text(tr('Переустановить лаунчер')),
+                                onPressed: tv == null ? null : _install,
                               ),
-                              icon: const Icon(Icons.system_update_alt_rounded),
-                              label: Text(tr('Обновить лаунчер на ТВ')),
-                              onPressed: tv == null ? null : _install,
                             ),
-                          ),
+                          ],
                           const Gap(10),
                           SizedBox(
                             width: double.infinity,

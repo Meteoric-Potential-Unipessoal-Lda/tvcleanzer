@@ -186,6 +186,10 @@ final class Inputs {
         try {
             PackageManager pm = c.getPackageManager();
             Set<String> cand = new LinkedHashSet<>();
+            // the owner's own choice first (long OK on «ТВ»): on a Sber TV the app found by itself
+            // opened but never showed the broadcast (#22)
+            String own = new Prefs(c).tvApp();
+            if (!own.isEmpty()) cand.add(own);
             Intent view = new Intent(Intent.ACTION_VIEW)
                     .setDataAndType(TvContract.buildChannelUri(1), TvContract.Channels.CONTENT_ITEM_TYPE);
             for (ResolveInfo ri : pm.queryIntentActivities(view, 0)) {
@@ -217,6 +221,28 @@ final class Inputs {
             }
         } catch (Throwable ignored) {}
         return null;
+    }
+
+    /** Every app that could be the live TV here, for the owner to pick from (long OK on «ТВ»):
+     *  whoever handles "view a channel", the known live TV apps, the ones named like one. */
+    static List<String> tvCandidates(Context c) {
+        List<String> out = new ArrayList<>();
+        try {
+            PackageManager pm = c.getPackageManager();
+            Set<String> cand = new LinkedHashSet<>();
+            Intent view = new Intent(Intent.ACTION_VIEW)
+                    .setDataAndType(TvContract.buildChannelUri(1), TvContract.Channels.CONTENT_ITEM_TYPE);
+            for (ResolveInfo ri : pm.queryIntentActivities(view, 0)) cand.add(ri.activityInfo.packageName);
+            for (String p : LIVE_TV) cand.add(p);
+            try {
+                for (android.content.pm.ApplicationInfo ai : pm.getInstalledApplications(0)) {
+                    if (LIVE_LIKE.matcher(ai.packageName).find()) cand.add(ai.packageName);
+                }
+            } catch (Throwable ignored) {}
+            cand.remove(c.getPackageName());
+            for (String p : cand) if (launch(pm, p) != null) out.add(p);
+        } catch (Throwable ignored) {}
+        return out;
     }
 
     static Intent intent(Item i) {

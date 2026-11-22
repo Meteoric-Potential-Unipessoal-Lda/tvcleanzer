@@ -105,6 +105,13 @@ class AdbPackageManager {
       // Disabled packages are already hidden (by TVCleanzer on Sber/Yandex, or by the owner).
       final disabled = _parsePackageList(await adb.shell('pm list packages -d 2>/dev/null')).toSet();
       final pkgs = _parsePackageList(raw).where((p) => !disabled.contains(p)).toList();
+      // Chinese Xiaomi firmware: the careful mode ([chinaXiaomi]).
+      final cn = chinaXiaomi(_parsePackageList(raw).toSet());
+      if (cn) {
+        _chinaTvs.add(device.id);
+      } else {
+        _chinaTvs.remove(device.id);
+      }
       // Installed by the owner (or a store), not part of the firmware.
       final userApps = _parsePackageList(await adb.shell('pm list packages -3')).toSet();
       // Real app names from our launcher, when it is on the TV ("Цифровое ТВ", not the
@@ -161,6 +168,14 @@ class AdbPackageManager {
         } else if (entry == null) {
           label = realNames[name];
         }
+        if (cn && verdict != PackageVerdict.system) {
+          if (_xiaomiOwn(name)) {
+            verdict = PackageVerdict.system;
+            reason = tr('Китайская прошивка Xiaomi: её приложения не трогаем — без них такие телевизоры зависают на логотипе.');
+          } else if (verdict == PackageVerdict.remove) {
+            verdict = PackageVerdict.caution;
+          }
+        }
         return TvPackage(
           packageName: name,
           label:   label,
@@ -189,6 +204,20 @@ class AdbPackageManager {
       adb.close();
     }
   }
+
+  /// Chinese Xiaomi firmware (MiTV OS, China): its PatchWall `com.mitv.tvhome`, or Xiaomi's TV
+  /// apps with no Google Play at all. Fragile: a MiTV-MFTR0 hung on its logo for good after
+  /// com.miui.analytics was switched off and came back only through recovery (Wipe user data).
+  /// There nothing of Xiaomi is offered and nothing is ticked in advance.
+  static bool chinaXiaomi(Set<String> pkgs) =>
+      pkgs.contains('com.mitv.tvhome') ||
+      (!pkgs.contains('com.android.vending') &&
+          pkgs.any((p) => p.startsWith('com.xiaomi.mitv.') || p.startsWith('com.mitv.')));
+
+  static final _chinaTvs = <String>{};
+
+  /// The last scan of [d] found a Chinese Xiaomi firmware ([chinaXiaomi]).
+  static bool isChinaXiaomi(TvDevice d) => _chinaTvs.contains(d.id);
 
   /// "com.pkg/.Activity" lines -> package names.
   static Set<String> _parseComponents(String out) {
@@ -590,7 +619,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 58;
+  static const bundledLauncherVersion = 59;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -624,11 +653,45 @@ class AdbPackageManager {
       }
 
       onStep?.call(tr('Устанавливаем лаунчер…'));
-      final res = await _installOne(adb, apk, const Duration(seconds: 90), flags: '-r');
-      if (!res.contains('Success')) throw AdbException(_installError(res));
+      var res = await _installOne(adb, apk, const Duration(seconds: 90), flags: '-r');
+      var keep = keepSettings;
+      LauncherState? saved;
+      if (!res.contains('Success') && needsCleanReinstall(res)) {
+        // A launcher signed with another key (early builds, a test build) or left half-removed
+        // («pm uninstall --user 0» from a chat tip): `install -r` can never replace it. TCL owners
+        // stayed on an old launcher until they ran two uninstall commands by hand (#23, #6).
+        // Its favourites, hidden and kids lists are read first and given back; its look is the
+        // phone's copy, read from this TV on the Launcher tab.
+        AppLog.error('launcher install', 'clean reinstall: ${_installReason(res)}');
+        onStep?.call(tr('Старый лаунчер не обновляется — ставим заново, избранное сохраним…'));
+        try {
+          saved = await launcherState(device);
+        } catch (_) {}
+        await adb.shell('pm uninstall --user 0 $launcherPkg 2>&1; pm uninstall $launcherPkg 2>&1');
+        res = await _installOne(adb, apk, const Duration(seconds: 90), flags: '-r');
+        keep = false;
+        if (!res.contains('Success')) {
+          // never leave the TV without a home screen: its own one comes back
+          await _restoreStockHomes(adb);
+          await adb.shell('input keyevent 3');
+        }
+      }
+      if (!res.contains('Success')) throw AdbException(_installError(res, launcher: true));
 
-      if (!keepSettings) await adb.shell(_applyCommand(skin, look));
-      return await _bind(adb, sdk, onStep: onStep);
+      if (!keep) await adb.shell(_applyCommand(skin, look));
+      final bind = await _bind(adb, sdk, onStep: onStep);
+      if (saved != null) {
+        try {
+          final favs = saved.apps.where((a) => a.fav >= 0).toList()..sort((a, b) => a.fav.compareTo(b.fav));
+          await applyLauncher(device,
+              favorites: favs.map((a) => a.pkg).toList(),
+              hidden: saved.apps.where((a) => a.hidden).map((a) => a.pkg).toSet(),
+              kidsApps: saved.apps.where((a) => a.kids).map((a) => a.pkg).toSet());
+        } catch (e) {
+          AppLog.error('launcher reinstall lists', e);
+        }
+      }
+      return bind;
     } finally {
       adb.close();
     }
@@ -659,6 +722,7 @@ class AdbPackageManager {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
+      await _healUnsafePins(adb);
       final out = await adb.shell('dumpsys package $launcherPkg | grep -m1 versionCode');
       final v = int.tryParse(RegExp(r'versionCode=(\d+)').firstMatch(out)?.group(1) ?? '') ?? 0;
       if (v <= 0 || v >= bundledLauncherVersion) return null;
@@ -835,6 +899,8 @@ class AdbPackageManager {
   Future<LauncherBind> _bindOnce(AdbClient adb, int sdk,
       {void Function(String step)? onStep, bool googleTvHard = false, bool gentle = false}) async {
     onStep?.call(tr('Делаем главным экраном…'));
+    await _keepGuardLog(adb);
+    await _healUnsafePins(adb);
     if (sdk >= 29) {
       final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg 2>&1');
       if (r.trim().isNotEmpty) AppLog.error('home role', r.trim());
@@ -875,10 +941,12 @@ class AdbPackageManager {
     onStep?.call(tr('Проверяем кнопку «Домой»…'));
     final resolved = _pkgOf(await _resolvedHome(adb));
     if (await _homeOpensOurs(adb) && resolved == launcherPkg) {
-      if (gentle) return LauncherBind.role;
-      // Xiaomi: Home is ours now, but PatchWall still opens itself at every power-on
-      // (past the HOME role). Take it off too; checked, and put back if Home breaks.
-      return await _dropPatchWall(adb, sdk, onStep) ? LauncherBind.hard : LauncherBind.role;
+      // Xiaomi: PatchWall still opens itself at every power-on (past the HOME role); our
+      // Home-key service puts the launcher back over it by its window (0.56+). PatchWall is no
+      // longer taken off the TV for that (1.3.66): a Xiaomi reset itself to factory two seconds
+      // after «Установить лаунчер» (#46), and a Chinese MiTV had no home screen at all without
+      // its PatchWall the next day (#2). Taken off by older versions: «Вернуть стандартный лаунчер».
+      return LauncherBind.role;
     }
     // The automatic update never takes anything away: what pinned the launcher before
     // (stock homes already off, the Home-key service) is still in place.
@@ -890,17 +958,32 @@ class AdbPackageManager {
     if (await _frontPackage(adb) != launcherPkg) return LauncherBind.failed;
 
     final installed = _parsePackageList(await adb.shell('pm list packages')).toSet();
-    final stock = _removableHomes.where(installed.contains).toList();
+    // Xiaomi's own homes stay (PatchWall included): see [_xiaomiOwn].
+    final stock = _removableHomes.where((p) => installed.contains(p) && !_xiaomiOwn(p)).toList();
     final googleTv = installed.contains('com.google.android.apps.tv.launcherx');
     // The firmware's own home that Home opens whatever the HOME setting says (a be311 box,
     // Android 13: HOME resolved to ours, Home opened com.master.t972 every time).
     final fw = googleTv ? null : await _firmwareHome(adb);
     if (fw != null && !stock.contains(fw)) stock.add(fw);
+    // Only what is safe to switch off, and only where the TV takes our launcher as a home at all.
+    final safe = <String>[];
     if (stock.isNotEmpty && !googleTv) {
+      if (await _ourHomeListed(adb)) {
+        for (final p in stock) {
+          if (await _safeToSwitchOff(adb, p)) safe.add(p);
+        }
+      } else {
+        AppLog.error('pin', 'the TV does not list our launcher as a home: nothing switched off (${stock.join(', ')})');
+      }
+    }
+    if (safe.isNotEmpty) {
       onStep?.call(tr('Закрепляем лаунчер…'));
       final viaDisable = usesDisable(installed) || oldAndroid(sdk);
+      // the TV switches them back on by itself unless the check below passes (#3)
+      final token = await _armGuard(adb, safe);
       final removed = <String>[];
-      for (final p in stock) {
+      for (final p in safe) {
+        AppLog.error('pin', 'switching off $p'); // in the «?» report even if the TV goes away now
         final out = viaDisable || p == fw
             ? await adb.shell('pm disable-user --user 0 $p 2>&1')
             : await adb.shell('pm uninstall -k --user 0 $p 2>&1');
@@ -917,12 +1000,16 @@ class AdbPackageManager {
       } else {
         await adb.shell('cmd package set-home-activity $launcherHome');
       }
-      if (await _homeOpensOurs(adb)) return LauncherBind.hard;
+      if (await _homeOpensOurs(adb) && await _networkUp(adb)) {
+        await _keepGuard(adb, token);
+        return LauncherBind.hard;
+      }
       // Did not help: never leave the TV without its own launcher.
       for (final p in removed) {
         await adb.shell('pm install-existing $p');
         await adb.shell('pm enable $p');
       }
+      await _keepGuard(adb, token);
       if (fw != null) await adb.shell('rm -f $_firmwareHomesFile');
     }
     // Google TV whose firmware never starts our Home-key service (TCL Android 11/12 reports:
@@ -942,8 +1029,10 @@ class AdbPackageManager {
     if (inputsInHome) AppLog.error('google tv hard', 'skipped: HDMI is shown by launcherx');
     if (googleTv && googleTvHard && !inputsInHome) {
       onStep?.call(tr('Закрепляем лаунчер…'));
+      final token = await _armGuard(adb, _googleTvHomes.where(installed.contains).toList());
       final off = <String>[];
       for (final p in _googleTvHomes.where(installed.contains)) {
+        AppLog.error('pin', 'switching off $p (owner agreed)');
         final out = await adb.shell('pm disable-user --user 0 $p 2>&1');
         if (out.contains('new state: disabled')) {
           off.add(p);
@@ -954,11 +1043,15 @@ class AdbPackageManager {
       if (off.isNotEmpty) {
         await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
         // the launcher then warns in its settings: remove it only with TVCleanzer ([_syncStockOff])
-        if (await _homeOpensOurs(adb)) return LauncherBind.hard;
+        if (await _homeOpensOurs(adb) && await _networkUp(adb)) {
+          await _keepGuard(adb, token);
+          return LauncherBind.hard;
+        }
         for (final p in off) {
           await adb.shell('pm enable $p');
         }
       }
+      await _keepGuard(adb, token);
     }
     // Google TV, Yandex, Sber…: the stock home stays; our service sends Home to us.
     await adb.shell('input keyevent 3');
@@ -970,8 +1063,6 @@ class AdbPackageManager {
     }
     return LauncherBind.failed;
   }
-
-  static const _patchWall = 'com.mitv.tvhome.atv';
 
   /// Does Google TV's home play the HDMI inputs here (nobody else answers "view an input")?
   /// TCL G10: nobody answers it at all — launcherx starts TCL's own player its own way; with
@@ -1041,20 +1132,159 @@ class AdbPackageManager {
     'com.google.android.tungsten.setupwraith',
   ];
 
-  Future<bool> _dropPatchWall(AdbClient adb, int sdk, void Function(String step)? onStep) async {
-    final installed = _parsePackageList(await adb.shell('pm list packages')).toSet();
-    if (oldAndroid(sdk) || !installed.contains(_patchWall) || installed.contains('com.google.android.apps.tv.launcherx')) return false;
-    onStep?.call(tr('Убираем PatchWall…'));
-    final out = await adb.shell('pm uninstall -k --user 0 $_patchWall');
-    if (!out.toLowerCase().contains('success')) return false;
-    if (sdk >= 29) {
-      await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg');
-    } else {
-      await adb.shell('cmd package set-home-activity $launcherHome');
+  /// Xiaomi's own packages are never switched off to pin our launcher (1.3.66), PatchWall
+  /// included: a Xiaomi reset itself to factory two seconds after «Установить лаунчер» (#46);
+  /// a Chinese MiTV (MFTR0, OS 2) with com.mitv.tvhome off had no home screen at all, and its
+  /// HOME allow-list let our launcher be home only until the next reboot (#2: dark screen the
+  /// next day, Home and Back dead); its fallback home lives in com.xiaomi.mitv.settings.
+  /// The Home-key service keeps Home on ours there instead.
+  static bool _xiaomiOwn(String p) =>
+      p.startsWith('com.mitv.') || p.startsWith('com.xiaomi.') || p.startsWith('com.miui.');
+
+  /// Names of what a TV can't live without: settings, setup, network, the system UI.
+  static final _vitalName =
+      RegExp(r'settings|setup|provision|network|wifi|systemui|framework|fallback|bluetooth', caseSensitive: false);
+
+  /// May the pinning switch [p] off? Never a core part of the firmware: an app running as the
+  /// system user (on TCL and others the home can share it with network and settings services:
+  /// a TCL Smart TV Pro lost Wi‑Fi at «Установить лаунчер» and needed a factory reset, #3),
+  /// a persistent one, or one whose name says it is vital.
+  Future<bool> _safeToSwitchOff(AdbClient adb, String p) async {
+    if (_neverOff(p) || _xiaomiOwn(p) || _vitalName.hasMatch(p)) {
+      AppLog.error('pin', 'kept $p: never switched off');
+      return false;
     }
-    if (await _homeOpensOurs(adb)) return true;
-    await adb.shell('pm install-existing $_patchWall');
+    try {
+      final why = unsafeDump(await adb.shell(
+          'dumpsys package $p 2>/dev/null | grep -m8 -E "userId=|appId=|sharedUser=|pkgFlags=|flags="'));
+      if (why == null) return true;
+      AppLog.error('pin', 'kept $p: $why');
+    } catch (e) {
+      AppLog.error('pin', 'kept $p: $e');
+    }
     return false;
+  }
+
+  /// Firmware homes older versions switched off that the pinning would never touch now
+  /// ([_safeToSwitchOff]): a Rombica 65MT-UDG54G (Android 13, Amlogic) had Home on its setup
+  /// wizard com.droidlogic.setupwizard; 1.3.2x took it off as «the firmware's launcher», and the
+  /// TV hung on the boot logo at a later start. Put back at the next connection (scan, «Сделать
+  /// главным ещё раз»), before the TV restarts; Home stays ours through the Home-key service.
+  Future<void> _healUnsafePins(AdbClient adb) async {
+    try {
+      final saved = (await adb.shell('cat $_firmwareHomesFile 2>/dev/null'))
+          .split(RegExp(r'\s+'))
+          .where(_pkgName.hasMatch)
+          .toList();
+      if (saved.isEmpty) return;
+      final keep = <String>[];
+      for (final p in saved) {
+        if (await _safeToSwitchOff(adb, p)) {
+          keep.add(p);
+          continue;
+        }
+        AppLog.error('heal', 'switching $p back on');
+        await adb.shell('pm install-existing $p >/dev/null 2>&1; pm enable $p 2>&1');
+        // a setup wizard that stayed the home: the TV never finished its first setup
+        if (RegExp('setup|provision', caseSensitive: false).hasMatch(p)) {
+          await adb.shell('settings put global device_provisioned 1; settings put secure user_setup_complete 1');
+        }
+      }
+      if (keep.length == saved.length) return;
+      await adb.shell(keep.isEmpty ? 'rm -f $_firmwareHomesFile' : "echo '${keep.join(' ')}' > $_firmwareHomesFile");
+    } catch (e) {
+      AppLog.error('heal', e);
+    }
+  }
+
+  /// Why a `dumpsys package` excerpt marks a core package (null: an ordinary app).
+  static String? unsafeDump(String d) {
+    if (RegExp(r'\b(userId|appId)=(1000|1001|1002|1027)\b').hasMatch(d)) return 'system uid';
+    if (RegExp(r'android\.uid\.(system|phone|bluetooth|nfc|shell)').hasMatch(d)) return 'shared system uid';
+    if (RegExp(r'\bPERSISTENT\b').hasMatch(d)) return 'persistent';
+    return null;
+  }
+
+  /// Does the TV take our launcher as a home screen at all? Firmwares with a HOME allow-list
+  /// (Chinese Xiaomi, OS 3) never list it: there switching their home off leaves nothing.
+  Future<bool> _ourHomeListed(AdbClient adb) async {
+    final homes = _parseComponents(await adb.shell(
+        'cmd package query-activities --brief -a android.intent.action.MAIN '
+        '-c android.intent.category.HOME 2>/dev/null'));
+    if (homes.isEmpty) homes.addAll((await _oldCategories(adb))['HOME']!); // Android 5–6
+    return homes.contains(launcherPkg);
+  }
+
+  /// The TV still has a network (the home just switched off did not take Wi‑Fi with it).
+  /// Answering at all means ADB over the network works; a TV on Ethernet or an emulator
+  /// may print nothing, which counts as up.
+  Future<bool> _networkUp(AdbClient adb) async {
+    try {
+      final out = await adb.shell('ip route 2>&1 | grep -c .');
+      final n = int.tryParse(out.trim());
+      if (n == 0) {
+        AppLog.error('pin', 'no network routes after switching the home off');
+        return false;
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  static const _guardDir = '/data/local/tmp';
+  static const _guardLog = '$_guardDir/tvcleanzer_guard.log';
+
+  /// The TV's own safety net for the pinning: a script on the TV switches [pkgs] back on in
+  /// [seconds] unless [_keepGuard] marks the check as passed. For when the phone loses the TV
+  /// halfway — Wi‑Fi gone together with a home (#3), the TV restarting, the app closed during
+  /// the check. Runs past the ADB connection (HUP ignored). Returns its token (null: not armed).
+  Future<String?> _armGuard(AdbClient adb, List<String> pkgs, {int seconds = 150}) async {
+    if (pkgs.isEmpty || !pkgs.every(_pkgName.hasMatch)) return null;
+    final token = '${DateTime.now().millisecondsSinceEpoch}';
+    try {
+      await adb.shell("printf '%s' '${guardScript(pkgs, seconds, token)}' > $_guardDir/tvcleanzer_guard_$token.sh; "
+          '( nohup sh $_guardDir/tvcleanzer_guard_$token.sh 2>/dev/null || sh $_guardDir/tvcleanzer_guard_$token.sh ) '
+          '</dev/null >/dev/null 2>&1 &');
+      return token;
+    } catch (e) {
+      AppLog.error('guard', e);
+      return null;
+    }
+  }
+
+  /// The script [_armGuard] leaves on the TV (no single quotes: it is passed inside them).
+  static String guardScript(List<String> pkgs, int seconds, String token) {
+    final ok = '$_guardDir/tvcleanzer_ok_$token';
+    final list = pkgs.join(' ');
+    return [
+      'trap "" HUP',
+      'sleep $seconds',
+      'if [ ! -f $ok ]; then',
+      '  for p in $list; do pm install-existing \$p >/dev/null 2>&1; pm enable \$p >/dev/null 2>&1; done',
+      '  echo "\$(date) put back: $list" >> $_guardLog',
+      'fi',
+      'rm -f $ok $_guardDir/tvcleanzer_guard_$token.sh',
+    ].join('\n');
+  }
+
+  /// The check passed (or the phone put everything back itself): the guard does nothing.
+  Future<void> _keepGuard(AdbClient adb, String? token) async {
+    if (token == null) return;
+    try {
+      await adb.shell('touch $_guardDir/tvcleanzer_ok_$token');
+    } catch (_) {}
+  }
+
+  /// What a guard had to put back since the last connection, into the «?» report.
+  Future<void> _keepGuardLog(AdbClient adb) async {
+    try {
+      final log = (await adb.shell('cat $_guardLog 2>/dev/null')).trim();
+      if (log.isNotEmpty) {
+        AppLog.error('guard', log);
+        await adb.shell('rm -f $_guardLog');
+      }
+    } catch (_) {}
   }
 
   /// Puts back stock home screens taken off by [_bind] (when our launcher is removed).
@@ -1899,8 +2129,21 @@ class AdbPackageManager {
   static final _definite = RegExp(
       'UPDATE_INCOMPATIBLE|NO_MATCHING_ABIS|OLDER_SDK|VERSION_DOWNGRADE|INSUFFICIENT_STORAGE|INVALID_APK|PARSE_FAILED');
 
-  static String _installError(String out) {
+  /// `install -r` failed in a way only removing the old copy fixes: another signing key, or a
+  /// copy kept for no user (`pm uninstall --user 0` left it half there).
+  static bool needsCleanReinstall(String res) => RegExp(
+          r'UPDATE_INCOMPATIBLE|INSTALL_FAILED_DUPLICATE_PERMISSION|INSTALL_FAILED_ALREADY_EXISTS|'
+          r'INSTALL_FAILED_SHARED_USER_INCOMPATIBLE|signatures do not match|INCONSISTENT_CERTIFICATES')
+      .hasMatch(res);
+
+  static String _installError(String out, {bool launcher = false}) {
     final o = out.trim();
+    if (launcher && o.contains('VERSION_DOWNGRADE')) {
+      return tr('На телевизоре лаунчер новее, чем в этом приложении. Обновите TVCleanzer на телефоне.');
+    }
+    if (launcher && needsCleanReinstall(o)) {
+      return tr('Старый лаунчер не удалось заменить: {0}. Пришлите отчёт через «?».', [_installReason(o)]);
+    }
     if (o.contains('UPDATE_INCOMPATIBLE')) {
       return tr('На телевизоре уже стоит это приложение с другой подписью. Удалите его в списке ниже и установите снова.');
     }
@@ -1930,6 +2173,108 @@ class AdbPackageManager {
       }
     }
     return lines.last;
+  }
+
+  // ── TV language and keyboard ─────────────────────────────────────────────────
+
+  /// The TV's keyboards: every input method it has (`ime list -a -s`), the switched-on ones
+  /// and the one in use. After a reset a Chinese Xiaomi typed only Chinese in every search
+  /// (MFTR0): the seller's keyboard was still there, just not chosen.
+  Future<({List<String> all, Set<String> enabled, String current})> keyboards(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      List<String> ids(String out) =>
+          out.split('\n').map((l) => l.trim()).where(_component.hasMatch).toList();
+      final all = ids(await adb.shell('ime list -a -s 2>/dev/null'));
+      final enabled = ids(await adb.shell('ime list -s 2>/dev/null')).toSet();
+      final current = (await adb.shell('settings get secure default_input_method')).trim();
+      for (final e in [...enabled, if (_component.hasMatch(current)) current]) {
+        if (!all.contains(e)) all.add(e);
+      }
+      return (all: all, enabled: enabled, current: current);
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Makes [id] the TV's keyboard (switched on first). True when the TV reads it back.
+  Future<bool> setKeyboard(TvDevice device, String id) async {
+    if (!_component.hasMatch(id)) return false;
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final pkg = id.split('/').first;
+      final out = await adb.shell('pm enable $pkg >/dev/null 2>&1; ime enable $id 2>&1; ime set $id 2>&1');
+      final now = (await adb.shell('settings get secure default_input_method')).trim();
+      if (now != id) AppLog.error('keyboard', '$id: ${out.trim()} (now $now)');
+      return now == id;
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// A readable name for a keyboard id; the package name when we don't know it.
+  static String keyboardName(String id) {
+    final p = id.split('/').first;
+    if (p == 'com.google.android.leanback.ime') return tr('Клавиатура Android TV (Leanback)');
+    if (p == 'com.google.android.inputmethod.latin') return 'Gboard';
+    if (p == 'com.android.inputmethod.latin') return tr('Клавиатура Android');
+    if (p.contains('sogou')) return tr('Sogou (китайская)');
+    if (p.contains('baidu')) return tr('Baidu (китайская)');
+    if (p.contains('pinyin') || p.contains('iflytek')) return tr('Китайская клавиатура');
+    if (p.contains('yandex')) return tr('Яндекс Клавиатура');
+    if (p.contains('swiftkey')) return 'SwiftKey';
+    if (p.contains('tvcleanzer')) return 'TVCleanzer';
+    return p;
+  }
+
+  /// The TV's system language tag ("ru-RU"), or '' when it says nothing.
+  Future<String> tvLocale(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      return localeFrom(await adb.shell(
+          'getprop persist.sys.locale; settings get system system_locales; getprop ro.product.locale'));
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// The first real language tag in [out] (lines of getprop / settings; "null" skipped).
+  static String localeFrom(String out) {
+    for (final l in out.split('\n')) {
+      final t = l.trim().split(',').first.trim();
+      if (RegExp(r'^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$').hasMatch(t)) return t;
+    }
+    return '';
+  }
+
+  /// Changes the TV's system language to [tag] ("ru-RU") through our launcher (0.59+): Android
+  /// lets an app do it once ADB grants CHANGE_CONFIGURATION. Returns '' when done, else why not.
+  Future<String> setTvLocale(TvDevice device, String tag) async {
+    if (!RegExp(r'^[a-z]{2,3}(-[A-Z]{2})?$').hasMatch(tag)) return 'bad tag';
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final v = await adb.shell('dumpsys package $launcherPkg | grep -m1 versionCode');
+      final code = int.tryParse(RegExp(r'versionCode=(\d+)').firstMatch(v)?.group(1) ?? '') ?? 0;
+      if (code < 59) {
+        return tr('Нужен TVCleanzer Launcher 0.59 или новее: установите или обновите его на вкладке «Лаунчер».');
+      }
+      final g = await adb.shell('pm grant $launcherPkg android.permission.CHANGE_CONFIGURATION 2>&1');
+      if (g.trim().isNotEmpty) AppLog.error('locale grant', g.trim());
+      final out = await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
+          '-a com.tvcleanzer.launcher.APPLY --es locale $tag 2>&1');
+      final data = RegExp(r'data="([^"]*)"').firstMatch(out)?.group(1) ?? out.trim();
+      await Future<void>.delayed(const Duration(seconds: 2));
+      final now = localeFrom(await adb.shell('getprop persist.sys.locale; settings get system system_locales'));
+      if (data == 'ok' || now.split('-').first == tag.split('-').first) return '';
+      AppLog.error('locale $tag', '$data (now ${now.isEmpty ? '-' : now})');
+      return tr('Телевизор не дал сменить язык: {0}', [data.isEmpty ? '—' : data]);
+    } finally {
+      adb.close();
+    }
   }
 
   // ── Package DB ───────────────────────────────────────────────────────────────

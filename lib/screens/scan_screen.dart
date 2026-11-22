@@ -9,6 +9,7 @@ import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
 import '../state/history.dart';
 import '../theme/app_theme.dart';
+import '../widgets/china_note.dart';
 import '../widgets/package_tile.dart';
 import 'clean_screen.dart';
 import 'home_screen.dart';
@@ -170,6 +171,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       Expanded(child: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), children: [
         _summary(toRemove.length, toCaution.length),
         const Gap(12),
+        if (AdbPackageManager.isChinaXiaomi(widget.device)) ...[const ChinaXiaomiNote(), const Gap(12)],
         _boostCard(),
         const Gap(20),
         if (toRemove.isNotEmpty) ...[

@@ -676,6 +676,30 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 .show();
     }
 
+    /** Long OK on «ТВ»: which app shows the broadcast. On a Sber TV the one found by itself
+     *  opened but showed no broadcast, only the remote's TV key did (#22). */
+    private void chooseTvApp() {
+        if (prefs.kids()) return;
+        final List<String> pk = Inputs.tvCandidates(this);
+        final String own = prefs.tvApp();
+        final String[] names = new String[pk.size() + 1];
+        names[0] = (own.isEmpty() ? "✓ " : "") + T.t("Автоматически");
+        for (int i = 0; i < pk.size(); i++) {
+            String p = pk.get(i), l = p;
+            try {
+                l = String.valueOf(pm.getApplicationLabel(pm.getApplicationInfo(p, 0)));
+            } catch (Throwable ignored) {}
+            names[i + 1] = (p.equals(own) ? "✓ " : "") + (l.equals(p) ? p : l + "  ·  " + p);
+        }
+        new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                .setTitle(T.t("Что открывать по «ТВ»"))
+                .setItems(names, (d, w) -> {
+                    prefs.setTvApp(w == 0 ? "" : pk.get(w - 1));
+                    reloadApps();
+                })
+                .show();
+    }
+
     private void openInput(Inputs.Item it) {
         HomeKeyService.quiet(15000);
         if (!Inputs.open(this, it)) Toast.makeText(this, T.f("Не удалось открыть {0}", it.label), Toast.LENGTH_SHORT).show();
@@ -1505,6 +1529,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 final Inputs.Item it = inputs.get(i);
                 Pill pill = new Pill(this, it.label);
                 pill.setOnClickListener(v -> openInput(it));
+                if (it.id.startsWith("tv:")) pill.setOnLongClickListener(v -> { chooseTvApp(); return true; });
                 LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i > 0) ip.leftMargin = Ui.dp(this, 12);

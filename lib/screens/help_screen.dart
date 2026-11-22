@@ -13,6 +13,7 @@ import '../theme/app_theme.dart';
 
 import '../l10n/l10n.dart';
 import '../widgets/support_card.dart';
+import 'faq_screen.dart';
 class _Guide {
   final String brand;
   final String hint;
@@ -236,6 +237,15 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
           Container(width: 40, height: 4, decoration: BoxDecoration(
               color: AppColors.cardBd, borderRadius: BorderRadius.circular(2))),
           const Gap(12),
+          ListTile(
+            leading: const Icon(Icons.quiz_rounded, color: AppColors.accent),
+            title: Text(tr('Частые вопросы')),
+            subtitle: Text(tr('Подключение, очистка, лаунчер — ответы сразу')),
+            onTap: () {
+              Navigator.pop(ctx);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const FaqScreen()));
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.menu_book_rounded, color: AppColors.accent),
             title: Text(tr('Как включить отладку на ТВ')),

@@ -26,6 +26,13 @@ public class ConfigReceiver extends BroadcastReceiver {
             return;
         }
         if (!"com.tvcleanzer.launcher.APPLY".equals(intent.getAction())) return;
+        if (intent.hasExtra("locale")) {
+            // the TV's system language (0.59): the phone granted CHANGE_CONFIGURATION first
+            String r = Locales.apply(intent.getStringExtra("locale"));
+            setResultCode("ok".equals(r) ? 1 : 2);
+            setResultData(r);
+            return;
+        }
         Prefs p = new Prefs(context);
         String skin = intent.getStringExtra("skin");
         if (skin != null) p.setSkin(Skin.byId(skin));

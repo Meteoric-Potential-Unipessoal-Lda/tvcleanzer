@@ -81,6 +81,10 @@ final class Prefs {
     int autostartBoot()      { return sp.getInt(AUTOSTART_BOOT, -1); }
     void setAutostartBoot(int boot) { sp.edit().putInt(AUTOSTART_BOOT, boot).apply(); }
     /** Own order of the "Apps" grid (packages; the rest follow alphabetically). */
+    /** «ТВ»: the app the owner chose to show live TV ('' = found by itself, see [Inputs]). */
+    String tvApp()           { return sp.getString("tvApp", ""); }
+    void setTvApp(String p)  { sp.edit().putString("tvApp", p == null ? "" : p).apply(); }
+
     List<String> order() {
         String s = sp.getString(ORDER, "");
         return s.isEmpty() ? new ArrayList<String>() : new ArrayList<>(Arrays.asList(s.split(",")));

@@ -8,6 +8,7 @@ import '../services/adb_package_manager.dart';
 import '../state/history.dart';
 import '../services/app_log.dart';
 import '../theme/app_theme.dart';
+import '../widgets/china_note.dart';
 import '../widgets/package_tile.dart';
 import 'result_screen.dart';
 
@@ -152,6 +153,7 @@ class CleanScreen extends ConsumerWidget {
             )),
           ]),
         ).animate().fadeIn(duration: 300.ms),
+        if (AdbPackageManager.isChinaXiaomi(device)) ...[const Gap(12), const ChinaXiaomiNote()],
 
         const Gap(20),
 
