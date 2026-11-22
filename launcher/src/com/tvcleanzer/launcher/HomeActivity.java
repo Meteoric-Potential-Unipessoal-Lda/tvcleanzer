@@ -757,6 +757,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             main.post(this::updateWeatherView);
             return;
         }
+        if (quietOrder && (Prefs.ORDER.equals(key) || Prefs.FAVORITES.equals(key))) return;
         // A new city: fetch its weather right away.
         if (Prefs.W_CITY.equals(key) && resumed) main.post(this::refreshWeather);
         // Settings screen or the phone app changed something.
@@ -833,8 +834,70 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (to == j) return true;
         AppEntry a = list.remove(j);
         list.add(to, a);
-        if (movingFav) saveFavorites(list); else saveOrder(list); // the screen redraws, focus follows the app
+        // The tiles change places on screen as they are: no redraw of the whole home screen, so
+        // nothing blinks (#52) and a held arrow can't outrun the redraw and put the tile back (#8).
+        boolean moved = reorderInPlace(list);
+        if (moved) {
+            if (movingFav) favorites = list; else gridOrder = list;
+        }
+        quietOrder = moved;
+        try {
+            if (movingFav) saveFavorites(list); else saveOrder(list); // otherwise the screen redraws
+        } finally {
+            quietOrder = false;
+        }
         return true;
+    }
+
+    /** Set while a move saves an order the screen already shows. */
+    private boolean quietOrder;
+
+    /** Puts the tiles of one section into [list]'s order, each into the next tile's slot. */
+    private boolean reorderInPlace(List<AppEntry> list) {
+        Set<String> want = new java.util.HashSet<>();
+        for (AppEntry a : list) want.add(a.pkg);
+        List<AppTile> found = new ArrayList<>();
+        collectTiles(root, want, found);
+        if (found.size() != list.size()) return false;
+        Map<String, AppTile> byPkg = new HashMap<>();
+        for (AppTile t : found) if (byPkg.put(t.app.pkg, t) != null) return false;
+        int n = found.size();
+        ViewGroup[] parents = new ViewGroup[n];
+        int[] at = new int[n];
+        ViewGroup.LayoutParams[] lps = new ViewGroup.LayoutParams[n];
+        for (int i = 0; i < n; i++) {
+            AppTile t = found.get(i);
+            if (!(t.getParent() instanceof ViewGroup) || byPkg.get(list.get(i).pkg) == null) return false;
+            parents[i] = (ViewGroup) t.getParent();
+            at[i] = parents[i].indexOfChild(t);
+            lps[i] = t.getLayoutParams(); // the slot's margins stay with the slot
+        }
+        AppTile mover = byPkg.get(movingPkg);
+        // removing the focused tile would hand focus to the top of the screen (the page jumps):
+        // with descendants blocked focus just goes quiet until the tile asks for it back
+        int focusRule = root.getDescendantFocusability();
+        root.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        try {
+            for (int i = n - 1; i >= 0; i--) parents[i].removeView(found.get(i));
+            for (int i = 0; i < n; i++) parents[i].addView(byPkg.get(list.get(i).pkg), at[i], lps[i]);
+        } finally {
+            root.setDescendantFocusability(focusRule);
+        }
+        if (mover != null) {
+            mover.setMoving(true);
+            mover.requestFocus();
+        }
+        return true;
+    }
+
+    private static void collectTiles(View v, Set<String> want, List<AppTile> out) {
+        if (v instanceof AppTile) {
+            if (want.contains(((AppTile) v).app.pkg)) out.add((AppTile) v);
+            return;
+        }
+        if (!(v instanceof ViewGroup)) return;
+        ViewGroup g = (ViewGroup) v;
+        for (int i = 0; i < g.getChildCount(); i++) collectTiles(g.getChildAt(i), want, out);
     }
 
     @Override
