@@ -97,8 +97,14 @@ class TvCard extends ConsumerWidget {
                   tooltip: tr('Ещё'),
                   onSelected: (v) async {
                     if (v == 'remove') ref.read(discoveryProvider.notifier).remove(device);
-                    if (v == 'rename' && context.mounted) await renameTv(context, ref, device);
-                    if (v == 'lang') await showTvLanguageSheet(context, device);
+                    if (v == 'rename') {
+                      await renameTv(context, ref, device);
+                      return;
+                    }
+                    if (v == 'lang') {
+                      await showTvLanguageSheet(context, device);
+                      return;
+                    }
                     if (v == 'terminal') {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (_) => TerminalScreen(device: device)));
