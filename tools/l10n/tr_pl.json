@@ -856,5 +856,12 @@
 "Brak wygaszacza — po tym czasie telewizor się wyłącza.",
 "«Nigdy»: ekran nie zgaśnie, nawet jeśli telewizor zostanie włączony.",
 "Telewizor sam się wyłącza albo gaśnie w trakcie filmu",
-"To minutnik ekranu: po kilku minutach bez pilota ekran gaśnie, a bez wygaszacza telewizor się wyłącza. Aplikacje wideo zwykle na to nie pozwalają, ale odtwarzacze IPTV i przeglądarka tak. «⋮» przy telewizorze → «Ekran i uśpienie» → ustaw 2–4 godziny."
+"To minutnik ekranu: po kilku minutach bez pilota ekran gaśnie, a bez wygaszacza telewizor się wyłącza. Aplikacje wideo zwykle na to nie pozwalają, ale odtwarzacze IPTV i przeglądarka tak. «⋮» przy telewizorze → «Ekran i uśpienie» → ustaw 2–4 godziny.",
+"Gotowe: {0} jest na telewizorze w «Download» → «TVCleanzer».",
+"Otwarto na telewizorze.",
+"Na telewizorze nie ma aplikacji, która sama otworzy ten plik. Otwórz go z potrzebnej aplikacji: plik jest w «Download» → «TVCleanzer».",
+"Wyślij plik na telewizor",
+"Playlista IPTV (.m3u), film, muzyka, zdjęcia, dokument — bez pendrive’a. Plik trafi na telewizor do «Download» → «TVCleanzer». Playlistę dodaj potem w aplikacji IPTV: «Dodaj playlistę» → «Plik».",
+"Wybierz plik",
+"Mało miejsca na telewizorze: potrzeba {0} MB, wolne {1} MB."
 ]

@@ -856,5 +856,12 @@
 "No screensaver — the TV switches off on this timer.",
 "«Never»: the screen won't go dark even if the TV is left on.",
 "The TV turns itself off or goes dark during a film",
-"It's the screen timer: after some minutes without the remote the screen goes dark, and with no screensaver the TV switches off. Video apps usually prevent this, but IPTV players and the browser don't. «⋮» next to the TV → «Screen and sleep» → set 2–4 hours."
+"It's the screen timer: after some minutes without the remote the screen goes dark, and with no screensaver the TV switches off. Video apps usually prevent this, but IPTV players and the browser don't. «⋮» next to the TV → «Screen and sleep» → set 2–4 hours.",
+"Done: {0} is on the TV in «Download» → «TVCleanzer».",
+"Opened on the TV.",
+"The TV has no app that opens this file by itself. Open it from the app you need: the file is in «Download» → «TVCleanzer».",
+"Send a file to the TV",
+"An IPTV playlist (.m3u), a film, music, photos, a document — no USB stick needed. The file lands on the TV in «Download» → «TVCleanzer». Add a playlist in your IPTV app: «Add playlist» → «File».",
+"Choose a file",
+"Not enough space on the TV: {0} MB needed, {1} MB free."
 ]

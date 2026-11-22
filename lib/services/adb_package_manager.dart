@@ -1973,6 +1973,80 @@ class AdbPackageManager {
   /// Single-quoted for the TV's shell.
   static String _sq(String s) => "'${s.replaceAll("'", "'\\''")}'";
 
+  /// Where «Отправить файл на ТВ» puts files: the TV's Download folder, seen by its file
+  /// managers, players and IPTV apps («Добавить плейлист» → файл). The top idea in the chat:
+  /// IPTV playlists and files from the phone to the TV without a USB stick.
+  static const tvFilesDir = '/sdcard/Download/TVCleanzer';
+
+  /// A file name safe for the TV's shell and file managers (letters of any language kept).
+  static String tvFileName(String name) {
+    var n = name.replaceAll(RegExp(r'[^\p{L}\p{N}._ -]', unicode: true), '_').trim();
+    if (n.isEmpty || n.startsWith('.')) n = 'file$n';
+    return n.length > 120 ? n.substring(n.length - 120) : n;
+  }
+
+  /// MIME type by extension, for «Открыть на ТВ».
+  static String mimeOf(String name) {
+    final ext = name.contains('.') ? name.split('.').last.toLowerCase() : '';
+    return switch (ext) {
+      'm3u' || 'm3u8' => 'audio/x-mpegurl',
+      'xspf' => 'application/xspf+xml',
+      'mp4' || 'm4v' || 'mkv' || 'avi' || 'mov' || 'webm' || 'ts' || '3gp' || 'wmv' || 'flv' => 'video/*',
+      'mp3' || 'm4a' || 'aac' || 'flac' || 'ogg' || 'wav' || 'opus' => 'audio/*',
+      'jpg' || 'jpeg' || 'png' || 'webp' || 'gif' || 'heic' || 'bmp' => 'image/*',
+      'pdf' => 'application/pdf',
+      'txt' || 'srt' || 'log' => 'text/plain',
+      'apk' => 'application/vnd.android.package-archive',
+      _ => '*/*',
+    };
+  }
+
+  /// Sends a file from the phone into [tvFilesDir] on the TV, piece by piece (a film of several
+  /// gigabytes never has to fit in the phone's memory). Returns its path on the TV.
+  Future<String> sendFile(TvDevice device, String name, Stream<List<int>> data, int length,
+      {void Function(int sent)? onProgress}) async {
+    final path = '$tvFilesDir/${tvFileName(name)}';
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('mkdir -p $tvFilesDir');
+      final freeKb = await _dataFreeKb(adb);
+      final needKb = length ~/ 1024 + 200 * 1024; // the file + room for the TV itself
+      if (freeKb > 0 && freeKb < needKb) {
+        throw AdbException(tr('На телевизоре мало места: нужно {0} МБ, свободно {1} МБ.',
+            ['${needKb ~/ 1024}', '${freeKb ~/ 1024}']));
+      }
+      final t = Duration(seconds: max(120, length ~/ (2 * 1024 * 1024)));
+      await adb.execInStream('cat > ${_sq(path)}', data, onProgress: onProgress, timeout: t);
+      final size = int.tryParse((await adb.shell('wc -c < ${_sq(path)}')).trim().split(RegExp(r'\s+')).first) ?? -1;
+      if (size != length) {
+        await adb.shell('rm -f ${_sq(path)}');
+        throw AdbException(tr('Файл не дошёл до телевизора. Попробуйте ещё раз.'));
+      }
+      // so galleries and players see it without a restart (refused on some firmwares: fine)
+      await adb.shell('am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE '
+          '-d ${_sq('file://$path')} >/dev/null 2>&1');
+      return path;
+    } finally {
+      adb.close();
+    }
+  }
+
+  /// Opens a file on the TV with an app that takes its type. False when none did.
+  Future<bool> openTvFile(TvDevice device, String path) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell('am start -a android.intent.action.VIEW -d ${_sq('file://$path')} '
+          '-t ${_sq(mimeOf(path))} -f 0x10000001 2>&1');
+      final ok = !RegExp(r'Error|Exception|No Activity|unable to resolve', caseSensitive: false).hasMatch(out);
+      if (!ok) AppLog.error('open file on tv', out.trim());
+      return ok;
+    } finally {
+      adb.close();
+    }
+  }
+
   /// Shows a photo / video from the phone on the TV (launcher 0.42+: StateProvider "cast" +
   /// CastActivity). [data] is read piece by piece, so a film of several gigabytes never has to
   /// fit in the phone's memory; the TV needs room for two copies for a moment (the upload,

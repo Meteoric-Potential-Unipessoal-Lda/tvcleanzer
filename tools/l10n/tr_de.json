@@ -856,5 +856,12 @@
 "Kein Bildschirmschoner — mit diesem Timer schaltet sich der Fernseher aus.",
 "«Nie»: Der Bildschirm geht nicht aus, auch wenn der Fernseher anbleibt.",
 "Der Fernseher schaltet sich selbst aus oder wird mitten im Film dunkel",
-"Das ist der Bildschirm-Timer: Nach einigen Minuten ohne Fernbedienung geht der Bildschirm aus, und ohne Bildschirmschoner schaltet sich der Fernseher ab. Video-Apps verhindern das meist, IPTV-Player und der Browser nicht. «⋮» neben dem Fernseher → «Bildschirm und Ruhezustand» → 2–4 Stunden einstellen."
+"Das ist der Bildschirm-Timer: Nach einigen Minuten ohne Fernbedienung geht der Bildschirm aus, und ohne Bildschirmschoner schaltet sich der Fernseher ab. Video-Apps verhindern das meist, IPTV-Player und der Browser nicht. «⋮» neben dem Fernseher → «Bildschirm und Ruhezustand» → 2–4 Stunden einstellen.",
+"Fertig: {0} liegt am Fernseher in «Download» → «TVCleanzer».",
+"Am Fernseher geöffnet.",
+"Am Fernseher gibt es keine App, die diese Datei selbst öffnet. Öffne sie aus der gewünschten App: Sie liegt in «Download» → «TVCleanzer».",
+"Datei an den Fernseher senden",
+"Eine IPTV-Playlist (.m3u), ein Film, Musik, Fotos, ein Dokument — ohne USB-Stick. Die Datei landet am Fernseher in «Download» → «TVCleanzer». Die Playlist dann in der IPTV-App hinzufügen: «Playlist hinzufügen» → «Datei».",
+"Datei wählen",
+"Zu wenig Platz am Fernseher: {0} MB nötig, {1} MB frei."
 ]

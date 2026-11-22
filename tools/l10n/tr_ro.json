@@ -856,5 +856,12 @@
 "Nu există screensaver — la acest temporizator televizorul se oprește.",
 "«Niciodată»: ecranul nu se stinge chiar dacă televizorul rămâne pornit.",
 "Televizorul se oprește singur sau se stinge în timpul unui film",
-"Este temporizatorul ecranului: după câteva minute fără telecomandă ecranul se stinge, iar fără screensaver televizorul se oprește. Aplicațiile video de obicei împiedică asta, dar playerele IPTV și browserul nu. «⋮» lângă televizor → «Ecran și repaus» → pune 2–4 ore."
+"Este temporizatorul ecranului: după câteva minute fără telecomandă ecranul se stinge, iar fără screensaver televizorul se oprește. Aplicațiile video de obicei împiedică asta, dar playerele IPTV și browserul nu. «⋮» lângă televizor → «Ecran și repaus» → pune 2–4 ore.",
+"Gata: {0} e pe televizor în «Download» → «TVCleanzer».",
+"Deschis pe televizor.",
+"Pe televizor nu există o aplicație care să deschidă singură acest fișier. Deschide-l din aplicația de care ai nevoie: fișierul e în «Download» → «TVCleanzer».",
+"Trimite un fișier la televizor",
+"O listă IPTV (.m3u), un film, muzică, poze, un document — fără stick. Fișierul ajunge pe televizor în «Download» → «TVCleanzer». Adaugă apoi lista în aplicația IPTV: «Adaugă listă» → «Fișier».",
+"Alege fișierul",
+"Spațiu puțin pe televizor: e nevoie de {0} MB, liber {1} MB."
 ]

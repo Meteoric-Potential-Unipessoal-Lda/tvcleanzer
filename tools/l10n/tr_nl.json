@@ -856,5 +856,12 @@
 "Geen screensaver — met deze timer gaat de tv uit.",
 "«Nooit»: het scherm gaat niet uit, ook als de tv blijft aanstaan.",
 "De tv gaat vanzelf uit of wordt zwart tijdens een film",
-"Dat is de schermtimer: na een paar minuten zonder afstandsbediening gaat het scherm uit, en zonder screensaver gaat de tv uit. Video-apps voorkomen dat meestal, IPTV-spelers en de browser niet. «⋮» naast de tv → «Scherm en slaapstand» → kies 2–4 uur."
+"Dat is de schermtimer: na een paar minuten zonder afstandsbediening gaat het scherm uit, en zonder screensaver gaat de tv uit. Video-apps voorkomen dat meestal, IPTV-spelers en de browser niet. «⋮» naast de tv → «Scherm en slaapstand» → kies 2–4 uur.",
+"Klaar: {0} staat op de tv in «Download» → «TVCleanzer».",
+"Geopend op de tv.",
+"De tv heeft geen app die dit bestand zelf opent. Open het vanuit de app die je nodig hebt: het staat in «Download» → «TVCleanzer».",
+"Bestand naar de tv sturen",
+"Een IPTV-playlist (.m3u), een film, muziek, foto’s, een document — zonder usb-stick. Het bestand komt op de tv in «Download» → «TVCleanzer». Voeg de playlist daarna toe in de IPTV-app: «Playlist toevoegen» → «Bestand».",
+"Bestand kiezen",
+"Te weinig ruimte op de tv: {0} MB nodig, {1} MB vrij."
 ]

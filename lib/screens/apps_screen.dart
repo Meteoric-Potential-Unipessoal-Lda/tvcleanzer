@@ -40,6 +40,10 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
   final Set<String> _busy = {};
   bool _playHidden = false; // Google Play is in the firmware but switched off
   bool _playBusy = false;
+  String? _sendStep;      // «Отправить файл на ТВ» progress
+  String? _sendMsg;
+  bool _sendOk = false;
+  String? _sentPath;      // the last file sent, for «Открыть на ТВ»
 
   AdbPackageManager get _api => ref.read(adbServiceProvider);
 
@@ -111,6 +115,136 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
     } finally {
       if (mounted) setState(() => _step = null);
     }
+  }
+
+  /// «Отправить файл на ТВ»: any file (IPTV playlist, video, music, document) into the TV's
+  /// Download/TVCleanzer, read from disk piece by piece.
+  Future<void> _pickAndSend() async {
+    final tv = ref.read(currentTvProvider);
+    if (tv == null) return;
+    FilePickerResult? res;
+    try {
+      res = await FilePicker.platform.pickFiles(type: FileType.any, withData: false);
+    } catch (e) {
+      AppLog.error('pick file', e);
+    }
+    final f = res?.files.single;
+    if (f == null || f.path == null) return;
+    final file = File(f.path!);
+    int len;
+    try {
+      len = await file.length();
+    } catch (e) {
+      AppLog.error('read file', e);
+      setState(() { _sendOk = false; _sendMsg = tr('Не удалось прочитать файл. Сохраните его в «Файлы» и попробуйте снова.'); });
+      return;
+    }
+    HapticFeedback.mediumImpact();
+    final mb = (len / 1048576).toStringAsFixed(1);
+    setState(() {
+      _sendStep = tr('Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.', [0, mb]);
+      _sendMsg = null;
+      _sentPath = null;
+    });
+    try {
+      var shown = 0;
+      final path = await _api.sendFile(tv, f.name, file.openRead(), len, onProgress: (sent) {
+        if (!mounted) return;
+        final pct = len == 0 ? 100 : (sent * 100 / len).floor().clamp(0, 100);
+        if (pct == shown) return; // a film comes in thousands of pieces: redraw once per percent
+        shown = pct;
+        setState(() => _sendStep = tr('Отправляем на телевизор: {0}% из {1} МБ. Не блокируйте телефон.', [pct, mb]));
+      });
+      if (!mounted) return;
+      setState(() {
+        _sendOk = true;
+        _sentPath = path;
+        _sendMsg = tr('Готово: {0} на телевизоре в «Загрузки» → «TVCleanzer».', [path.split('/').last]);
+      });
+    } catch (e) {
+      AppLog.error('send ${f.name} $len', e);
+      if (mounted) {
+        setState(() {
+          _sendOk = false;
+          _sendMsg = e is AdbException ? e.message : tr('Связь с телевизором прервалась. Попробуйте ещё раз.');
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _sendStep = null);
+    }
+  }
+
+  Future<void> _openSent() async {
+    final tv = ref.read(currentTvProvider);
+    final p = _sentPath;
+    if (tv == null || p == null) return;
+    var ok = false;
+    try {
+      ok = await _api.openTvFile(tv, p);
+    } catch (_) {}
+    if (!mounted) return;
+    setState(() {
+      _sendOk = ok;
+      _sendMsg = ok
+          ? tr('Открыли на телевизоре.')
+          : tr('На телевизоре нет приложения, которое само открывает такой файл. Откройте его из нужного приложения: файл в «Загрузки» → «TVCleanzer».');
+    });
+  }
+
+  Widget _sendCard() {
+    final busy = _sendStep != null;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.bgCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.cardBd),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(color: AppColors.accentDim, borderRadius: BorderRadius.circular(10)),
+            child: const Icon(Icons.drive_file_move_rounded, color: AppColors.accent, size: 22),
+          ),
+          const Gap(12),
+          Expanded(
+            child: Text(tr('Отправить файл на ТВ'),
+                style: GoogleFonts.syne(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          ),
+        ]),
+        const Gap(10),
+        Text(
+          tr('Плейлист IPTV (.m3u), фильм, музыка, фото, документ — без флешки. Файл ляжет на телевизоре в «Загрузки» → «TVCleanzer». Плейлист потом добавьте в IPTV-приложении: «Добавить плейлист» → «Файл».'),
+          style: const TextStyle(fontSize: 13, height: 1.45, color: AppColors.fgMid),
+        ),
+        const Gap(12),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton.icon(
+            onPressed: busy ? null : _pickAndSend,
+            icon: busy
+                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                : const Icon(Icons.upload_file_rounded),
+            label: Text(busy ? _sendStep! : tr('Выбрать файл'), overflow: TextOverflow.ellipsis),
+          ),
+        ),
+        if (_sendMsg != null) ...[
+          const Gap(10),
+          Text(_sendMsg!,
+              style: TextStyle(fontSize: 13, height: 1.4, color: _sendOk ? AppColors.ok : AppColors.warn)),
+        ],
+        if (_sentPath != null && !busy) ...[
+          const Gap(8),
+          OutlinedButton.icon(
+            onPressed: _openSent,
+            icon: const Icon(Icons.open_in_new_rounded, size: 18),
+            label: Text(tr('Открыть на ТВ')),
+          ),
+        ],
+      ]),
+    );
   }
 
   Future<void> _open(TvApp a) async {
@@ -209,6 +343,8 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
                   const Gap(14),
                   if (_playHidden) ...[_playCard(), const Gap(14)],
                   _installCard(),
+                  const Gap(14),
+                  _sendCard(),
                   const Gap(20),
                   Text(tr('НА ТЕЛЕВИЗОРЕ'),
                       style: const TextStyle(

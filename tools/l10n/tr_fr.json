@@ -856,5 +856,12 @@
 "Pas d’économiseur d’écran — la TV s’éteint avec ce minuteur.",
 "«Jamais» : l’écran ne s’éteindra pas, même si la TV reste allumée.",
 "La TV s’éteint toute seule ou devient noire pendant un film",
-"C’est la minuterie de l’écran : après quelques minutes sans télécommande, l’écran s’éteint et, sans économiseur d’écran, la TV s’éteint. Les applis vidéo l’empêchent en général, mais pas les lecteurs IPTV ni le navigateur. «⋮» à côté de la TV → «Écran et veille» → mettez 2 à 4 heures."
+"C’est la minuterie de l’écran : après quelques minutes sans télécommande, l’écran s’éteint et, sans économiseur d’écran, la TV s’éteint. Les applis vidéo l’empêchent en général, mais pas les lecteurs IPTV ni le navigateur. «⋮» à côté de la TV → «Écran et veille» → mettez 2 à 4 heures.",
+"C’est fait : {0} est sur la TV dans «Download» → «TVCleanzer».",
+"Ouvert sur la TV.",
+"La TV n’a aucune appli qui ouvre ce fichier d’elle-même. Ouvrez-le depuis l’appli voulue : il est dans «Download» → «TVCleanzer».",
+"Envoyer un fichier à la TV",
+"Une playlist IPTV (.m3u), un film, de la musique, des photos, un document — sans clé USB. Le fichier arrive sur la TV dans «Download» → «TVCleanzer». Ajoutez ensuite la playlist dans l’appli IPTV : «Ajouter une playlist» → «Fichier».",
+"Choisir un fichier",
+"Pas assez de place sur la TV : {0} Mo nécessaires, {1} Mo libres."
 ]

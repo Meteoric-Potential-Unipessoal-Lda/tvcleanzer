@@ -856,5 +856,12 @@
 "Nincs képernyővédő — ennyi idő után a tévé kikapcsol.",
 "«Soha»: a képernyő akkor sem kapcsol ki, ha a tévét bekapcsolva felejtik.",
 "A tévé magától kikapcsol vagy film közben elsötétül",
-"Ez a képernyő időzítője: néhány perc távirányító nélkül a képernyő kikapcsol, és képernyővédő nélkül a tévé is. A videóalkalmazások ezt általában megakadályozzák, az IPTV-lejátszók és a böngésző nem. «⋮» a tévé mellett → «Képernyő és alvás» → állítson 2–4 órát."
+"Ez a képernyő időzítője: néhány perc távirányító nélkül a képernyő kikapcsol, és képernyővédő nélkül a tévé is. A videóalkalmazások ezt általában megakadályozzák, az IPTV-lejátszók és a böngésző nem. «⋮» a tévé mellett → «Képernyő és alvás» → állítson 2–4 órát.",
+"Kész: a(z) {0} a tévén van a «Download» → «TVCleanzer» mappában.",
+"Megnyitva a tévén.",
+"A tévén nincs olyan alkalmazás, amely magától megnyitná ezt a fájlt. Nyissa meg a kívánt alkalmazásból: a fájl a «Download» → «TVCleanzer» mappában van.",
+"Fájl küldése a tévére",
+"IPTV-lista (.m3u), film, zene, fotó, dokumentum — pendrive nélkül. A fájl a tévén a «Download» → «TVCleanzer» mappába kerül. A listát utána az IPTV-alkalmazásban adja hozzá: «Lista hozzáadása» → «Fájl».",
+"Fájl kiválasztása",
+"Kevés a hely a tévén: {0} MB kell, {1} MB szabad."
 ]

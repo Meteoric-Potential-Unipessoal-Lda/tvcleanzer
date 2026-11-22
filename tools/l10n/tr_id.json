@@ -856,5 +856,12 @@
 "Tidak ada screensaver — dengan timer ini TV mati.",
 "«Tidak pernah»: layar tidak akan mati meskipun TV lupa dimatikan.",
 "TV mati sendiri atau gelap saat menonton film",
-"Itu timer layar: setelah beberapa menit tanpa remote layar mati, dan tanpa screensaver TV ikut mati. Aplikasi video biasanya mencegahnya, tetapi pemutar IPTV dan browser tidak. «⋮» di samping TV → «Layar dan tidur» → atur 2–4 jam."
+"Itu timer layar: setelah beberapa menit tanpa remote layar mati, dan tanpa screensaver TV ikut mati. Aplikasi video biasanya mencegahnya, tetapi pemutar IPTV dan browser tidak. «⋮» di samping TV → «Layar dan tidur» → atur 2–4 jam.",
+"Selesai: {0} ada di TV di «Download» → «TVCleanzer».",
+"Dibuka di TV.",
+"TV tidak punya aplikasi yang membuka file ini sendiri. Buka dari aplikasi yang Anda perlukan: file ada di «Download» → «TVCleanzer».",
+"Kirim file ke TV",
+"Playlist IPTV (.m3u), film, musik, foto, dokumen — tanpa flashdisk. File masuk ke TV di «Download» → «TVCleanzer». Lalu tambahkan playlist di aplikasi IPTV: «Tambah playlist» → «File».",
+"Pilih file",
+"Ruang di TV kurang: perlu {0} MB, tersedia {1} MB."
 ]

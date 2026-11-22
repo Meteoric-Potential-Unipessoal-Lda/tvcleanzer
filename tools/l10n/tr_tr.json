@@ -856,5 +856,12 @@
 "Ekran koruyucu yok — bu zamanlayıcıyla TV kapanır.",
 "«Asla»: TV açık unutulsa bile ekran kapanmaz.",
 "TV kendiliğinden kapanıyor veya film sırasında kararıyor",
-"Bu ekran zamanlayıcısıdır: kumandaya birkaç dakika dokunulmazsa ekran kapanır, ekran koruyucu yoksa TV de kapanır. Video uygulamaları genelde buna engel olur ama IPTV oynatıcıları ve tarayıcı olmaz. TV’nin yanındaki «⋮» → «Ekran ve uyku» → 2–4 saat ayarlayın."
+"Bu ekran zamanlayıcısıdır: kumandaya birkaç dakika dokunulmazsa ekran kapanır, ekran koruyucu yoksa TV de kapanır. Video uygulamaları genelde buna engel olur ama IPTV oynatıcıları ve tarayıcı olmaz. TV’nin yanındaki «⋮» → «Ekran ve uyku» → 2–4 saat ayarlayın.",
+"Tamam: {0} TV’de «Download» → «TVCleanzer» içinde.",
+"TV’de açıldı.",
+"TV’de bu dosyayı kendiliğinden açan bir uygulama yok. Gereken uygulamadan açın: dosya «Download» → «TVCleanzer» içinde.",
+"TV’ye dosya gönder",
+"IPTV listesi (.m3u), film, müzik, fotoğraf, belge — USB bellek olmadan. Dosya TV’de «Download» → «TVCleanzer» içine düşer. Listeyi sonra IPTV uygulamasında ekleyin: «Liste ekle» → «Dosya».",
+"Dosya seç",
+"TV’de yer az: {0} MB gerekli, {1} MB boş."
 ]

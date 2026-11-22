@@ -856,5 +856,12 @@
 "No hay salvapantallas: con este temporizador la tele se apaga.",
 "«Nunca»: la pantalla no se apagará aunque la tele se quede encendida.",
 "La tele se apaga sola o se oscurece durante una película",
-"Es el temporizador de pantalla: tras unos minutos sin el mando la pantalla se apaga y, si no hay salvapantallas, la tele se apaga. Las apps de vídeo suelen evitarlo, pero los reproductores IPTV y el navegador no. «⋮» junto a la tele → «Pantalla y suspensión» → pon 2–4 horas."
+"Es el temporizador de pantalla: tras unos minutos sin el mando la pantalla se apaga y, si no hay salvapantallas, la tele se apaga. Las apps de vídeo suelen evitarlo, pero los reproductores IPTV y el navegador no. «⋮» junto a la tele → «Pantalla y suspensión» → pon 2–4 horas.",
+"Listo: {0} está en la tele en «Download» → «TVCleanzer».",
+"Abierto en la tele.",
+"La tele no tiene ninguna app que abra este archivo sola. Ábrelo desde la app que necesites: está en «Download» → «TVCleanzer».",
+"Enviar un archivo a la tele",
+"Una lista IPTV (.m3u), una película, música, fotos, un documento, sin USB. El archivo queda en la tele en «Download» → «TVCleanzer». La lista se añade luego en la app IPTV: «Añadir lista» → «Archivo».",
+"Elegir archivo",
+"Poco espacio en la tele: se necesitan {0} MB, libres {1} MB."
 ]

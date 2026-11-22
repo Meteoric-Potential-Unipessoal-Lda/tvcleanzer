@@ -856,5 +856,12 @@
 "Nessun salvaschermo: con questo timer il TV si spegne.",
 "«Mai»: lo schermo non si spegne anche se il TV resta acceso.",
 "Il TV si spegne da solo o si oscura durante un film",
-"È il timer dello schermo: dopo alcuni minuti senza telecomando lo schermo si spegne e, senza salvaschermo, il TV si spegne. Le app video di solito lo impediscono, i lettori IPTV e il browser no. «⋮» accanto al TV → «Schermo e sospensione» → imposta 2–4 ore."
+"È il timer dello schermo: dopo alcuni minuti senza telecomando lo schermo si spegne e, senza salvaschermo, il TV si spegne. Le app video di solito lo impediscono, i lettori IPTV e il browser no. «⋮» accanto al TV → «Schermo e sospensione» → imposta 2–4 ore.",
+"Fatto: {0} è sul TV in «Download» → «TVCleanzer».",
+"Aperto sul TV.",
+"Sul TV non c’è un’app che apra da sola questo file. Aprilo dall’app che ti serve: è in «Download» → «TVCleanzer».",
+"Invia un file al TV",
+"Una playlist IPTV (.m3u), un film, musica, foto, un documento — senza chiavetta. Il file arriva sul TV in «Download» → «TVCleanzer». Poi aggiungi la playlist nell’app IPTV: «Aggiungi playlist» → «File».",
+"Scegli file",
+"Poco spazio sul TV: servono {0} MB, liberi {1} MB."
 ]

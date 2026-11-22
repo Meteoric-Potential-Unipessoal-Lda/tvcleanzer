@@ -856,5 +856,12 @@
 "Sem proteção de ecrã — com este temporizador a TV desliga-se.",
 "«Nunca»: o ecrã não se apaga mesmo que a TV fique ligada.",
 "A TV desliga-se sozinha ou apaga-se durante um filme",
-"É o temporizador do ecrã: após alguns minutos sem o comando o ecrã apaga-se e, sem proteção de ecrã, a TV desliga-se. As apps de vídeo costumam evitá-lo, mas os leitores IPTV e o browser não. «⋮» junto à TV → «Ecrã e suspensão» → escolha 2–4 horas."
+"É o temporizador do ecrã: após alguns minutos sem o comando o ecrã apaga-se e, sem proteção de ecrã, a TV desliga-se. As apps de vídeo costumam evitá-lo, mas os leitores IPTV e o browser não. «⋮» junto à TV → «Ecrã e suspensão» → escolha 2–4 horas.",
+"Feito: {0} está na TV em «Download» → «TVCleanzer».",
+"Aberto na TV.",
+"A TV não tem nenhuma app que abra este ficheiro sozinha. Abra-o a partir da app de que precisa: está em «Download» → «TVCleanzer».",
+"Enviar um ficheiro para a TV",
+"Uma lista IPTV (.m3u), um filme, música, fotos, um documento — sem pen. O ficheiro fica na TV em «Download» → «TVCleanzer». Depois adicione a lista na app de IPTV: «Adicionar lista» → «Ficheiro».",
+"Escolher ficheiro",
+"Pouco espaço na TV: são precisos {0} MB, livres {1} MB."
 ]

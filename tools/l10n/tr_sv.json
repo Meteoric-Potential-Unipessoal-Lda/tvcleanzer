@@ -856,5 +856,12 @@
 "Ingen skärmsläckare — efter den här tiden stängs tv:n av.",
 "«Aldrig»: skärmen släcks inte även om tv:n lämnas på.",
 "Tv:n stänger av sig själv eller slocknar mitt i en film",
-"Det är skärmtimern: efter några minuter utan fjärrkontroll släcks skärmen, och utan skärmsläckare stängs tv:n av. Videoappar brukar förhindra det, men IPTV-spelare och webbläsaren gör det inte. «⋮» bredvid tv:n → «Skärm och viloläge» → välj 2–4 timmar."
+"Det är skärmtimern: efter några minuter utan fjärrkontroll släcks skärmen, och utan skärmsläckare stängs tv:n av. Videoappar brukar förhindra det, men IPTV-spelare och webbläsaren gör det inte. «⋮» bredvid tv:n → «Skärm och viloläge» → välj 2–4 timmar.",
+"Klart: {0} finns på tv:n i «Download» → «TVCleanzer».",
+"Öppnad på tv:n.",
+"Tv:n har ingen app som själv öppnar den här filen. Öppna den från appen du behöver: filen finns i «Download» → «TVCleanzer».",
+"Skicka en fil till tv:n",
+"En IPTV-spellista (.m3u), film, musik, foton, ett dokument — utan USB-minne. Filen hamnar på tv:n i «Download» → «TVCleanzer». Lägg sedan till spellistan i IPTV-appen: «Lägg till spellista» → «Fil».",
+"Välj fil",
+"För lite plats på tv:n: {0} MB behövs, {1} MB ledigt."
 ]

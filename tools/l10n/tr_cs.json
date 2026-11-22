@@ -856,5 +856,12 @@
 "Spořič není — po tomto čase se televizor vypne.",
 "«Nikdy»: obrazovka nezhasne, ani když televizor zůstane zapnutý.",
 "Televizor se sám vypíná nebo zhasíná během filmu",
-"Je to časovač obrazovky: po několika minutách bez ovladače obrazovka zhasne, a bez spořiče se televizor vypne. Video aplikace tomu obvykle brání, IPTV přehrávače a prohlížeč ne. «⋮» u televizoru → «Obrazovka a spánek» → nastavte 2–4 hodiny."
+"Je to časovač obrazovky: po několika minutách bez ovladače obrazovka zhasne, a bez spořiče se televizor vypne. Video aplikace tomu obvykle brání, IPTV přehrávače a prohlížeč ne. «⋮» u televizoru → «Obrazovka a spánek» → nastavte 2–4 hodiny.",
+"Hotovo: {0} je v televizoru ve «Download» → «TVCleanzer».",
+"Otevřeno v televizoru.",
+"Televizor nemá aplikaci, která tento soubor sama otevře. Otevřete ho z potřebné aplikace: soubor je ve «Download» → «TVCleanzer».",
+"Poslat soubor do televizoru",
+"Playlist IPTV (.m3u), film, hudba, fotky, dokument — bez flash disku. Soubor se objeví v televizoru ve «Download» → «TVCleanzer». Playlist pak přidejte v aplikaci IPTV: «Přidat playlist» → «Soubor».",
+"Vybrat soubor",
+"V televizoru je málo místa: potřeba {0} MB, volno {1} MB."
 ]

@@ -856,5 +856,12 @@
 "Ekran saqlovchi yo‘q — shu taymer bo‘yicha televizor o‘chadi.",
 "«Hech qachon»: televizorni o‘chirish esdan chiqsa ham ekran o‘chmaydi.",
 "Televizor o‘zi o‘chib qoladi yoki film paytida qorayadi",
-"Bu ekran taymeri: pultsiz bir necha daqiqadan keyin ekran o‘chadi, ekran saqlovchi bo‘lmasa — televizor o‘chadi. Video ilovalar odatda bunga yo‘l qo‘ymaydi, IPTV pleyerlar va brauzer esa qo‘yadi. Televizor yonidagi «⋮» → «Ekran va uyqu» → 2–4 soat qo‘ying."
+"Bu ekran taymeri: pultsiz bir necha daqiqadan keyin ekran o‘chadi, ekran saqlovchi bo‘lmasa — televizor o‘chadi. Video ilovalar odatda bunga yo‘l qo‘ymaydi, IPTV pleyerlar va brauzer esa qo‘yadi. Televizor yonidagi «⋮» → «Ekran va uyqu» → 2–4 soat qo‘ying.",
+"Tayyor: {0} televizorda «Download» → «TVCleanzer» ichida.",
+"Televizorda ochildi.",
+"Televizorda bu faylni o‘zi ochadigan ilova yo‘q. Uni kerakli ilovadan oching: fayl «Download» → «TVCleanzer» ichida.",
+"Televizorga fayl yuborish",
+"IPTV pleylist (.m3u), film, musiqa, foto, hujjat — fleshkasiz. Fayl televizorda «Download» → «TVCleanzer» ichiga tushadi. Pleylistni keyin IPTV ilovasida qo‘shing: «Pleylist qo‘shish» → «Fayl».",
+"Faylni tanlash",
+"Televizorda joy kam: {0} MB kerak, {1} MB bo‘sh."
 ]
