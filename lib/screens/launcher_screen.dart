@@ -130,7 +130,15 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             onStep: (s) { if (mounted) setState(() => _step = s); },
           );
       _installed = true;
-      _version = AdbPackageManager.bundledLauncherVersion;
+      // what the TV really has now, not what we hoped: «Обновить» said done and the TV kept
+      // the old launcher (owners: no Витрина, no round icons after the update)
+      final api = ref.read(adbServiceProvider);
+      _version = await api.launcherVersion(tv).catchError((_) => AdbPackageManager.bundledLauncherVersion);
+      if ((_version ?? 0) < AdbPackageManager.bundledLauncherVersion) {
+        final msg = 'TV keeps v$_version, bundled v${AdbPackageManager.bundledLauncherVersion}';
+        AppLog.error('launcher install', msg);
+        _installError = tr('Установка не удалась: {0}', ['0.$_version → 0.${AdbPackageManager.bundledLauncherVersion}']);
+      }
       _showBind(bind);
     } on AdbException catch (e) {
       AppLog.error('launcher install', e);
@@ -518,8 +526,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     final tv = ref.watch(currentTvProvider);
     final busy = _step != null;
     final installed = _installed == true;
+    final v = _version ?? 0;
     final (chipText, chipColor) = installed
-        ? (tr('установлен'), AppColors.ok)
+        ? ('${tr('установлен')}${v > 0 ? ' · 0.$v' : ''}', _outdated ? AppColors.warn : AppColors.ok)
         : (tr('не установлен'), AppColors.fgMid);
     return _card(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
