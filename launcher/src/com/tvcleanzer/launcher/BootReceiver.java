@@ -23,6 +23,7 @@ public class BootReceiver extends BroadcastReceiver {
         final Context app = c.getApplicationContext();
         HomeKeyService.log("boot: service " + (HomeKeyService.running != null ? "running" : "not running")
                 + ", listed " + listed(app) + ", wanted " + new Prefs(app).serviceWanted() + ", can write " + canWrite(app));
+        KeeperJob.schedule(app);
         final PendingResult r = goAsync();
         // Android binds accessibility services around this moment: give it a few seconds
         new Thread(() -> {

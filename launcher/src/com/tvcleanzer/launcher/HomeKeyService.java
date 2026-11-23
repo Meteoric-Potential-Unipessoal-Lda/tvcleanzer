@@ -149,6 +149,7 @@ public class HomeKeyService extends AccessibilityService {
         running = this;
         log("connected, " + SystemClock.elapsedRealtime() / 1000 + " s after boot");
         new Prefs(this).setServiceWanted(true);
+        KeeperJob.schedule(this);
         updateKeyFilter();
         updateNight();
         refreshStockHomes();

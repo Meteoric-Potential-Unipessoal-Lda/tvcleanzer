@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 70;
+  static const bundledLauncherVersion = 71;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -2014,6 +2014,13 @@ class AdbPackageManager {
           .contains('tvcleanzer');
       final up = double.tryParse((await adb.shell('cat /proc/uptime')).trim().split(' ').first)?.round() ?? 0;
       final grant = (await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -c "WRITE_SECURE_SETTINGS: granted=true"')).trim();
+      // accessibility as a whole off, or the firmware force-stopping our app at boot (then no
+      // broadcast and no job reaches it)
+      final accOn = (await adb.shell('settings get secure accessibility_enabled')).trim();
+      final stopped = RegExp(r'stopped=(\w+)')
+              .firstMatch(await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -m1 "stopped="'))
+              ?.group(1) ??
+          '?';
       final out = await adb.shell('logcat -d -s TVCleanzerHome:I 2>/dev/null | grep -v "^-" | tail -12');
       final lines = out
           .split('\n')
@@ -2027,7 +2034,8 @@ class AdbPackageManager {
             return '$t $m';
           })
           .toList();
-      return '--- launcher $v ---\nservice: on $acc, running $bound, boot ${up ~/ 60} min ago, keeper ${grant == '0' ? 'no' : 'yes'}\n'
+      return '--- launcher $v ---\nservice: on $acc, running $bound, boot ${up ~/ 60} min ago, keeper ${grant == '0' ? 'no' : 'yes'}, '
+          'accessibility $accOn, stopped $stopped\n'
           '${lines.join('\n')}\n';
     } catch (_) {
       return '';

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="70"
-    android:versionName="0.70">
+    android:versionCode="71"
+    android:versionName="0.71">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -205,6 +205,12 @@
             android:exported="true"
             android:readPermission="android.permission.DUMP"
             android:writePermission="android.permission.DUMP" />
+
+        <!-- 0.71: every 15 min, kept over reboots, the Home-key service is put back if needed -->
+        <service
+            android:name=".KeeperJob"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
             android:name=".BootReceiver"
