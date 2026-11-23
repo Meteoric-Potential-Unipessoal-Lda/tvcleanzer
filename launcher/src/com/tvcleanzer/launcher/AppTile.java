@@ -46,7 +46,7 @@ final class AppTile extends LinearLayout {
         this.app = app;
         this.labelsAlways = labelsAlways;
         this.anim = anim;
-        if (ringColor == 0) focusScale += 0.06f; // no frame (0.89): a bigger lift shows the focus
+        if (ringColor == 0) focusScale = Math.max(focusScale, 1.15f); // no frame: a 15 % lift shows the focus (0.90)
         // soft: half the lift, a bit slower; off: no movement at all (weak TVs)
         this.focusScale = anim == Prefs.ANIM_OFF ? 1f
                 : anim == Prefs.ANIM_SOFT ? 1f + (focusScale - 1f) * 0.5f : focusScale;

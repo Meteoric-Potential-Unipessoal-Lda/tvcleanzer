@@ -1304,7 +1304,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                         row.setPadding(0, Ui.dp(this, 6), 0, Ui.dp(this, 2));
                         grid.addView(row);
                     }
-                    AppTile t = tile(favorites.get(i), fw, fh, skin, labelsAlways, fc >= 6 ? 12 : 13, 1.1f, anim, ringColor);
+                    AppTile t = tile(favorites.get(i), fw, fh, skin, labelsAlways, fc >= 6 ? 12 : 13, roundFav ? 1.15f : 1.1f, anim, ringColor);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     if (i % fc > 0) lp.leftMargin = gap;
@@ -1326,7 +1326,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             LinearLayout row = row();
             final int fs = roundFav ? Math.round(favH * 1.2f) : 0;
             for (int i = 0; i < favorites.size(); i++) {
-                AppTile t = roundFav ? tile(favorites.get(i), fs, fs, skin, labelsAlways, 14, 1.1f, anim, ringColor)
+                AppTile t = roundFav ? tile(favorites.get(i), fs, fs, skin, labelsAlways, 14, 1.15f, anim, ringColor)
                         : tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1375,7 +1375,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 }
                 AppTile t = roundRest
                         ? tile(rest.get(i), rs, rs, skin, kids || labelsAlways,
-                                kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), 1.1f, anim, ringColor)
+                                kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), 1.15f, anim, ringColor)
                         : tile(rest.get(i), tileW, tileH, skin, kids || labelsAlways,
                                 kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), kids ? 1.08f : 1.12f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
