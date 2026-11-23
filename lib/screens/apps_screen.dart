@@ -66,13 +66,14 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
   Future<void> _pickAndInstall() async {
     final tv = ref.read(currentTvProvider);
     if (tv == null) return;
-    PlatformFile? f;
+    PlatformFile? picked;
     try {
-      f = await FilePicker.pickFile(type: FileType.any);
+      picked = await FilePicker.pickFile(type: FileType.any);
     } catch (e) {
       AppLog.error('pick apk', e);
     }
-    if (f == null) return;
+    if (picked == null) return;
+    final f = picked;
     // Read here, not in the picker: a big .xapk (Play Market, Kinopoisk: 100+ MB) copied
     // through the Java side crashed the app.
     Uint8List? data;
