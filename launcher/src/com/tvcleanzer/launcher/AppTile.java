@@ -131,21 +131,7 @@ final class AppTile extends LinearLayout {
         } else {
             glow = null;
         }
-        int dotSpace = 0;
-        if (ringColor == 0) {
-            int ds = Ui.dp(c, 7), dg = Ui.dp(c, 7);
-            dot = new android.view.View(c);
-            GradientDrawable dd = new GradientDrawable();
-            dd.setShape(GradientDrawable.OVAL);
-            dd.setColor(0xF2FFFFFF);
-            dot.setBackground(dd);
-            dot.setAlpha(0f);
-            FrameLayout.LayoutParams dlp = new FrameLayout.LayoutParams(ds, ds,
-                    Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
-            dlp.bottomMargin = -(ds + dg);
-            holder.addView(dot, dlp);
-            dotSpace = ds + dg + Math.round(h * (this.focusScale - 1f) / 2f);
-        }
+        int dotSpace = 0; // 0.97: no dot under «Без рамки» any more (the owner: «убираем точку»)
         ringView = new android.view.View(c);
         ringView.setBackground(ring);
         ringView.setOutlineProvider(null); // no shadow of its own
@@ -243,6 +229,16 @@ final class AppTile extends LinearLayout {
     }
 
     /** No name under the card at all (0.83 «Названия приложений: Скрыто»): the row gets lower. */
+    /** Room under the card inside this tile: its name (shown or waiting for the focus), or the
+     *  zoom room when the names are off. */
+    int roomBelow() {
+        if (noLabel || label.getVisibility() == GONE) return getPaddingBottom();
+        LayoutParams lp = (LayoutParams) label.getLayoutParams();
+        label.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        return lp.topMargin + label.getMeasuredHeight();
+    }
+
     void hideLabel() {
         noLabel = true;
         label.setVisibility(GONE);

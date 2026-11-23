@@ -1356,8 +1356,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
             int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
             if (prefs.ringGlow()) zoomPad += Math.round(favH * 0.3f); // «Свечение»: the halo stays whole
-            // «Без рамки»: room below for the dot under the selected app (0.95, it was cut off here)
-            hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad + (ringColor == 0 ? Ui.dp(this, 16) : 0));
+            hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
             LinearLayout row = row();
             final int fs = roundFav ? Math.round(favH * 1.2f) : 0;
             for (int i = 0; i < favorites.size(); i++) {
@@ -1370,6 +1369,14 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 tiles.add(t);
             }
             hs.addView(row);
+            // as much glass above the cards as below them (0.97, an owner's photo): the name under a
+            // card (shown or waiting for the focus) counts as part of the room below
+            if (!tiles.isEmpty()) {
+                AppTile t0 = tiles.get(tiles.size() - 1);
+                int bottom = Ui.dp(this, 14) + zoomPad;
+                int top = Math.max(Ui.dp(this, 10) + zoomPad, bottom + t0.roomBelow() - t0.getPaddingTop());
+                hs.setPadding(inset, top, inset, bottom);
+            }
             shelf.addView(hs);
             page.addView(shelf, shp);
             }
