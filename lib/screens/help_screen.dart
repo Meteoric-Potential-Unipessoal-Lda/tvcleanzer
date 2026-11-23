@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
 import '../services/package_db.dart';
 import '../services/support.dart';
@@ -191,7 +192,15 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
             title: Text(tr('Сообщить о проблеме')),
             subtitle: Text(tr('Скопирует модель ТВ и журнал ошибок')),
             onTap: () async {
-              final text = AppLog.report(tv: ref.read(currentTvProvider));
+              final tv = ref.read(currentTvProvider);
+              var text = AppLog.report(tv: tv);
+              if (tv != null) {
+                // what the launcher's Home-key service did last (why Home or an input ended where it did)
+                text += await ref
+                    .read(adbServiceProvider)
+                    .launcherServiceLog(tv)
+                    .timeout(const Duration(seconds: 8), onTimeout: () => '');
+              }
               await Clipboard.setData(ClipboardData(text: text));
               if (ctx.mounted) Navigator.pop(ctx);
               if (context.mounted) {

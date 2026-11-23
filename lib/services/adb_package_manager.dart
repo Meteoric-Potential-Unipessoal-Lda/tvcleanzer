@@ -1994,6 +1994,37 @@ class AdbPackageManager {
   }
 
   /// versionCode of the launcher on the TV, 0 if it is not installed.
+  /// For «Сообщить о проблеме»: the launcher version and what its Home-key service did last
+  /// (launcher 0.65+ logs it as TVCleanzerHome). Empty when the TV does not answer.
+  Future<String> launcherServiceLog(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect().timeout(const Duration(seconds: 4));
+      final v = RegExp(r'versionName=(\S+)')
+          .firstMatch(await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -m1 versionName'))
+          ?.group(1);
+      if (v == null) return '';
+      final out = await adb.shell('logcat -d -s TVCleanzerHome:I 2>/dev/null | grep -v "^-" | tail -12');
+      final lines = out
+          .split('\n')
+          .map((l) => l.trim())
+          .where((l) => l.isNotEmpty)
+          .map((l) {
+            final i = l.indexOf(RegExp(r' [IWE] '));
+            final t = l.length > 18 ? l.substring(6, 14) : '';
+            var m = i < 0 ? l : l.substring(i + 3).replaceFirst('TVCleanzerHome: ', '');
+            if (m.length > 160) m = '${m.substring(0, 160)}…';
+            return '$t $m';
+          })
+          .toList();
+      return '--- launcher $v ---\n${lines.join('\n')}\n';
+    } catch (_) {
+      return '';
+    } finally {
+      adb.close();
+    }
+  }
+
   Future<int> launcherVersion(TvDevice device) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
