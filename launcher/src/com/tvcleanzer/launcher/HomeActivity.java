@@ -1388,6 +1388,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         netIcon = null;
         netMini = null;
         vpnMini = null;
+        memIcon = null;
         if (prefs.barStyle() == Prefs.BAR_MINI) {
             corner(skin, true);
             return bar;
@@ -1481,9 +1482,20 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final boolean clean = prefs.cleanBar();
         List<View> items = new ArrayList<>();
         if (prefs.memPill() && !clean) {
-            TextView mem = miniText(Memory.label(this), h);
-            memPill = mem;
+            // memory as an icon like the others (0.74: the words «ОЗУ 1,1 / 1,7 ГБ» stood out in
+            // the panel); its numbers show beside it while it is selected; OK frees memory
+            final TextView label = Ui.text(this, 14, 0xF2FFFFFF, "sans-serif-medium");
+            label.setText(Memory.label(this));
+            label.setSingleLine(true);
+            label.setGravity(Gravity.CENTER_VERTICAL);
+            label.setPadding(Ui.dp(this, 6), 0, Ui.dp(this, 2), 0);
+            label.setVisibility(View.GONE);
+            memPill = label;
+            TopIcon mem = new TopIcon(this, TopIcon.MEM, memStatus(), true);
+            memIcon = mem;
+            mem.hook = has -> label.setVisibility(has || freeing ? View.VISIBLE : View.GONE);
             mem.setOnClickListener(v -> freeMemory());
+            items.add(label);
             items.add(mem);
         }
         if (!clean) {
@@ -1653,7 +1665,17 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private Pill netPill;
     private TopIcon netIcon;
     private TextView memPill;
-    private TopIcon netMini, vpnMini;
+    private TopIcon netMini, vpnMini, memIcon;
+
+    /** Orange when the TV is nearly out of memory. */
+    private int memStatus() {
+        try {
+            long[] m = Memory.read(this);
+            return m[1] > 0 && (m[1] - m[0]) * 100 / m[1] >= 85 ? TopIcon.BAD : 0;
+        } catch (Throwable t) {
+            return 0;
+        }
+    }
     private TextView greetView;
 
     /** Every pill of the top bar: one height (the gear's), centred on one line. */
@@ -1683,6 +1705,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
         if (netMini != null) miniNet(netMini);
         if (memPill != null && !freeing) memPill.setText(Memory.label(this));
+        if (memIcon != null) memIcon.set(TopIcon.MEM, memStatus());
         if (btPill != null || btIcon != null) {
             int st = Bt.state(this);
             if (btPill != null) {

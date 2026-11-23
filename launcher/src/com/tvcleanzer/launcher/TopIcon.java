@@ -16,7 +16,12 @@ import android.view.View;
  */
 final class TopIcon extends View {
     static final int WIFI = Glyphs.WIFI, ETHERNET = Glyphs.ETHERNET, VPN = Glyphs.VPN, OFFLINE = Glyphs.OFFLINE,
-            TV = Glyphs.TV, BT = Glyphs.BT, BT_OFF = Glyphs.BT_OFF, GEAR = Glyphs.GEAR, VPN_PLATE = Glyphs.VPN_PLATE;
+            TV = Glyphs.TV, BT = Glyphs.BT, BT_OFF = Glyphs.BT_OFF, GEAR = Glyphs.GEAR, VPN_PLATE = Glyphs.VPN_PLATE,
+            MEM = Glyphs.MEM;
+
+    /** Told when the icon gets or loses the focus (the memory icon shows its numbers then). */
+    interface FocusHook { void focused(boolean has); }
+    FocusHook hook;
     /** Bluetooth on with nothing connected: a quiet grey. */
     static final int IDLE = 0xFF9CA3AF;
     /** Green: online; orange: no network or no internet; blue: through a VPN. */
@@ -43,6 +48,7 @@ final class TopIcon extends View {
             float s = has ? (mini ? 1.06f : 1.15f) : 1f;
             animate().scaleX(s).scaleY(s).setDuration(160).start();
             invalidate();
+            if (hook != null) hook.focused(has);
         });
     }
 

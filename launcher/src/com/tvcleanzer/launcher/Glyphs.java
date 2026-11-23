@@ -18,9 +18,9 @@ final class Glyphs {
     private Glyphs() {}
 
     static final int WIFI = 0, ETHERNET = 1, VPN = 2, OFFLINE = 3, TV = 4, BT = 5, BT_OFF = 6,
-            GEAR = 7, MORE = 8, INPUT = 9, VPN_PLATE = 10;
+            GEAR = 7, MORE = 8, INPUT = 9, VPN_PLATE = 10, MEM = 11;
 
-    private static final android.graphics.Bitmap[] PACK = new android.graphics.Bitmap[11];
+    private static final android.graphics.Bitmap[] PACK = new android.graphics.Bitmap[12];
     private static boolean loaded;
     private static final Paint BMP = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
@@ -31,7 +31,9 @@ final class Glyphs {
         try {
             android.content.res.Resources r = c.getResources();
             String[][] names = {{"" + WIFI, "tvc_wifi"}, {"" + BT, "tvc_bluetooth"}, {"" + GEAR, "tvc_settings"},
-                    {"" + VPN, "tvc_vpn_shield"}, {"" + VPN_PLATE, "tvc_vpn"}};
+                    {"" + VPN, "tvc_vpn_shield"}, {"" + VPN_PLATE, "tvc_vpn"},
+                    // drawn for the project in the pack's grid and weight (0.74): the pack has none
+                    {"" + ETHERNET, "tvc_ethernet"}, {"" + TV, "tvc_tv"}, {"" + MEM, "tvc_memory"}};
             for (String[] n : names) {
                 int id = r.getIdentifier(n[1], "drawable", c.getPackageName());
                 if (id != 0) PACK[Integer.parseInt(n[0])] = android.graphics.BitmapFactory.decodeResource(r, id);
