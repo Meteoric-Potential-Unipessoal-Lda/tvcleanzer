@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
@@ -36,7 +37,11 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   final _text = TextEditingController();
   final _focus = FocusNode();
   bool _sending = false;
-  bool _pad = false; // touchpad instead of the arrows
+  int _mode = 0; // 0 buttons, 1 touchpad (arrows), 2 virtual mouse
+  _MouseLink? _mouse;
+  String? _mouseErr;
+  bool _mouseOpening = false;
+  String? _mouseTv;
   String? _favsFor;
   double? _bright; // 1–255, null until the TV says it has a brightness setting
   List<LauncherApp> _favs = const [];
@@ -65,8 +70,39 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     });
   }
 
+  /// The mouse needs its own connection to the TV; opened when the mode is chosen.
+  Future<void> _openMouse(TvDevice tv) async {
+    _closeMouse();
+    setState(() {
+      _mouseOpening = true;
+      _mouseErr = null;
+    });
+    final link = _MouseLink();
+    final err = await link.open(tv);
+    if (!mounted || _mode != 2) {
+      link.close();
+      return;
+    }
+    setState(() {
+      _mouseOpening = false;
+      if (err == null) {
+        _mouse = link;
+        _mouseTv = tv.id;
+      } else {
+        _mouseErr = err;
+      }
+    });
+  }
+
+  void _closeMouse() {
+    _mouse?.close();
+    _mouse = null;
+    _mouseTv = null;
+  }
+
   @override
   void dispose() {
+    _closeMouse();
     _mirrorEnded?.cancel();
     _speech.cancel();
     _text.dispose();
@@ -515,17 +551,42 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                 ]),
               ],
               const Gap(16),
-              SegmentedButton<bool>(
+              SegmentedButton<int>(
                 showSelectedIcon: false,
                 segments: [
-                  ButtonSegment(value: false, icon: const Icon(Icons.gamepad_rounded), label: Text(tr('Кнопки'))),
-                  ButtonSegment(value: true, icon: const Icon(Icons.touch_app_rounded), label: Text(tr('Сенсорная панель'))),
+                  ButtonSegment(value: 0, icon: const Icon(Icons.gamepad_rounded), label: Text(tr('Кнопки'))),
+                  ButtonSegment(value: 1, icon: const Icon(Icons.touch_app_rounded), label: Text(tr('Панель'))),
+                  ButtonSegment(value: 2, icon: const Icon(Icons.mouse_rounded), label: Text(tr('Мышь'))),
                 ],
-                selected: {_pad},
-                onSelectionChanged: (v) => setState(() => _pad = v.first),
+                selected: {_mode},
+                onSelectionChanged: (v) {
+                  setState(() => _mode = v.first);
+                  if (_mode == 2) {
+                    _openMouse(tv);
+                  } else {
+                    _closeMouse();
+                  }
+                },
               ),
               const Gap(18),
-              _pad ? _TouchPad(onKey: (c) => _key(tv, c), onLongOk: () => ref.read(remoteProvider.notifier).longKey(tv.id, Keys.ok)) : _DPad(onKey: (c) => _key(tv, c)),
+              if (_mode == 2 && _mouseTv != null && _mouseTv != tv.id) ...[
+                // another TV was picked: the mouse follows it
+                Builder(builder: (_) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) => _openMouse(tv));
+                  return const SizedBox.shrink();
+                }),
+              ],
+              switch (_mode) {
+                1 => _TouchPad(onKey: (c) => _key(tv, c), onLongOk: () => ref.read(remoteProvider.notifier).longKey(tv.id, Keys.ok)),
+                2 => _mouse != null
+                    ? _MousePad(link: _mouse!)
+                    : _MouseState(
+                        busy: _mouseOpening,
+                        error: _mouseErr,
+                        onRetry: () => _openMouse(tv),
+                      ),
+                _ => _DPad(onKey: (c) => _key(tv, c)),
+              },
               const Gap(24),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                 _RoundButton(icon: Icons.arrow_back_rounded, label: tr('Назад'), onTap: () => _key(tv, Keys.back)),
@@ -535,11 +596,24 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                     onTap: () => _power(tv), color: AppColors.danger),
               ]),
               const Gap(18),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                _RoundButton(icon: Icons.volume_down_rounded, label: tr('Тише'), onTap: () => _key(tv, Keys.volDown)),
-                _RoundButton(icon: Icons.volume_off_rounded, label: tr('Без звука'), onTap: () => _key(tv, Keys.mute)),
-                _RoundButton(icon: Icons.volume_up_rounded, label: tr('Громче'), onTap: () => _key(tv, Keys.volUp)),
-                _RoundButton(icon: Icons.input_rounded, label: tr('Источник'), onTap: () => _key(tv, Keys.input)),
+              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                _Rocker(label: 'VOL', up: Icons.add_rounded, down: Icons.remove_rounded,
+                    onUp: () => _key(tv, Keys.volUp), onDown: () => _key(tv, Keys.volDown)),
+                Expanded(
+                  child: Column(children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                      _RoundButton(icon: Icons.volume_off_rounded, label: tr('Без звука'), onTap: () => _key(tv, Keys.mute)),
+                      _RoundButton(icon: Icons.input_rounded, label: tr('Источник'), onTap: () => _key(tv, Keys.input)),
+                    ]),
+                    const Gap(14),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                      _RoundButton(icon: Icons.view_carousel_rounded, label: tr('Запущенные'), onTap: () => ref.read(remoteProvider.notifier).recents(tv.id).catchError((_) {})),
+                      _RoundButton(icon: Icons.settings_rounded, label: tr('Настройки'), onTap: () => _key(tv, Keys.settings)),
+                    ]),
+                  ]),
+                ),
+                _Rocker(label: 'CH', up: Icons.keyboard_arrow_up_rounded, down: Icons.keyboard_arrow_down_rounded,
+                    onUp: () => _key(tv, Keys.chUp), onDown: () => _key(tv, Keys.chDown)),
               ]),
               const Gap(18),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
@@ -551,8 +625,6 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
               ]),
               const Gap(18),
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                _RoundButton(icon: Icons.view_carousel_rounded, label: tr('Запущенные'), onTap: () => ref.read(remoteProvider.notifier).recents(tv.id).catchError((_) {})),
-                _RoundButton(icon: Icons.settings_rounded, label: tr('Настройки'), onTap: () => _key(tv, Keys.settings)),
                 _RoundButton(icon: Icons.bedtime_rounded,
                     label: _sleepAt == null ? tr('Таймер сна') : tr('{0} мин', ['$_sleepMin']),
                     onTap: () => _sleep(tv)),
@@ -1018,6 +1090,284 @@ class _TouchPadState extends State<_TouchPad> {
               ),
           ]),
         ),
+        ),
+      );
+}
+
+/// Volume / channels: a tall pill with + and − (or ▲ ▼); holding repeats, like a real remote.
+class _Rocker extends StatefulWidget {
+  final String label;
+  final IconData up, down;
+  final VoidCallback onUp, onDown;
+  const _Rocker({required this.label, required this.up, required this.down, required this.onUp, required this.onDown});
+
+  @override
+  State<_Rocker> createState() => _RockerState();
+}
+
+class _RockerState extends State<_Rocker> {
+  Timer? _hold;
+
+  @override
+  void dispose() {
+    _hold?.cancel();
+    super.dispose();
+  }
+
+  void _press(VoidCallback f) {
+    HapticFeedback.selectionClick();
+    f();
+    _hold?.cancel();
+    _hold = Timer(const Duration(milliseconds: 450), () {
+      _hold = Timer.periodic(const Duration(milliseconds: 140), (_) => f());
+    });
+  }
+
+  void _release() {
+    _hold?.cancel();
+    _hold = null;
+  }
+
+  Widget _half(IconData icon, VoidCallback f) => Listener(
+        onPointerDown: (_) => _press(f),
+        onPointerUp: (_) => _release(),
+        onPointerCancel: (_) => _release(),
+        child: SizedBox(width: 64, height: 58, child: Icon(icon, color: AppColors.fg, size: 26)),
+      );
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: 64,
+        decoration: BoxDecoration(
+          color: AppColors.bgCard,
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: AppColors.cardBd),
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          _half(widget.up, widget.onUp),
+          Text(widget.label,
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1, color: AppColors.fgMid)),
+          _half(widget.down, widget.onDown),
+        ]),
+      );
+}
+
+/// The virtual mouse's own connection to the TV (launcher 0.77+, Android 7+): the launcher
+/// listens on the TV's loopback, an ADB «tcp:» stream reaches it. Moves are gathered and sent
+/// every frame, in units of a 1920-wide screen.
+class _MouseLink {
+  AdbClient? _c;
+  AdbStream? _s;
+  double _dx = 0, _dy = 0;
+  Timer? _flush;
+
+  /// Null when ready, else what to tell the owner.
+  Future<String?> open(TvDevice tv) async {
+    try {
+      final c = AdbClient.open(host: tv.ipAddress, port: tv.port);
+      _c = c;
+      await c.connect();
+      final out = await c.shell('am broadcast -n com.tvcleanzer.launcher/.ConfigReceiver '
+          '-a com.tvcleanzer.launcher.APPLY --ez mouse true 2>&1');
+      if (!out.contains('result=1')) {
+        close();
+        return out.contains('result=2')
+            ? tr('Мышь работает на Android 7 и новее, когда включена служба «TVCleanzer: кнопка Домой».')
+            : tr('Обновите лаунчер на ТВ: мышь есть в новой версии.');
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+      _s = await c.openStream('tcp:47291');
+      return null;
+    } catch (e) {
+      AppLog.error('mouse', e);
+      close();
+      return tr('Не получилось подключить мышь. Попробуйте ещё раз.');
+    }
+  }
+
+  void move(double dx, double dy) {
+    _dx += dx;
+    _dy += dy;
+    _flush ??= Timer(const Duration(milliseconds: 16), _send);
+  }
+
+  void _send() {
+    _flush = null;
+    if (_dx.abs() < .5 && _dy.abs() < .5) return;
+    final l = 'm ${_dx.toStringAsFixed(1)} ${_dy.toStringAsFixed(1)}';
+    _dx = 0;
+    _dy = 0;
+    send(l);
+  }
+
+  void send(String line) {
+    final s = _s;
+    if (s == null || s.isClosed) return;
+    s.write(utf8.encode('$line\n')).catchError((_) {});
+  }
+
+  void close() {
+    _flush?.cancel();
+    _flush = null;
+    try {
+      send('q');
+    } catch (_) {}
+    _s?.close();
+    _c?.close();
+    _s = null;
+    _c = null;
+  }
+}
+
+/// While the mouse connects, or why it could not.
+class _MouseState extends StatelessWidget {
+  final bool busy;
+  final String? error;
+  final VoidCallback onRetry;
+  const _MouseState({required this.busy, required this.error, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        height: 280,
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: AppColors.bgCard,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(color: AppColors.cardBd),
+        ),
+        child: Center(
+          child: busy || error == null
+              ? Column(mainAxisSize: MainAxisSize.min, children: [
+                  const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2)),
+                  const Gap(12),
+                  Text(tr('Подключаем мышь…'), style: const TextStyle(fontSize: 13, color: AppColors.fgMuted)),
+                ])
+              : Column(mainAxisSize: MainAxisSize.min, children: [
+                  Text(error!, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
+                  const Gap(12),
+                  TextButton(onPressed: onRetry, child: Text(tr('Повторить'))),
+                ]),
+        ),
+      );
+}
+
+/// The mouse pad: one finger moves the pointer (faster swipes go further), a tap clicks, a
+/// long press is a long touch, two fingers scroll the page.
+class _MousePad extends StatefulWidget {
+  final _MouseLink link;
+  const _MousePad({required this.link});
+
+  @override
+  State<_MousePad> createState() => _MousePadState();
+}
+
+class _MousePadState extends State<_MousePad> {
+  final Map<int, Offset> _p = {};
+  Offset _start = Offset.zero;
+  DateTime _downAt = DateTime.now();
+  bool _moved = false, _longDone = false, _two = false;
+  Timer? _long, _scrollTick;
+  Offset _scroll = Offset.zero;
+
+  @override
+  void dispose() {
+    _long?.cancel();
+    _scrollTick?.cancel();
+    super.dispose();
+  }
+
+  void _down(PointerDownEvent e) {
+    _p[e.pointer] = e.localPosition;
+    if (_p.length == 1) {
+      _start = e.localPosition;
+      _downAt = DateTime.now();
+      _moved = false;
+      _longDone = false;
+      _two = false;
+      _long?.cancel();
+      _long = Timer(const Duration(milliseconds: 550), () {
+        if (_moved || _p.length != 1) return;
+        _longDone = true;
+        HapticFeedback.mediumImpact();
+        widget.link.send('l');
+      });
+    } else {
+      _two = true;
+      _long?.cancel();
+    }
+  }
+
+  void _move(PointerMoveEvent e) {
+    if (!_p.containsKey(e.pointer)) return;
+    _p[e.pointer] = e.localPosition;
+    if (!_moved && (e.localPosition - _start).distance > 8) {
+      _moved = true;
+      _long?.cancel();
+    }
+    if (!_moved) return;
+    if (_p.length >= 2) {
+      // two fingers: drag the page; sent in pieces (each one a short drag on the TV)
+      _scroll += e.delta / _p.length.toDouble();
+      _scrollTick ??= Timer(const Duration(milliseconds: 220), () {
+        _scrollTick = null;
+        final d = _scroll * 3.2;
+        _scroll = Offset.zero;
+        if (d.distance > 4) widget.link.send('s ${d.dx.toStringAsFixed(0)} ${d.dy.toStringAsFixed(0)}');
+      });
+      return;
+    }
+    if (_two) return; // the second finger just left: no jump
+    final v = e.delta.distance;
+    final k = (2.0 + v * 0.18).clamp(2.0, 7.0);
+    widget.link.move(e.delta.dx * k, e.delta.dy * k);
+  }
+
+  void _up(PointerEvent e) {
+    if (!_p.containsKey(e.pointer)) return;
+    _p.remove(e.pointer);
+    if (_p.isNotEmpty) return;
+    _long?.cancel();
+    final quick = DateTime.now().difference(_downAt) < const Duration(milliseconds: 350);
+    if (!_moved && !_longDone && !_two && quick) {
+      HapticFeedback.lightImpact();
+      widget.link.send('c');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => RawGestureDetector(
+        gestures: {
+          EagerGestureRecognizer: GestureRecognizerFactoryWithHandlers<EagerGestureRecognizer>(
+            () => EagerGestureRecognizer(),
+            (_) {},
+          ),
+        },
+        child: Listener(
+          onPointerDown: _down,
+          onPointerMove: _move,
+          onPointerUp: _up,
+          onPointerCancel: _up,
+          child: Container(
+            height: 280,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.bgCard,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: AppColors.cardBd),
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.mouse_rounded, color: AppColors.fgMuted),
+                  const Gap(8),
+                  Text(tr('Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка'),
+                      textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: AppColors.fgMuted)),
+                ]),
+              ),
+            ),
+          ),
         ),
       );
 }

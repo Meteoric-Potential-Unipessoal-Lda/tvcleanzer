@@ -32,6 +32,7 @@ class Keys {
   static const power = 26, input = 178, recents = 187, settings = 176;
   static const rewind = 89, forward = 90, prev = 88, next = 87;
   static const paste = 279;
+  static const chUp = 166, chDown = 167;
 }
 
 /// Keeps one ADB connection open to the current TV and sends key presses

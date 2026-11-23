@@ -185,8 +185,17 @@ public class HomeKeyService extends AccessibilityService {
         return super.onUnbind(intent);
     }
 
+    private Mouse mouse;
+
+    /** The virtual mouse (0.77): started by the phone, see Mouse. */
+    Mouse mouse() {
+        if (mouse == null) mouse = new Mouse(this);
+        return mouse;
+    }
+
     @Override
     public void onDestroy() {
+        if (mouse != null) mouse.stop();
         if (running == this) running = null;
         handler.removeCallbacksAndMessages(null);
         removeNight();

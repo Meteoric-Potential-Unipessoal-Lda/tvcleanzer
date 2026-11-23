@@ -26,6 +26,15 @@ public class ConfigReceiver extends BroadcastReceiver {
             return;
         }
         if (!"com.tvcleanzer.launcher.APPLY".equals(intent.getAction())) return;
+        if (intent.hasExtra("mouse")) {
+            // the virtual mouse (0.77): 1 listening, 2 no service running or Android before 7
+            HomeKeyService s = HomeKeyService.running;
+            boolean on = intent.getBooleanExtra("mouse", false);
+            if (s == null) { setResultCode(2); return; }
+            if (on) setResultCode(s.mouse().start() ? 1 : 2);
+            else { s.mouse().stop(); setResultCode(1); }
+            return;
+        }
         if (intent.hasExtra("locale")) {
             // the TV's system language (0.59): the phone granted CHANGE_CONFIGURATION first
             String r = Locales.apply(intent.getStringExtra("locale"));
