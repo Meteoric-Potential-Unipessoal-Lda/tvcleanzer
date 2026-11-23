@@ -16,35 +16,63 @@ import android.view.WindowManager;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
  * Virtual mouse (0.77, asked in the chat for browsers and apps made for phones): a pointer
- * drawn over everything by the Home-key service, moved from the phone's pad; a tap is a touch
- * at the pointer (Android 7+: accessibility gestures). The phone reaches us over its ADB
+ * drawn over everything, moved from the phone's pad. The phone reaches us over its ADB
  * connection («tcp:» stream to the TV's own loopback), one line per command:
  *   m dx dy — move (units of a 1920-wide screen); c — tap; l — long press;
  *   s dx dy — scroll (drag the page by dx, dy); q — done.
+ * Two ways (0.79):
+ *  · through the Home-key service: its own overlay, taps as accessibility gestures (Android 7+);
+ *  · without it — a T95 / be311 box switches every third-party accessibility service off a
+ *    second after it starts: an ordinary overlay window (the phone grants «draw over other
+ *    apps» over ADB), and the touches go back to the phone as lines
+ *      t x y · p x y (long) · w x1 y1 x2 y2 (drag)
+ *    which it runs as `input tap / swipe` over ADB.
  * Nothing listens until the phone asks (ConfigReceiver «mouse»); only the TV itself can connect.
  */
 final class Mouse {
     static final int PORT = 47291;
 
-    private final AccessibilityService svc;
+    /** The one without the service (application context). */
+    private static Mouse plain;
+
+    static Mouse plain(Context c) {
+        if (plain == null) plain = new Mouse(c.getApplicationContext(), null);
+        return plain;
+    }
+
+    /** May this app draw over others (granted over ADB: appops SYSTEM_ALERT_WINDOW)? */
+    static boolean canOverlay(Context c) {
+        if (android.os.Build.VERSION.SDK_INT < 23) return true;
+        try { return android.provider.Settings.canDrawOverlays(c); } catch (Throwable t) { return false; }
+    }
+
+    private final Context ctx;
+    private final AccessibilityService svc; // null: no gestures, touches go back to the phone
     private final Handler main = new Handler(Looper.getMainLooper());
     private volatile ServerSocket server;
+    private volatile OutputStream client;
     private View cursor;
     private WindowManager.LayoutParams lp;
     private float x = -1, y = -1;
     private int sw, sh;
     private final Runnable hide = () -> show(false);
 
-    Mouse(AccessibilityService s) { svc = s; }
+    Mouse(AccessibilityService s) { this(s, s); }
+
+    private Mouse(Context c, AccessibilityService s) {
+        ctx = c;
+        svc = s;
+    }
 
     synchronized boolean start() {
-        if (android.os.Build.VERSION.SDK_INT < 24) return false;
+        if (svc != null && android.os.Build.VERSION.SDK_INT < 24) return false;
         if (server != null) return true;
         try {
             server = new ServerSocket(PORT, 1, InetAddress.getByName("127.0.0.1"));
@@ -55,7 +83,7 @@ final class Mouse {
         Thread th = new Thread(this::serve, "tvc-mouse");
         th.setDaemon(true);
         th.start();
-        HomeKeyService.log("mouse: listening");
+        HomeKeyService.log("mouse: listening (" + (svc != null ? "service" : "overlay") + ")");
         return true;
     }
 
@@ -72,6 +100,7 @@ final class Mouse {
             if (ss == null) return;
             try (Socket s = ss.accept()) {
                 s.setTcpNoDelay(true);
+                client = s.getOutputStream();
                 BufferedReader r = new BufferedReader(new InputStreamReader(s.getInputStream(), "UTF-8"));
                 main.post(() -> show(true));
                 String line;
@@ -82,6 +111,7 @@ final class Mouse {
             } catch (Throwable t) {
                 if (server == null) return;
             }
+            client = null;
             main.post(() -> show(false));
         }
     }
@@ -108,12 +138,21 @@ final class Mouse {
         } catch (Throwable ignored) {}
     }
 
+    private WindowManager wm() { return (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE); }
+
     private void size() {
         Point pt = new Point();
-        ((WindowManager) svc.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRealSize(pt);
+        wm().getDefaultDisplay().getRealSize(pt);
         sw = pt.x;
         sh = pt.y;
         if (x < 0) { x = sw / 2f; y = sh / 2f; }
+    }
+
+    @SuppressWarnings("deprecation")
+    private int overlayType() {
+        if (svc != null) return WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
+        return android.os.Build.VERSION.SDK_INT >= 26 ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                : WindowManager.LayoutParams.TYPE_PHONE;
     }
 
     private void show(boolean on) {
@@ -124,10 +163,9 @@ final class Mouse {
         }
         size();
         if (cursor == null) {
-            cursor = new Pointer(svc);
-            int s = Math.round(svc.getResources().getDisplayMetrics().density * 30);
-            lp = new WindowManager.LayoutParams(s, s,
-                    WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            cursor = new Pointer(ctx);
+            int s = Math.round(ctx.getResources().getDisplayMetrics().density * 30);
+            lp = new WindowManager.LayoutParams(s, s, overlayType(),
                     WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                             | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                     PixelFormat.TRANSLUCENT);
@@ -135,7 +173,7 @@ final class Mouse {
             lp.x = Math.round(x);
             lp.y = Math.round(y);
             try {
-                ((WindowManager) svc.getSystemService(Context.WINDOW_SERVICE)).addView(cursor, lp);
+                wm().addView(cursor, lp);
             } catch (Throwable t) {
                 HomeKeyService.log("mouse: " + t);
                 cursor = null;
@@ -155,24 +193,37 @@ final class Mouse {
         if (cursor != null && lp != null) {
             lp.x = Math.round(x);
             lp.y = Math.round(y);
-            try {
-                ((WindowManager) svc.getSystemService(Context.WINDOW_SERVICE)).updateViewLayout(cursor, lp);
-            } catch (Throwable ignored) {}
+            try { wm().updateViewLayout(cursor, lp); } catch (Throwable ignored) {}
         }
     }
 
     /** A touch at the pointer: a tap, a long press, or a drag by (dx, dy) to scroll. */
     private void touch(float dx, float dy, long ms) {
-        if (android.os.Build.VERSION.SDK_INT < 24) return;
         if (sw == 0) size();
         show(true);
         float k = sw / 1920f;
+        float ex = x, ey = y;
+        boolean drag = dx != 0 || dy != 0;
+        if (drag) {
+            ex = Math.max(1, Math.min(sw - 2, x + dx * k));
+            ey = Math.max(1, Math.min(sh - 2, y + dy * k));
+        }
+        if (svc == null || android.os.Build.VERSION.SDK_INT < 24) {
+            // no gestures here: the phone touches the screen for us over ADB
+            final String line = drag ? "w " + Math.round(x) + " " + Math.round(y) + " " + Math.round(ex) + " " + Math.round(ey)
+                    : (ms > 300 ? "p " : "t ") + Math.round(x) + " " + Math.round(y);
+            new Thread(() -> {
+                OutputStream o = client;
+                if (o == null) return;
+                try {
+                    synchronized (Mouse.this) { o.write((line + "\n").getBytes("UTF-8")); o.flush(); }
+                } catch (Throwable ignored) {}
+            }).start();
+            return;
+        }
         Path path = new Path();
         path.moveTo(x, y);
-        if (dx != 0 || dy != 0) {
-            float ex = Math.max(1, Math.min(sw - 2, x + dx * k)), ey = Math.max(1, Math.min(sh - 2, y + dy * k));
-            path.lineTo(ex, ey);
-        }
+        if (drag) path.lineTo(ex, ey);
         try {
             GestureDescription g = new GestureDescription.Builder()
                     .addStroke(new GestureDescription.StrokeDescription(path, 0, ms))
@@ -186,7 +237,7 @@ final class Mouse {
     private void remove() {
         main.removeCallbacks(hide);
         if (cursor != null) {
-            try { ((WindowManager) svc.getSystemService(Context.WINDOW_SERVICE)).removeView(cursor); } catch (Throwable ignored) {}
+            try { wm().removeView(cursor); } catch (Throwable ignored) {}
             cursor = null;
         }
     }

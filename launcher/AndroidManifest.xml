@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="78"
-    android:versionName="0.78">
+    android:versionCode="79"
+    android:versionName="0.79">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -32,6 +32,9 @@
     <!-- 0.69: after a reboot, put the Home-key service back if the TV dropped it (BootReceiver);
          WRITE_SECURE_SETTINGS is granted by the phone app over ADB (pm grant), never asked -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 0.79: the mouse pointer without the Home-key service (boxes that switch it off);
+         granted by the phone over ADB (appops SYSTEM_ALERT_WINDOW), never asked on the TV -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
 
     <uses-feature android:name="android.software.leanback" android:required="false" />

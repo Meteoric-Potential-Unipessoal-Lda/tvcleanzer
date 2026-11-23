@@ -77,7 +77,8 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       _mouseOpening = true;
       _mouseErr = null;
     });
-    final link = _MouseLink(ref.read(adbServiceProvider).ensureHomeKeyService);
+    final link = _MouseLink(ref.read(adbServiceProvider).ensureHomeKeyService,
+        (cmd) => ref.read(remoteProvider.notifier).input(tv.id, cmd));
     final err = await link.open(tv);
     if (!mounted || _mode != 2) {
       link.close();
@@ -1156,9 +1157,14 @@ class _RockerState extends State<_Rocker> {
 /// listens on the TV's loopback, an ADB «tcp:» stream reaches it. Moves are gathered and sent
 /// every frame, in units of a 1920-wide screen.
 class _MouseLink {
-  _MouseLink(this._ensure);
+  _MouseLink(this._ensure, this._input);
   final Future<void> Function(AdbClient) _ensure;
+
+  /// Runs `input …` on the TV (over the remote's own connection).
+  final void Function(String) _input;
   AdbClient? _c;
+  StreamSubscription<Uint8List>? _back;
+  String _rest = '';
   AdbStream? _s;
   double _dx = 0, _dy = 0;
   Timer? _flush;
@@ -1172,23 +1178,39 @@ class _MouseLink {
       const start = 'am broadcast -n com.tvcleanzer.launcher/.ConfigReceiver '
           '-a com.tvcleanzer.launcher.APPLY --ez mouse true 2>&1';
       var out = await c.shell(start);
-      if (out.contains('result=2')) {
-        // the Home-key service was off or not running (a Google TV owner): switch it on and retry
+      if (out.contains('result=2') || out.contains('result=3')) {
+        // the Home-key service was off or not running (a Google TV owner): switch it on; and allow
+        // the plain pointer for boxes that switch the service off at once (T95 / be311)
+        await c.shell('appops set com.tvcleanzer.launcher SYSTEM_ALERT_WINDOW allow 2>&1');
         await _ensure(c);
         out = await c.shell(start);
       }
-      if (!out.contains('result=1')) {
+      final plain = out.contains('result=5');
+      if (!out.contains('result=1') && !plain) {
         AppLog.error('mouse', out.trim());
         close();
-        if (out.contains('result=3')) return tr('Мышь работает на Android 7 и новее.');
-        if (out.contains('result=2')) {
+        if (out.contains('result=2') || out.contains('result=3')) {
           return tr('Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.');
         }
         if (out.contains('result=4')) return tr('Не получилось подключить мышь. Попробуйте ещё раз.');
         return tr('Обновите лаунчер на ТВ: мышь есть в новой версии.');
       }
       await Future<void>.delayed(const Duration(milliseconds: 250));
-      _s = await c.openStream('tcp:47291');
+      final s = _s = await c.openStream('tcp:47291');
+      if (plain) {
+        // touches come back from the TV: «t x y», «p x y» (long), «w x1 y1 x2 y2» (drag)
+        _back = s.data.listen((b) {
+          _rest += utf8.decode(b, allowMalformed: true);
+          while (_rest.contains('\n')) {
+            final i = _rest.indexOf('\n');
+            final l = _rest.substring(0, i).trim().split(' ');
+            _rest = _rest.substring(i + 1);
+            if (l.length >= 3 && l[0] == 't') _input('tap ${l[1]} ${l[2]}');
+            if (l.length >= 3 && l[0] == 'p') _input('swipe ${l[1]} ${l[2]} ${l[1]} ${l[2]} 700');
+            if (l.length >= 5 && l[0] == 'w') _input('swipe ${l[1]} ${l[2]} ${l[3]} ${l[4]} 250');
+          }
+        }, onError: (_) {});
+      }
       return null;
     } catch (e) {
       AppLog.error('mouse', e);
@@ -1219,6 +1241,8 @@ class _MouseLink {
   }
 
   void close() {
+    _back?.cancel();
+    _back = null;
     _flush?.cancel();
     _flush = null;
     try {

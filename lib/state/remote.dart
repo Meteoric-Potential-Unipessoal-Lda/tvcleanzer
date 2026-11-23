@@ -128,6 +128,9 @@ class RemoteController extends StateNotifier<RemoteState> {
     if (!opened) key(ip, Keys.recents);
   }
 
+  /// A raw `input` command (the mouse without the Home-key service: tap / swipe at the pointer).
+  void input(String ip, String args) => _enqueue(ip, () => args, input: true).catchError((_) {});
+
   /// A long press (the TV's «options» on a tile).
   void longKey(String ip, int code) =>
       _enqueue(ip, () => 'keyevent --longpress $code', input: true).catchError((_) {});

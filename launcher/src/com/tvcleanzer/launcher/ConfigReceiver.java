@@ -27,14 +27,28 @@ public class ConfigReceiver extends BroadcastReceiver {
         }
         if (!"com.tvcleanzer.launcher.APPLY".equals(intent.getAction())) return;
         if (intent.hasExtra("mouse")) {
-            // the virtual mouse (0.77): 1 listening, 2 the Home-key service is not running,
-            // 3 Android before 7, 4 the pointer could not start (0.78: told apart)
+            // the virtual mouse: 1 through the Home-key service (gestures), 5 an ordinary overlay
+            // whose touches the phone makes over ADB (0.79: a be311 box switches the service off
+            // at once), 2 neither the service nor the overlay permission, 4 could not start
             HomeKeyService s = HomeKeyService.running;
             boolean on = intent.getBooleanExtra("mouse", false);
-            if (android.os.Build.VERSION.SDK_INT < 24) { setResultCode(3); return; }
-            if (s == null) { setResultCode(2); return; }
-            if (on) setResultCode(s.mouse().start() ? 1 : 4);
-            else { s.mouse().stop(); setResultCode(1); }
+            if (!on) {
+                if (s != null) s.mouse().stop();
+                Mouse.plain(context).stop();
+                setResultCode(1);
+                return;
+            }
+            if (s != null && android.os.Build.VERSION.SDK_INT >= 24) {
+                Mouse.plain(context).stop();
+                setResultCode(s.mouse().start() ? 1 : 4);
+                return;
+            }
+            if (Mouse.canOverlay(context)) {
+                if (s != null) s.mouse().stop();
+                setResultCode(Mouse.plain(context).start() ? 5 : 4);
+                return;
+            }
+            setResultCode(2);
             return;
         }
         if (intent.hasExtra("locale")) {
