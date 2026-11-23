@@ -281,6 +281,10 @@ final class Prefs {
      *  one step); without it Home still lands on us, the service replaces the stock screen by its
      *  window. Not chosen yet: HomeKeyService.volumeFiltered decides by the TV. */
     boolean volSmoothSet()   { return sp.contains(VOL_SMOOTH); }
+    /** The Home-key service has run and the owner has not switched it off since (BootReceiver
+     *  puts it back after a reboot only then). */
+    boolean serviceWanted()  { return sp.getBoolean("serviceWanted", false); }
+    void setServiceWanted(boolean v) { sp.edit().putBoolean("serviceWanted", v).apply(); }
     boolean volSmooth()      { return sp.getBoolean(VOL_SMOOTH, false); }
     void setVolSmooth(boolean v) { sp.edit().putBoolean(VOL_SMOOTH, v).apply(); }
     static boolean xiaomi() {

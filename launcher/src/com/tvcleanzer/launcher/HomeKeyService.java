@@ -147,6 +147,8 @@ public class HomeKeyService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         running = this;
+        log("connected, " + SystemClock.elapsedRealtime() / 1000 + " s after boot");
+        new Prefs(this).setServiceWanted(true);
         updateKeyFilter();
         updateNight();
         refreshStockHomes();
@@ -172,6 +174,16 @@ public class HomeKeyService extends AccessibilityService {
         try { registerReceiver(screenOn, new IntentFilter(Intent.ACTION_SCREEN_ON)); } catch (Throwable ignored) {}
     }
 
+    /** Switched off: by the owner in the TV's settings (then BootReceiver leaves it off), or by
+     *  the firmware right after a boot (then it is put back). */
+    @Override
+    public boolean onUnbind(Intent intent) {
+        boolean booting = SystemClock.elapsedRealtime() < BOOT_WINDOW_MS;
+        log("unbound" + (booting ? " right after boot" : ""));
+        if (!booting) new Prefs(this).setServiceWanted(false);
+        return super.onUnbind(intent);
+    }
+
     @Override
     public void onDestroy() {
         if (running == this) running = null;
@@ -191,8 +203,12 @@ public class HomeKeyService extends AccessibilityService {
                 if (lastKeyAt > armed) return; // the user is already doing something
                 String pkg = frontPackage();
                 if (pkg == null || !isStock(pkg) || pkg.equals(allowedStockPkg)) return;
-                // a home that also plays the inputs (TCL Google TV): only when its home screen is up
-                if (playsInputs.contains(pkg) && !(pkg.equals(lastPkg) && stockHomeScreen(pkg, lastCls))) {
+                // a home that also plays the inputs (TCL Google TV): only when its home screen is up —
+                // or right after a boot, when it was there before us (TCL 55C745: «после перезагрузки
+                // слетает»; an input chosen to start with the TV is opened by our home itself)
+                boolean homeUp = pkg.equals(lastPkg) && stockHomeScreen(pkg, lastCls);
+                boolean bootUnseen = SystemClock.elapsedRealtime() < BOOT_WINDOW_MS && !pkg.equals(lastPkg);
+                if (playsInputs.contains(pkg) && !homeUp && !bootUnseen) {
                     log("power-on: " + pkg + "/" + lastCls + " left (it plays the inputs)");
                     return;
                 }
