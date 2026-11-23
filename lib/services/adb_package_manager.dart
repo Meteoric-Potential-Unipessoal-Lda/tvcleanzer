@@ -1628,11 +1628,14 @@ class AdbPackageManager {
       // a small one did). Launcher 0.86 says so in its log and shows the photo instead; when the
       // home screen is in front we wait for its word.
       if (await _frontPackage(adb) == launcherPkg) {
-        for (var i = 0; i < 12; i++) {
+        for (var i = 0; i < 18; i++) {
           await Future<void>.delayed(const Duration(seconds: 1));
           final now = await _liveLine(adb);
           if (now.isEmpty || now == before) continue;
-          AppLog.error('live wallpaper', now);
+          // launcher 0.87: «playing W×H» first, then «can't play here (no picture …)» if the
+          // decoder gives nothing (a 4K clip on a TCL said «playing 3840x2160» and showed none)
+          if (now.contains('playing') && i < 17) continue;
+          AppLog.error('live wallpaper', now.replaceFirst(RegExp(r'^.*TVCleanzerHome: '), ''));
           if (now.contains("can't play")) throw AdbException(tr('Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.'));
           break;
         }
@@ -2063,27 +2066,36 @@ class AdbPackageManager {
   /// (launcher 0.65+ logs it as TVCleanzerHome). Empty when the TV does not answer.
   Future<String> launcherServiceLog(TvDevice device) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    // 1.3.104: each command gets a few seconds (a slow TCL left the whole block empty); a
+    // command that doesn't answer gives an empty line instead
+    Future<String> sh(String c, [int sec = 5]) async {
+      try {
+        return await adb.shell(c, timeout: Duration(seconds: sec));
+      } catch (_) {
+        return '';
+      }
+    }
     try {
       await adb.connect().timeout(const Duration(seconds: 4));
       final v = RegExp(r'versionName=(\S+)')
-          .firstMatch(await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -m1 versionName'))
+          .firstMatch(await sh('dumpsys package $launcherPkg 2>/dev/null | grep -m1 versionName', 12))
           ?.group(1);
       if (v == null) return '--- launcher: not installed ---\n';
       // is the Home-key service on and really running, and how long since the TV booted
-      final acc = (await adb.shell('settings get secure enabled_accessibility_services')).contains('tvcleanzer');
-      final bound = (await adb.shell('dumpsys accessibility 2>/dev/null | grep -i "bound services"'))
+      final acc = (await sh('settings get secure enabled_accessibility_services')).contains('tvcleanzer');
+      final bound = (await sh('dumpsys accessibility 2>/dev/null | grep -i "bound services"'))
           .toLowerCase()
           .contains('tvcleanzer');
-      final up = double.tryParse((await adb.shell('cat /proc/uptime')).trim().split(' ').first)?.round() ?? 0;
-      final grant = (await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -c "WRITE_SECURE_SETTINGS: granted=true"')).trim();
+      final up = double.tryParse((await sh('cat /proc/uptime')).trim().split(' ').first)?.round() ?? 0;
+      final grant = (await sh('dumpsys package $launcherPkg 2>/dev/null | grep -c "WRITE_SECURE_SETTINGS: granted=true"')).trim();
       // accessibility as a whole off, or the firmware force-stopping our app at boot (then no
       // broadcast and no job reaches it)
-      final accOn = (await adb.shell('settings get secure accessibility_enabled')).trim();
+      final accOn = (await sh('settings get secure accessibility_enabled')).trim();
       final stopped = RegExp(r'stopped=(\w+)')
-              .firstMatch(await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -m1 "stopped="'))
+              .firstMatch(await sh('dumpsys package $launcherPkg 2>/dev/null | grep -m1 "stopped="'))
               ?.group(1) ??
           '?';
-      final out = await adb.shell('logcat -d -s TVCleanzerHome:I 2>/dev/null | grep -v "^-" | tail -12');
+      final out = await sh('logcat -d -s TVCleanzerHome:I 2>/dev/null | grep -v "^-" | tail -12');
       final lines = out
           .split('\n')
           .map((l) => l.trim())
@@ -2098,7 +2110,7 @@ class AdbPackageManager {
           .toList();
       // a firmware that switches the service straight back off (T95 / be311 box): did it crash,
       // or did the system turn it off?
-      final crash = (await adb.shell('logcat -d -b crash 2>/dev/null | grep -A3 "Process: com.tvcleanzer.launcher" | tail -4; '
+      final crash = (await sh('logcat -d -b crash 2>/dev/null | grep -A3 "Process: com.tvcleanzer.launcher" | tail -4; '
               'logcat -d 2>/dev/null | grep -iE "tvcleanzer.launcher/.HomeKeyService|accessibilityservice.*tvcleanzer" | tail -3'))
           .split('\n')
           .map((l) => l.trim())
@@ -2107,11 +2119,11 @@ class AdbPackageManager {
           .toList();
       // 1.3.101: wallpapers «gone» — has the launcher got them, and is it the screen the owner sees
       final st = await _launcherSettings(adb);
-      final home = (await adb.shell('cmd package resolve-activity --brief -a android.intent.action.MAIN '
+      final home = (await sh('cmd package resolve-activity --brief -a android.intent.action.MAIN '
               '-c android.intent.category.HOME 2>/dev/null | tail -1'))
           .trim();
       final front = RegExp(r'\{\S+ \S+ (\S+?)[ }]')
-              .firstMatch(await adb.shell('dumpsys activity activities 2>/dev/null | '
+              .firstMatch(await sh('dumpsys activity activities 2>/dev/null | '
                   'grep -m1 -E "mResumedActivity|topResumedActivity|ResumedActivity"'))
               ?.group(1) ??
           '?';

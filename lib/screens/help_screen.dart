@@ -199,7 +199,7 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
                 text += await ref
                     .read(adbServiceProvider)
                     .launcherServiceLog(tv)
-                    .timeout(const Duration(seconds: 25), onTimeout: () => '--- launcher: the TV did not answer in 25 s ---\n');
+                    .timeout(const Duration(seconds: 60), onTimeout: () => '--- launcher: the TV did not answer in 60 s ---\n');
               }
               await Clipboard.setData(ClipboardData(text: text));
               if (ctx.mounted) Navigator.pop(ctx);
