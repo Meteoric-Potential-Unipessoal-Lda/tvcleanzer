@@ -31,6 +31,9 @@ final class AppTile extends LinearLayout {
     private final android.view.View gloss;
     /** «Свечение» (0.92): the halo behind the card, in the app's colour; null otherwise. */
     private final Glow glow;
+    /** «Без рамки» (0.93, a chat request): a small dot under the selected app — the lift alone
+     *  is easy to miss from the sofa. */
+    private android.view.View dot;
 
     /** Told when a tile gets the focus («Витрина» shows that app above the row). */
     interface Hook { void focused(AppTile t); }
@@ -128,6 +131,21 @@ final class AppTile extends LinearLayout {
         } else {
             glow = null;
         }
+        int dotSpace = 0;
+        if (ringColor == 0) {
+            int ds = Ui.dp(c, 7), dg = Ui.dp(c, 7);
+            dot = new android.view.View(c);
+            GradientDrawable dd = new GradientDrawable();
+            dd.setShape(GradientDrawable.OVAL);
+            dd.setColor(0xF2FFFFFF);
+            dot.setBackground(dd);
+            dot.setAlpha(0f);
+            FrameLayout.LayoutParams dlp = new FrameLayout.LayoutParams(ds, ds,
+                    Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
+            dlp.bottomMargin = -(ds + dg);
+            holder.addView(dot, dlp);
+            dotSpace = ds + dg + Math.round(h * (this.focusScale - 1f) / 2f);
+        }
         ringView = new android.view.View(c);
         ringView.setBackground(ring);
         ringView.setOutlineProvider(null); // no shadow of its own
@@ -143,7 +161,7 @@ final class AppTile extends LinearLayout {
         label.setText(app.label);
         label.setAlpha(labelsAlways ? .75f : 0f);
         LayoutParams llp = new LayoutParams(w, LayoutParams.WRAP_CONTENT);
-        llp.topMargin = Math.round(h * 0.06f) + Ui.dp(c, 8);
+        llp.topMargin = Math.round(h * 0.06f) + Ui.dp(c, 8) + dotSpace;
         addView(label, llp);
 
         setOnFocusChangeListener((v, has) -> onFocus(has));
@@ -208,6 +226,10 @@ final class AppTile extends LinearLayout {
         holder.animate().scaleX(s).scaleY(s).setDuration(duration).setInterpolator(EASE).start();
         card.animate().translationZ(has ? z : 0).setDuration(duration).setInterpolator(EASE).start();
         ringView.setVisibility(has && glow == null ? VISIBLE : INVISIBLE);
+        if (dot != null) {
+            if (anim == Prefs.ANIM_OFF) dot.setAlpha(has ? 1f : 0f);
+            else dot.animate().alpha(has ? 1f : 0f).setDuration(duration).start();
+        }
         if (glow != null) {
             if (anim == Prefs.ANIM_OFF) glow.setAlpha(has ? 1f : 0f);
             else glow.animate().alpha(has ? 1f : 0f).setDuration(duration).start();
