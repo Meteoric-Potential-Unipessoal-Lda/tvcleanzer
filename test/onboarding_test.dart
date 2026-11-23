@@ -37,6 +37,20 @@ void main() {
     expect(all.where((b) => b.matches('')).length, all.length);
   });
 
+  test('brand advice goes only to that brand', () {
+    final all = tvBrands();
+    TvBrand by(String n) => all.firstWhere((b) => b.name == n);
+    final atv = guideById('androidTv');
+    final tcl = atv.note!;
+    expect(by('Haier').notesFor(atv), isNot(contains(tcl)));
+    expect(by('Kivi').notesFor(atv), isEmpty);
+    expect(by('TCL').notesFor(atv), [tcl]);
+    expect(by('TCL').notesFor(guideById('googleTv')).first, tcl);
+    expect(by('Philips').tip, guideById('philips').note);
+    expect(by('Philips').notesFor(atv), [guideById('philips').note]);
+    expect(by('Xiaomi / Redmi').notesFor(guideById('xiaomiCn')), [guideById('xiaomiCn').note]);
+  });
+
   test('the guide shows once, and never to an owner who already has a TV', () async {
     SharedPreferences.setMockInitialValues({});
     expect(await OnboardingScreen.needed(hasTv: false), isTrue);

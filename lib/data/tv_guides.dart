@@ -12,7 +12,11 @@ class TvGuide {
   final bool supported;
   /// The same guide on tvcleanzer.com (an anchor there); null = the guides section.
   final String? web;
-  const TvGuide(this.id, this.brand, this.hint, this.steps, {this.note, this.supported = true, this.web});
+  /// [note] is about one brand (e.g. TCL on plain Android TV): the connection guide shows it
+  /// only to that brand, through [TvBrand.tipFrom].
+  final bool noteForAll;
+  const TvGuide(this.id, this.brand, this.hint, this.steps,
+      {this.note, this.supported = true, this.web, this.noteForAll = true});
 }
 
 final tvGuides = <TvGuide>[
@@ -22,7 +26,7 @@ final tvGuides = <TvGuide>[
     tr('Наведите на строку «Сборка» и нажмите ОК на пульте 7 раз подряд — появится «Вы стали разработчиком».'),
     tr('Вернитесь назад: появился пункт «Для разработчиков». Откройте его.'),
     tr('Включите «Отладка по USB». Если есть «Отладка по сети» или «ADB по сети» — включите и её.'),
-  ], note: tr('TCL: если телевизор не находится, в «Для разработчиков» включите ещё «Заводская разблокировка».'), web: '#g-debug'),
+  ], note: tr('TCL: если телевизор не находится, в «Для разработчиков» включите ещё «Заводская разблокировка».'), web: '#g-debug', noteForAll: false),
   TvGuide('googleTv', 'Google TV', tr('Новые Sony, TCL, Hisense, Chromecast'), [
     tr('Настройки → «Система» → «Об устройстве».'),
     tr('Нажмите ОК 7 раз на строке «Сборка ОС Android TV».'),

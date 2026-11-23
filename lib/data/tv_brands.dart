@@ -12,7 +12,19 @@ class TvBrand {
 
   /// Other spellings people type (Cyrillic, models, sub-brands).
   final String search;
-  const TvBrand(this.name, this.guides, {this.search = ''});
+
+  /// A guide whose [TvGuide.note] is this brand's own advice (TCL: «Заводская разблокировка»).
+  final String? tipFrom;
+  const TvBrand(this.name, this.guides, {this.search = '', this.tipFrom});
+
+  /// This brand's own advice, shown with every platform of the brand.
+  String? get tip => tipFrom == null ? null : guideById(tipFrom!).note;
+
+  /// What to show with [g] for this brand: its own tip, then the platform's general note.
+  List<String> notesFor(TvGuide g) => [
+        if (tip != null) tip!,
+        if (g.note != null && g.noteForAll && g.note != tip) g.note!,
+      ];
 
   bool matches(String q) {
     final s = q.trim().toLowerCase();
@@ -30,9 +42,10 @@ const _yandexBoards = ['yandex', 'cvte', 'androidTv'];
 List<TvBrand> tvBrands() => [
       const TvBrand('Xiaomi / Redmi', ['xiaomi', 'xiaomiCn', 'googleTv'], search: 'mi tv ксиоми сяоми редми ми тв'),
       const TvBrand('Haier', ['androidTv', 'googleTv', 'yandex'], search: 'хаер хайер'),
-      const TvBrand('TCL', ['androidTv', 'googleTv'], search: 'тсл ткл'),
+      const TvBrand('TCL', ['androidTv', 'googleTv'], search: 'тсл ткл', tipFrom: 'androidTv'),
       const TvBrand('Sony', ['googleTv', 'androidTv'], search: 'сони bravia бравиа'),
-      const TvBrand('Philips', ['philips'], search: 'филипс'),
+      // Titan OS / Saphi (TPN…) are not Android: said up front, then the usual platforms
+      const TvBrand('Philips', ['androidTv', 'googleTv', 'notAndroid'], search: 'филипс titan saphi', tipFrom: 'philips'),
       const TvBrand('Hisense', ['googleTv', 'notAndroid'], search: 'хайсенс хисенс vidaa'),
       const TvBrand('Kivi', ['androidTv', 'googleTv'], search: 'киви'),
       const TvBrand('DEXP', ['androidTv', 'yandex'], search: 'дексп'),

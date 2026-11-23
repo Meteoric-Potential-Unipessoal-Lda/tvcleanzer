@@ -400,6 +400,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         _title(tr('Какой у него главный экран?')),
         const Gap(6),
         _para(b.name, color: AppColors.fgMuted, size: 14),
+        if (b.tip != null) ...[
+          const Gap(12),
+          _noteBox(b.tip!, AppColors.warn),
+        ],
         const Gap(14),
         for (final id in ids) _guideCard(guideById(id)),
         const Gap(4),
@@ -493,10 +497,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.w700)),
         const Gap(18),
         Text(g.steps[_step], style: const TextStyle(color: AppColors.fg, fontSize: 19, height: 1.45)),
-        if (last && g.note != null) ...[
-          const Gap(18),
-          _noteBox(g.note!, AppColors.warn),
-        ],
+        if (last)
+          for (final n in _notes(g)) ...[
+            const Gap(18),
+            _noteBox(n, AppColors.warn),
+          ],
         const Gap(28),
         FilledButton(
           style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
@@ -513,6 +518,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       ],
     );
   }
+
+  /// The notes for this brand and platform: no TCL advice for a Haier owner.
+  List<String> _notes(TvGuide g) =>
+      _brand?.notesFor(g) ?? [if (g.note != null && g.noteForAll) g.note!];
 
   Widget _noteBox(String text, Color color) => Container(
         padding: const EdgeInsets.all(14),
@@ -550,7 +559,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             _check(Icons.wifi_rounded, tr('Телефон и телевизор — в одной сети, VPN на телефоне выключен.')),
             _check(Icons.router_rounded,
                 tr('Если роутер раздаёт две сети (2,4 и 5 ГГц), подключите телефон и телевизор к одной из них.')),
-            if (g?.note != null) _check(Icons.info_outline_rounded, g!.note!),
+            if (g != null)
+              for (final n in _notes(g)) _check(Icons.info_outline_rounded, n),
             const Gap(8),
             if (canPair && g?.id != 'xiaomiCn')
               OutlinedButton.icon(
