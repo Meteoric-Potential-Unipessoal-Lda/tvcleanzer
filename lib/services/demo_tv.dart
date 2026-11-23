@@ -183,6 +183,7 @@ class DemoAdbClient extends AdbClient {
   Future<Map<String, String>> connect({
     Duration timeout = const Duration(seconds: 10),
     Duration pairingTimeout = const Duration(seconds: 60),
+    void Function()? onAwaitingApproval,
   }) async {
     await _lag(250);
     return {
