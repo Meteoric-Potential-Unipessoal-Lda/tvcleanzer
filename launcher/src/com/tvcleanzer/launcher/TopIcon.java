@@ -7,12 +7,17 @@ import android.graphics.RectF;
 import android.view.View;
 
 /**
- * Round top-bar button with a drawn glyph (no image assets), the compact twin of a Pill:
- * network (Wi-Fi arcs / Ethernet / VPN lock / none) in a status colour, or the TV's settings.
- * Owners who like it minimal asked for icons instead of «Wi-Fi» and «Настройки ТВ».
+ * Top-bar button with a drawn glyph (no image assets), the compact twin of a Pill:
+ * network (Wi-Fi arcs / Ethernet / VPN lock / none) in a status colour, Bluetooth, the TV's
+ * settings or the gear.
+ * Round: a 46 dp circle like the gear (owners who like it minimal asked for icons instead of
+ * «Wi-Fi» and «Настройки ТВ»). Mini (0.68, the default): a small glyph in the screen's corner
+ * with no circle, like a tablet's status bar; the network one carries a «VPN» badge; focus
+ * shows a light capsule behind it.
  */
 final class TopIcon extends View {
-    static final int WIFI = 0, ETHERNET = 1, VPN = 2, OFFLINE = 3, TV = 4, BT = 5, BT_OFF = 6;
+    static final int WIFI = Glyphs.WIFI, ETHERNET = Glyphs.ETHERNET, VPN = Glyphs.VPN, OFFLINE = Glyphs.OFFLINE,
+            TV = Glyphs.TV, BT = Glyphs.BT, BT_OFF = Glyphs.BT_OFF, GEAR = Glyphs.GEAR;
     /** Bluetooth on with nothing connected: a quiet grey. */
     static final int IDLE = 0xFF9CA3AF;
     /** Green: online; orange: no network or no internet; blue: through a VPN. */
@@ -20,20 +25,26 @@ final class TopIcon extends View {
 
     private final Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint ink = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint text = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final boolean mini;
     private int glyph;
     private int status; // 0 = no status dot
+    private boolean vpn;
 
-    TopIcon(Context c, int glyph, int status) {
+    TopIcon(Context c, int glyph, int status) { this(c, glyph, status, false); }
+
+    TopIcon(Context c, int glyph, int status, boolean mini) {
         super(c);
         this.glyph = glyph;
         this.status = status;
+        this.mini = mini;
         setFocusable(true);
         if (android.os.Build.VERSION.SDK_INT >= 26) setDefaultFocusHighlightEnabled(false);
         setClickable(true);
-        ink.setStrokeCap(Paint.Cap.ROUND);
-        ink.setStrokeJoin(Paint.Join.ROUND);
+        text.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.BOLD));
         setOnFocusChangeListener((v, has) -> {
-            animate().scaleX(has ? 1.15f : 1f).scaleY(has ? 1.15f : 1f).setDuration(160).start();
+            float s = has ? (mini ? 1.1f : 1.15f) : 1f;
+            animate().scaleX(s).scaleY(s).setDuration(160).start();
             invalidate();
         });
     }
@@ -45,11 +56,23 @@ final class TopIcon extends View {
         invalidate();
     }
 
+    /** Mini network icon: the «VPN» badge after the glyph (the caller widens the view). */
+    void setVpn(boolean on) {
+        if (on == vpn) return;
+        vpn = on;
+        invalidate();
+    }
+
+    boolean vpn() { return vpn; }
     int glyph() { return glyph; }
     int status() { return status; }
 
+    /** Width of a mini icon [h] high: the badge takes room after the glyph. */
+    static int miniWidth(int h, boolean vpn) { return vpn ? Math.round(h * 2.35f) : h; }
+
     @Override
     protected void onDraw(Canvas c) {
+        if (mini) { drawMini(c); return; }
         float w = getWidth(), h = getHeight(), cx = w / 2f, cy = h / 2f;
         boolean f = isFocused();
         fill.setStyle(Paint.Style.FILL);
@@ -58,69 +81,40 @@ final class TopIcon extends View {
         // the glyph itself in the status colour (white when there is no status)
         int col = status != 0 ? status : (f ? 0xFF111111 : 0xE6FFFFFF);
         if (f && status != 0) col = darker(status);
-        ink.setColor(col);
-        ink.setStyle(Paint.Style.STROKE);
-        float s = w * 0.30f; // glyph half-size
-        ink.setStrokeWidth(w * 0.065f);
-        switch (glyph) {
-            case WIFI:
-            case OFFLINE: {
-                float by = cy + s * 0.75f;
-                for (int i = 1; i <= 3; i++) {
-                    float r = s * 0.55f * i;
-                    c.drawArc(new RectF(cx - r, by - r, cx + r, by + r), 225, 90, false, ink);
-                }
-                fill.setColor(col);
-                c.drawCircle(cx, by - s * 0.05f, w * 0.05f, fill);
-                if (glyph == OFFLINE) c.drawLine(cx - s, cy - s, cx + s, cy + s, ink);
-                break;
-            }
-            case ETHERNET: {
-                // a plug: square socket with three pins
-                RectF r = new RectF(cx - s * 0.8f, cy - s * 0.55f, cx + s * 0.8f, cy + s * 0.75f);
-                c.drawRoundRect(r, w * 0.04f, w * 0.04f, ink);
-                for (int i = -1; i <= 1; i++) c.drawLine(cx + i * s * 0.4f, cy - s * 0.2f, cx + i * s * 0.4f, cy + s * 0.25f, ink);
-                c.drawLine(cx, cy - s * 0.55f, cx, cy - s, ink);
-                break;
-            }
-            case VPN: {
-                // a padlock
-                RectF body = new RectF(cx - s * 0.75f, cy - s * 0.1f, cx + s * 0.75f, cy + s * 0.9f);
-                c.drawRoundRect(body, w * 0.05f, w * 0.05f, ink);
-                RectF arc = new RectF(cx - s * 0.48f, cy - s * 0.95f, cx + s * 0.48f, cy + s * 0.1f);
-                c.drawArc(arc, 180, 180, false, ink);
-                fill.setColor(col);
-                c.drawCircle(cx, cy + s * 0.38f, w * 0.045f, fill);
-                break;
-            }
-            case BT:
-            case BT_OFF: {
-                // the Bluetooth rune: a vertical line with two arrowheads to the right
-                float t = cy - s, b = cy + s, x0 = cx - s * 0.12f, r = cx + s * 0.45f, l = cx - s * 0.55f;
-                android.graphics.Path p = new android.graphics.Path();
-                p.moveTo(l, cy - s * 0.5f);
-                p.lineTo(r, cy + s * 0.5f);
-                p.lineTo(x0, b);
-                p.lineTo(x0, t);
-                p.lineTo(r, cy - s * 0.5f);
-                p.lineTo(l, cy + s * 0.5f);
-                c.drawPath(p, ink);
-                if (glyph == BT_OFF) c.drawLine(cx - s, cy - s, cx + s, cy + s, ink);
-                break;
-            }
-            default: { // TV: a screen on a stand with two slider knobs
-                RectF scr = new RectF(cx - s, cy - s * 0.75f, cx + s, cy + s * 0.55f);
-                c.drawRoundRect(scr, w * 0.04f, w * 0.04f, ink);
-                c.drawLine(cx - s * 0.45f, cy + s * 0.95f, cx + s * 0.45f, cy + s * 0.95f, ink);
-                ink.setStrokeWidth(w * 0.05f);
-                c.drawLine(cx - s * 0.55f, cy - s * 0.3f, cx + s * 0.55f, cy - s * 0.3f, ink);
-                c.drawLine(cx - s * 0.55f, cy + s * 0.15f, cx + s * 0.55f, cy + s * 0.15f, ink);
-                fill.setColor(col);
-                c.drawCircle(cx + s * 0.2f, cy - s * 0.3f, w * 0.05f, fill);
-                c.drawCircle(cx - s * 0.25f, cy + s * 0.15f, w * 0.05f, fill);
-                break;
-            }
+        Glyphs.draw(c, glyph, cx, cy, w * (glyph == GEAR ? 0.34f : 0.30f), w, col, ink, fill);
+    }
+
+    private void drawMini(Canvas c) {
+        float w = getWidth(), h = getHeight(), cy = h / 2f;
+        boolean f = isFocused();
+        if (f) {
+            fill.setStyle(Paint.Style.FILL);
+            fill.setColor(0xF2FFFFFF);
+            c.drawRoundRect(new RectF(0, 0, w, h), h / 2f, h / 2f, fill);
+        } else {
+            // a soft shadow under the white glyph: readable over a bright photo
+            ink.setShadowLayer(h * 0.12f, 0, 0, 0x80000000);
+            fill.setShadowLayer(h * 0.12f, 0, 0, 0x80000000);
         }
+        // white like a status bar; only trouble gets a colour (no internet, no network)
+        int col = status == BAD || status == OFF ? status : (status == IDLE ? 0xB3FFFFFF : 0xF2FFFFFF);
+        if (f) col = status == BAD || status == OFF ? darker(status) : 0xFF111111;
+        float gx = vpn ? h * 0.5f + h * 0.1f : w / 2f;
+        Glyphs.draw(c, glyph, gx, cy, h * (glyph == GEAR ? 0.34f : 0.31f), h * 1.25f, col, ink, fill);
+        if (vpn) {
+            // «VPN» in an outlined capsule, the glyph's colour
+            text.setTextSize(h * 0.36f);
+            text.setColor(col);
+            float tw = text.measureText("VPN");
+            float bx = h * 1.12f, bh = h * 0.56f, bw = tw + h * 0.34f;
+            ink.setStyle(Paint.Style.STROKE);
+            ink.setStrokeWidth(Math.max(1.5f, h * 0.06f));
+            ink.setColor(col);
+            c.drawRoundRect(new RectF(bx, cy - bh / 2, bx + bw, cy + bh / 2), bh * 0.32f, bh * 0.32f, ink);
+            c.drawText("VPN", bx + (bw - tw) / 2f, cy - (text.ascent() + text.descent()) / 2f, text);
+        }
+        ink.clearShadowLayer();
+        fill.clearShadowLayer();
     }
 
     private static int darker(int c) {

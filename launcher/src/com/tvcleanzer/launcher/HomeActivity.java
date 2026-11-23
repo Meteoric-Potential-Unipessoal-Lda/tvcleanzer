@@ -365,6 +365,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP);
         mlp.topMargin = Math.round(screenH * 0.12f);
         mid.setPadding(padH, 0, padH, 0);
+        if (prefs.clockGlass()) glassBehind(mid, center, padH);
         root.addView(mid, mlp);
 
         // Dock: inputs, favourites (icons), settings, all apps
@@ -381,39 +382,38 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         List<AppTile> tiles = new ArrayList<>();
         List<View> order = new ArrayList<>();
 
-        if (!inputs.isEmpty() && prefs.inputsPos() != Prefs.INPUTS_HIDDEN) {
-            Pill in = new Pill(this, T.t("Источник"));
+        final boolean withInput = !inputs.isEmpty() && prefs.inputsPos() != Prefs.INPUTS_HIDDEN;
+        final int extras = withInput ? 3 : 2;
+        final boolean round = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
+        // Like a Mac's dock: few apps — bigger icons (the size setting still scales them).
+        int n = Math.min(8, favorites.size());
+        icon = Math.round(icon * (n <= 4 ? 1.25f : n <= 6 ? 1.12f : 1f));
+        // The whole dock must fit the screen (a centred dock wider than the screen loses both
+        // ends): shrink the icons, then show fewer favourites, if needed.
+        int avail = screenW - 2 * padH - 2 * dp18;
+        while (n > 0 && (avail - gap * (n + extras - 1)) / (n + extras) < Ui.dp(this, 44)) n--;
+        icon = Math.min(icon, (avail - gap * (n + extras - 1)) / (n + extras));
+        if (withInput) {
+            AppTile in = dockButton(Glyphs.INPUT, T.t("Источник"), icon, skin, anim, ringColor, round);
             in.setOnClickListener(v -> chooseInput());
             order.add(in);
         }
-        GearButton gear = new GearButton(this, skin.accent);
-        wireGear(gear);
-        Pill all = new Pill(this, T.t("Все приложения"));
-        all.setOnClickListener(v -> { showGrid = true; build(); });
-
-        // The whole dock must fit the screen (a centred dock wider than the screen loses both
-        // ends): shrink the icons, then show fewer favourites, if needed.
-        int unspecified = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        all.measure(unspecified, unspecified);
-        int fixed = 2 * dp18 + all.getMeasuredWidth() + Ui.dp(this, 46) + gap;
-        if (!order.isEmpty()) { order.get(0).measure(unspecified, unspecified); fixed += order.get(0).getMeasuredWidth() + gap; }
-        int avail = screenW - 2 * padH - fixed;
-        int n = Math.min(8, favorites.size());
-        while (n > 0 && (avail - gap * n) / n < Ui.dp(this, 44)) n--;
-        if (n > 0) icon = Math.min(icon, (avail - gap * n) / n);
         for (int k = 0; k < n; k++) {
             AppTile t = tile(favorites.get(k), icon, icon, skin, false, 12, 1.12f, anim, ringColor);
             tiles.add(t);
             order.add(t);
         }
+        AppTile gear = dockButton(Glyphs.GEAR, T.t("Настройки"), icon, skin, anim, ringColor, round);
+        wireGear(gear);
+        AppTile all = dockButton(Glyphs.MORE, T.t("Все приложения"), icon, skin, anim, ringColor, round);
+        all.setOnClickListener(v -> { showGrid = true; build(); });
         order.add(gear);
         order.add(all);
 
         for (int i = 0; i < order.size(); i++) {
             View v = order.get(i);
-            LinearLayout.LayoutParams lp = v instanceof GearButton
-                    ? new LinearLayout.LayoutParams(Ui.dp(this, 46), Ui.dp(this, 46))
-                    : new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             if (i > 0) lp.leftMargin = gap;
             lp.gravity = Gravity.CENTER_VERTICAL;
             dock.addView(v, lp);
@@ -428,6 +428,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         hs.setClipToPadding(false);
         hs.addView(dock);
         root.addView(hs, dlp);
+        // Wi-Fi / VPN, Bluetooth and the TV's settings up in the corner, like a tablet (the dock
+        // has the gear already)
+        if (prefs.barStyle() == Prefs.BAR_MINI && !prefs.cleanBar()) corner(skin, false);
 
         View target = null;
         for (AppTile t : tiles) if (t.app.pkg.equals(focusPkg)) { target = t; break; }
@@ -1174,11 +1177,19 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             favShelf = shelf;
             shelf.setBackground(Ui.shelf(Ui.dp(this, 30), prefs.shelf()));
             shelf.setClipChildren(true);
+            final int fc = prefs.favCols();
+            // «Рамка избранного» (0.68): as wide as its tiles, on the left or in the middle (owners:
+            // «зачем она на всю ширину?»), or the whole width; a grid always fills the width
+            final int favAlign = fc > 0 ? Prefs.FAV_FULL : prefs.favAlign();
             LinearLayout.LayoutParams shp = new LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    favAlign == Prefs.FAV_FULL ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (favAlign == Prefs.FAV_CENTER) {
+                shp.gravity = Gravity.CENTER_HORIZONTAL;
+                ((LinearLayout.LayoutParams) favTitle.getLayoutParams()).gravity = Gravity.CENTER_HORIZONTAL;
+            }
             shp.topMargin = Ui.dp(this, 12);
             int inset = Ui.dp(this, 22);
-            final int fc = prefs.favCols();
             favGridCols = fc;
             if (fc > 0) {
                 // Several rows, fc per row: more favourites at a glance (owners asked for 6–8).
@@ -1359,9 +1370,26 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         trp.topMargin = Ui.dp(this, 4);
         left.addView(timeRow, trp);
-        bar.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        if (prefs.clockGlass()) {
+            left.setBackground(Ui.glass(Ui.dp(this, 26)));
+            left.setPadding(Ui.dp(this, 24), Ui.dp(this, 14), Ui.dp(this, 28), Ui.dp(this, 16));
+            bar.addView(left, new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            bar.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
+        } else {
+            bar.addView(left, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        }
 
         memPill = null;
+        btPill = null;
+        btIcon = null;
+        netPill = null;
+        netIcon = null;
+        netMini = null;
+        if (prefs.barStyle() == Prefs.BAR_MINI) {
+            corner(skin, true);
+            return bar;
+        }
         if (prefs.memPill()) {
             Pill mem = new Pill(this, Memory.label(this));
             memPill = mem;
@@ -1377,9 +1405,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         int bts = prefs.btPill() && !prefs.cleanBar() ? Bt.state(this) : Bt.NONE;
         if (bts != Bt.NONE) {
             int is = Ui.dp(this, 46);
-            LinearLayout.LayoutParams bp = prefs.barIcons() ? new LinearLayout.LayoutParams(is, is) : pillLp();
+            final boolean icons = prefs.barStyle() == Prefs.BAR_ICONS;
+            LinearLayout.LayoutParams bp = icons ? new LinearLayout.LayoutParams(is, is) : pillLp();
             bp.rightMargin = Ui.dp(this, 14);
-            if (prefs.barIcons()) {
+            if (icons) {
                 TopIcon bt = new TopIcon(this, bts == Bt.OFF ? TopIcon.BT_OFF : TopIcon.BT, btColour(bts));
                 btIcon = bt;
                 bt.setOnClickListener(v -> bluetoothMenu());
@@ -1395,7 +1424,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
         netPill = null;
         netIcon = null;
-        if (!prefs.cleanBar() && prefs.barIcons()) {
+        if (!prefs.cleanBar() && prefs.barStyle() == Prefs.BAR_ICONS) {
             // round icons instead of words; the network one in a status colour
             int[] ns = netState();
             TopIcon net = new TopIcon(this, ns[0], ns[1]);
@@ -1432,7 +1461,143 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     /** The gear: launcher settings; with «Только шестерёнка вверху» the TV's own settings, and
      *  holding OK on it opens the launcher's. */
-    private void wireGear(GearButton gear) {
+    /** Mini top bar (0.68, the default): small glyphs in the screen's top-right corner like a
+     *  tablet's status bar — memory, Bluetooth, the network with a «VPN» badge, the TV's settings
+     *  and (not in the dock home, which has its own) the gear. Fixed: stays when the page scrolls. */
+    private void corner(Skin skin, boolean withGear) {
+        android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setClipChildren(false);
+        row.setClipToPadding(false);
+        final int h = Ui.dp(this, 34), gap = Ui.dp(this, 6);
+        final boolean clean = prefs.cleanBar();
+        List<View> items = new ArrayList<>();
+        if (prefs.memPill() && !clean) {
+            TextView mem = miniText(Memory.label(this));
+            memPill = mem;
+            mem.setOnClickListener(v -> freeMemory());
+            items.add(mem);
+        }
+        int bts = prefs.btPill() && !clean ? Bt.state(this) : Bt.NONE;
+        if (bts != Bt.NONE) {
+            TopIcon bt = new TopIcon(this, bts == Bt.OFF ? TopIcon.BT_OFF : TopIcon.BT, btColour(bts), true);
+            btIcon = bt;
+            btShown = bts;
+            bt.setOnClickListener(v -> bluetoothMenu());
+            items.add(bt);
+        }
+        if (!clean) {
+            TopIcon net = new TopIcon(this, TopIcon.WIFI, 0, true);
+            netMini = net;
+            net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
+            items.add(net);
+            TopIcon tv = new TopIcon(this, TopIcon.TV, 0, true);
+            tv.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+            items.add(tv);
+        }
+        if (withGear) {
+            TopIcon gear = new TopIcon(this, TopIcon.GEAR, 0, true);
+            wireGear(gear);
+            items.add(gear);
+        }
+        if (items.isEmpty()) return;
+        for (int i = 0; i < items.size(); i++) {
+            View v = items.get(i);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    v instanceof TopIcon ? h : ViewGroup.LayoutParams.WRAP_CONTENT, h);
+            if (i > 0) lp.leftMargin = gap;
+            row.addView(v, lp);
+        }
+        if (netMini != null) miniNet(netMini);
+        FrameLayout.LayoutParams clp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | Gravity.END);
+        clp.topMargin = Math.max(Ui.dp(this, 14), Math.round(dm.heightPixels * 0.03f));
+        clp.rightMargin = Math.max(Ui.dp(this, 18), Math.round(dm.widthPixels * 0.022f));
+        row.setTranslationZ(Ui.dp(this, 30)); // over the page that scrolls under it
+        root.addView(row, clp);
+    }
+
+    /** The mini network icon: Wi-Fi or Ethernet, orange without internet, a «VPN» badge. */
+    private void miniNet(TopIcon t) {
+        int[] s = netState();
+        int glyph = s[2] == NET_OFF ? TopIcon.OFFLINE : s[4] == 2 ? TopIcon.ETHERNET : TopIcon.WIFI;
+        int st = s[2] == NET_OFF ? TopIcon.OFF : s[2] == NET_NO_INTERNET ? TopIcon.BAD : 0;
+        t.set(glyph, st);
+        boolean vpn = s[3] == 1;
+        if (vpn != t.vpn() || t.getLayoutParams() != null && t.getLayoutParams().width != TopIcon.miniWidth(t.getLayoutParams().height, vpn)) {
+            t.setVpn(vpn);
+            ViewGroup.LayoutParams lp = t.getLayoutParams();
+            if (lp != null) {
+                lp.width = TopIcon.miniWidth(lp.height, vpn);
+                t.setLayoutParams(lp);
+            }
+        }
+    }
+
+    /** A word in the mini corner (memory): white with a shadow, a light capsule on focus. */
+    private TextView miniText(String s) {
+        final TextView t = Ui.text(this, 14, 0xF2FFFFFF, "sans-serif-medium");
+        t.setText(s);
+        t.setSingleLine(true);
+        t.setGravity(Gravity.CENTER);
+        final int sh = Ui.dp(this, 4);
+        t.setShadowLayer(sh, 0, 0, 0x99000000);
+        t.setPadding(Ui.dp(this, 12), 0, Ui.dp(this, 12), 0);
+        t.setFocusable(true);
+        t.setClickable(true);
+        if (android.os.Build.VERSION.SDK_INT >= 26) t.setDefaultFocusHighlightEnabled(false);
+        t.setOnFocusChangeListener((v, has) -> {
+            t.setBackground(has ? Ui.round(0xF2FFFFFF, Ui.dp(this, 17)) : null);
+            t.setTextColor(has ? 0xFF111111 : 0xF2FFFFFF);
+            t.setShadowLayer(has ? 0 : sh, 0, 0, 0x99000000);
+        });
+        return t;
+    }
+
+    /** A dock button that is not an app: a grey square (or circle) with a glyph, exactly the
+     *  size of the app icons beside it; its name shows under it on focus. */
+    private AppTile dockButton(int glyph, String label, int size, Skin skin, int anim, int ringColor, boolean round) {
+        AppTile t = new AppTile(this, AppEntry.special("tvcleanzer:dock" + glyph, label), size, size, skin, false, 12,
+                1.12f, anim, ringColor);
+        t.setArt(new Glyphs.Face(glyph, round), true);
+        return t;
+    }
+
+    /** Glass under the big clock, date and weather (clock home): as wide as the longest line. */
+    private void glassBehind(final LinearLayout mid, final boolean center, final int padH) {
+        final View glass = new View(this);
+        glass.setBackground(Ui.glass(Ui.dp(this, 30)));
+        root.addView(glass, new FrameLayout.LayoutParams(0, 0, Gravity.TOP | Gravity.START));
+        final int gp = Ui.dp(this, 30);
+        mid.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
+            float cw = 0;
+            int top = Integer.MAX_VALUE, bottom = 0;
+            for (int i = 0; i < mid.getChildCount(); i++) {
+                View ch = mid.getChildAt(i);
+                if (!(ch instanceof TextView) || ch.getVisibility() != View.VISIBLE) continue;
+                TextView tv = (TextView) ch;
+                if (tv.getLayout() == null || tv.getText().length() == 0) continue;
+                cw = Math.max(cw, tv.getLayout().getLineWidth(0));
+                top = Math.min(top, ch.getTop());
+                bottom = Math.max(bottom, ch.getBottom());
+            }
+            if (cw <= 0) return;
+            int w = Math.round(cw) + 2 * gp;
+            int x = center ? l + (r - l - w) / 2 : l + padH - gp;
+            int y = t + top - gp / 2, hh = bottom - top + gp;
+            final FrameLayout.LayoutParams gl = (FrameLayout.LayoutParams) glass.getLayoutParams();
+            if (gl.width == w && gl.height == hh && gl.leftMargin == Math.max(0, x) && gl.topMargin == Math.max(0, y)) return;
+            gl.width = w;
+            gl.height = hh;
+            gl.leftMargin = Math.max(0, x);
+            gl.topMargin = Math.max(0, y);
+            glass.post(() -> glass.setLayoutParams(gl));
+        });
+    }
+
+    private void wireGear(View gear) {
         if (prefs.cleanBar()) {
             // OK asks which settings: holding OK was the only way into the launcher's own ones,
             // and nobody knew it (a Yandex TV owner: «пропала шестерёнка», the gear always
@@ -1480,7 +1645,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private Pill netPill;
     private TopIcon netIcon;
-    private Pill memPill;
+    private TextView memPill;
+    private TopIcon netMini;
     private TextView greetView;
 
     /** Every pill of the top bar: one height (the gear's), centred on one line. */
@@ -1508,6 +1674,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             int[] ns = netState();
             netIcon.set(ns[0], ns[1]);
         }
+        if (netMini != null) miniNet(netMini);
         if (memPill != null && !freeing) memPill.setText(Memory.label(this));
         if (btPill != null || btIcon != null) {
             int st = Bt.state(this);

@@ -27,6 +27,11 @@ final class AppEntry {
         this.pkg = pkg; this.cls = cls; this.label = label; this.leanback = leanback; this.info = info;
     }
 
+    /** A dock button that is not an app (all apps, the gear, inputs): only a name for its tile. */
+    static AppEntry special(String key, String label) {
+        return new AppEntry(key, "", label, false, null);
+    }
+
     /**
      * Apps of TV shells that have no icon of their own in the app list: their shell opens them
      * itself. Found on Yandex TV (Tuvio TD32FFBCV1, YaOS): YouTube (Cobalt), the Yandex app

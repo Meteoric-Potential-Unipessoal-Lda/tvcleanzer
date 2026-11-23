@@ -485,6 +485,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         if (s0) ...[
           _pills(tr('Избранное на главном экране'), favL, favI,
               (v) => _setLook(look.copyWith(favCols: const [0, 4, 5, 6][v]))),
+          if (favI == 0)
+            _pills(tr('Рамка избранного'), [tr('Во всю ширину'), tr('Слева'), tr('По центру')], look.favAlign,
+                (v) => _setLook(look.copyWith(favAlign: v)), need: 68),
           _sw(tr('Приложения на втором экране'), tr('На главном только избранное, приложения — ниже по кнопке ▼'),
               look.appsBelow, (v) => _setLook(look.copyWith(appsBelow: v))),
         ],
@@ -524,6 +527,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         _sw(tr('Память на главном экране'), tr('Нажатие закрывает приложения в фоне и освобождает память'), look.memPill,
             (v) => _setLook(look.copyWith(memPill: v)), need: 36),
         if (!look.cleanBar)
+          _pills(tr('Значки вверху'), [tr('Надписи'), tr('Значки'), tr('Мини в углу')], look.barStyle,
+              (v) => _setLook(look.copyWith(barStyle: v)), need: 68),
+        if (!look.cleanBar)
           _sw(tr('Bluetooth на главном экране'),
               tr('Включён ли и что подключено; нажатие — включить, выключить или открыть настройки'), look.btPill,
               (v) => _setLook(look.copyWith(btPill: v)), need: 63),
@@ -553,6 +559,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             ]),
         if (s1) _pills(tr('Часы на экране'), posL, look.clockPos, (v) => _setLook(look.copyWith(clockPos: v))),
         _sw(tr('Часы 24 часа'), null, look.clock24, (v) => _setLook(look.copyWith(clock24: v))),
+        _sw(tr('Стекло под часами'), tr('Полупрозрачная подложка под часами, датой и погодой'), look.clockGlass,
+            (v) => _setLook(look.copyWith(clockGlass: v)), need: 68),
       ]),
       _group('icons', Icons.apps_rounded, tr('Значки и плитки'),
           join([

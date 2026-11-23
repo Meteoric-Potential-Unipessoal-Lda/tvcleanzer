@@ -983,5 +983,13 @@
 "Parece que es {0}",
 "Elegir",
 "Vemos «{0}» en la red: la depuración sigue desactivada.",
-"{0} está en la red: no es Android, TVCleanzer no funciona con ella."
+"{0} está en la red: no es Android, TVCleanzer no funciona con ella.",
+"Marco de favoritos",
+"Todo el ancho",
+"Iconos superiores",
+"Texto",
+"Iconos",
+"Mini en la esquina",
+"Cristal bajo el reloj",
+"Un panel translúcido bajo el reloj, la fecha y el tiempo"
 ]

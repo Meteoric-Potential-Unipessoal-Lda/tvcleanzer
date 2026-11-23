@@ -983,5 +983,13 @@
 "On dirait {0}",
 "Choisir",
 "On voit «{0}» sur le réseau — le débogage y est encore désactivé.",
-"{0} est sur le réseau — ce n’est pas Android, TVCleanzer ne fonctionne pas avec."
+"{0} est sur le réseau — ce n’est pas Android, TVCleanzer ne fonctionne pas avec.",
+"Cadre des favoris",
+"Toute la largeur",
+"Icônes du haut",
+"Texte",
+"Icônes",
+"Mini dans le coin",
+"Verre sous l’horloge",
+"Un panneau translucide sous l’horloge, la date et la météo"
 ]

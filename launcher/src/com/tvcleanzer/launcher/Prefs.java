@@ -219,6 +219,19 @@ final class Prefs {
      *  who like it minimal asked for it (0.55+). */
     boolean barIcons()       { return sp.getBoolean("barIcons", false); }
     void setBarIcons(boolean v) { sp.edit().putBoolean("barIcons", v).apply(); }
+    static final int BAR_WORDS = 0, BAR_ICONS = 1, BAR_MINI = 2;
+    /** Top bar: words, round icons (0.55) or small icons in the screen's corner like a tablet's
+     *  status bar (0.68, the default for everyone — owners asked for it «срочно»). */
+    int barStyle()           { return clamp(sp.getInt("barStyle", BAR_MINI), 0, 2); }
+    void setBarStyle(int v)  { sp.edit().putInt("barStyle", clamp(v, 0, 2)).apply(); }
+    static final int FAV_FULL = 0, FAV_START = 1, FAV_CENTER = 2;
+    /** «Рамка избранного» (one row of favourites, tiles home): as wide as its tiles on the left
+     *  (default) or in the middle, or the whole width as before 0.68. */
+    int favAlign()           { return clamp(sp.getInt("favAlign", FAV_START), 0, 2); }
+    void setFavAlign(int v)  { sp.edit().putInt("favAlign", clamp(v, 0, 2)).apply(); }
+    /** Glass under the clock, date and weather (0.68, off by default). */
+    boolean clockGlass()     { return sp.getBoolean("clockGlass", false); }
+    void setClockGlass(boolean v) { sp.edit().putBoolean("clockGlass", v).apply(); }
     /** «Избранное» / «Приложения» headings over the rows (0.55+). */
     boolean sectionTitles()  { return sp.getBoolean("sectionTitles", true); }
     void setSectionTitles(boolean v) { sp.edit().putBoolean("sectionTitles", v).apply(); }

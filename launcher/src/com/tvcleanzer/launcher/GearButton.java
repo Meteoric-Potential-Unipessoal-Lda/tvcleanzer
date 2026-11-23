@@ -33,18 +33,9 @@ final class GearButton extends View {
         fill.setColor(f ? 0xFFFFFFFF : 0x26FFFFFF);
         c.drawCircle(cx, cy, w / 2f, fill);
 
-        int col = f ? 0xFF111111 : 0xE6FFFFFF;
-        gear.setColor(col);
-        float r = w * 0.17f;
-        gear.setStrokeWidth(w * 0.07f);
-        c.drawCircle(cx, cy, r, gear);
-        gear.setStrokeWidth(w * 0.09f);
-        gear.setStrokeCap(Paint.Cap.ROUND);
-        for (int i = 0; i < 8; i++) {
-            double a = Math.PI / 4 * i;
-            float x1 = cx + (float) Math.cos(a) * r * 1.45f, y1 = cy + (float) Math.sin(a) * r * 1.45f;
-            float x2 = cx + (float) Math.cos(a) * r * 1.85f, y2 = cy + (float) Math.sin(a) * r * 1.85f;
-            c.drawLine(x1, y1, x2, y2, gear);
-        }
+        // a solid gear (0.68): eight strokes round a ring read as a sun («солнышко»)
+        gear.setStyle(Paint.Style.FILL);
+        gear.setColor(f ? 0xFF111111 : 0xE6FFFFFF);
+        c.drawPath(Glyphs.gear(cx, cy, w * 0.34f), gear);
     }
 }

@@ -983,5 +983,13 @@
 "Looks like {0}",
 "Choose",
 "We see «{0}» on the network — debugging is still off on it.",
-"{0} is on the network — it isn’t Android, TVCleanzer doesn’t work with it."
+"{0} is on the network — it isn’t Android, TVCleanzer doesn’t work with it.",
+"Favourites frame",
+"Full width",
+"Top icons",
+"Words",
+"Icons",
+"Mini in the corner",
+"Glass under the clock",
+"A translucent panel under the clock, date and weather"
 ]

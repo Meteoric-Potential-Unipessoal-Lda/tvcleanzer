@@ -110,7 +110,8 @@ public class SettingsActivity extends Activity {
         addToggle(skin, T.t("Подсветка выбора"), prefs.ringAccent(), T.t("Цвет темы"), T.t("Белая"), prefs::setRingAccent);
         addToggle(skin, T.t("Только шестерёнка вверху"), prefs.cleanBar(), T.t("Включено"), T.t("Выключено"), prefs::setCleanBar);
         if (!prefs.cleanBar()) {
-            addToggle(skin, T.t("Верхняя панель"), prefs.barIcons(), T.t("Значки"), T.t("Надписи"), prefs::setBarIcons);
+            addChoice(skin, T.t("Верхняя панель"), new String[]{T.t("Надписи"), T.t("Значки"), T.t("Мини в углу")},
+                    prefs.barStyle(), prefs::setBarStyle);
         }
         addToggle(skin, T.t("Названия разделов"), prefs.sectionTitles(), T.t("Показывать"), T.t("Скрыто"), prefs::setSectionTitles);
         addToggle(skin, T.t("Память на главном экране"), prefs.memPill(), T.t("Показывать"), T.t("Скрыто"), prefs::setMemPill);
@@ -121,6 +122,7 @@ public class SettingsActivity extends Activity {
         addChoice(skin, T.t("Часы вверху"), new String[]{T.t("Крупные"), T.t("Средние"), T.t("Мелкие")},
                 prefs.barClock(), prefs::setBarClock);
         addToggle(skin, T.t("Дата и погода"), prefs.oneLine(), T.t("В одну строку"), T.t("Столбиком"), prefs::setOneLine);
+        addToggle(skin, T.t("Стекло под часами"), prefs.clockGlass(), T.t("Включено"), T.t("Выключено"), prefs::setClockGlass);
         addToggle(skin, T.t("Заставка при запуске"), prefs.splash(), T.t("Логотип, пока лаунчер загружается"), T.t("Выключена"),
                 prefs::setSplash);
 
@@ -153,6 +155,10 @@ public class SettingsActivity extends Activity {
             });
             addChoice(skin, T.t("Подложка избранного"), new String[]{T.t("Стекло"), T.t("Прозрачная"), T.t("Тёмная")},
                     prefs.shelf(), prefs::setShelf);
+            if (prefs.favCols() == 0) {
+                addChoice(skin, T.t("Рамка избранного"), new String[]{T.t("Во всю ширину"), T.t("Слева"), T.t("По центру")},
+                        prefs.favAlign(), prefs::setFavAlign);
+            }
         } else if (prefs.style() == Prefs.STYLE_SHOWCASE) {
             addChoice(skin, T.t("Приложения на главном"), new String[]{T.t("Сразу под избранным"),
                     T.t("На втором экране (кнопка ▼)")}, prefs.appsBelow() ? 1 : 0, i -> {
