@@ -34,6 +34,9 @@ public class HomeKeyService extends AccessibilityService {
     /** The running instance, for ConfigReceiver (key filter switched from the phone). */
     static volatile HomeKeyService running;
 
+    /** When it last connected (elapsedRealtime): a be311 box switches it off a second later. */
+    static volatile long connectedAt;
+
     /** «Кнопки пульта»: KeyMapActivity waits for one press of the button to assign. */
     interface KeyLearn { void key(int code); }
     static volatile KeyLearn learn;
@@ -147,6 +150,7 @@ public class HomeKeyService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         running = this;
+        connectedAt = SystemClock.elapsedRealtime();
         log("connected, " + SystemClock.elapsedRealtime() / 1000 + " s after boot");
         new Prefs(this).setServiceWanted(true);
         KeeperJob.schedule(this);

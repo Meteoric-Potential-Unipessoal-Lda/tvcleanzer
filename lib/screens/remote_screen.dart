@@ -1165,12 +1165,21 @@ class _MouseLink {
   AdbClient? _c;
   StreamSubscription<Uint8List>? _back;
   String _rest = '';
+
+  /// 1.3.96: the TV dropped the pointer (its service was switched off by the firmware): connect
+  /// again, a few times, and it comes back as the plain pointer.
+  TvDevice? _tv;
+  bool _closing = false;
+  int _retries = 0;
+  DateTime _openedAt = DateTime.now();
   AdbStream? _s;
   double _dx = 0, _dy = 0;
   Timer? _flush;
 
   /// Null when ready, else what to tell the owner.
   Future<String?> open(TvDevice tv) async {
+    _tv = tv;
+    _closing = false;
     try {
       final c = AdbClient.open(host: tv.ipAddress, port: tv.port);
       _c = c;
@@ -1197,8 +1206,15 @@ class _MouseLink {
       }
       await Future<void>.delayed(const Duration(milliseconds: 250));
       final s = _s = await c.openStream('tcp:47291');
-      if (plain) {
-        // touches come back from the TV: «t x y», «p x y» (long), «w x1 y1 x2 y2» (drag)
+      _openedAt = DateTime.now();
+      if (_closing) {
+        close();
+        return null;
+      }
+      AppLog.info('mouse', plain ? 'plain pointer' : 'service pointer');
+      {
+        // touches come back from the TV in the plain mode: «t x y», «p x y» (long),
+        // «w x1 y1 x2 y2» (drag); the end of the stream means the TV dropped the pointer
         _back = s.data.listen((b) {
           _rest += utf8.decode(b, allowMalformed: true);
           while (_rest.contains('\n')) {
@@ -1209,7 +1225,7 @@ class _MouseLink {
             if (l.length >= 3 && l[0] == 'p') _input('swipe ${l[1]} ${l[2]} ${l[1]} ${l[2]} 700');
             if (l.length >= 5 && l[0] == 'w') _input('swipe ${l[1]} ${l[2]} ${l[3]} ${l[4]} 250');
           }
-        }, onError: (_) {});
+        }, onError: (_) {}, onDone: _dropped);
       }
       return null;
     } catch (e) {
@@ -1217,6 +1233,22 @@ class _MouseLink {
       close();
       return tr('Не получилось подключить мышь. Попробуйте ещё раз.');
     }
+  }
+
+  Future<void> _dropped() async {
+    if (_closing || _tv == null) return;
+    if (DateTime.now().difference(_openedAt) > const Duration(seconds: 20)) _retries = 0;
+    if (_retries++ >= 3) return;
+    AppLog.info('mouse', 'dropped by the TV, connecting again');
+    _back = null;
+    _s = null;
+    try {
+      _c?.close();
+    } catch (_) {}
+    _c = null;
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+    if (_closing) return;
+    await open(_tv!);
   }
 
   void move(double dx, double dy) {
@@ -1241,6 +1273,7 @@ class _MouseLink {
   }
 
   void close() {
+    _closing = true;
     _back?.cancel();
     _back = null;
     _flush?.cancel();

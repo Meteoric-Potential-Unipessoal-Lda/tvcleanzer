@@ -1,6 +1,6 @@
 name: tvcleanzer
 description: TVCleanzer — free app to clean bloatware from Android TV
-version: 1.3.95+116
+version: 1.3.96+117
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

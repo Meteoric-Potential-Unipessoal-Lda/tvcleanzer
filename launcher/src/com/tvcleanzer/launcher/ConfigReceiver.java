@@ -38,7 +38,12 @@ public class ConfigReceiver extends BroadcastReceiver {
                 setResultCode(1);
                 return;
             }
-            if (s != null && android.os.Build.VERSION.SDK_INT >= 24) {
+            // 0.81: a service that has just (re)started may be one the firmware kills within a
+            // second (be311: «the mouse works for a second»), so it carries the mouse only once it
+            // has lived 8 s, or when there is no overlay permission to fall back on
+            boolean settled = s != null
+                    && android.os.SystemClock.elapsedRealtime() - HomeKeyService.connectedAt > 8000;
+            if (s != null && android.os.Build.VERSION.SDK_INT >= 24 && (settled || !Mouse.canOverlay(context))) {
                 Mouse.plain(context).stop();
                 setResultCode(s.mouse().start() ? 1 : 4);
                 return;
