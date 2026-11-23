@@ -2037,9 +2037,19 @@ class AdbPackageManager {
             return '$t $m';
           })
           .toList();
+      // a firmware that switches the service straight back off (T95 / be311 box): did it crash,
+      // or did the system turn it off?
+      final crash = (await adb.shell('logcat -d -b crash 2>/dev/null | grep -A3 "Process: com.tvcleanzer.launcher" | tail -4; '
+              'logcat -d 2>/dev/null | grep -iE "tvcleanzer.launcher/.HomeKeyService|accessibilityservice.*tvcleanzer" | tail -3'))
+          .split('\n')
+          .map((l) => l.trim())
+          .where((l) => l.isNotEmpty)
+          .map((l) => l.length > 160 ? '${l.substring(0, 160)}…' : l)
+          .toList();
       return '--- launcher $v ---\nservice: on $acc, running $bound, boot ${up ~/ 60} min ago, keeper ${grant == '0' ? 'no' : 'yes'}, '
           'accessibility $accOn, stopped $stopped\n'
-          '${lines.join('\n')}\n';
+          '${lines.join('\n')}\n'
+          '${crash.isEmpty ? '' : '--- system ---\n${crash.join('\n')}\n'}';
     } catch (_) {
       return '';
     } finally {
