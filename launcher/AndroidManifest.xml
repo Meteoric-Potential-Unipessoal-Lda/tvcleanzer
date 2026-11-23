@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="63"
-    android:versionName="0.63">
+    android:versionCode="64"
+    android:versionName="0.64">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -43,6 +43,11 @@
         <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <!-- the stock homes HomeKeyService replaces (Google TV launcherx among them) -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
         </intent>
         <!-- TV shell apps without a menu icon (AppEntry.FIRMWARE_APPS) -->
         <package android:name="com.yandex.tv.ytplayer" />

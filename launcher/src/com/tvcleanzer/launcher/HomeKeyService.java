@@ -78,13 +78,25 @@ public class HomeKeyService extends AccessibilityService {
      *  Volume moves one step. The owner's choice in the settings wins. Not chosen: smooth, except
      *  where catching keys is the only way something works —
      *   · Yandex / Sber homes (Alice, Salute): only a seen Home press lets us replace them;
-     *   · Google TV with its home switched off: nobody else answers ⚙, TV and Source.
+     *   · Google TV with its home switched off: nobody else answers ⚙, TV and Source;
+     *   · Google TV with its home on: Home itself (see googleTvHomeOn).
      *  Xiaomi is smooth in any case (0.56: most complaints; Google TV models included).
      *  Owners on Haier MatrixTV, Sony Bravia, DEXP, Xiaomi asked for it in the chat. */
     static boolean volumeFiltered(Context c, Prefs p) {
         if (p.volSmoothSet()) return !p.volSmooth() && (p.keyFilter() || stockHomeOff(c));
         if (Prefs.xiaomi()) return false;
-        return featureHomeOn(c) || stockHomeOff(c);
+        return featureHomeOn(c) || stockHomeOff(c) || googleTvHomeOn(c);
+    }
+
+    /** Google TV with its home on: the HOME role never sticks to us there and the window path
+     *  missed launcherx (TCL 43V6C, Android 12, 0.63: «скидывает на стоковый», service bound) —
+     *  only a caught Home press opens us. */
+    static boolean googleTvHomeOn(Context c) {
+        try {
+            return c.getPackageManager().getApplicationInfo("com.google.android.apps.tv.launcherx", 0).enabled;
+        } catch (Throwable t) {
+            return false;
+        }
     }
 
     /** Yandex TV / Sber home installed and on. */
@@ -258,6 +270,8 @@ public class HomeKeyService extends AccessibilityService {
                 }
             }
         } catch (Throwable ignored) {}
+        // in case the system hides them from the HOME query (package visibility)
+        homeClasses.add("com.google.android.apps.tv.launcherx.home.HomeActivity");
     }
 
     private int lastKeyCode;
