@@ -86,6 +86,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** Clock style: the full app grid is open ("All apps"); Back or Home returns to the clock. */
     private boolean showGrid;
     private TextView weatherView;
+    /** The «·» before the weather in the one-line clock: hidden with it. */
+    private View weatherSep;
     private final List<View> ambientGlows = new ArrayList<>();
     private android.animation.ValueAnimator ambientAnim;
 
@@ -280,6 +282,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         String w = Weather.line(prefs);
         weatherView.setText(w == null ? "" : w);
         weatherView.setVisibility(w == null ? View.GONE : View.VISIBLE);
+        if (weatherSep != null) weatherSep.setVisibility(w == null ? View.GONE : View.VISIBLE);
     }
 
     private TextClock bigClock(float sizeSp) {
@@ -326,49 +329,80 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (k < 1f) c.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, size * k * 0.97f);
     }
 
-    /** The clock home's time in one line: the big time, a hairline, the date over the weather. */
+    /** The clock home's time in one line (0.82, an owner's photos: the row took the middle of the
+     *  screen and cut the date): a small glass plate up in the top corner, the same height and
+     *  glass as the status icons on the other side — «18:49 · понедельник, 23 ноября · +15° …». */
     private void clockRow(int screenW, int screenH, int padH, boolean center) {
+        android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        TextClock big = bigClock(110);
-        fitClock(big, Math.round((screenW - 2 * padH) * 0.5f), Math.round(screenH * 0.24f));
+        final int h = Ui.dp(this, 36), pv = Ui.dp(this, 5);
+        row.setBackground(Ui.shelf((h + 2 * pv) * 0.34f, prefs.shelf()));
+        row.setPadding(Ui.dp(this, 16), pv, Ui.dp(this, 14), pv);
+        row.setMinimumHeight(h + 2 * pv);
+
+        TextClock big = bigClock(26);
+        big.setShadowLayer(0, 0, 0, 0);
+        big.setLetterSpacing(0f);
+        big.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
+        fitClock(big, Math.round(screenW * 0.12f), Ui.dp(this, 40));
         row.addView(big, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        View divider = new View(this);
-        divider.setBackgroundColor(0x40FFFFFF);
-        LinearLayout.LayoutParams dvp = new LinearLayout.LayoutParams(Ui.dp(this, 1), Ui.dp(this, 64));
-        dvp.leftMargin = Ui.dp(this, 28);
-        dvp.rightMargin = Ui.dp(this, 28);
-        row.addView(divider, dvp);
-        LinearLayout col = new LinearLayout(this);
-        col.setOrientation(LinearLayout.VERTICAL);
+
+        row.addView(dot(), dotLp());
+        final String fmt = "EEEE, d MMMM";
         TextClock date = new TextClock(this);
-        date.setFormat12Hour("EEEE, d MMMM");
-        date.setFormat24Hour("EEEE, d MMMM");
-        date.setTextSize(22);
-        date.setTextColor(0xD9FFFFFF);
-        date.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
+        date.setFormat12Hour(fmt);
+        date.setFormat24Hour(fmt);
+        date.setTextSize(17);
+        date.setTextColor(0xE6FFFFFF);
         date.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
         date.setSingleLine(true);
-        col.addView(date);
-        weatherView = Ui.text(this, 22, 0xD9FFFFFF, "sans-serif-medium");
-        weatherView.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
-        LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        wl.topMargin = Ui.dp(this, 6);
-        col.addView(weatherView, wl);
-        updateWeatherView();
-        row.addView(col);
-        if (prefs.clockGlass()) {
-            row.setBackground(Ui.shelf(Ui.dp(this, 30), prefs.shelf()));
-            row.setPadding(Ui.dp(this, 32), Ui.dp(this, 16), Ui.dp(this, 36), Ui.dp(this, 18));
+        date.setIncludeFontPadding(false);
+        // a wrap_content clock is measured before its text arrives on some TVs and the date came
+        // out cut («23 ноябр»): room for the longest day of the coming week
+        float w = 0;
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        for (int i = 0; i < 7; i++) {
+            w = Math.max(w, date.getPaint().measureText(String.valueOf(android.text.format.DateFormat.format(fmt, cal))));
+            cal.add(java.util.Calendar.DAY_OF_YEAR, 1);
         }
+        date.setMinWidth(Math.round(w) + Ui.dp(this, 4));
+        row.addView(date, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        TextView sep = dot();
+        weatherSep = sep;
+        row.addView(sep, dotLp());
+        weatherView = Ui.text(this, 17, 0xE6FFFFFF, "sans-serif-medium");
+        weatherView.setSingleLine(true);
+        weatherView.setIncludeFontPadding(false);
+        row.addView(weatherView, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        updateWeatherView();
+
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | (center ? Gravity.CENTER_HORIZONTAL : Gravity.START));
-        lp.topMargin = Math.round(screenH * 0.12f);
-        if (!center) lp.leftMargin = padH;
+        // level with the status icons in the other corner
+        lp.topMargin = Math.max(Ui.dp(this, 12), Math.round(dm.heightPixels * 0.028f));
+        if (!center) lp.leftMargin = Math.max(Ui.dp(this, 16), Math.round(dm.widthPixels * 0.02f));
         root.addView(row, lp);
+    }
+
+    private TextView dot() {
+        TextView t = Ui.text(this, 17, 0x80FFFFFF, "sans-serif-medium");
+        t.setText("·");
+        t.setIncludeFontPadding(false);
+        return t;
+    }
+
+    private LinearLayout.LayoutParams dotLp() {
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        p.leftMargin = Ui.dp(this, 10);
+        p.rightMargin = Ui.dp(this, 10);
+        return p;
     }
 
     /** Clock style: date, a big clock and the weather in the middle; a glass dock below. */
@@ -382,6 +416,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
         // «Дата и погода: в одну строку» (0.76): the time with the date and the weather beside it
         // (an owner: the stacked block took half the screen)
+        weatherSep = null;
         if (prefs.oneLine()) {
             clockRow(screenW, screenH, padH, center);
         } else {

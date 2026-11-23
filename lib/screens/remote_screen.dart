@@ -1211,7 +1211,7 @@ class _MouseLink {
         close();
         return null;
       }
-      AppLog.info('mouse', plain ? 'plain pointer' : 'service pointer');
+      AppLog.error('mouse', plain ? 'plain pointer' : 'service pointer');
       {
         // touches come back from the TV in the plain mode: «t x y», «p x y» (long),
         // «w x1 y1 x2 y2» (drag); the end of the stream means the TV dropped the pointer
@@ -1239,7 +1239,7 @@ class _MouseLink {
     if (_closing || _tv == null) return;
     if (DateTime.now().difference(_openedAt) > const Duration(seconds: 20)) _retries = 0;
     if (_retries++ >= 3) return;
-    AppLog.info('mouse', 'dropped by the TV, connecting again');
+    AppLog.error('mouse', 'dropped by the TV, connecting again');
     _back = null;
     _s = null;
     try {
