@@ -575,9 +575,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         if (showShape)
           _pills(tr('Форма значков'), shapeL, look.iconShape, (v) => _setLook(look.copyWith(iconShape: v)),
               icons: const [Icons.crop_square_rounded, Icons.circle_outlined],
-              hint: look.icons == 0 && s0
-                  ? tr('В «Авто» круглые значки только в доке и «Витрине»: на широких плитках — баннеры')
-                  : null,
+              // launcher 0.88: «Плитки» favourites turn round too, the hint about banners is gone
               need: 62),
         _pills(tr('Размер плиток'), tilesL, look.tiles, (v) => _setLook(look.copyWith(tiles: v))),
         _pills(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет темы')], look.ringAccent ? 1 : 0,

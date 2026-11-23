@@ -1273,6 +1273,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // «Рамка избранного» (0.68): as wide as its tiles, on the left or in the middle (owners:
             // «зачем она на всю ширину?»), or the whole width; a grid always fills the width
             final int favAlign = fc > 0 ? Prefs.FAV_FULL : prefs.favAlign();
+            final boolean roundFav = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
             LinearLayout.LayoutParams shp = new LinearLayout.LayoutParams(
                     favAlign == Prefs.FAV_FULL ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -1292,6 +1293,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 grid.setPadding(inset, Ui.dp(this, 10), inset, Ui.dp(this, 10));
                 int fw = (contentW - 2 * inset - gap * (fc - 1)) / fc;
                 int fh = fw * 9 / 16;
+                if (roundFav) fw = fh = Math.min(fw, Math.round(fh * 1.2f)); // circles, see the one-row case
                 LinearLayout row = null;
                 for (int i = 0; i < favorites.size(); i++) {
                     if (i % fc == 0) {
@@ -1319,8 +1321,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
             hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
             LinearLayout row = row();
+            final int fs = roundFav ? Math.round(favH * 1.2f) : 0;
             for (int i = 0; i < favorites.size(); i++) {
-                AppTile t = tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f, anim, ringColor);
+                AppTile t = roundFav ? tile(favorites.get(i), fs, fs, skin, labelsAlways, 14, 1.1f, anim, ringColor)
+                        : tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i > 0) lp.leftMargin = gap;
@@ -2290,10 +2294,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private void loadArt(List<AppTile> tiles, boolean squareTiles) {
         final int mode = prefs.icons();
         final boolean small = mode == Prefs.ICONS_SMALL; // the icon at its own size on the card (review request)
-        final boolean useIcons = small || mode == Prefs.ICONS_ON || (mode == Prefs.ICONS_AUTO && squareTiles);
-        final boolean round = useIcons && prefs.iconShape() == Prefs.SHAPE_CIRCLE; // round icons (owners asked)
         for (final AppTile t : tiles) {
             final int cw = t.cardW(), ch = t.cardH();
+            final boolean sq = squareTiles || Math.abs(cw - ch) < cw * 0.2f; // 0.88: round favourites in «Плитки»
+            final boolean useIcons = small || mode == Prefs.ICONS_ON || (mode == Prefs.ICONS_AUTO && sq);
+            final boolean round = useIcons && prefs.iconShape() == Prefs.SHAPE_CIRCLE; // round icons (owners asked)
             final String k = t.app.pkg + "#" + (small ? "s" : useIcons ? "i" : "b") + (round ? "o" : "") + cw + "x" + ch;
             Drawable cached = artCache.get(k);
             if (cached != null) {
