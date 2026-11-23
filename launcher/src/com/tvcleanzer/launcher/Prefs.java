@@ -61,6 +61,9 @@ final class Prefs {
     void setAnim(int v)      { sp.edit().putInt(ANIM, clamp(v, 0, 2)).apply(); }
     /** Focus ring in the skin's accent colour instead of white. */
     boolean ringAccent()     { return sp.getBoolean(RING_ACCENT, false); }
+    /** 0.89: no frame round the selected app at all — it only grows (an owner's request). */
+    boolean ringOff()        { return sp.getBoolean("ringOff", false); }
+    void setRingOff(boolean v) { sp.edit().putBoolean("ringOff", v).apply(); }
     void setRingAccent(boolean v) { sp.edit().putBoolean(RING_ACCENT, v).apply(); }
     int tileSize()           { return clamp(sp.getInt(TILES, TILES_NORMAL), 0, 2); }
     void setTileSize(int v)  { sp.edit().putInt(TILES, clamp(v, 0, 2)).apply(); }

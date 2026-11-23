@@ -1014,6 +1014,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Wallpapers are shown by the TVCleanzer launcher, and the TV doesn’t have it. Install it on the «Launcher» tab.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'The file arrived, but the launcher doesn’t see it. Update the launcher on the TV and try again.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'The TV couldn’t play this video — most likely it is 4K or too heavy. Pick a 1080p or shorter video. The photo stays on the home screen for now.',
+    'Без рамки': 'No frame',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2028,6 +2029,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Шпалери показує лаунчер TVCleanzer, а на телевізорі його немає. Встановіть його на вкладці «Лаунчер».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл дійшов, але лаунчер його не бачить. Оновіть лаунчер на ТВ і спробуйте знову.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Телевізор не зміг показати це відео — найімовірніше, воно в 4K або занадто важке. Виберіть відео в 1080p або коротше. Поки на головному екрані буде фото.',
+    'Без рамки': 'Без рамки',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3042,6 +3044,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'El fondo lo muestra el launcher TVCleanzer y la TV no lo tiene. Instálalo en la pestaña «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'El archivo llegó, pero el launcher no lo ve. Actualiza el launcher en la TV y vuelve a intentarlo.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV no pudo reproducir este vídeo: seguramente es 4K o demasiado pesado. Elige un vídeo en 1080p o más corto. Mientras tanto, en inicio se verá la foto.',
+    'Без рамки': 'Sin marco',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4056,6 +4059,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'O fundo é mostrado pelo launcher TVCleanzer e a TV não o tem. Instale-o no separador «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'O ficheiro chegou, mas o launcher não o vê. Atualize o launcher na TV e tente de novo.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'A TV não conseguiu reproduzir este vídeo — provavelmente é 4K ou demasiado pesado. Escolha um vídeo em 1080p ou mais curto. Por agora, o ecrã inicial mostra a foto.',
+    'Без рамки': 'Sem moldura',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5070,6 +5074,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Hintergründe zeigt der TVCleanzer-Launcher, und der ist nicht auf dem TV. Installiere ihn im Tab «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Die Datei ist angekommen, aber der Launcher sieht sie nicht. Aktualisiere den Launcher auf dem TV und versuche es erneut.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Der TV konnte dieses Video nicht abspielen – wahrscheinlich 4K oder zu groß. Wähle ein Video in 1080p oder ein kürzeres. Bis dahin zeigt der Startbildschirm das Foto.',
+    'Без рамки': 'Ohne Rahmen',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6084,6 +6089,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Le fond d’écran est affiché par le launcher TVCleanzer, absent de la TV. Installez-le dans l’onglet « Launcher ».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Le fichier est arrivé, mais le launcher ne le voit pas. Mettez à jour le launcher sur la TV et réessayez.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV n’a pas pu lire cette vidéo : elle est sans doute en 4K ou trop lourde. Choisissez une vidéo en 1080p ou plus courte. En attendant, l’accueil affiche la photo.',
+    'Без рамки': 'Sans cadre',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7098,6 +7104,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Lo sfondo lo mostra il launcher TVCleanzer e la TV non ce l’ha. Installalo nella scheda «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Il file è arrivato, ma il launcher non lo vede. Aggiorna il launcher sulla TV e riprova.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV non è riuscita a riprodurre questo video: probabilmente è 4K o troppo pesante. Scegli un video in 1080p o più corto. Intanto la Home mostra la foto.',
+    'Без рамки': 'Senza cornice',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8112,6 +8119,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Шпалеры паказвае лаўнчар TVCleanzer, а на тэлевізары яго няма. Усталюйце яго на ўкладцы «Лаўнчар».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл дайшоў, але лаўнчар яго не бачыць. Абнавіце лаўнчар на ТБ і паспрабуйце зноў.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Тэлевізар не змог паказаць гэтае відэа — хутчэй за ўсё, яно ў 4K або занадта цяжкае. Выберыце відэа ў 1080p або карацейшае. Пакуль на галоўным экране будзе фота.',
+    'Без рамки': 'Без рамкі',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9126,6 +9134,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Тұсқағазды TVCleanzer лаунчері көрсетеді, ал теледидарда ол жоқ. Оны «Лаунчер» қойындысында орнатыңыз.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл жетті, бірақ лаунчер оны көрмейді. ТД-дағы лаунчерді жаңартып, қайталап көріңіз.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Теледидар бұл бейнені көрсете алмады — бәлкім, ол 4K немесе тым ауыр. 1080p немесе қысқарақ бейне таңдаңыз. Әзірге басты экранда фото тұрады.',
+    'Без рамки': 'Жиексіз',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10140,6 +10149,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Fon rasmlarini TVCleanzer launcheri ko‘rsatadi, televizorda esa u yo‘q. Uni «Launcher» bo‘limida o‘rnating.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fayl yetib keldi, lekin launcher uni ko‘rmayapti. TVdagi launcherni yangilang va qayta urinib ko‘ring.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor bu videoni ko‘rsata olmadi — ehtimol, u 4K yoki juda og‘ir. 1080p yoki qisqaroq video tanlang. Hozircha bosh ekranda rasm turadi.',
+    'Без рамки': 'Ramkasiz',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11154,6 +11164,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Պաստառները ցույց է տալիս TVCleanzer լաունչերը, իսկ հեռուստացույցում այն չկա։ Տեղադրեք այն «Լաունչեր» ներդիրում։',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Ֆայլը հասավ, բայց լաունչերը այն չի տեսնում։ Թարմացրեք լաունչերը հեռուստացույցում և նորից փորձեք։',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Հեռուստացույցը չկարողացավ ցույց տալ այս տեսանյութը․ հավանաբար այն 4K է կամ չափազանց ծանր։ Ընտրեք 1080p կամ ավելի կարճ տեսանյութ։ Առայժմ գլխավոր էկրանին կլինի լուսանկարը։',
+    'Без рамки': 'Առանց շրջանակի',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12168,6 +12179,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Divar kağızını TVCleanzer launcheri göstərir, televizorda isə o yoxdur. Onu «Launcher» bölməsində quraşdırın.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fayl çatdı, amma launcher onu görmür. TV-dəki launcheri yeniləyin və yenidən cəhd edin.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor bu videonu göstərə bilmədi — yəqin ki, 4K-dır və ya çox ağırdır. 1080p və ya daha qısa video seçin. Hələlik əsas ekranda şəkil olacaq.',
+    'Без рамки': 'Çərçivəsiz',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13182,6 +13194,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'ფონს აჩვენებს TVCleanzer ლაუნჩერი, ტელევიზორზე კი ის არ არის. დააინსტალირეთ ის «ლაუნჩერის» ჩანართზე.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ფაილი მივიდა, მაგრამ ლაუნჩერი მას ვერ ხედავს. განაახლეთ ლაუნჩერი ტელევიზორზე და სცადეთ თავიდან.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'ტელევიზორმა ვერ აჩვენა ეს ვიდეო — სავარაუდოდ, ის 4K-ია ან ძალიან მძიმე. აირჩიეთ 1080p ან უფრო მოკლე ვიდეო. ჯერჯერობით მთავარ ეკრანზე ფოტო იქნება.',
+    'Без рамки': 'ჩარჩოს გარეშე',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14196,6 +14209,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Тушкагазды TVCleanzer лаунчери көрсөтөт, ал сыналгыда ал жок. Аны «Лаунчер» өтмөгүнөн орнотуңуз.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл жетти, бирок лаунчер аны көрбөй жатат. Сыналгыдагы лаунчерди жаңыртып, кайра аракет кылыңыз.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Сыналгы бул видеону көрсөтө алган жок — балким, ал 4K же өтө оор. 1080p же кыскараак видео тандаңыз. Азырынча башкы экранда сүрөт турат.',
+    'Без рамки': 'Алкаксыз',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15210,6 +15224,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Duvar kağıdını TVCleanzer başlatıcısı gösterir ve TV’de yok. «Başlatıcı» sekmesinden kurun.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Dosya ulaştı ama başlatıcı onu görmüyor. TV’deki başlatıcıyı güncelleyip tekrar deneyin.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV bu videoyu oynatamadı — büyük olasılıkla 4K ya da çok ağır. 1080p veya daha kısa bir video seçin. Şimdilik ana ekranda fotoğraf kalacak.',
+    'Без рамки': 'Çerçevesiz',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16224,6 +16239,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Tapety pokazuje launcher TVCleanzer, a na telewizorze go nie ma. Zainstaluj go na karcie «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Plik dotarł, ale launcher go nie widzi. Zaktualizuj launcher na TV i spróbuj ponownie.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Telewizor nie odtworzył tego wideo — pewnie jest w 4K albo za ciężkie. Wybierz wideo w 1080p lub krótsze. Na razie na ekranie głównym będzie zdjęcie.',
+    'Без рамки': 'Bez ramki',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17238,6 +17254,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Fundalul îl afișează launcherul TVCleanzer, iar televizorul nu îl are. Instalează-l din fila «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fișierul a ajuns, dar launcherul nu îl vede. Actualizează launcherul pe TV și încearcă din nou.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizorul nu a putut reda acest video — probabil e 4K sau prea mare. Alege un video în 1080p sau mai scurt. Deocamdată ecranul principal arată fotografia.',
+    'Без рамки': 'Fără chenar',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18252,6 +18269,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': '壁纸由 TVCleanzer 启动器显示，但电视上没有安装它。请在「启动器」标签页安装。',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': '文件已送达，但启动器看不到它。请更新电视上的启动器后重试。',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': '电视无法播放这个视频——很可能是 4K 或文件太大。请选择 1080p 或更短的视频。主屏暂时显示照片。',
+    'Без рамки': '无边框',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19266,6 +19284,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': '壁紙は TVCleanzer ランチャーが表示しますが、テレビに入っていません。「ランチャー」タブでインストールしてください。',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ファイルは届きましたが、ランチャーが認識していません。テレビのランチャーを更新してもう一度お試しください。',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'テレビがこの動画を再生できませんでした。4K か重すぎる可能性があります。1080p か短い動画を選んでください。ホーム画面にはしばらく写真が表示されます。',
+    'Без рамки': '枠なし',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20280,6 +20299,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': '배경화면은 TVCleanzer 런처가 표시하는데 TV에 없습니다. «런처» 탭에서 설치하세요.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': '파일은 도착했지만 런처가 인식하지 못합니다. TV의 런처를 업데이트하고 다시 시도하세요.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV가 이 동영상을 재생하지 못했습니다. 4K이거나 너무 무거운 것 같습니다. 1080p 또는 더 짧은 동영상을 선택하세요. 당분간 홈 화면에는 사진이 표시됩니다.',
+    'Без рамки': '테두리 없음',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21294,6 +21314,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'वॉलपेपर TVCleanzer लॉन्चर दिखाता है, और टीवी पर वह नहीं है। उसे «लॉन्चर» टैब से इंस्टॉल करें।',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'फ़ाइल पहुँच गई, लेकिन लॉन्चर उसे नहीं देख रहा। टीवी पर लॉन्चर अपडेट करें और फिर कोशिश करें।',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'टीवी यह वीडियो नहीं चला सका — शायद यह 4K है या बहुत भारी है। 1080p या छोटा वीडियो चुनें। तब तक होम स्क्रीन पर फ़ोटो रहेगी।',
+    'Без рамки': 'बिना फ़्रेम',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22308,6 +22329,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Wallpaper ditampilkan oleh launcher TVCleanzer, dan TV belum memilikinya. Pasang di tab «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'File sudah sampai, tetapi launcher tidak melihatnya. Perbarui launcher di TV lalu coba lagi.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV tidak bisa memutar video ini — kemungkinan 4K atau terlalu berat. Pilih video 1080p atau yang lebih pendek. Untuk sementara layar utama menampilkan foto.',
+    'Без рамки': 'Tanpa bingkai',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23322,6 +23344,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Hình nền do launcher TVCleanzer hiển thị, nhưng TV chưa có nó. Hãy cài trong thẻ «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Tệp đã đến nơi nhưng launcher không thấy. Hãy cập nhật launcher trên TV rồi thử lại.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV không phát được video này — có lẽ là 4K hoặc quá nặng. Hãy chọn video 1080p hoặc ngắn hơn. Tạm thời màn hình chính sẽ hiện ảnh.',
+    'Без рамки': 'Không viền',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24336,6 +24359,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'วอลเปเปอร์แสดงโดยลอนเชอร์ TVCleanzer แต่ทีวียังไม่มี ติดตั้งได้ที่แท็บ «ลอนเชอร์»',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ไฟล์ส่งถึงแล้ว แต่ลอนเชอร์มองไม่เห็น อัปเดตลอนเชอร์บนทีวีแล้วลองอีกครั้ง',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'ทีวีเล่นวิดีโอนี้ไม่ได้ อาจเป็น 4K หรือไฟล์ใหญ่เกินไป เลือกวิดีโอ 1080p หรือที่สั้นกว่า ระหว่างนี้หน้าหลักจะแสดงรูปภาพ',
+    'Без рамки': 'ไม่มีกรอบ',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25350,6 +25374,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Achtergronden worden getoond door de TVCleanzer-launcher, en die staat niet op de tv. Installeer hem op het tabblad «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Het bestand is aangekomen, maar de launcher ziet het niet. Werk de launcher op de tv bij en probeer het opnieuw.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'De tv kon deze video niet afspelen — waarschijnlijk 4K of te zwaar. Kies een video in 1080p of een kortere. Voorlopig toont het startscherm de foto.',
+    'Без рамки': 'Zonder kader',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26364,6 +26389,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Tapetu zobrazuje launcher TVCleanzer a ten v televizoru není. Nainstalujte ho na kartě «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Soubor dorazil, ale launcher ho nevidí. Aktualizujte launcher v TV a zkuste to znovu.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor toto video nepřehrál — nejspíš je ve 4K nebo příliš těžké. Vyberte video v 1080p nebo kratší. Zatím bude na hlavní obrazovce fotka.',
+    'Без рамки': 'Bez rámečku',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27378,6 +27404,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Την ταπετσαρία τη δείχνει ο launcher TVCleanzer και η TV δεν τον έχει. Εγκαταστήστε τον στην καρτέλα «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Το αρχείο έφτασε, αλλά ο launcher δεν το βλέπει. Ενημερώστε τον launcher στην TV και δοκιμάστε ξανά.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Η TV δεν μπόρεσε να παίξει αυτό το βίντεο — μάλλον είναι 4K ή πολύ βαρύ. Επιλέξτε βίντεο 1080p ή μικρότερο. Προς το παρόν η αρχική οθόνη δείχνει τη φωτογραφία.',
+    'Без рамки': 'Χωρίς πλαίσιο',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28392,6 +28419,7 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'A hátteret a TVCleanzer launcher mutatja, és ez nincs a tévén. Telepítsd a «Launcher» lapon.',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'A fájl megérkezett, de a launcher nem látja. Frissítsd a launchert a tévén, és próbáld újra.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'A tévé nem tudta lejátszani ezt a videót — valószínűleg 4K vagy túl nagy. Válassz 1080p-s vagy rövidebb videót. Addig a kezdőképernyőn a fotó lesz.',
+    'Без рамки': 'Keret nélkül',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29406,5 +29434,6 @@ const Map<String, Map<String, String>> translations = {
     'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Bakgrunden visas av TVCleanzer-startprogrammet, och tv:n har det inte. Installera det på fliken «Launcher».',
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Filen kom fram, men startprogrammet ser den inte. Uppdatera startprogrammet på tv:n och försök igen.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Tv:n kunde inte spela upp videon — troligen 4K eller för tung. Välj en video i 1080p eller en kortare. Tills vidare visar startskärmen fotot.',
+    'Без рамки': 'Utan ram',
   },
 };

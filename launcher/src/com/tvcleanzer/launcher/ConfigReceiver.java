@@ -71,6 +71,7 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.getBooleanExtra("resetFavorites", false)) p.resetFavorites();
         if (intent.hasExtra("anim")) p.setAnim(intent.getIntExtra("anim", Prefs.ANIM_FULL));
         if (intent.hasExtra("ringAccent")) p.setRingAccent(intent.getBooleanExtra("ringAccent", false));
+        if (intent.hasExtra("ringOff")) p.setRingOff(intent.getBooleanExtra("ringOff", false));
         if (intent.hasExtra("tiles")) p.setTileSize(intent.getIntExtra("tiles", Prefs.TILES_NORMAL));
         if (intent.hasExtra("wallDim")) p.setWallDim(intent.getIntExtra("wallDim", 40));
         if (intent.hasExtra("ambient")) p.setAmbient(intent.getBooleanExtra("ambient", true));

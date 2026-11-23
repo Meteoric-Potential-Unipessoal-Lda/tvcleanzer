@@ -1140,7 +1140,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         favorites = kids ? new ArrayList<AppEntry>() : resolveFavorites(hidden);
         final int size = prefs.tileSize();
         final int anim = prefs.anim();
-        final int ringColor = prefs.ringAccent() ? skin.accent : 0xF2FFFFFF;
+        // «Без рамки» (0.89): the selected app only grows; with animations off it keeps its frame,
+        // or nothing would show where the focus is
+        final int ringColor = prefs.ringOff() && anim != Prefs.ANIM_OFF ? 0
+                : prefs.ringAccent() ? skin.accent : 0xF2FFFFFF;
         final int cols = kids ? 4 : GRID_COLUMNS[size];
         gridCols = cols;
         final int favVisible = FAV_VISIBLE[size];
@@ -1359,6 +1362,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             page.addView(appsTitle);
             View firstRow = null;
             LinearLayout row = null;
+            // 0.89: «Круглые» makes the apps below circles too (an owner: like the favourites);
+            // each circle sits in the middle of its column so the grid keeps its lines
+            final boolean roundRest = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
+            final int rs = Math.min(tileW, Math.round(tileH * 1.2f));
             for (int i = 0; i < rest.size(); i++) {
                 if (i % cols == 0) {
                     row = row();
@@ -1366,10 +1373,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     page.addView(row);
                     if (firstRow == null) firstRow = row;
                 }
-                AppTile t = tile(rest.get(i), tileW, tileH, skin, kids || labelsAlways,
-                        kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), kids ? 1.08f : 1.12f, anim, ringColor);
+                AppTile t = roundRest
+                        ? tile(rest.get(i), rs, rs, skin, kids || labelsAlways,
+                                kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), 1.1f, anim, ringColor)
+                        : tile(rest.get(i), tileW, tileH, skin, kids || labelsAlways,
+                                kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), kids ? 1.08f : 1.12f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        roundRest ? tileW : ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 if (i % cols > 0) lp.leftMargin = gap;
                 row.addView(t, lp);
                 tiles.add(t);
