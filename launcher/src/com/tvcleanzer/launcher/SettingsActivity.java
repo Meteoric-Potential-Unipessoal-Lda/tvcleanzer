@@ -107,10 +107,12 @@ public class SettingsActivity extends Activity {
         addChoice(skin, T.t("Скорость живого фона"),
                 new String[]{T.t("Авто"), T.t("Быстро"), T.t("Медленно"), T.t("Очень медленно")},
                 indexOf(speeds, prefs.ambientSec()), i -> prefs.setAmbientSec(speeds[i]));
-        addChoice(skin, T.t("Подсветка выбора"), new String[]{T.t("Белая"), T.t("Цвет темы"), T.t("Без рамки")},
-                prefs.ringOff() ? 2 : prefs.ringAccent() ? 1 : 0, v -> {
+        addChoice(skin, T.t("Подсветка выбора"),
+                new String[]{T.t("Белая"), T.t("Цвет темы"), T.t("Без рамки"), T.t("Свечение")},
+                prefs.ringGlow() ? 3 : prefs.ringOff() ? 2 : prefs.ringAccent() ? 1 : 0, v -> {
+                    prefs.setRingGlow(v == 3);
                     prefs.setRingOff(v == 2);
-                    if (v != 2) prefs.setRingAccent(v == 1);
+                    if (v < 2) prefs.setRingAccent(v == 1);
                 });
         addToggle(skin, T.t("Только шестерёнка вверху"), prefs.cleanBar(), T.t("Включено"), T.t("Выключено"), prefs::setCleanBar);
         if (!prefs.cleanBar()) {

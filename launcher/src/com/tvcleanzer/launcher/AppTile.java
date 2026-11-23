@@ -29,6 +29,8 @@ final class AppTile extends LinearLayout {
     private final int w, h;
     /** Soft light across the top of the card while it is selected (a lifted, glossy card). */
     private final android.view.View gloss;
+    /** «Свечение» (0.92): the halo behind the card, in the app's colour; null otherwise. */
+    private final Glow glow;
 
     /** Told when a tile gets the focus («Витрина» shows that app above the row). */
     interface Hook { void focused(AppTile t); }
@@ -46,7 +48,8 @@ final class AppTile extends LinearLayout {
         this.app = app;
         this.labelsAlways = labelsAlways;
         this.anim = anim;
-        if (ringColor == 0) focusScale = Math.max(focusScale, 1.15f); // no frame: a 15 % lift shows the focus (0.90)
+        // no frame (0, «Без рамки») or the halo (1, «Свечение»): a 15 % lift shows the focus
+        if (ringColor == 0 || ringColor == 1) focusScale = Math.max(focusScale, 1.15f);
         // soft: half the lift, a bit slower; off: no movement at all (weak TVs)
         this.focusScale = anim == Prefs.ANIM_OFF ? 1f
                 : anim == Prefs.ANIM_SOFT ? 1f + (focusScale - 1f) * 0.5f : focusScale;
@@ -113,7 +116,18 @@ final class AppTile extends LinearLayout {
         // The ring is its own view just outside the card, above it: drawn on the card
         // itself it was cut by the card's rounded clip (owners: "выделение отрезано").
         int stroke = Ui.dp(c, 3);
-        ring = Ui.ring(ringColor, stroke, radius + stroke);
+        ring = Ui.ring(ringColor == 1 ? 0 : ringColor, stroke, radius + stroke);
+        if (ringColor == 1) {
+            float gp = Math.max(Ui.dp(c, 14), Math.min(w, h) * 0.16f);
+            glow = new Glow(c, gp, radius);
+            FrameLayout.LayoutParams glp = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+            int g = Math.round(gp);
+            glp.setMargins(-g, -g, -g, -g);
+            holder.addView(glow, 0, glp); // behind the card
+        } else {
+            glow = null;
+        }
         ringView = new android.view.View(c);
         ringView.setBackground(ring);
         ringView.setOutlineProvider(null); // no shadow of its own
@@ -147,6 +161,7 @@ final class AppTile extends LinearLayout {
         card.setElevation(0);
         ring.setShape(GradientDrawable.OVAL);
         gloss.setVisibility(GONE);
+        if (glow != null) { glow.oval = true; glow.invalidate(); }
     }
 
     /** Size of the card itself (what the art is drawn for). */
@@ -171,6 +186,7 @@ final class AppTile extends LinearLayout {
         }
         art.setLayoutParams(lp);
         art.setImageDrawable(d);
+        if (glow != null) glow.setColor(Glow.colourOf(d));
         if (anim == Prefs.ANIM_OFF) {
             art.setAlpha(1f);
         } else {
@@ -191,7 +207,11 @@ final class AppTile extends LinearLayout {
         float z = anim == Prefs.ANIM_OFF ? 0 : Ui.dp(getContext(), anim == Prefs.ANIM_SOFT ? 10 : 20);
         holder.animate().scaleX(s).scaleY(s).setDuration(duration).setInterpolator(EASE).start();
         card.animate().translationZ(has ? z : 0).setDuration(duration).setInterpolator(EASE).start();
-        ringView.setVisibility(has ? VISIBLE : INVISIBLE);
+        ringView.setVisibility(has && glow == null ? VISIBLE : INVISIBLE);
+        if (glow != null) {
+            if (anim == Prefs.ANIM_OFF) glow.setAlpha(has ? 1f : 0f);
+            else glow.animate().alpha(has ? 1f : 0f).setDuration(duration).start();
+        }
         if (labelsAlways) {
             label.animate().alpha(has ? 1f : .75f).setDuration(Math.min(duration, 150)).start();
         } else {

@@ -40,6 +40,7 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"anim", p.anim()});
             c.addRow(new Object[]{"ringAccent", p.ringAccent() ? 1 : 0});
             c.addRow(new Object[]{"ringOff", p.ringOff() ? 1 : 0});
+            c.addRow(new Object[]{"ringGlow", p.ringGlow() ? 1 : 0});
             c.addRow(new Object[]{"tiles", p.tileSize()});
             c.addRow(new Object[]{"wallDim", p.wallDim()});
             c.addRow(new Object[]{"ambient", p.ambient() ? 1 : 0});

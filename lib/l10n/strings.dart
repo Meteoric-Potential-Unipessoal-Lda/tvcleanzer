@@ -1015,6 +1015,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'The file arrived, but the launcher doesn’t see it. Update the launcher on the TV and try again.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'The TV couldn’t play this video — most likely it is 4K or too heavy. Pick a 1080p or shorter video. The photo stays on the home screen for now.',
     'Без рамки': 'No frame',
+    'Свечение': 'Glow',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2030,6 +2031,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл дійшов, але лаунчер його не бачить. Оновіть лаунчер на ТВ і спробуйте знову.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Телевізор не зміг показати це відео — найімовірніше, воно в 4K або занадто важке. Виберіть відео в 1080p або коротше. Поки на головному екрані буде фото.',
     'Без рамки': 'Без рамки',
+    'Свечение': 'Сяйво',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3045,6 +3047,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'El archivo llegó, pero el launcher no lo ve. Actualiza el launcher en la TV y vuelve a intentarlo.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV no pudo reproducir este vídeo: seguramente es 4K o demasiado pesado. Elige un vídeo en 1080p o más corto. Mientras tanto, en inicio se verá la foto.',
     'Без рамки': 'Sin marco',
+    'Свечение': 'Brillo',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4060,6 +4063,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'O ficheiro chegou, mas o launcher não o vê. Atualize o launcher na TV e tente de novo.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'A TV não conseguiu reproduzir este vídeo — provavelmente é 4K ou demasiado pesado. Escolha um vídeo em 1080p ou mais curto. Por agora, o ecrã inicial mostra a foto.',
     'Без рамки': 'Sem moldura',
+    'Свечение': 'Brilho',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5075,6 +5079,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Die Datei ist angekommen, aber der Launcher sieht sie nicht. Aktualisiere den Launcher auf dem TV und versuche es erneut.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Der TV konnte dieses Video nicht abspielen – wahrscheinlich 4K oder zu groß. Wähle ein Video in 1080p oder ein kürzeres. Bis dahin zeigt der Startbildschirm das Foto.',
     'Без рамки': 'Ohne Rahmen',
+    'Свечение': 'Leuchten',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6090,6 +6095,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Le fichier est arrivé, mais le launcher ne le voit pas. Mettez à jour le launcher sur la TV et réessayez.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV n’a pas pu lire cette vidéo : elle est sans doute en 4K ou trop lourde. Choisissez une vidéo en 1080p ou plus courte. En attendant, l’accueil affiche la photo.',
     'Без рамки': 'Sans cadre',
+    'Свечение': 'Halo',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7105,6 +7111,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Il file è arrivato, ma il launcher non lo vede. Aggiorna il launcher sulla TV e riprova.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV non è riuscita a riprodurre questo video: probabilmente è 4K o troppo pesante. Scegli un video in 1080p o più corto. Intanto la Home mostra la foto.',
     'Без рамки': 'Senza cornice',
+    'Свечение': 'Bagliore',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8120,6 +8127,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл дайшоў, але лаўнчар яго не бачыць. Абнавіце лаўнчар на ТБ і паспрабуйце зноў.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Тэлевізар не змог паказаць гэтае відэа — хутчэй за ўсё, яно ў 4K або занадта цяжкае. Выберыце відэа ў 1080p або карацейшае. Пакуль на галоўным экране будзе фота.',
     'Без рамки': 'Без рамкі',
+    'Свечение': 'Ззянне',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9135,6 +9143,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл жетті, бірақ лаунчер оны көрмейді. ТД-дағы лаунчерді жаңартып, қайталап көріңіз.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Теледидар бұл бейнені көрсете алмады — бәлкім, ол 4K немесе тым ауыр. 1080p немесе қысқарақ бейне таңдаңыз. Әзірге басты экранда фото тұрады.',
     'Без рамки': 'Жиексіз',
+    'Свечение': 'Жарқырау',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10150,6 +10159,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fayl yetib keldi, lekin launcher uni ko‘rmayapti. TVdagi launcherni yangilang va qayta urinib ko‘ring.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor bu videoni ko‘rsata olmadi — ehtimol, u 4K yoki juda og‘ir. 1080p yoki qisqaroq video tanlang. Hozircha bosh ekranda rasm turadi.',
     'Без рамки': 'Ramkasiz',
+    'Свечение': 'Yorqinlik',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11165,6 +11175,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Ֆայլը հասավ, բայց լաունչերը այն չի տեսնում։ Թարմացրեք լաունչերը հեռուստացույցում և նորից փորձեք։',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Հեռուստացույցը չկարողացավ ցույց տալ այս տեսանյութը․ հավանաբար այն 4K է կամ չափազանց ծանր։ Ընտրեք 1080p կամ ավելի կարճ տեսանյութ։ Առայժմ գլխավոր էկրանին կլինի լուսանկարը։',
     'Без рамки': 'Առանց շրջանակի',
+    'Свечение': 'Լուսարձակում',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12180,6 +12191,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fayl çatdı, amma launcher onu görmür. TV-dəki launcheri yeniləyin və yenidən cəhd edin.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor bu videonu göstərə bilmədi — yəqin ki, 4K-dır və ya çox ağırdır. 1080p və ya daha qısa video seçin. Hələlik əsas ekranda şəkil olacaq.',
     'Без рамки': 'Çərçivəsiz',
+    'Свечение': 'Parıltı',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13195,6 +13207,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ფაილი მივიდა, მაგრამ ლაუნჩერი მას ვერ ხედავს. განაახლეთ ლაუნჩერი ტელევიზორზე და სცადეთ თავიდან.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'ტელევიზორმა ვერ აჩვენა ეს ვიდეო — სავარაუდოდ, ის 4K-ია ან ძალიან მძიმე. აირჩიეთ 1080p ან უფრო მოკლე ვიდეო. ჯერჯერობით მთავარ ეკრანზე ფოტო იქნება.',
     'Без рамки': 'ჩარჩოს გარეშე',
+    'Свечение': 'ნათება',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14210,6 +14223,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл жетти, бирок лаунчер аны көрбөй жатат. Сыналгыдагы лаунчерди жаңыртып, кайра аракет кылыңыз.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Сыналгы бул видеону көрсөтө алган жок — балким, ал 4K же өтө оор. 1080p же кыскараак видео тандаңыз. Азырынча башкы экранда сүрөт турат.',
     'Без рамки': 'Алкаксыз',
+    'Свечение': 'Жаркыроо',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15225,6 +15239,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Dosya ulaştı ama başlatıcı onu görmüyor. TV’deki başlatıcıyı güncelleyip tekrar deneyin.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV bu videoyu oynatamadı — büyük olasılıkla 4K ya da çok ağır. 1080p veya daha kısa bir video seçin. Şimdilik ana ekranda fotoğraf kalacak.',
     'Без рамки': 'Çerçevesiz',
+    'Свечение': 'Parıltı',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16240,6 +16255,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Plik dotarł, ale launcher go nie widzi. Zaktualizuj launcher na TV i spróbuj ponownie.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Telewizor nie odtworzył tego wideo — pewnie jest w 4K albo za ciężkie. Wybierz wideo w 1080p lub krótsze. Na razie na ekranie głównym będzie zdjęcie.',
     'Без рамки': 'Bez ramki',
+    'Свечение': 'Poświata',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17255,6 +17271,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fișierul a ajuns, dar launcherul nu îl vede. Actualizează launcherul pe TV și încearcă din nou.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizorul nu a putut reda acest video — probabil e 4K sau prea mare. Alege un video în 1080p sau mai scurt. Deocamdată ecranul principal arată fotografia.',
     'Без рамки': 'Fără chenar',
+    'Свечение': 'Strălucire',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18270,6 +18287,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': '文件已送达，但启动器看不到它。请更新电视上的启动器后重试。',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': '电视无法播放这个视频——很可能是 4K 或文件太大。请选择 1080p 或更短的视频。主屏暂时显示照片。',
     'Без рамки': '无边框',
+    'Свечение': '光晕',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19285,6 +19303,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ファイルは届きましたが、ランチャーが認識していません。テレビのランチャーを更新してもう一度お試しください。',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'テレビがこの動画を再生できませんでした。4K か重すぎる可能性があります。1080p か短い動画を選んでください。ホーム画面にはしばらく写真が表示されます。',
     'Без рамки': '枠なし',
+    'Свечение': '光彩',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20300,6 +20319,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': '파일은 도착했지만 런처가 인식하지 못합니다. TV의 런처를 업데이트하고 다시 시도하세요.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV가 이 동영상을 재생하지 못했습니다. 4K이거나 너무 무거운 것 같습니다. 1080p 또는 더 짧은 동영상을 선택하세요. 당분간 홈 화면에는 사진이 표시됩니다.',
     'Без рамки': '테두리 없음',
+    'Свечение': '글로우',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21315,6 +21335,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'फ़ाइल पहुँच गई, लेकिन लॉन्चर उसे नहीं देख रहा। टीवी पर लॉन्चर अपडेट करें और फिर कोशिश करें।',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'टीवी यह वीडियो नहीं चला सका — शायद यह 4K है या बहुत भारी है। 1080p या छोटा वीडियो चुनें। तब तक होम स्क्रीन पर फ़ोटो रहेगी।',
     'Без рамки': 'बिना फ़्रेम',
+    'Свечение': 'चमक',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22330,6 +22351,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'File sudah sampai, tetapi launcher tidak melihatnya. Perbarui launcher di TV lalu coba lagi.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV tidak bisa memutar video ini — kemungkinan 4K atau terlalu berat. Pilih video 1080p atau yang lebih pendek. Untuk sementara layar utama menampilkan foto.',
     'Без рамки': 'Tanpa bingkai',
+    'Свечение': 'Pendar',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23345,6 +23367,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Tệp đã đến nơi nhưng launcher không thấy. Hãy cập nhật launcher trên TV rồi thử lại.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV không phát được video này — có lẽ là 4K hoặc quá nặng. Hãy chọn video 1080p hoặc ngắn hơn. Tạm thời màn hình chính sẽ hiện ảnh.',
     'Без рамки': 'Không viền',
+    'Свечение': 'Phát sáng',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24360,6 +24383,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ไฟล์ส่งถึงแล้ว แต่ลอนเชอร์มองไม่เห็น อัปเดตลอนเชอร์บนทีวีแล้วลองอีกครั้ง',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'ทีวีเล่นวิดีโอนี้ไม่ได้ อาจเป็น 4K หรือไฟล์ใหญ่เกินไป เลือกวิดีโอ 1080p หรือที่สั้นกว่า ระหว่างนี้หน้าหลักจะแสดงรูปภาพ',
     'Без рамки': 'ไม่มีกรอบ',
+    'Свечение': 'เรืองแสง',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25375,6 +25399,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Het bestand is aangekomen, maar de launcher ziet het niet. Werk de launcher op de tv bij en probeer het opnieuw.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'De tv kon deze video niet afspelen — waarschijnlijk 4K of te zwaar. Kies een video in 1080p of een kortere. Voorlopig toont het startscherm de foto.',
     'Без рамки': 'Zonder kader',
+    'Свечение': 'Gloed',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26390,6 +26415,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Soubor dorazil, ale launcher ho nevidí. Aktualizujte launcher v TV a zkuste to znovu.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor toto video nepřehrál — nejspíš je ve 4K nebo příliš těžké. Vyberte video v 1080p nebo kratší. Zatím bude na hlavní obrazovce fotka.',
     'Без рамки': 'Bez rámečku',
+    'Свечение': 'Záře',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27405,6 +27431,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Το αρχείο έφτασε, αλλά ο launcher δεν το βλέπει. Ενημερώστε τον launcher στην TV και δοκιμάστε ξανά.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Η TV δεν μπόρεσε να παίξει αυτό το βίντεο — μάλλον είναι 4K ή πολύ βαρύ. Επιλέξτε βίντεο 1080p ή μικρότερο. Προς το παρόν η αρχική οθόνη δείχνει τη φωτογραφία.',
     'Без рамки': 'Χωρίς πλαίσιο',
+    'Свечение': 'Λάμψη',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28420,6 +28447,7 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'A fájl megérkezett, de a launcher nem látja. Frissítsd a launchert a tévén, és próbáld újra.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'A tévé nem tudta lejátszani ezt a videót — valószínűleg 4K vagy túl nagy. Válassz 1080p-s vagy rövidebb videót. Addig a kezdőképernyőn a fotó lesz.',
     'Без рамки': 'Keret nélkül',
+    'Свечение': 'Ragyogás',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29435,5 +29463,6 @@ const Map<String, Map<String, String>> translations = {
     'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Filen kom fram, men startprogrammet ser den inte. Uppdatera startprogrammet på tv:n och försök igen.',
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Tv:n kunde inte spela upp videon — troligen 4K eller för tung. Välj en video i 1080p eller en kortare. Tills vidare visar startskärmen fotot.',
     'Без рамки': 'Utan ram',
+    'Свечение': 'Glöd',
   },
 };

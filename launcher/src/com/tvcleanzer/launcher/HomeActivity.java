@@ -1142,7 +1142,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final int anim = prefs.anim();
         // «Без рамки» (0.89): the selected app only grows; with animations off it keeps its frame,
         // or nothing would show where the focus is
-        final int ringColor = prefs.ringOff() && anim != Prefs.ANIM_OFF ? 0
+        // «Свечение» (0.92): 1 — AppTile draws a halo in the app's colour, shown with animations off too
+        final int ringColor = prefs.ringGlow() ? 1
+                : prefs.ringOff() && anim != Prefs.ANIM_OFF ? 0
                 : prefs.ringAccent() ? skin.accent : 0xF2FFFFFF;
         final int cols = kids ? 4 : GRID_COLUMNS[size];
         gridCols = cols;

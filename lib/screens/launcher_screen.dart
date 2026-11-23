@@ -578,9 +578,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
               // launcher 0.88: «Плитки» favourites turn round too, the hint about banners is gone
               need: 62),
         _pills(tr('Размер плиток'), tilesL, look.tiles, (v) => _setLook(look.copyWith(tiles: v))),
-        _pills(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет темы'), tr('Без рамки')],
-            look.ringOff ? 2 : (look.ringAccent ? 1 : 0),
-            (v) => _setLook(look.copyWith(ringAccent: v == 1, ringOff: v == 2))),
+        _pills(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет темы'), tr('Без рамки'), tr('Свечение')],
+            look.ringGlow ? 3 : (look.ringOff ? 2 : (look.ringAccent ? 1 : 0)),
+            (v) => _setLook(look.copyWith(ringAccent: v == 1, ringOff: v == 2, ringGlow: v == 3))),
         _sw(tr('Названия под всеми плитками'), tr('Иначе — только у выбранной'), look.labels,
             (v) => _setLook(look.copyWith(labels: v))),
         _sw(tr('Без названий приложений'), tr('Только значки: док и ряды станут ниже'), look.noLabels,
@@ -977,7 +977,7 @@ class _SkinPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ring = look.ringOff ? Colors.transparent : (look.ringAccent ? skin.accent : Colors.white);
+    final ring = look.ringOff || look.ringGlow ? Colors.transparent : (look.ringAccent ? skin.accent : Colors.white);
     final focusScale = switch (look.anim) { 2 => 1.0, 1 => 1.03, _ => 1.06 };
     final cols = const [7, 6, 5][look.tiles];
     final favs = const [5, 4, 3][look.tiles];
