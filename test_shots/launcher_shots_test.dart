@@ -98,6 +98,8 @@ Future<void> _shot(WidgetTester t, String name, _Apm apm, double h, List<String>
 void main() {
   setUpAll(() async {
     GoogleFonts.config.allowRuntimeFetching = false;
+    // test_shots/ is outside test/, so the analyzer doesn't know it's a test
+    // ignore: invalid_use_of_visible_for_testing_member
     SharedPreferences.setMockInitialValues({});
     await _fonts();
   });
