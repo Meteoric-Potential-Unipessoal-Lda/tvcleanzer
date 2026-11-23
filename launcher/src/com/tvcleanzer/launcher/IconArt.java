@@ -176,13 +176,12 @@ final class IconArt {
 
     /** A w×h card with the round icon in the middle, on the icon's own colour. */
     static Bitmap roundTile(Drawable icon, int w, int h) {
-        Bitmap ci = circle(icon, Math.round(Math.min(w, h) * 0.78f));
+        // the circle fills the card, no square plate behind it (0.73: «круг в квадрате»)
+        Bitmap ci = circle(icon, Math.min(w, h));
         if (ci == null) return null;
         try {
             Bitmap out = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(out);
-            int edge = ci.getPixel(ci.getWidth() / 2, Math.max(1, ci.getHeight() / 12));
-            plate(c, w, h, mix(0xFF000000 | edge, 0xFF000000, 0.45f));
             Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
             c.drawBitmap(ci, (w - ci.getWidth()) / 2f, (h - ci.getHeight()) / 2f, p);
             ci.recycle();

@@ -1568,6 +1568,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         AppTile t = new AppTile(this, AppEntry.special("tvcleanzer:dock" + glyph, label), size, size, skin, false, 12,
                 1.12f, anim, ringColor);
         t.setArt(new Glyphs.Face(glyph, round), true);
+        t.setRound(round);
         return t;
     }
 
@@ -2150,6 +2151,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             Drawable cached = artCache.get(k);
             if (cached != null) {
                 t.setArt(cached, Boolean.TRUE.equals(bannerCache.get(k)));
+                if (round && !small) t.setRound(Boolean.TRUE.equals(bannerCache.get(k)));
                 continue;
             }
             if (round) {
@@ -2164,6 +2166,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                         artCache.put(k, art);
                         bannerCache.put(k, fills);
                         t.setArt(art, fills);
+                        t.setRound(fills);
                     });
                 });
                 continue;

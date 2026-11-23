@@ -133,6 +133,20 @@ final class AppTile extends LinearLayout {
         setOnFocusChangeListener((v, has) -> onFocus(has));
     }
 
+    /** Round icons (0.73): the card itself becomes a circle — clear, so no square plate shows
+     *  round the round icon (owner's photo: «круглые иконки вписаны в квадратную»), and the
+     *  focus ring is a circle too. Square cards only. */
+    void setRound(boolean on) {
+        if (!on || Math.abs(w - h) > w * 0.2f) return;
+        GradientDrawable oval = new GradientDrawable();
+        oval.setShape(GradientDrawable.OVAL);
+        oval.setColor(0x00000000);
+        card.setBackground(oval);
+        card.setElevation(0);
+        ring.setShape(GradientDrawable.OVAL);
+        gloss.setVisibility(GONE);
+    }
+
     /** Size of the card itself (what the art is drawn for). */
     int cardW() { return w; }
     int cardH() { return h; }
