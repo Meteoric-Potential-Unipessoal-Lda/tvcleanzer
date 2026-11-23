@@ -41,8 +41,14 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
         if (b != null) b.delete();
     }
 
+    /** 0.86: told when the video can't play here (TCL: the photo stayed hidden behind a video
+     *  that never started — the owner saw only the theme), so the photo is shown instead. */
+    interface Listener { void failed(String why); }
+    Listener listener;
+
     private MediaPlayer player;
     private Surface surface;
+    private final Runnable stuck = () -> fail("not ready in 10 s");
     private boolean prepared, wanted;
     private int videoW, videoH;
 
@@ -62,6 +68,7 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
     /** The home screen is covered: give the decoder back. */
     void stop() {
         wanted = false;
+        removeCallbacks(stuck);
         release();
     }
 
@@ -82,22 +89,33 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
             m.setVolume(0f, 0f);
             m.setOnPreparedListener(mp -> {
                 if (player != mp) return;
+                removeCallbacks(stuck);
                 prepared = true;
                 videoW = mp.getVideoWidth();
                 videoH = mp.getVideoHeight();
+                HomeKeyService.log("live wallpaper: playing " + videoW + "x" + videoH);
                 fit();
                 if (wanted) mp.start();
             });
             m.setOnErrorListener((mp, what, extra) -> {
-                if (player == mp) release(); // the theme background stays visible behind
+                if (player == mp) fail("error " + what + "/" + extra);
                 return true;
             });
             player = m;
             m.prepareAsync();
+            postDelayed(stuck, 10_000);
         } catch (Exception e) {
             m.release();
             player = null;
+            fail(String.valueOf(e));
         }
+    }
+
+    private void fail(String why) {
+        removeCallbacks(stuck);
+        HomeKeyService.log("live wallpaper: can't play here (" + why + ")");
+        release(); // the theme background stays visible behind
+        if (listener != null) listener.failed(why);
     }
 
     private void release() {

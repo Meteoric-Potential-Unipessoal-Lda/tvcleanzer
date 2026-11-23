@@ -1149,7 +1149,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // With "change the home background" on, the photo-frame photos take turns instead.
         final List<java.io.File> photoList = !kids && prefs.homePhotos() ? Photos.list(this) : new ArrayList<java.io.File>();
         // «Живые обои»: the phone's video under everything (not with home photos, not for kids)
-        final boolean live = !kids && photoList.isEmpty() && prefs.liveWallOn() && LiveWall.exists(this);
+        if (liveFailedRev != prefs.wallpaperRev()) liveFailedRev = -1; // a new video: try it again
+        final boolean live = !kids && photoList.isEmpty() && prefs.liveWallOn() && LiveWall.exists(this)
+                && liveFailedRev != prefs.wallpaperRev();
         showLiveWall(live, prefs.wallpaperRev());
         String key = photoList.isEmpty() ? "w" + prefs.wallpaperRev() : "p" + prefs.photoRev();
         if (!key.equals(wallKey)) {
@@ -1916,6 +1918,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     // ── «Живые обои» (0.61+): a video view under [root] in [frame], kept across redraws ──
     private LiveWall liveWall;
+    /** The wallpaper revision whose video could not play here: the photo is shown instead. */
+    private long liveFailedRev = -1;
     private long liveRev;
 
     private void showLiveWall(boolean on, long rev) {
@@ -1929,6 +1933,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
         if (liveWall == null) {
             liveWall = new LiveWall(this);
+            liveWall.listener = why -> main.post(() -> {
+                liveFailedRev = prefs.wallpaperRev();
+                wallKey = ""; // load the photo now
+                build();
+            });
             frame.addView(liveWall, 0, new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
             frame.setBackground(Ui.background(prefs.skin())); // until the first frame

@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 85;
+  static const bundledLauncherVersion = 86;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1609,14 +1609,32 @@ class AdbPackageManager {
       if (!ok) {
         throw AdbException(tr('Телевизор не дал сохранить видео. Обновите лаунчер на ТВ и попробуйте снова.'));
       }
+      final before = await _liveLine(adb);
       await _broadcast(adb, '--es liveWall set --ez liveWallOn true');
       final st = await _launcherSettings(adb);
       AppLog.error('live wallpaper', 'sent ${length ~/ (1024 * 1024)} MB, SDK $sdk, launcher has it: ${st['liveWall'] ?? '?'}, on ${st['liveWallOn'] ?? '?'}');
       if (st['liveWall'] == '0') throw AdbException(tr('Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.'));
+      // 1.3.102: a clip the TV's decoder can't play (a TCL owner: «большие по размеру не ставятся»,
+      // a small one did). Launcher 0.86 says so in its log and shows the photo instead; when the
+      // home screen is in front we wait for its word.
+      if (await _frontPackage(adb) == launcherPkg) {
+        for (var i = 0; i < 12; i++) {
+          await Future<void>.delayed(const Duration(seconds: 1));
+          final now = await _liveLine(adb);
+          if (now.isEmpty || now == before) continue;
+          AppLog.error('live wallpaper', now);
+          if (now.contains("can't play")) throw AdbException(tr('Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.'));
+          break;
+        }
+      }
     } finally {
       adb.close();
     }
   }
+
+  /// The launcher's last word about the video (launcher 0.86+: «playing W×H» / «can't play here»).
+  Future<String> _liveLine(AdbClient adb) async =>
+      (await adb.shell('logcat -d -s TVCleanzerHome:I 2>/dev/null | grep "live wallpaper" | tail -1')).trim();
 
   Future<void> removeLiveWall(TvDevice device) => _apply(device, '--es liveWall none');
 
