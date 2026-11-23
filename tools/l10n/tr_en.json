@@ -1003,5 +1003,7 @@
 "The mouse works on Android 7 and newer with the «TVCleanzer: кнопка Домой» service on.",
 "Update the launcher on the TV: the mouse is in the new version.",
 "Couldn’t connect the mouse. Try again.",
-"Move a finger — pointer, tap — click, two fingers — scroll"
+"Move a finger — pointer, tap — click, two fingers — scroll",
+"The mouse works on Android 7 and newer.",
+"The mouse needs the «TVCleanzer: кнопка Домой» service on. Turn it on in the TV settings: Accessibility."
 ]

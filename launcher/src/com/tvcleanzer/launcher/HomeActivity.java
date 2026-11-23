@@ -1557,7 +1557,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             items.add(net);
             TopIcon vpn = new TopIcon(this, TopIcon.VPN_PLATE, 0, true);
             vpnMini = vpn;
-            vpn.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
+            vpn.setOnClickListener(v -> Vpn.open(this)); // the VPN app itself (0.78)
             items.add(vpn);
         }
         int bts = prefs.btPill() && !clean ? Bt.state(this) : Bt.NONE;

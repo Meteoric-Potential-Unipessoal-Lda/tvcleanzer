@@ -1007,6 +1007,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Update the launcher on the TV: the mouse is in the new version.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Couldn’t connect the mouse. Try again.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Move a finger — pointer, tap — click, two fingers — scroll',
+    'Мышь работает на Android 7 и новее.': 'The mouse works on Android 7 and newer.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'The mouse needs the «TVCleanzer: кнопка Домой» service on. Turn it on in the TV settings: Accessibility.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2014,6 +2016,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Оновіть лаунчер на ТВ: миша є в новій версії.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Не вдалося підключити мишу. Спробуйте ще раз.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Водіть пальцем — курсор, торкніться — клік, двома пальцями — прокрутка',
+    'Мышь работает на Android 7 и новее.': 'Миша працює на Android 7 і новіших.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Миші потрібна увімкнена служба «TVCleanzer: кнопка Домой». Увімкніть її в налаштуваннях ТВ: Спеціальні можливості.',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3021,6 +3025,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Actualiza el launcher en la TV: el ratón está en la nueva versión.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'No se pudo conectar el ratón. Inténtalo de nuevo.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Mueve el dedo — puntero, toca — clic, dos dedos — desplazar',
+    'Мышь работает на Android 7 и новее.': 'El ratón funciona en Android 7 o posterior.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'El ratón necesita el servicio «TVCleanzer: кнопка Домой» activado. Actívalo en los ajustes de la TV: Accesibilidad.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4028,6 +4034,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Atualize o launcher na TV: o rato está na nova versão.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Não foi possível ligar o rato. Tente de novo.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Mova o dedo — cursor, toque — clique, dois dedos — rolar',
+    'Мышь работает на Android 7 и новее.': 'O rato funciona no Android 7 ou superior.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'O rato precisa do serviço «TVCleanzer: кнопка Домой» ativo. Ative-o nas definições da TV: Acessibilidade.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5035,6 +5043,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Aktualisiere den Launcher auf dem TV: die Maus ist in der neuen Version.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Maus konnte nicht verbunden werden. Versuch es noch einmal.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Finger bewegen — Zeiger, tippen — Klick, zwei Finger — scrollen',
+    'Мышь работает на Android 7 и новее.': 'Die Maus läuft ab Android 7.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Die Maus braucht den Dienst «TVCleanzer: кнопка Домой». Schalte ihn in den TV-Einstellungen ein: Bedienungshilfen.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6042,6 +6052,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Mettez à jour le launcher sur la TV : la souris est dans la nouvelle version.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Impossible de connecter la souris. Réessayez.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Glissez le doigt — pointeur, touchez — clic, deux doigts — défiler',
+    'Мышь работает на Android 7 и новее.': 'La souris fonctionne sur Android 7 et plus.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'La souris a besoin du service «TVCleanzer: кнопка Домой». Activez-le dans les paramètres de la TV : Accessibilité.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7049,6 +7061,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Aggiorna il launcher sulla TV: il mouse è nella nuova versione.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Impossibile collegare il mouse. Riprova.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Muovi il dito — puntatore, tocca — clic, due dita — scorri',
+    'Мышь работает на Android 7 и новее.': 'Il mouse funziona su Android 7 e successivi.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Il mouse richiede il servizio «TVCleanzer: кнопка Домой». Attivalo nelle impostazioni della TV: Accessibilità.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8056,6 +8070,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Абнавіце лаўнчар на ТБ: мыш ёсць у новай версіі.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Не атрымалася падключыць мыш. Паспрабуйце яшчэ раз.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Вадзіце пальцам — курсор, дакраніцеся — клік, двума пальцамі — пракрутка',
+    'Мышь работает на Android 7 и новее.': 'Мыш працуе на Android 7 і навейшых.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Мышы патрэбна ўключаная служба «TVCleanzer: кнопка Домой». Уключыце яе ў наладах ТБ: Спецыяльныя магчымасці.',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9063,6 +9079,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'ТД-дағы лаунчерді жаңартыңыз: тінтуір жаңа нұсқада бар.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Тінтуірді қосу мүмкін болмады. Қайталап көріңіз.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Саусақты жүргізіңіз — курсор, түртіңіз — басу, екі саусақ — айналдыру',
+    'Мышь работает на Android 7 и новее.': 'Тінтуір Android 7 және жаңасында жұмыс істейді.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Тінтуірге «TVCleanzer: кнопка Домой» қызметі керек. Оны ТД баптауларында қосыңыз: Арнайы мүмкіндіктер.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10070,6 +10088,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'TVdagi launcherni yangilang: sichqoncha yangi versiyada bor.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Sichqonchani ulab boʻlmadi. Qayta urinib koʻring.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Barmoqni suring — kursor, teging — bosish, ikki barmoq — aylantirish',
+    'Мышь работает на Android 7 и новее.': 'Sichqoncha Android 7 va yangisida ishlaydi.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Sichqoncha uchun «TVCleanzer: кнопка Домой» xizmati yoqilgan boʻlishi kerak. Uni TV sozlamalarida yoqing: Maxsus imkoniyatlar.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11077,6 +11097,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Թարմացրեք լաունչերը հեռուստացույցում․ մկնիկը նոր տարբերակում է։',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Չհաջողվեց միացնել մկնիկը։ Փորձեք կրկին։',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Շարժեք մատը — կուրսոր, հպեք — սեղմում, երկու մատով — թերթել',
+    'Мышь работает на Android 7 и новее.': 'Մկնիկն աշխատում է Android 7 և նոր տարբերակներում։',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Մկնիկին պետք է միացված «TVCleanzer: кнопка Домой» ծառայությունը։ Միացրեք այն հեռուստացույցի կարգավորումներում՝ Հատուկ հնարավորություններ։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12084,6 +12106,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'TV-də launcheri yeniləyin: siçan yeni versiyadadır.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Siçanı qoşmaq alınmadı. Yenidən cəhd edin.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Barmağı sürüşdürün — kursor, toxunun — klik, iki barmaq — sürüşdürmə',
+    'Мышь работает на Android 7 и новее.': 'Siçan Android 7 və yeni versiyalarda işləyir.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Siçan üçün «TVCleanzer: кнопка Домой» xidməti açıq olmalıdır. Onu TV ayarlarında açın: Əlçatımlılıq.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13091,6 +13115,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'განაახლეთ ლაუნჩერი ტელევიზორზე: მაუსი ახალ ვერსიაშია.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'მაუსის დაკავშირება ვერ მოხერხდა. სცადეთ ხელახლა.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'გადაატარეთ თითი — კურსორი, შეეხეთ — დაწკაპება, ორი თითი — გადახვევა',
+    'Мышь работает на Android 7 и новее.': 'მაუსი მუშაობს Android 7-ზე და უფრო ახალზე.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'მაუსს სჭირდება ჩართული «TVCleanzer: кнопка Домой» სერვისი. ჩართეთ ტელევიზორის პარამეტრებში: მარტივი წვდომა.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14098,6 +14124,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Сыналгыдагы лаунчерди жаңыртыңыз: чычкан жаңы версияда бар.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Чычканды туташтыруу мүмкүн болбоду. Кайра аракет кылыңыз.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Манжаны жылдырыңыз — курсор, тийиңиз — басуу, эки манжа — сыдыруу',
+    'Мышь работает на Android 7 и новее.': 'Чычкан Android 7 жана жаңыраагында иштейт.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Чычканга «TVCleanzer: кнопка Домой» кызматы күйүк болушу керек. Аны сыналгынын жөндөөлөрүнөн күйгүзүңүз: Атайын мүмкүнчүлүктөр.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15105,6 +15133,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'TV’deki başlatıcıyı güncelleyin: fare yeni sürümde.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Fare bağlanamadı. Tekrar deneyin.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Parmağı kaydırın — imleç, dokunun — tıklama, iki parmak — kaydırma',
+    'Мышь работает на Android 7 и новее.': 'Fare Android 7 ve üzerinde çalışır.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Fare için «TVCleanzer: кнопка Домой» hizmeti açık olmalı. TV ayarlarından açın: Erişilebilirlik.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16112,6 +16142,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Zaktualizuj launcher na TV: mysz jest w nowej wersji.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Nie udało się połączyć myszy. Spróbuj ponownie.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Przesuń palec — kursor, dotknij — klik, dwa palce — przewijanie',
+    'Мышь работает на Android 7 и новее.': 'Mysz działa na Androidzie 7 i nowszym.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mysz potrzebuje włączonej usługi «TVCleanzer: кнопка Домой». Włącz ją w ustawieniach TV: Ułatwienia dostępu.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17119,6 +17151,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Actualizează launcherul pe TV: mouse-ul e în noua versiune.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Mouse-ul nu s-a putut conecta. Încearcă din nou.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Mișcă degetul — cursor, atinge — clic, două degete — derulare',
+    'Мышь работает на Android 7 и новее.': 'Mouse-ul merge pe Android 7 și mai nou.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mouse-ul are nevoie de serviciul «TVCleanzer: кнопка Домой» pornit. Pornește-l din setările TV: Accesibilitate.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18126,6 +18160,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': '请更新电视上的启动器：新版本支持鼠标。',
     'Не получилось подключить мышь. Попробуйте ещё раз.': '无法连接鼠标，请重试。',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': '滑动手指移动光标，轻点点击，双指滚动',
+    'Мышь работает на Android 7 и новее.': '鼠标需要 Android 7 及以上。',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': '鼠标需要开启「TVCleanzer: кнопка Домой」服务。请在电视设置的「无障碍」中开启。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19133,6 +19169,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'テレビのランチャーを更新してください。マウスは新しいバージョンにあります。',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'マウスを接続できませんでした。もう一度お試しください。',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': '指でなぞる — ポインター、タップ — クリック、2本指 — スクロール',
+    'Мышь работает на Android 7 и новее.': 'マウスは Android 7 以降で使えます。',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'マウスには「TVCleanzer: кнопка Домой」サービスが必要です。テレビの設定の「ユーザー補助」でオンにしてください。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20140,6 +20178,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'TV의 런처를 업데이트하세요. 새 버전에 마우스가 있습니다.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': '마우스를 연결하지 못했습니다. 다시 시도하세요.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': '손가락으로 움직이기 — 포인터, 탭 — 클릭, 두 손가락 — 스크롤',
+    'Мышь работает на Android 7 и новее.': '마우스는 Android 7 이상에서 작동합니다.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': '마우스를 쓰려면 «TVCleanzer: кнопка Домой» 서비스가 켜져 있어야 합니다. TV 설정의 접근성에서 켜세요.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21147,6 +21187,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'टीवी पर लॉन्चर अपडेट करें: माउस नए संस्करण में है।',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'माउस नहीं जुड़ सका। फिर से कोशिश करें।',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'उंगली चलाएँ — पॉइंटर, टैप — क्लिक, दो उंगलियाँ — स्क्रॉल',
+    'Мышь работает на Android 7 и новее.': 'माउस Android 7 और नए पर काम करता है।',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'माउस के लिए «TVCleanzer: кнопка Домой» सेवा चालू होनी चाहिए। इसे टीवी सेटिंग्स में चालू करें: सुलभता।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22154,6 +22196,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Perbarui launcher di TV: mouse ada di versi baru.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Gagal menghubungkan mouse. Coba lagi.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Geser jari — penunjuk, ketuk — klik, dua jari — gulir',
+    'Мышь работает на Android 7 и новее.': 'Mouse berfungsi di Android 7 ke atas.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mouse memerlukan layanan «TVCleanzer: кнопка Домой» aktif. Aktifkan di setelan TV: Aksesibilitas.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23161,6 +23205,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Hãy cập nhật launcher trên TV: chuột có trong phiên bản mới.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Không kết nối được chuột. Hãy thử lại.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Di ngón tay — con trỏ, chạm — nhấp, hai ngón — cuộn',
+    'Мышь работает на Android 7 и новее.': 'Chuột hoạt động trên Android 7 trở lên.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Chuột cần bật dịch vụ «TVCleanzer: кнопка Домой». Bật trong cài đặt TV: Hỗ trợ tiếp cận.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24168,6 +24214,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'อัปเดตลอนเชอร์บนทีวี: เมาส์อยู่ในเวอร์ชันใหม่',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'เชื่อมต่อเมาส์ไม่ได้ ลองอีกครั้ง',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'ลากนิ้ว — ตัวชี้ แตะ — คลิก สองนิ้ว — เลื่อน',
+    'Мышь работает на Android 7 и новее.': 'เมาส์ใช้ได้บน Android 7 ขึ้นไป',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'เมาส์ต้องเปิดบริการ «TVCleanzer: кнопка Домой» เปิดได้ในการตั้งค่าทีวี: การช่วยเหลือพิเศษ',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25175,6 +25223,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Werk de launcher op de tv bij: de muis zit in de nieuwe versie.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Kon de muis niet verbinden. Probeer het opnieuw.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Vinger bewegen — aanwijzer, tikken — klik, twee vingers — scrollen',
+    'Мышь работает на Android 7 и новее.': 'De muis werkt op Android 7 en nieuwer.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'De muis heeft de dienst «TVCleanzer: кнопка Домой» nodig. Zet hem aan in de tv-instellingen: Toegankelijkheid.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26182,6 +26232,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Aktualizujte launcher na TV: myš je v nové verzi.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Myš se nepodařilo připojit. Zkuste to znovu.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Pohyb prstem — kurzor, klepnutí — klik, dva prsty — posun',
+    'Мышь работает на Android 7 и новее.': 'Myš funguje na Androidu 7 a novějším.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Myš potřebuje zapnutou službu «TVCleanzer: кнопка Домой». Zapněte ji v nastavení TV: Přístupnost.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27189,6 +27241,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Ενημερώστε τον launcher στην TV: το ποντίκι είναι στη νέα έκδοση.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Το ποντίκι δεν συνδέθηκε. Δοκιμάστε ξανά.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Κινήστε το δάχτυλο — δείκτης, πατήστε — κλικ, δύο δάχτυλα — κύλιση',
+    'Мышь работает на Android 7 и новее.': 'Το ποντίκι λειτουργεί σε Android 7 και νεότερα.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Το ποντίκι χρειάζεται την υπηρεσία «TVCleanzer: кнопка Домой». Ενεργοποιήστε τη στις ρυθμίσεις της TV: Προσβασιμότητα.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28196,6 +28250,8 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Frissítsd a launchert a tévén: az egér az új verzióban van.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Nem sikerült csatlakoztatni az egeret. Próbáld újra.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Ujj mozgatása — mutató, koppintás — kattintás, két ujj — görgetés',
+    'Мышь работает на Android 7 и новее.': 'Az egér Android 7-től működik.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Az egérhez be kell kapcsolni a «TVCleanzer: кнопка Домой» szolgáltatást. Kapcsold be a tévé beállításaiban: Kisegítő lehetőségek.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29203,5 +29259,7 @@ const Map<String, Map<String, String>> translations = {
     'Обновите лаунчер на ТВ: мышь есть в новой версии.': 'Uppdatera startprogrammet på tv:n: musen finns i den nya versionen.',
     'Не получилось подключить мышь. Попробуйте ещё раз.': 'Kunde inte ansluta musen. Försök igen.',
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Dra fingret — pekare, tryck — klick, två fingrar — rulla',
+    'Мышь работает на Android 7 и новее.': 'Musen fungerar på Android 7 och senare.',
+    'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Musen behöver tjänsten «TVCleanzer: кнопка Домой». Slå på den i tv:ns inställningar: Tillgänglighet.',
   },
 };

@@ -27,11 +27,13 @@ public class ConfigReceiver extends BroadcastReceiver {
         }
         if (!"com.tvcleanzer.launcher.APPLY".equals(intent.getAction())) return;
         if (intent.hasExtra("mouse")) {
-            // the virtual mouse (0.77): 1 listening, 2 no service running or Android before 7
+            // the virtual mouse (0.77): 1 listening, 2 the Home-key service is not running,
+            // 3 Android before 7, 4 the pointer could not start (0.78: told apart)
             HomeKeyService s = HomeKeyService.running;
             boolean on = intent.getBooleanExtra("mouse", false);
+            if (android.os.Build.VERSION.SDK_INT < 24) { setResultCode(3); return; }
             if (s == null) { setResultCode(2); return; }
-            if (on) setResultCode(s.mouse().start() ? 1 : 2);
+            if (on) setResultCode(s.mouse().start() ? 1 : 4);
             else { s.mouse().stop(); setResultCode(1); }
             return;
         }

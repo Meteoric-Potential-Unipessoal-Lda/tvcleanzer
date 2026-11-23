@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 77;
+  static const bundledLauncherVersion = 78;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1900,6 +1900,9 @@ class AdbPackageManager {
   /// Turns the Home-key service on and makes sure Android has started it. Off/on only when it
   /// is listed but not running, with pauses: a toggle within the same second can leave it
   /// enabled-but-unbound until the next reboot.
+  /// The virtual mouse draws through the Home-key service: on and running first.
+  Future<void> ensureHomeKeyService(AdbClient adb) => _ensureHomeKeyService(adb);
+
   Future<void> _ensureHomeKeyService(AdbClient adb) async {
     final raw = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
     final listed = raw.split(':').contains(_homeKeyService);

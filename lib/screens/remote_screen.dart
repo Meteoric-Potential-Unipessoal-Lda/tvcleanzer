@@ -77,7 +77,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       _mouseOpening = true;
       _mouseErr = null;
     });
-    final link = _MouseLink();
+    final link = _MouseLink(ref.read(adbServiceProvider).ensureHomeKeyService);
     final err = await link.open(tv);
     if (!mounted || _mode != 2) {
       link.close();
@@ -1156,6 +1156,8 @@ class _RockerState extends State<_Rocker> {
 /// listens on the TV's loopback, an ADB «tcp:» stream reaches it. Moves are gathered and sent
 /// every frame, in units of a 1920-wide screen.
 class _MouseLink {
+  _MouseLink(this._ensure);
+  final Future<void> Function(AdbClient) _ensure;
   AdbClient? _c;
   AdbStream? _s;
   double _dx = 0, _dy = 0;
@@ -1167,13 +1169,23 @@ class _MouseLink {
       final c = AdbClient.open(host: tv.ipAddress, port: tv.port);
       _c = c;
       await c.connect();
-      final out = await c.shell('am broadcast -n com.tvcleanzer.launcher/.ConfigReceiver '
-          '-a com.tvcleanzer.launcher.APPLY --ez mouse true 2>&1');
+      const start = 'am broadcast -n com.tvcleanzer.launcher/.ConfigReceiver '
+          '-a com.tvcleanzer.launcher.APPLY --ez mouse true 2>&1';
+      var out = await c.shell(start);
+      if (out.contains('result=2')) {
+        // the Home-key service was off or not running (a Google TV owner): switch it on and retry
+        await _ensure(c);
+        out = await c.shell(start);
+      }
       if (!out.contains('result=1')) {
+        AppLog.error('mouse', out.trim());
         close();
-        return out.contains('result=2')
-            ? tr('Мышь работает на Android 7 и новее, когда включена служба «TVCleanzer: кнопка Домой».')
-            : tr('Обновите лаунчер на ТВ: мышь есть в новой версии.');
+        if (out.contains('result=3')) return tr('Мышь работает на Android 7 и новее.');
+        if (out.contains('result=2')) {
+          return tr('Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.');
+        }
+        if (out.contains('result=4')) return tr('Не получилось подключить мышь. Попробуйте ещё раз.');
+        return tr('Обновите лаунчер на ТВ: мышь есть в новой версии.');
       }
       await Future<void>.delayed(const Duration(milliseconds: 250));
       _s = await c.openStream('tcp:47291');
