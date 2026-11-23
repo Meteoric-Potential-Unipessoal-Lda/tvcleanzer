@@ -210,5 +210,12 @@
 "Открываем видео…": "Membuka video…",
 "ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — jeda · ◀ ▶ — 10 detik · ▲ ▼ — satu menit · «Kembali» — tutup",
 "Включены": "Aktif",
-"Убрать живые обои": "Hapus wallpaper hidup"
+"Убрать живые обои": "Hapus wallpaper hidup",
+"выключен": "mati",
+"Выключить Bluetooth": "Matikan Bluetooth",
+"Включить Bluetooth": "Nyalakan Bluetooth",
+"Настройки Bluetooth": "Setelan Bluetooth",
+"Выключить Bluetooth?": "Matikan Bluetooth?",
+"Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Ada remote atau keyboard yang terhubung lewat Bluetooth: setelah dimatikan tidak akan berfungsi. Nyalakan lagi dengan tombol di TV atau dari TVCleanzer di ponsel («Remote»).",
+"На этом телевизоре Bluetooth переключается в его настройках": "Di TV ini Bluetooth diubah lewat setelannya"
 }

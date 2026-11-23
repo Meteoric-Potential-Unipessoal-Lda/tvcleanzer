@@ -76,6 +76,7 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.hasExtra("homePhotos")) p.setHomePhotos(intent.getBooleanExtra("homePhotos", false));
         if (intent.hasExtra("splash")) p.setSplash(intent.getBooleanExtra("splash", true));
         if (intent.hasExtra("memPill")) p.setMemPill(intent.getBooleanExtra("memPill", true));
+        if (intent.hasExtra("btPill")) p.setBtPill(intent.getBooleanExtra("btPill", true));
         if (intent.hasExtra("cleanBar")) p.setCleanBar(intent.getBooleanExtra("cleanBar", false));
         if (intent.hasExtra("heroTitle")) p.setHeroTitle(intent.getBooleanExtra("heroTitle", true));
         if (intent.hasExtra("greeting")) p.setGreeting(intent.getBooleanExtra("greeting", true));

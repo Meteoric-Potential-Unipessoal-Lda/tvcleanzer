@@ -210,5 +210,12 @@
 "Открываем видео…": "Video açılır…",
 "ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — fasilə · ◀ ▶ — 10 saniyə · ▲ ▼ — bir dəqiqə · «Geri» — bağla",
 "Включены": "Açıqdır",
-"Убрать живые обои": "Canlı fonu götür"
+"Убрать живые обои": "Canlı fonu götür",
+"выключен": "sönülü",
+"Выключить Bluetooth": "Bluetooth-u söndür",
+"Включить Bluetooth": "Bluetooth-u yandır",
+"Настройки Bluetooth": "Bluetooth ayarları",
+"Выключить Bluetooth?": "Bluetooth söndürülsün?",
+"Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Pult və ya klaviatura Bluetooth ilə qoşulub: söndürdükdən sonra işləməyəcək. Yenidən yandırmaq televizorun öz düymələri ilə və ya telefondakı TVCleanzer-dən olar («Pult»).",
+"На этом телевизоре Bluetooth переключается в его настройках": "Bu televizorda Bluetooth ayarlarda dəyişdirilir"
 }

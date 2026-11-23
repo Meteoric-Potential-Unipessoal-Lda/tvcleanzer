@@ -210,5 +210,12 @@
 "Открываем видео…": "Deschidem videoclipul…",
 "ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — pauză · ◀ ▶ — 10 secunde · ▲ ▼ — un minut · «Înapoi» — închide",
 "Включены": "Pornit",
-"Убрать живые обои": "Scoate fundalul animat"
+"Убрать живые обои": "Scoate fundalul animat",
+"выключен": "oprit",
+"Выключить Bluetooth": "Oprește Bluetooth",
+"Включить Bluetooth": "Pornește Bluetooth",
+"Настройки Bluetooth": "Setări Bluetooth",
+"Выключить Bluetooth?": "Oprești Bluetooth?",
+"Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "O telecomandă sau o tastatură e conectată prin Bluetooth: nu va mai funcționa. Îl repornești din butoanele televizorului sau din TVCleanzer de pe telefon («Telecomandă»).",
+"На этом телевизоре Bluetooth переключается в его настройках": "Pe acest televizor Bluetooth se schimbă din setări"
 }

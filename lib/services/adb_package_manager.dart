@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 62;
+  static const bundledLauncherVersion = 63;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -967,6 +967,10 @@ class AdbPackageManager {
     // «Запущенные»: the launcher's own recent-apps row reads usage stats (Android 5.1+)
     if (sdk >= 22) {
       await adb.shell('appops set $launcherPkg GET_USAGE_STATS allow 2>&1');
+    }
+    // Bluetooth pill (0.63): what is connected needs BLUETOOTH_CONNECT on Android 12+
+    if (sdk >= 31) {
+      await adb.shell('pm grant $launcherPkg android.permission.BLUETOOTH_CONNECT 2>&1');
     }
     // «Экран гаснет без пульта» in the launcher's own settings (0.59): the screen timeout
     if (sdk >= 23) {

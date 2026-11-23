@@ -981,6 +981,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'The TV refused the connection. We’ll ask again shortly — press «OK» on the TV.',
     'На телефоне включён VPN — выключите его на время подключения.': 'A VPN is on on the phone — turn it off while connecting.',
     'Пошаговое подключение': 'Step-by-step connection',
+    'Bluetooth на главном экране': 'Bluetooth on the home screen',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Whether it’s on and what’s connected; press to turn on, off or open settings',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -1962,6 +1964,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Телевізор відмовив у підключенні. Незабаром запитаємо знову — на телевізорі натисніть «ОК».',
     'На телефоне включён VPN — выключите его на время подключения.': 'На телефоні ввімкнено VPN — вимкніть його на час підключення.',
     'Пошаговое подключение': 'Покрокове підключення',
+    'Bluetooth на главном экране': 'Bluetooth на головному екрані',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Чи ввімкнено й що підключено; натискання — увімкнути, вимкнути або відкрити налаштування',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -2943,6 +2947,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'La tele rechazó la conexión. Volveremos a preguntar enseguida: pulsa «OK» en la tele.',
     'На телефоне включён VPN — выключите его на время подключения.': 'El VPN del teléfono está activo: desactívalo mientras te conectas.',
     'Пошаговое подключение': 'Conexión paso a paso',
+    'Bluetooth на главном экране': 'Bluetooth en la pantalla de inicio',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Si está activado y qué hay conectado; al pulsar: activar, desactivar o abrir ajustes',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -3924,6 +3930,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'A TV recusou a ligação. Vamos perguntar de novo em breve — carregue em «OK» na TV.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Há uma VPN ativa no telemóvel — desligue-a enquanto liga a TV.',
     'Пошаговое подключение': 'Ligação passo a passo',
+    'Bluetooth на главном экране': 'Bluetooth no ecrã inicial',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Se está ligado e o que está ligado a ele; ao carregar: ligar, desligar ou abrir definições',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -4905,6 +4913,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Der Fernseher hat die Verbindung abgelehnt. Wir fragen gleich noch einmal – drücke am Fernseher «OK».',
     'На телефоне включён VPN — выключите его на время подключения.': 'Auf dem Handy ist ein VPN an – schalte es zum Verbinden aus.',
     'Пошаговое подключение': 'Schritt-für-Schritt-Verbindung',
+    'Bluetooth на главном экране': 'Bluetooth auf dem Startbildschirm',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Ob es an ist und was verbunden ist; Drücken: ein, aus oder Einstellungen',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -5886,6 +5896,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Le téléviseur a refusé la connexion. Nous redemanderons bientôt — appuyez sur «OK» sur le téléviseur.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Un VPN est actif sur le téléphone — coupez-le pendant la connexion.',
     'Пошаговое подключение': 'Connexion pas à pas',
+    'Bluetooth на главном экране': 'Bluetooth sur l’écran d’accueil',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'S’il est activé et ce qui est connecté ; appui : activer, désactiver ou ouvrir les réglages',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -6867,6 +6879,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Il TV ha rifiutato la connessione. Lo chiederemo di nuovo a breve: premi «OK» sul TV.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Sul telefono è attiva una VPN: disattivala durante il collegamento.',
     'Пошаговое подключение': 'Collegamento passo passo',
+    'Bluetooth на главном экране': 'Bluetooth nella schermata Home',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Se è attivo e cosa è connesso; premendo: attiva, disattiva o apri impostazioni',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -7848,6 +7862,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Тэлевізар адмовіў у падключэнні. Хутка спытаем зноў — на тэлевізары націсніце «ОК».',
     'На телефоне включён VPN — выключите его на время подключения.': 'На тэлефоне ўключаны VPN — выключыце яго на час падключэння.',
     'Пошаговое подключение': 'Пакрокавае падключэнне',
+    'Bluetooth на главном экране': 'Bluetooth на галоўным экране',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Ці ўключаны і што падключана; націсканне — уключыць, выключыць або адкрыць налады',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -8829,6 +8845,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Теледидар қосылудан бас тартты. Жақында қайта сұраймыз — теледидарда «ОК» басыңыз.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Телефонда VPN қосулы — қосылу кезінде оны өшіріңіз.',
     'Пошаговое подключение': 'Қадамдап қосу',
+    'Bluetooth на главном экране': 'Басты экрандағы Bluetooth',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Қосулы ма және не қосылған; басу — қосу, өшіру немесе баптауларды ашу',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -9810,6 +9828,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Televizor ulanishni rad etdi. Tez orada yana so‘raymiz — televizorda «OK» ni bosing.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Telefonda VPN yoqilgan — ulanish vaqtida uni o‘chiring.',
     'Пошаговое подключение': 'Bosqichma-bosqich ulash',
+    'Bluetooth на главном экране': 'Bosh ekranda Bluetooth',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Yoqilganmi va nima ulangan; bosilsa — yoqish, o‘chirish yoki sozlamalarni ochish',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -10791,6 +10811,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Հեռուստացույցը մերժեց միացումը։ Շուտով նորից կհարցնենք — հեռուստացույցում սեղմեք «OK»։',
     'На телефоне включён VPN — выключите его на время подключения.': 'Հեռախոսում VPN է միացված — անջատեք այն միացման ընթացքում։',
     'Пошаговое подключение': 'Քայլ առ քայլ միացում',
+    'Bluetooth на главном экране': 'Bluetooth գլխավոր էկրանին',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Միացված է արդյոք և ինչ է կապված․ սեղմելով՝ միացնել, անջատել կամ բացել կարգավորումները',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -11772,6 +11794,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Televizor qoşulmanı rədd etdi. Tezliklə yenidən soruşacağıq — televizorda «OK» basın.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Telefonda VPN yanılıdır — qoşulma zamanı onu söndürün.',
     'Пошаговое подключение': 'Addım-addım qoşulma',
+    'Bluetooth на главном экране': 'Əsas ekranda Bluetooth',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Yanılıdırmı və nə qoşulub; basanda — yandır, söndür və ya ayarları aç',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -12753,6 +12777,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'ტელევიზორმა დაკავშირებაზე უარი თქვა. მალე ისევ ვკითხავთ — ტელევიზორზე დააჭირეთ «OK»-ს.',
     'На телефоне включён VPN — выключите его на время подключения.': 'ტელეფონზე VPN ჩართულია — გამორთეთ დაკავშირების დროს.',
     'Пошаговое подключение': 'ნაბიჯ-ნაბიჯ დაკავშირება',
+    'Bluetooth на главном экране': 'Bluetooth მთავარ ეკრანზე',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'ჩართულია თუ არა და რა არის დაკავშირებული; დაჭერა — ჩართვა, გამორთვა ან პარამეტრების გახსნა',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -13734,6 +13760,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Сыналгы туташуудан баш тартты. Жакында кайра сурайбыз — сыналгыда «ОК» басыңыз.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Телефондо VPN күйүк — туташуу учурунда аны өчүрүңүз.',
     'Пошаговое подключение': 'Кадам-кадам туташуу',
+    'Bluetooth на главном экране': 'Башкы экрандагы Bluetooth',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Күйүкпү жана эмне туташкан; басуу — күйгүзүү, өчүрүү же жөндөөлөрдү ачуу',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -14715,6 +14743,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'TV bağlantıyı reddetti. Birazdan yeniden soracağız — TV’de «Tamam»a basın.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Telefonda VPN açık — bağlanırken kapatın.',
     'Пошаговое подключение': 'Adım adım bağlantı',
+    'Bluetooth на главном экране': 'Ana ekranda Bluetooth',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Açık mı ve neler bağlı; basınca açar, kapatır veya ayarları açar',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -15696,6 +15726,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Telewizor odmówił połączenia. Zaraz zapytamy ponownie — naciśnij «OK» na telewizorze.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Na telefonie działa VPN — wyłącz go na czas łączenia.',
     'Пошаговое подключение': 'Podłączanie krok po kroku',
+    'Bluetooth на главном экране': 'Bluetooth na ekranie głównym',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Czy jest włączony i co jest połączone; naciśnięcie — włącz, wyłącz lub otwórz ustawienia',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -16677,6 +16709,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Televizorul a refuzat conexiunea. Întrebăm din nou în curând — apasă «OK» pe televizor.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Pe telefon e pornit un VPN — oprește-l cât timp te conectezi.',
     'Пошаговое подключение': 'Conectare pas cu pas',
+    'Bluetooth на главном экране': 'Bluetooth pe ecranul principal',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Dacă e pornit și ce e conectat; apăsare — pornește, oprește sau deschide setările',
   },
   'zh': {
     'Полночь': '午夜',
@@ -17658,6 +17692,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': '电视拒绝了连接。我们稍后会再次请求——请在电视上按「确定」。',
     'На телефоне включён VPN — выключите его на время подключения.': '手机开着 VPN——连接期间请关闭。',
     'Пошаговое подключение': '分步连接',
+    'Bluetooth на главном экране': '主屏幕显示蓝牙',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': '是否开启、连接了什么；按下可开启、关闭或打开设置',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -18639,6 +18675,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'テレビが接続を拒否しました。まもなくもう一度確認します。テレビで「OK」を押してください。',
     'На телефоне включён VPN — выключите его на время подключения.': 'スマホで VPN がオンです。接続中はオフにしてください。',
     'Пошаговое подключение': 'ステップごとの接続',
+    'Bluetooth на главном экране': 'ホーム画面に Bluetooth',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'オンかどうかと接続中の機器。押すとオン・オフ、または設定を開く',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -19620,6 +19658,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'TV가 연결을 거부했습니다. 곧 다시 요청합니다 — TV에서 «확인»을 누르세요.',
     'На телефоне включён VPN — выключите его на время подключения.': '휴대폰에 VPN이 켜져 있습니다 — 연결하는 동안 끄세요.',
     'Пошаговое подключение': '단계별 연결',
+    'Bluetooth на главном экране': '홈 화면에 블루투스 표시',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': '켜져 있는지, 무엇이 연결됐는지; 누르면 켜기, 끄기 또는 설정 열기',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -20601,6 +20641,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'टीवी ने कनेक्शन मना कर दिया। हम जल्द फिर पूछेंगे — टीवी पर «OK» दबाएँ।',
     'На телефоне включён VPN — выключите его на время подключения.': 'फ़ोन पर VPN चालू है — कनेक्ट करते समय इसे बंद करें।',
     'Пошаговое подключение': 'चरण-दर-चरण कनेक्शन',
+    'Bluetooth на главном экране': 'होम स्क्रीन पर Bluetooth',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'चालू है या नहीं और क्या जुड़ा है; दबाने पर चालू, बंद या सेटिंग खोलें',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -21582,6 +21624,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'TV menolak koneksi. Kami akan meminta lagi sebentar lagi — tekan «OK» di TV.',
     'На телефоне включён VPN — выключите его на время подключения.': 'VPN aktif di ponsel — matikan selama menghubungkan.',
     'Пошаговое подключение': 'Koneksi langkah demi langkah',
+    'Bluetooth на главном экране': 'Bluetooth di layar utama',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Apakah aktif dan apa yang terhubung; tekan untuk menyalakan, mematikan, atau membuka setelan',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -22563,6 +22607,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'TV đã từ chối kết nối. Chúng tôi sẽ hỏi lại ngay — hãy nhấn «OK» trên TV.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Điện thoại đang bật VPN — hãy tắt khi kết nối.',
     'Пошаговое подключение': 'Kết nối từng bước',
+    'Bluetooth на главном экране': 'Bluetooth trên màn hình chính',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Đang bật hay không và thiết bị nào đang kết nối; nhấn để bật, tắt hoặc mở cài đặt',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -23544,6 +23590,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'ทีวีปฏิเสธการเชื่อมต่อ เราจะถามใหม่ในไม่ช้า — กด «OK» บนทีวี',
     'На телефоне включён VPN — выключите его на время подключения.': 'โทรศัพท์เปิด VPN อยู่ — ปิดไว้ระหว่างเชื่อมต่อ',
     'Пошаговое подключение': 'เชื่อมต่อทีละขั้น',
+    'Bluetooth на главном экране': 'บลูทูธบนหน้าหลัก',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'เปิดอยู่หรือไม่และเชื่อมต่ออะไรอยู่ กดเพื่อเปิด ปิด หรือเปิดการตั้งค่า',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -24525,6 +24573,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'De tv weigerde de verbinding. We vragen het zo opnieuw — druk op «OK» op de tv.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Er staat een VPN aan op de telefoon — zet hem uit tijdens het verbinden.',
     'Пошаговое подключение': 'Stap voor stap verbinden',
+    'Bluetooth на главном экране': 'Bluetooth op het startscherm',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Of het aan staat en wat er verbonden is; drukken: aan, uit of instellingen',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -25506,6 +25556,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Televize spojení odmítla. Brzy se zeptáme znovu — na televizi stiskněte «OK».',
     'На телефоне включён VPN — выключите его на время подключения.': 'V telefonu je zapnutá VPN — během připojování ji vypněte.',
     'Пошаговое подключение': 'Připojení krok za krokem',
+    'Bluetooth на главном экране': 'Bluetooth na hlavní obrazovce',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Zda je zapnutý a co je připojeno; stisk — zapnout, vypnout nebo otevřít nastavení',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -26487,6 +26539,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Η τηλεόραση αρνήθηκε τη σύνδεση. Θα ρωτήσουμε ξανά σύντομα — πατήστε «OK» στην τηλεόραση.',
     'На телефоне включён VPN — выключите его на время подключения.': 'Στο τηλέφωνο είναι ενεργό VPN — απενεργοποιήστε το κατά τη σύνδεση.',
     'Пошаговое подключение': 'Σύνδεση βήμα βήμα',
+    'Bluetooth на главном экране': 'Bluetooth στην αρχική οθόνη',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Αν είναι ενεργό και τι είναι συνδεδεμένο· με πάτημα: ενεργοποίηση, απενεργοποίηση ή ρυθμίσεις',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -27468,6 +27522,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'A tévé elutasította a kapcsolatot. Hamarosan újra kérdezzük — nyomja meg az «OK»-t a tévén.',
     'На телефоне включён VPN — выключите его на время подключения.': 'A telefonon VPN fut — kapcsolja ki a csatlakozás idejére.',
     'Пошаговое подключение': 'Csatlakozás lépésről lépésre',
+    'Bluetooth на главном экране': 'Bluetooth a kezdőképernyőn',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Be van-e kapcsolva és mi csatlakozik; megnyomva be, ki vagy beállítások',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -28449,5 +28505,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».': 'Tv:n vägrade anslutningen. Vi frågar igen strax — tryck «OK» på tv:n.',
     'На телефоне включён VPN — выключите его на время подключения.': 'En VPN är på i telefonen — stäng av den medan du ansluter.',
     'Пошаговое подключение': 'Steg-för-steg-anslutning',
+    'Bluetooth на главном экране': 'Bluetooth på hemskärmen',
+    'Включён ли и что подключено; нажатие — включить, выключить или открыть настройки': 'Om det är på och vad som är anslutet; tryck för på, av eller inställningar',
   },
 };

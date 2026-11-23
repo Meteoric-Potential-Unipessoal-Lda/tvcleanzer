@@ -210,5 +210,12 @@
 "Открываем видео…": "Video wird geöffnet…",
 "ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — Pause · ◀ ▶ — 10 Sekunden · ▲ ▼ — eine Minute · «Zurück» — schließen",
 "Включены": "An",
-"Убрать живые обои": "Live-Hintergrund entfernen"
+"Убрать живые обои": "Live-Hintergrund entfernen",
+"выключен": "aus",
+"Выключить Bluetooth": "Bluetooth ausschalten",
+"Включить Bluetooth": "Bluetooth einschalten",
+"Настройки Bluetooth": "Bluetooth-Einstellungen",
+"Выключить Bluetooth?": "Bluetooth ausschalten?",
+"Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Eine Fernbedienung oder Tastatur ist per Bluetooth verbunden: Sie funktioniert dann nicht mehr. Wieder einschalten über die Tasten am Fernseher oder in TVCleanzer auf dem Handy («Fernbedienung»).",
+"На этом телевизоре Bluetooth переключается в его настройках": "Auf diesem Fernseher wird Bluetooth in den Einstellungen geschaltet"
 }

@@ -210,5 +210,12 @@
 "Открываем видео…": "Video openen…",
 "ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — pauze · ◀ ▶ — 10 seconden · ▲ ▼ — een minuut · «Terug» — sluiten",
 "Включены": "Aan",
-"Убрать живые обои": "Bewegende achtergrond verwijderen"
+"Убрать живые обои": "Bewegende achtergrond verwijderen",
+"выключен": "uit",
+"Выключить Bluetooth": "Bluetooth uitzetten",
+"Включить Bluetooth": "Bluetooth aanzetten",
+"Настройки Bluetooth": "Bluetooth-instellingen",
+"Выключить Bluetooth?": "Bluetooth uitzetten?",
+"Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Er is een afstandsbediening of toetsenbord via Bluetooth verbonden: die werkt dan niet meer. Weer aanzetten met de knoppen op de tv of via TVCleanzer op de telefoon («Afstandsbediening»).",
+"На этом телевизоре Bluetooth переключается в его настройках": "Op deze tv schakel je Bluetooth in de instellingen"
 }

@@ -210,5 +210,12 @@
 "Открываем видео…": "Öppnar videon…",
 "ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — paus · ◀ ▶ — 10 sekunder · ▲ ▼ — en minut · «Tillbaka» — stäng",
 "Включены": "På",
-"Убрать живые обои": "Ta bort levande bakgrund"
+"Убрать живые обои": "Ta bort levande bakgrund",
+"выключен": "av",
+"Выключить Bluetooth": "Stäng av Bluetooth",
+"Включить Bluetooth": "Slå på Bluetooth",
+"Настройки Bluetooth": "Bluetooth-inställningar",
+"Выключить Bluetooth?": "Stänga av Bluetooth?",
+"Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "En fjärrkontroll eller ett tangentbord är anslutet via Bluetooth: det slutar fungera. Slå på igen med knapparna på tv:n eller i TVCleanzer i telefonen («Fjärrkontroll»).",
+"На этом телевизоре Bluetooth переключается в его настройках": "På den här tv:n slås Bluetooth på och av i inställningarna"
 }

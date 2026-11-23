@@ -210,5 +210,12 @@
 "Открываем видео…": "Đang mở video…",
 "ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — tạm dừng · ◀ ▶ — 10 giây · ▲ ▼ — một phút · «Quay lại» — đóng",
 "Включены": "Bật",
-"Убрать живые обои": "Gỡ hình nền động"
+"Убрать живые обои": "Gỡ hình nền động",
+"выключен": "tắt",
+"Выключить Bluetooth": "Tắt Bluetooth",
+"Включить Bluetooth": "Bật Bluetooth",
+"Настройки Bluetooth": "Cài đặt Bluetooth",
+"Выключить Bluetooth?": "Tắt Bluetooth?",
+"Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Remote hoặc bàn phím đang kết nối qua Bluetooth: tắt đi chúng sẽ ngừng hoạt động. Bật lại bằng nút trên TV hoặc từ TVCleanzer trên điện thoại («Điều khiển»).",
+"На этом телевизоре Bluetooth переключается в его настройках": "Trên TV này Bluetooth được bật/tắt trong cài đặt"
 }

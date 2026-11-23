@@ -212,6 +212,9 @@ final class Prefs {
     boolean cleanBar()       { return sp.getBoolean("cleanBar", false); }
     void setCleanBar(boolean v) { sp.edit().putBoolean("cleanBar", v).apply(); }
     void setMemPill(boolean v) { sp.edit().putBoolean(MEM_PILL, v).apply(); }
+    /** Bluetooth pill in the top bar (0.63). */
+    boolean btPill()         { return sp.getBoolean("btPill", true); }
+    void setBtPill(boolean v) { sp.edit().putBoolean("btPill", v).apply(); }
     /** Top bar as round icons instead of words (network icon in a status colour) — owners
      *  who like it minimal asked for it (0.55+). */
     boolean barIcons()       { return sp.getBoolean("barIcons", false); }

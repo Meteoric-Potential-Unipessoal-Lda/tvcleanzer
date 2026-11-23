@@ -135,6 +135,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // after a reboot Wi-Fi comes up after the home screen: keep the pill (and weather) current
         try { registerReceiver(netChanged, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")); } catch (Exception ignored) {}
         watchNetwork();
+        watchBluetooth();
         reloadApps();
         maybeChooseInput(getIntent());
     }
@@ -145,6 +146,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         try { unregisterReceiver(packages); } catch (Exception ignored) {}
         try { unregisterReceiver(netChanged); } catch (Exception ignored) {}
         unwatchNetwork();
+        if (btReceiver != null) {
+            try { unregisterReceiver(btReceiver); } catch (Exception ignored) {}
+            btReceiver = null;
+        }
         io.shutdownNow();
         super.onDestroy();
     }
@@ -1366,6 +1371,28 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             bar.addView(mem, mp);
         }
 
+        // Bluetooth (0.63, asked in the chat): on / off / what is connected; OK switches it
+        btPill = null;
+        btIcon = null;
+        int bts = prefs.btPill() && !prefs.cleanBar() ? Bt.state(this) : Bt.NONE;
+        if (bts != Bt.NONE) {
+            int is = Ui.dp(this, 46);
+            LinearLayout.LayoutParams bp = prefs.barIcons() ? new LinearLayout.LayoutParams(is, is) : pillLp();
+            bp.rightMargin = Ui.dp(this, 14);
+            if (prefs.barIcons()) {
+                TopIcon bt = new TopIcon(this, bts == Bt.OFF ? TopIcon.BT_OFF : TopIcon.BT, btColour(bts));
+                btIcon = bt;
+                bt.setOnClickListener(v -> bluetoothMenu());
+                bar.addView(bt, bp);
+            } else {
+                Pill bt = new Pill(this, btLabel(bts));
+                btPill = bt;
+                bt.setOnClickListener(v -> bluetoothMenu());
+                bar.addView(bt, bp);
+            }
+            btShown = bts;
+        }
+
         netPill = null;
         netIcon = null;
         if (!prefs.cleanBar() && prefs.barIcons()) {
@@ -1482,8 +1509,99 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             netIcon.set(ns[0], ns[1]);
         }
         if (memPill != null && !freeing) memPill.setText(Memory.label(this));
+        if (btPill != null || btIcon != null) {
+            int st = Bt.state(this);
+            if (btPill != null) {
+                CharSequence l = btLabel(st);
+                if (st != btShown || !l.toString().equals(btPill.getText().toString())) btPill.setText(l);
+            }
+            if (btIcon != null) btIcon.set(st == Bt.OFF ? TopIcon.BT_OFF : TopIcon.BT, btColour(st));
+            btShown = st;
+        }
     }
     private boolean freeing;
+
+    // ── Bluetooth pill / icon (0.63) ──
+    private Pill btPill;
+    private TopIcon btIcon;
+    private int btShown;
+    private android.content.BroadcastReceiver btReceiver;
+
+    /** Blue: something is connected; white: on; grey: off. */
+    private static int btColour(int st) {
+        return st == Bt.CONNECTED ? TopIcon.VPN_COLOR : st == Bt.OFF ? TopIcon.IDLE : 0;
+    }
+
+    private CharSequence btLabel(int st) {
+        android.text.SpannableStringBuilder sb = new android.text.SpannableStringBuilder("\u25CF  ");
+        int c = btColour(st);
+        sb.setSpan(new android.text.style.ForegroundColorSpan(c == 0 ? 0xFFFFFFFF : c), 0, 1,
+                android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return sb.append(Bt.label(this, st));
+    }
+
+    /** Turned on or off, a device connected or gone: the pill follows at once. */
+    private void watchBluetooth() {
+        if (btReceiver != null || Bt.adapter(this) == null) return;
+        btReceiver = new android.content.BroadcastReceiver() {
+            @Override public void onReceive(android.content.Context c, Intent i) {
+                main.removeCallbacks(netRefresh);
+                main.postDelayed(netRefresh, 700);
+            }
+        };
+        IntentFilter f = new IntentFilter(android.bluetooth.BluetoothAdapter.ACTION_STATE_CHANGED);
+        f.addAction(android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED);
+        f.addAction(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 33) registerReceiver(btReceiver, f, android.content.Context.RECEIVER_EXPORTED);
+            else registerReceiver(btReceiver, f);
+        } catch (Throwable t) {
+            btReceiver = null;
+        }
+    }
+
+    /** OK on the pill: switch it, or open the TV's Bluetooth settings (pair a device). */
+    private void bluetoothMenu() {
+        final boolean on = Bt.state(this) != Bt.OFF;
+        java.util.List<String> names = Bt.connected(this, false);
+        String title = names.isEmpty() ? "Bluetooth" : "Bluetooth: " + android.text.TextUtils.join(", ", names);
+        new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                .setTitle(title)
+                .setItems(new String[]{on ? T.t("Выключить Bluetooth") : T.t("Включить Bluetooth"),
+                        T.t("Настройки Bluetooth")}, (d, which) -> {
+                    if (which == 1) {
+                        openSettings(Settings.ACTION_BLUETOOTH_SETTINGS);
+                    } else if (on && !Bt.connected(this, true).isEmpty()) {
+                        // a Bluetooth remote would go dead with it: say so first
+                        new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                                .setTitle(T.t("Выключить Bluetooth?"))
+                                .setMessage(T.t("Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»)."))
+                                .setPositiveButton(T.t("Выключить"), (d2, w2) -> switchBluetooth(false))
+                                .setNegativeButton(T.t("Отмена"), null)
+                                .show();
+                    } else {
+                        switchBluetooth(!on);
+                    }
+                })
+                .show();
+    }
+
+    private void switchBluetooth(boolean on) {
+        if (Bt.set(this, on)) {
+            main.postDelayed(netRefresh, 1500);
+            return;
+        }
+        // Android 13+: only the system switches it; turning on may still be asked for
+        if (on) {
+            try {
+                startActivity(new Intent(android.bluetooth.BluetoothAdapter.ACTION_REQUEST_ENABLE));
+                main.postDelayed(netRefresh, 3000);
+                return;
+            } catch (Throwable ignored) {}
+        }
+        Toast.makeText(this, T.t("На этом телевизоре Bluetooth переключается в его настройках"), Toast.LENGTH_LONG).show();
+        openSettings(Settings.ACTION_BLUETOOTH_SETTINGS);
+    }
 
     // ── «Живые обои» (0.61+): a video view under [root] in [frame], kept across redraws ──
     private LiveWall liveWall;

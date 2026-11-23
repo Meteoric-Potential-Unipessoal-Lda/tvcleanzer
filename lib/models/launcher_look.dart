@@ -54,6 +54,8 @@ class LauncherLook {
   /// Icon shape where the launcher draws icons (launcher 0.55+, settable from the phone 0.62+):
   /// 0 rounded squares, 1 circles. Small icons are always round, TV banners have no shape.
   final int iconShape;
+  /// Bluetooth pill in the top bar: on/off, what is connected, OK switches it (launcher 0.63+).
+  final bool btPill;
 
   const LauncherLook({
     this.anim = 0,
@@ -83,12 +85,13 @@ class LauncherLook {
     this.barClock = 0,
     this.oneLine = false,
     this.iconShape = 0,
+    this.btPill = true,
   });
 
   LauncherLook copyWith({int? anim, bool? ringAccent, int? tiles, int? wallDim,
           bool? ambient, bool? clock24, bool? labels, int? inputs, int? favCols, int? style, int? clockPos,
           int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon, bool? appsBelow, int? icons, bool? heroTitle, bool? memPill, bool? cleanBar, int? skinAuto, int? ambientSec,
-          bool? greeting, int? barClock, bool? oneLine, int? iconShape}) =>
+          bool? greeting, int? barClock, bool? oneLine, int? iconShape, bool? btPill}) =>
       LauncherLook(
         anim: anim ?? this.anim,
         ringAccent: ringAccent ?? this.ringAccent,
@@ -117,13 +120,14 @@ class LauncherLook {
         barClock: barClock ?? this.barClock,
         oneLine: oneLine ?? this.oneLine,
         iconShape: iconShape ?? this.iconShape,
+        btPill: btPill ?? this.btPill,
       );
 
   /// Extras for `am broadcast … com.tvcleanzer.launcher.APPLY`.
   String get extras => '--ei anim $anim --ez ringAccent $ringAccent --ei tiles $tiles '
       '--ei wallDim $wallDim --ez ambient $ambient --ez clock24 $clock24 --ez labels $labels '
       '--ei inputs $inputs --ei favCols $favCols --ei style $style --ei clockPos $clockPos --ei clockSize $clockSize '
-      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --ez heroTitle $heroTitle --ez memPill $memPill --ez cleanBar $cleanBar --ei skinAuto $skinAuto --ei ambientSec $ambientSec --ez greeting $greeting --ei barClock $barClock --ez oneLine $oneLine --ei iconShape $iconShape --es weatherCity ${_q(weatherCity)}'
+      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --ez heroTitle $heroTitle --ez memPill $memPill --ez cleanBar $cleanBar --ei skinAuto $skinAuto --ei ambientSec $ambientSec --ez greeting $greeting --ei barClock $barClock --ez oneLine $oneLine --ei iconShape $iconShape --ez btPill $btPill --es weatherCity ${_q(weatherCity)}'
       '${weatherCity.isEmpty ? '' : ' --ef lat ${lat.toStringAsFixed(4)} --ef lon ${lon.toStringAsFixed(4)}'}';
 
   /// Single-quoted for the TV's shell (city names may have spaces or apostrophes).
@@ -135,7 +139,7 @@ class LauncherLook {
         'style': style, 'clockPos': clockPos, 'clockSize': clockSize, 'clockFont': clockFont,
         'weatherCity': weatherCity, 'lat': lat, 'lon': lon, 'appsBelow': appsBelow, 'icons': icons, 'heroTitle': heroTitle, 'memPill': memPill,
         'cleanBar': cleanBar, 'skinAuto': skinAuto, 'ambientSec': ambientSec,
-        'greeting': greeting, 'barClock': barClock, 'oneLine': oneLine, 'iconShape': iconShape,
+        'greeting': greeting, 'barClock': barClock, 'oneLine': oneLine, 'iconShape': iconShape, 'btPill': btPill,
       };
 
   static int _i(Object? v, int def, int lo, int hi) =>
@@ -172,5 +176,6 @@ class LauncherLook {
         barClock: _i(m['barClock'], 0, 0, 2),
         oneLine: _b(m['oneLine'], false),
         iconShape: _i(m['iconShape'], 0, 0, 1),
+        btPill: _b(m['btPill'], true),
       );
 }

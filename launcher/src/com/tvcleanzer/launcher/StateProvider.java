@@ -72,6 +72,7 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"oneLine", p.oneLine() ? 1 : 0});
             c.addRow(new Object[]{"iconShape", p.iconShape()});
             c.addRow(new Object[]{"memPill", p.memPill() ? 1 : 0});
+            c.addRow(new Object[]{"btPill", p.btPill() ? 1 : 0});
             c.addRow(new Object[]{"cleanBar", p.cleanBar() ? 1 : 0});
             c.addRow(new Object[]{"favBottom", p.favBottom() ? 1 : 0});
             c.addRow(new Object[]{"shelf", p.shelf()});

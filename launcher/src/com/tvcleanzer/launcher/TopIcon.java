@@ -12,7 +12,9 @@ import android.view.View;
  * Owners who like it minimal asked for icons instead of «Wi-Fi» and «Настройки ТВ».
  */
 final class TopIcon extends View {
-    static final int WIFI = 0, ETHERNET = 1, VPN = 2, OFFLINE = 3, TV = 4;
+    static final int WIFI = 0, ETHERNET = 1, VPN = 2, OFFLINE = 3, TV = 4, BT = 5, BT_OFF = 6;
+    /** Bluetooth on with nothing connected: a quiet grey. */
+    static final int IDLE = 0xFF9CA3AF;
     /** Green: online; orange: no network or no internet; blue: through a VPN. */
     static final int OK = 0xFF4ADE80, BAD = 0xFFFB923C, VPN_COLOR = 0xFF60A5FA, OFF = 0xFFF87171;
 
@@ -89,6 +91,21 @@ final class TopIcon extends View {
                 c.drawArc(arc, 180, 180, false, ink);
                 fill.setColor(col);
                 c.drawCircle(cx, cy + s * 0.38f, w * 0.045f, fill);
+                break;
+            }
+            case BT:
+            case BT_OFF: {
+                // the Bluetooth rune: a vertical line with two arrowheads to the right
+                float t = cy - s, b = cy + s, x0 = cx - s * 0.12f, r = cx + s * 0.45f, l = cx - s * 0.55f;
+                android.graphics.Path p = new android.graphics.Path();
+                p.moveTo(l, cy - s * 0.5f);
+                p.lineTo(r, cy + s * 0.5f);
+                p.lineTo(x0, b);
+                p.lineTo(x0, t);
+                p.lineTo(r, cy - s * 0.5f);
+                p.lineTo(l, cy + s * 0.5f);
+                c.drawPath(p, ink);
+                if (glyph == BT_OFF) c.drawLine(cx - s, cy - s, cx + s, cy + s, ink);
                 break;
             }
             default: { // TV: a screen on a stand with two slider knobs

@@ -523,6 +523,10 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         ),
         _sw(tr('Память на главном экране'), tr('Нажатие закрывает приложения в фоне и освобождает память'), look.memPill,
             (v) => _setLook(look.copyWith(memPill: v)), need: 36),
+        if (!look.cleanBar)
+          _sw(tr('Bluetooth на главном экране'),
+              tr('Включён ли и что подключено; нажатие — включить, выключить или открыть настройки'), look.btPill,
+              (v) => _setLook(look.copyWith(btPill: v)), need: 63),
         _sw(tr('Только шестерёнка вверху'), tr('Без плашек сети и «Настройки ТВ»: шестерёнка открывает настройки ТВ, удержание — настройки лаунчера'),
             look.cleanBar, (v) => _setLook(look.copyWith(cleanBar: v)), need: 49),
       ]),

@@ -114,6 +114,9 @@ public class SettingsActivity extends Activity {
         }
         addToggle(skin, T.t("Названия разделов"), prefs.sectionTitles(), T.t("Показывать"), T.t("Скрыто"), prefs::setSectionTitles);
         addToggle(skin, T.t("Память на главном экране"), prefs.memPill(), T.t("Показывать"), T.t("Скрыто"), prefs::setMemPill);
+        if (!prefs.cleanBar() && Bt.adapter(this) != null) {
+            addToggle(skin, T.t("Bluetooth на главном экране"), prefs.btPill(), T.t("Показывать"), T.t("Скрыто"), prefs::setBtPill);
+        }
         addToggle(skin, T.t("Приветствие"), prefs.greeting(), T.t("Показывать"), T.t("Скрыто"), prefs::setGreeting);
         addChoice(skin, T.t("Часы вверху"), new String[]{T.t("Крупные"), T.t("Средние"), T.t("Мелкие")},
                 prefs.barClock(), prefs::setBarClock);

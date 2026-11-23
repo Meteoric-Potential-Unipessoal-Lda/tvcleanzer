@@ -210,5 +210,12 @@
 "Открываем видео…": "Apertura del video…",
 "ОК — пауза · ◀ ▶ — 10 секунд · ▲ ▼ — минута · «Назад» — закрыть": "OK — pausa · ◀ ▶ — 10 secondi · ▲ ▼ — un minuto · «Indietro» — chiudi",
 "Включены": "Attivo",
-"Убрать живые обои": "Rimuovi sfondo animato"
+"Убрать живые обои": "Rimuovi sfondo animato",
+"выключен": "disattivato",
+"Выключить Bluetooth": "Disattiva Bluetooth",
+"Включить Bluetooth": "Attiva Bluetooth",
+"Настройки Bluetooth": "Impostazioni Bluetooth",
+"Выключить Bluetooth?": "Disattivare il Bluetooth?",
+"Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Un telecomando o una tastiera sono connessi via Bluetooth: smetteranno di funzionare. Si riattiva con i tasti del TV o da TVCleanzer sul telefono («Telecomando»).",
+"На этом телевизоре Bluetooth переключается в его настройках": "Su questo TV il Bluetooth si cambia nelle impostazioni"
 }

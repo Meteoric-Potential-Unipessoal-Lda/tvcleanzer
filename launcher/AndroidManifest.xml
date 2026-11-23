@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="62"
-    android:versionName="0.62">
+    android:versionCode="63"
+    android:versionName="0.63">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -24,9 +24,15 @@
     <!-- «Экран гаснет без пульта» in the launcher settings: the TV's screen timeout;
          allowed by the phone app over ADB (appops WRITE_SETTINGS) -->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- Bluetooth pill (0.63): on/off and switching it; what is connected needs CONNECT on
+         Android 12+, granted by the phone app over ADB (pm grant), never asked on the TV -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
 
     <!-- Android 11+: see the apps we show on the home screen -->
     <queries>
