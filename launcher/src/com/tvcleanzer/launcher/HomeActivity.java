@@ -1365,7 +1365,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // 0.89: «Круглые» makes the apps below circles too (an owner: like the favourites);
             // each circle sits in the middle of its column so the grid keeps its lines
             final boolean roundRest = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
-            final int rs = Math.min(tileW, Math.round(tileH * 1.2f));
+            // 0.91: as big as the favourites' circles (an owner: «как в доке», they were small)
+            final int rs = Math.min(tileW, Math.round(favH * 1.2f));
             for (int i = 0; i < rest.size(); i++) {
                 if (i % cols == 0) {
                     row = row();
