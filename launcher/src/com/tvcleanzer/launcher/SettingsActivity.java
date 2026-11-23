@@ -115,7 +115,8 @@ public class SettingsActivity extends Activity {
                     if (v < 2) prefs.setRingAccent(v == 1);
                 });
         addToggle(skin, T.t("Только шестерёнка вверху"), prefs.cleanBar(), T.t("Включено"), T.t("Выключено"), prefs::setCleanBar);
-        if (!prefs.cleanBar()) {
+        // «Часы» has no top bar, only the corner (0.98, an owner: «нажимаю — ничего не меняется»)
+        if (!prefs.cleanBar() && prefs.style() != Prefs.STYLE_CLOCK) {
             addChoice(skin, T.t("Верхняя панель"), new String[]{T.t("Надписи"), T.t("Значки"), T.t("Мини в углу")},
                     prefs.barStyle(), prefs::setBarStyle);
         }

@@ -522,7 +522,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         root.addView(hs, dlp);
         // Wi-Fi / VPN, Bluetooth and the TV's settings up in the corner, like a tablet (the dock
         // has the gear already)
-        if (prefs.barStyle() == Prefs.BAR_MINI && !prefs.cleanBar()) corner(skin, false);
+        // the corner whatever «Верхняя панель» says (that choice is hidden in «Часы», 0.98)
+        if (!prefs.cleanBar()) corner(skin, false);
 
         View target = null;
         for (AppTile t : tiles) if (t.app.pkg.equals(focusPkg)) { target = t; break; }
