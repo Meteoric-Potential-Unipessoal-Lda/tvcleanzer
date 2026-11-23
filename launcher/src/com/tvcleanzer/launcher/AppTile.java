@@ -121,7 +121,7 @@ final class AppTile extends LinearLayout {
         int stroke = Ui.dp(c, 3);
         ring = Ui.ring(ringColor == 1 ? 0 : ringColor, stroke, radius + stroke);
         if (ringColor == 1) {
-            float gp = Math.max(Ui.dp(c, 14), Math.min(w, h) * 0.16f);
+            float gp = Math.max(Ui.dp(c, 16), Math.min(w, h) * 0.22f);
             glow = new Glow(c, gp, radius);
             FrameLayout.LayoutParams glp = new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);

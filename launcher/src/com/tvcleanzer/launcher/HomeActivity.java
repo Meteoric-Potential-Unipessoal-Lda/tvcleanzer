@@ -615,7 +615,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
 
         final AppTile.Hook hook = this::showcaseFocused;
-        final int zoomPad = Math.round(th * 0.09f) + Ui.dp(this, 8);
+        final int zoomPad = Math.round(th * 0.09f) + Ui.dp(this, 8) + (prefs.ringGlow() ? Math.round(th * 0.2f) : 0);
         List<AppTile> tiles = new ArrayList<>();
 
         // One row of large tiles: the favourites
@@ -1324,6 +1324,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
             // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
             int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
+            if (prefs.ringGlow()) zoomPad += Math.round(favH * 0.3f); // «Свечение»: the halo stays whole
             hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
             LinearLayout row = row();
             final int fs = roundFav ? Math.round(favH * 1.2f) : 0;
