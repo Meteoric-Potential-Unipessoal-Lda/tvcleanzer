@@ -282,8 +282,9 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     final name = 'tv-${DateTime.now().toIso8601String().substring(0, 19).replaceAll(':', '-')}.png';
     try {
       if (Platform.isWindows) {
-        final path = await FilePicker.platform.saveFile(fileName: name, type: FileType.image, bytes: png);
-        if (path == null) return;
+        final uri = await FilePicker.saveFile(fileName: name, bytes: png, mimeType: 'image/png');
+        if (uri == null) return;
+        final path = uri.scheme == 'file' ? uri.toFilePath() : uri.toString();
         final f = File(path);
         if (!await f.exists() || await f.length() == 0) await f.writeAsBytes(png);
         _snack(tr('Сохранено: {0}', [path]));

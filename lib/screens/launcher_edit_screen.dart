@@ -852,23 +852,23 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
   }
 
   Future<void> _addMusic() async {
-    FilePickerResult? res;
+    var files = <PlatformFile>[];
     try {
-      res = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowedExtensions: const ['mp3', 'm4a', 'aac', 'ogg', 'flac', 'wav'],
-          allowMultiple: true,
-          withData: false);
+      files = await FilePicker.pickFiles(
+          type: FileType.custom, allowedExtensions: const ['mp3', 'm4a', 'aac', 'ogg', 'flac', 'wav']);
     } catch (e) {
       AppLog.error('pick music', e);
     }
-    final files = (res?.files ?? const <PlatformFile>[]).where((f) => f.path != null).take(30).toList();
+    files = files.take(30).toList();
     if (files.isEmpty) return;
     final tracks = <({String name, int length, Stream<List<int>> Function() open})>[];
     for (final f in files) {
-      final file = File(f.path!);
+      final p = f.path;
+      final file = p == null ? null : File(p);
       try {
-        tracks.add((name: f.name, length: await file.length(), open: () => file.openRead()));
+        final n = file != null ? await file.length() : await f.length();
+        if (n == null) throw const FileSystemException('no length');
+        tracks.add((name: f.name, length: n, open: () => file?.openRead() ?? f.readAsByteStream()));
       } catch (e) {
         AppLog.error('read track', e);
       }

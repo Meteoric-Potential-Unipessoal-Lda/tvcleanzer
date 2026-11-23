@@ -66,24 +66,21 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
   Future<void> _pickAndInstall() async {
     final tv = ref.read(currentTvProvider);
     if (tv == null) return;
-    FilePickerResult? res;
+    PlatformFile? f;
     try {
-      // Only the path: with withData the picker copies the whole file through the Java side,
-      // and a big .xapk (Play Market, Kinopoisk: 100+ MB) crashed the app there.
-      res = await FilePicker.platform.pickFiles(type: FileType.any, withData: false);
+      f = await FilePicker.pickFile(type: FileType.any);
     } catch (e) {
       AppLog.error('pick apk', e);
-      res = null;
     }
-    final f = res?.files.single;
     if (f == null) return;
-    Uint8List? data = f.bytes;
-    if (data == null && f.path != null) {
-      try {
-        data = await File(f.path!).readAsBytes();
-      } catch (e) {
-        AppLog.error('read apk', e);
-      }
+    // Read here, not in the picker: a big .xapk (Play Market, Kinopoisk: 100+ MB) copied
+    // through the Java side crashed the app.
+    Uint8List? data;
+    try {
+      final p = f.path;
+      data = p != null ? await File(p).readAsBytes() : await f.readAsBytes();
+    } catch (e) {
+      AppLog.error('read apk', e);
     }
     if (data == null) {
       setState(() { _installOk = false; _installMsg = tr('Не удалось прочитать файл. Сохраните его в «Файлы» и попробуйте снова.'); });
@@ -122,18 +119,21 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
   Future<void> _pickAndSend() async {
     final tv = ref.read(currentTvProvider);
     if (tv == null) return;
-    FilePickerResult? res;
+    PlatformFile? f;
     try {
-      res = await FilePicker.platform.pickFiles(type: FileType.any, withData: false);
+      f = await FilePicker.pickFile(type: FileType.any);
     } catch (e) {
       AppLog.error('pick file', e);
     }
-    final f = res?.files.single;
-    if (f == null || f.path == null) return;
-    final file = File(f.path!);
+    if (f == null) return;
+    final picked = f;
+    final p = picked.path;
+    final file = p == null ? null : File(p);
     int len;
     try {
-      len = await file.length();
+      final n = file != null ? await file.length() : await picked.length();
+      if (n == null) throw const FileSystemException('no length');
+      len = n;
     } catch (e) {
       AppLog.error('read file', e);
       setState(() { _sendOk = false; _sendMsg = tr('Не удалось прочитать файл. Сохраните его в «Файлы» и попробуйте снова.'); });
@@ -148,7 +148,8 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
     });
     try {
       var shown = 0;
-      final path = await _api.sendFile(tv, f.name, file.openRead(), len, onProgress: (sent) {
+      final path = await _api.sendFile(tv, picked.name, file?.openRead() ?? picked.readAsByteStream(), len,
+          onProgress: (sent) {
         if (!mounted) return;
         final pct = len == 0 ? 100 : (sent * 100 / len).floor().clamp(0, 100);
         if (pct == shown) return; // a film comes in thousands of pieces: redraw once per percent
@@ -162,7 +163,7 @@ class _AppsScreenState extends ConsumerState<AppsScreen> {
         _sendMsg = tr('Готово: {0} на телевизоре в «Загрузки» → «TVCleanzer».', [path.split('/').last]);
       });
     } catch (e) {
-      AppLog.error('send ${f.name} $len', e);
+      AppLog.error('send ${picked.name} $len', e);
       if (mounted) {
         setState(() {
           _sendOk = false;
