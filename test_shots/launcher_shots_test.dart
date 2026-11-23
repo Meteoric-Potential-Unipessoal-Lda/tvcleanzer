@@ -3,7 +3,6 @@
 // PNGs land in test_shots/goldens/.
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
