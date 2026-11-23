@@ -18,6 +18,7 @@ import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
 import '../services/demo_tv.dart';
 import '../services/tv_discovery.dart';
+import '../services/tv_sniffer.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
 import '../widgets/manual_connect.dart';
@@ -84,6 +85,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   TvDevice? _tv;
   Timer? _hintTimer;
   bool _showFallback = false;
+
+  /// TVs that answer on casting / remote ports (stage 2): seen even with debugging off.
+  List<SeenTv> _seen = const [];
+  DateTime _sniffedAt = DateTime(2000);
+
+  /// Every 15 seconds: who is on the network, and what it is.
+  Future<void> _sniff(List<(String, int)> cands) async {
+    if (DateTime.now().difference(_sniffedAt) < const Duration(seconds: 15)) return;
+    _sniffedAt = DateTime.now();
+    final seen = await TvSniffer.sniff({for (final c in cands) c.$1}.toList());
+    if (!mounted) return;
+    if (seen.isNotEmpty && seen.join() != _seen.join()) AppLog.error('onboarding seen', seen.join('; '));
+    setState(() => _seen = seen);
+  }
 
   @override
   void initState() {
@@ -166,6 +181,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       }
       if (_live == _Live.idle || _live == _Live.noWifi) setState(() => _live = _Live.searching);
       if (_vpn != vpn) setState(() => _vpn = vpn);
+      await _sniff(cands);
+      if (!mounted || _tv != null) return;
       final open = await TvDiscovery.openPorts(cands);
       for (final (ip, port) in open) {
         if (_trying.add('$ip:$port')) unawaited(_connect(ip, port));
@@ -356,10 +373,41 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Widget _brandPage() {
     final brands = tvBrands().where((b) => b.matches(_query)).toList();
+    // a TV that already told us its maker (Google Cast, Samsung, LG, Roku): one tap
+    SeenTv? hintTv;
+    TvBrand? hint;
+    for (final s in _seen) {
+      final b = s.brandHint == null ? null : brandFor(s.brandHint!);
+      if (b != null) {
+        hintTv = s;
+        hint = b;
+        break;
+      }
+    }
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       children: [
         _title(tr('Какой у вас телевизор?')),
+        if (hint != null && hintTv != null) ...[
+          const Gap(12),
+          Material(
+            color: AppColors.accentDim,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14), side: BorderSide(color: AppColors.accent.withValues(alpha: .4))),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 10, 8, 10),
+              child: Row(children: [
+                const Icon(Icons.tv_rounded, color: AppColors.accent),
+                const Gap(12),
+                Expanded(
+                  child: Text(tr('Похоже, это {0}', [hintTv.title]),
+                      style: const TextStyle(color: AppColors.fg, fontWeight: FontWeight.w600, fontSize: 14)),
+                ),
+                TextButton(onPressed: () => _pickBrand(hint!), child: Text(tr('Выбрать'))),
+              ]),
+            ),
+          ).animate().fadeIn(duration: 250.ms),
+        ],
         const Gap(14),
         TextField(
           decoration: InputDecoration(
@@ -635,7 +683,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   /// Always at the bottom: what the search sees, and what to do about it.
   Widget _liveBar() {
-    final (IconData icon, Color color, String text) = switch (_live) {
+    var (IconData icon, Color color, String text) = switch (_live) {
       _Live.noWifi => (Icons.wifi_off_rounded, AppColors.danger,
           tr('Телефон не в Wi‑Fi. Подключите его к той же сети, что и телевизор.')),
       _Live.connecting => (Icons.sync_rounded, AppColors.accent, tr('Нашли телевизор, подключаемся…')),
@@ -645,6 +693,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           tr('Телевизор отказал в подключении. Скоро спросим снова — на телевизоре нажмите «ОК».')),
       _ => (Icons.search_rounded, AppColors.fgMid, tr('Ищем телевизоры в сети…')),
     };
+    // still searching, but a TV answers on its casting / remote port: say what we see
+    final seenTv = _live == _Live.searching ? _seen.where((s) => !s.notAndroid && !s.adb).firstOrNull : null;
+    final seenOther = _live == _Live.searching && seenTv == null && !_seen.any((s) => !s.notAndroid)
+        ? _seen.where((s) => s.notAndroid).firstOrNull
+        : null;
+    if (seenTv != null) {
+      (icon, color, text) = (Icons.tv_rounded, AppColors.warn,
+          tr('Видим «{0}» в сети — отладка на нём пока выключена.', [seenTv.title]));
+    } else if (seenOther != null) {
+      (icon, color, text) = (Icons.block_rounded, AppColors.fgMid,
+          tr('В сети {0} — это не Android, с ним TVCleanzer не работает.', [seenOther.title]));
+    }
+    final quiet = _live == _Live.searching && seenTv == null && seenOther == null;
     final title = _live == _Live.approve ? tr('Телевизор спрашивает «Разрешить отладку?»') : null;
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -655,7 +716,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         border: Border.all(color: color.withValues(alpha: .35)),
       ),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        if (_live == _Live.searching || _live == _Live.connecting)
+        if (quiet || _live == _Live.connecting)
           SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: color))
         else
           Icon(icon, size: 20, color: color),
@@ -664,7 +725,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
             if (title != null)
               Text(title, style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: 14)),
-            Text(text, style: TextStyle(color: _live == _Live.searching ? AppColors.fgMid : color, fontSize: 13, height: 1.4)),
+            Text(text, style: TextStyle(color: quiet ? AppColors.fgMid : color, fontSize: 13, height: 1.4)),
             if (_vpn)
               Padding(
                 padding: const EdgeInsets.only(top: 4),
@@ -674,6 +735,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           ]),
         ),
       ]),
-    ).animate(key: ValueKey(_live)).fadeIn(duration: 200.ms);
+    ).animate(key: ValueKey('$_live$quiet')).fadeIn(duration: 200.ms);
   }
 }

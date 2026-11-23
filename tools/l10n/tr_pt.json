@@ -979,5 +979,9 @@
 "Há uma VPN ativa no telemóvel — desligue-a enquanto liga a TV.",
 "Ligação passo a passo",
 "Bluetooth no ecrã inicial",
-"Se está ligado e o que está ligado a ele; ao carregar: ligar, desligar ou abrir definições"
+"Se está ligado e o que está ligado a ele; ao carregar: ligar, desligar ou abrir definições",
+"Parece ser {0}",
+"Escolher",
+"Vemos «{0}» na rede — a depuração ainda está desligada.",
+"{0} está na rede — não é Android, o TVCleanzer não funciona com ela."
 ]

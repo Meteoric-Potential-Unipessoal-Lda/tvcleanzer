@@ -76,6 +76,19 @@ List<TvBrand> tvBrands() => [
       TvBrand(tr('Другая марка'), const [], search: 'other другой'),
     ];
 
+/// The brand a TV named itself ([maker] from Google Cast, Samsung, Roku…), matched by a
+/// whole word: «Sony Corporation» → Sony, but «Hisense» never → «Hi».
+TvBrand? brandFor(String maker) {
+  final m = maker.toLowerCase();
+  for (final b in tvBrands()) {
+    if (b.guides.isEmpty) continue;
+    final key = b.name.split(RegExp(r'[ /(]')).first.toLowerCase();
+    if (key.length < 2 || !RegExp(r'^[a-z]+$').hasMatch(key)) continue;
+    if (RegExp('\\b${RegExp.escape(key)}\\b').hasMatch(m)) return b;
+  }
+  return null;
+}
+
 /// How to tell this home screen from the others (the platform question).
 String guideLooks(String id) => switch (id) {
       'androidTv' => tr('Ряды приложений и каналов, настройки — шестерёнка справа вверху.'),

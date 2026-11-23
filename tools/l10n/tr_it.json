@@ -979,5 +979,9 @@
 "Sul telefono è attiva una VPN: disattivala durante il collegamento.",
 "Collegamento passo passo",
 "Bluetooth nella schermata Home",
-"Se è attivo e cosa è connesso; premendo: attiva, disattiva o apri impostazioni"
+"Se è attivo e cosa è connesso; premendo: attiva, disattiva o apri impostazioni",
+"Sembra {0}",
+"Scegli",
+"Vediamo «{0}» in rete: il debug è ancora disattivato.",
+"{0} è in rete: non è Android, TVCleanzer non funziona con esso."
 ]

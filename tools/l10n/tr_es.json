@@ -979,5 +979,9 @@
 "El VPN del teléfono está activo: desactívalo mientras te conectas.",
 "Conexión paso a paso",
 "Bluetooth en la pantalla de inicio",
-"Si está activado y qué hay conectado; al pulsar: activar, desactivar o abrir ajustes"
+"Si está activado y qué hay conectado; al pulsar: activar, desactivar o abrir ajustes",
+"Parece que es {0}",
+"Elegir",
+"Vemos «{0}» en la red: la depuración sigue desactivada.",
+"{0} está en la red: no es Android, TVCleanzer no funciona con ella."
 ]
