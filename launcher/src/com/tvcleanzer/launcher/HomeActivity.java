@@ -630,7 +630,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.setPadding(zoomPad, zoomPad, zoomPad, zoomPad);
             LinearLayout row = row();
             for (int i = 0; i < favorites.size(); i++) {
-                AppTile t = tile(favorites.get(i), tw, th, skin, false, 15, 1.12f, anim, ringColor);
+                AppTile t = tile(favorites.get(i), tw, th, skin, false, 15, 1.15f, anim, ringColor); // 0.92: 15 % lift in «Витрина»
                 t.hook = hook;
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -665,7 +665,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     page.addView(row);
                     if (firstRow == null) firstRow = row;
                 }
-                AppTile t = tile(rest.get(i), tw, th, skin, prefs.labelsAlways(), 14, 1.12f, anim, ringColor);
+                AppTile t = tile(rest.get(i), tw, th, skin, prefs.labelsAlways(), 14, 1.15f, anim, ringColor);
                 t.hook = hook;
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
