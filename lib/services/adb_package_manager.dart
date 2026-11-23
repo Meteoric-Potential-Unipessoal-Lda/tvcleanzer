@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 86;
+  static const bundledLauncherVersion = 87;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1599,11 +1599,21 @@ class AdbPackageManager {
                 timeout: Duration(seconds: max(60, length ~/ (10 * 1024 * 1024)))))
             .contains('TVC_OK');
       }
-      if (!ok) {
-        ok = (await adb.shell('mkdir -p $_launcherFiles && cp $tmp $_launcherFiles/wallvideo.mp4 '
-                '&& chmod 666 $_launcherFiles/wallvideo.mp4 && echo TVC_OK',
-                timeout: Duration(seconds: max(60, length ~/ (10 * 1024 * 1024)))))
+      if (!ok && sdk < 29) {
+        // 1.3.103: older launchers' content provider may take it on Android 7–9 too
+        ok = (await adb.shell('content write --uri content://$launcherPkg.state/wallvideo < $tmp 2>&1 && echo TVC_OK',
+                timeout: Duration(seconds: max(120, length ~/ (2 * 1024 * 1024)))))
             .contains('TVC_OK');
+      }
+      if (!ok) {
+        // the old video goes first (a Hyundai on Android 7 refused to overwrite it); slow flash
+        // gets ~2 MB/s worth of time
+        final out = await adb.shell('mkdir -p $_launcherFiles; rm -f $_launcherFiles/wallvideo.mp4; '
+            'cp $tmp $_launcherFiles/wallvideo.mp4 2>&1 && chmod 666 $_launcherFiles/wallvideo.mp4 && echo TVC_OK; '
+            'df $_launcherFiles 2>&1 | tail -1',
+            timeout: Duration(seconds: max(120, length ~/ (2 * 1024 * 1024))));
+        ok = out.contains('TVC_OK');
+        if (!ok) AppLog.error('live wallpaper copy', 'SDK $sdk, ${length ~/ (1024 * 1024)} MB: ${out.trim()}');
       }
       await adb.shell('rm -f $tmp');
       if (!ok) {

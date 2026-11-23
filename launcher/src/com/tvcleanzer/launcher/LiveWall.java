@@ -56,7 +56,15 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
         super(c);
         setSurfaceTextureListener(this);
         setFocusable(false);
+        // 0.87: until a frame arrives the theme shows through, not black (TextureView is opaque
+        // by default: a Hyundai on Android 7 stayed black with a video it never drew)
+        setOpaque(false);
     }
+
+    private boolean gotFrame;
+    private final Runnable noPicture = () -> {
+        if (!gotFrame && this.player != null && this.prepared) fail("no picture in 8 s");
+    };
 
     /** The home screen is in front: play (opens the file again if it was let go). */
     void play() {
@@ -69,6 +77,7 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
     void stop() {
         wanted = false;
         removeCallbacks(stuck);
+        removeCallbacks(noPicture);
         release();
     }
 
@@ -95,7 +104,12 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
                 videoH = mp.getVideoHeight();
                 HomeKeyService.log("live wallpaper: playing " + videoW + "x" + videoH);
                 fit();
-                if (wanted) mp.start();
+                if (wanted) {
+                    mp.start();
+                    gotFrame = false;
+                    removeCallbacks(noPicture);
+                    postDelayed(noPicture, 8000);
+                }
             });
             m.setOnErrorListener((mp, what, extra) -> {
                 if (player == mp) fail("error " + what + "/" + extra);
@@ -113,6 +127,7 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
 
     private void fail(String why) {
         removeCallbacks(stuck);
+        removeCallbacks(noPicture);
         HomeKeyService.log("live wallpaper: can't play here (" + why + ")");
         release(); // the theme background stays visible behind
         if (listener != null) listener.failed(why);
@@ -152,5 +167,10 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
         return true;
     }
 
-    @Override public void onSurfaceTextureUpdated(SurfaceTexture st) {}
+    @Override public void onSurfaceTextureUpdated(SurfaceTexture st) {
+        if (!gotFrame) {
+            gotFrame = true;
+            removeCallbacks(noPicture);
+        }
+    }
 }
