@@ -80,6 +80,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private boolean appsLoaded, wallPending;
     private ScrollView scroll;
     private View favTitle, favShelf;   // the favourites block of the tiles home (null without one)
+    /** The first row of apps under the favourites (0.96: ▼ from the favourites lands there at once). */
+    private LinearLayout firstGridRow;
     private boolean focusHooked;
     private boolean resumed, dirty;
     private boolean entered;                       // entrance animation played
@@ -663,7 +665,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     row = row();
                     row.setPadding(0, Ui.dp(this, 12) + Math.round(th * 0.06f), 0, Ui.dp(this, 4));
                     page.addView(row);
-                    if (firstRow == null) firstRow = row;
+                    if (firstRow == null) { firstRow = row; firstGridRow = row; }
                 }
                 AppTile t = tile(rest.get(i), tw, th, skin, prefs.labelsAlways(), 14, 1.15f, anim, ringColor);
                 t.hook = hook;
@@ -901,9 +903,37 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
         int dir = e.getAction() == KeyEvent.ACTION_DOWN ? Ui.focusDir(code) : 0;
         View before = dir != 0 ? getCurrentFocus() : null;
+        // 0.96: ▼ from the one-row favourites goes straight to the app below (an owner: with «apps on
+        // the second screen» it took two presses — the first only scrolled the page)
+        if (code == KeyEvent.KEYCODE_DPAD_DOWN && e.getAction() == KeyEvent.ACTION_DOWN && favGridCols == 0
+                && before instanceof AppTile && firstGridRow != null && favShelf != null && inside(before, favShelf)) {
+            int[] p = new int[2];
+            before.getLocationOnScreen(p);
+            int fx = p[0] + before.getWidth() / 2, bd = Integer.MAX_VALUE;
+            View best = null;
+            for (int i = 0; i < firstGridRow.getChildCount(); i++) {
+                View c = firstGridRow.getChildAt(i);
+                if (!c.isFocusable() || c.getVisibility() != View.VISIBLE) continue;
+                c.getLocationOnScreen(p);
+                int d = Math.abs(p[0] + c.getWidth() / 2 - fx);
+                if (d < bd) { bd = d; best = c; }
+            }
+            if (best != null && best.requestFocus()) {
+                // the whole row in view with room for the lift and the dot below
+                best.requestRectangleOnScreen(new android.graphics.Rect(0, 0, best.getWidth(),
+                        best.getHeight() + Ui.dp(this, 36)));
+                Ui.navSound(before, best, View.FOCUS_DOWN);
+                return true;
+            }
+        }
         boolean handled = super.dispatchKeyEvent(e);
         if (handled && dir != 0) Ui.navSound(before, getCurrentFocus(), dir);
         return handled;
+    }
+
+    private static boolean inside(View v, View parent) {
+        for (android.view.ViewParent p = v.getParent(); p != null; p = p.getParent()) if (p == parent) return true;
+        return false;
     }
 
     // ── Long OK: the menu opens when OK is let go (#15: on THOMSON the menu that opened under
@@ -1182,6 +1212,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         stopAmbient();
         ambientGlows.clear();
         root.removeAllViews();
+        firstGridRow = null;
         root.setBackground(live ? null : Ui.background(skin));
 
         if (live) {
@@ -1376,7 +1407,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     row = row();
                     row.setPadding(0, Ui.dp(this, 12) + Math.round(tileH * 0.05f), 0, Ui.dp(this, 4));
                     page.addView(row);
-                    if (firstRow == null) firstRow = row;
+                    if (firstRow == null) { firstRow = row; firstGridRow = row; }
                 }
                 AppTile t = roundRest
                         ? tile(rest.get(i), rs, rs, skin, kids || labelsAlways,
