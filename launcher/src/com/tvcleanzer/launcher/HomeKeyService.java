@@ -611,13 +611,38 @@ public class HomeKeyService extends AccessibilityService {
         lastCls = cls;
         boolean watch = HIJACKERS.contains(pkg) || stockHomes.contains(pkg);
 
+        // The input opened from us is up: the quiet time has done its job. Whatever comes after
+        // (the TCL player closing on «no signal», Home) is handled as usual — with the quiet
+        // still on, launcherx's home stayed after an input (TCL 43V6C, 1.3.79).
+        if (quietUntil > 0 && (tvPlayers.contains(pkg) || tvPlayerClasses.contains(lastCls))) {
+            log(pkg + "/" + lastCls + ": the input is up");
+            quietUntil = 0;
+        }
         if (!isStock(pkg)) {
             if (watch) log(pkg + "/" + lastCls + ": a TV player, left");
             if (!pkg.equals(getPackageName()) && !pkg.equals("android")) allowedStockPkg = null;
             return;
         }
         if (pkg.equals(allowedStockPkg)) { log(pkg + ": opened from us"); return; }
-        if (SystemClock.uptimeMillis() < quietUntil) { log(pkg + ": an input is opening"); return; }
+        if (SystemClock.uptimeMillis() < quietUntil) {
+            if (CLASS_STRICT.contains(pkg) && stockHomeScreen(pkg, lastCls)) {
+                // Google TV's home screen while an input opens: a step on the way to the player,
+                // or where the TV fell back to. Still there in a moment: it is the latter.
+                final String homeCls = lastCls;
+                log(pkg + ": home screen while an input opens, checking again");
+                handler.postDelayed(() -> {
+                    if (pkg.equals(lastPkg) && homeCls.equals(lastCls) && pkg.equals(frontPackage())
+                            && !pkg.equals(allowedStockPkg)) {
+                        log(pkg + ": still on its home screen, replacing");
+                        quietUntil = 0;
+                        openHome();
+                    }
+                }, 3000);
+                return;
+            }
+            log(pkg + ": an input is opening");
+            return;
+        }
         // Google TV: its Inputs / Settings panels (and on TCL the inputs themselves) are this
         // package too; only its home screen goes
         if (!stockHomeScreen(pkg, lastCls)) { log(pkg + "/" + lastCls + ": not its home screen"); return; }
