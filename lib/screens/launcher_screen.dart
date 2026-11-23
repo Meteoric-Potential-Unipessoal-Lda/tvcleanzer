@@ -526,6 +526,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         ),
         _sw(tr('Память на главном экране'), tr('Нажатие закрывает приложения в фоне и освобождает память'), look.memPill,
             (v) => _setLook(look.copyWith(memPill: v)), need: 36),
+        if (look.memPill && !look.cleanBar && (look.barStyle != 0 || look.style == 1))
+          _sw(tr('Цифры памяти при наведении'), null, look.memLabel, (v) => _setLook(look.copyWith(memLabel: v)), need: 99),
         // «Часы» has only the corner icons (launcher 0.98)
         if (!look.cleanBar && look.style != 1)
           _pills(tr('Значки вверху'), [tr('Надписи'), tr('Значки'), tr('Мини в углу')], look.barStyle,

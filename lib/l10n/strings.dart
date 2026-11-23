@@ -1016,6 +1016,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'The TV couldn’t play this video — most likely it is 4K or too heavy. Pick a 1080p or shorter video. The photo stays on the home screen for now.',
     'Без рамки': 'No frame',
     'Свечение': 'Glow',
+    'Цифры памяти при наведении': 'Memory figures on focus',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2032,6 +2033,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Телевізор не зміг показати це відео — найімовірніше, воно в 4K або занадто важке. Виберіть відео в 1080p або коротше. Поки на головному екрані буде фото.',
     'Без рамки': 'Без рамки',
     'Свечение': 'Сяйво',
+    'Цифры памяти при наведении': 'Цифри пам’яті при наведенні',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3048,6 +3050,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV no pudo reproducir este vídeo: seguramente es 4K o demasiado pesado. Elige un vídeo en 1080p o más corto. Mientras tanto, en inicio se verá la foto.',
     'Без рамки': 'Sin marco',
     'Свечение': 'Brillo',
+    'Цифры памяти при наведении': 'Cifras de memoria al seleccionar',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4064,6 +4067,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'A TV não conseguiu reproduzir este vídeo — provavelmente é 4K ou demasiado pesado. Escolha um vídeo em 1080p ou mais curto. Por agora, o ecrã inicial mostra a foto.',
     'Без рамки': 'Sem moldura',
     'Свечение': 'Brilho',
+    'Цифры памяти при наведении': 'Valores de memória ao selecionar',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5080,6 +5084,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Der TV konnte dieses Video nicht abspielen – wahrscheinlich 4K oder zu groß. Wähle ein Video in 1080p oder ein kürzeres. Bis dahin zeigt der Startbildschirm das Foto.',
     'Без рамки': 'Ohne Rahmen',
     'Свечение': 'Leuchten',
+    'Цифры памяти при наведении': 'Speicherwerte bei Auswahl',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6096,6 +6101,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV n’a pas pu lire cette vidéo : elle est sans doute en 4K ou trop lourde. Choisissez une vidéo en 1080p ou plus courte. En attendant, l’accueil affiche la photo.',
     'Без рамки': 'Sans cadre',
     'Свечение': 'Halo',
+    'Цифры памяти при наведении': 'Chiffres de mémoire à la sélection',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7112,6 +7118,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'La TV non è riuscita a riprodurre questo video: probabilmente è 4K o troppo pesante. Scegli un video in 1080p o più corto. Intanto la Home mostra la foto.',
     'Без рамки': 'Senza cornice',
     'Свечение': 'Bagliore',
+    'Цифры памяти при наведении': 'Valori di memoria alla selezione',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8128,6 +8135,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Тэлевізар не змог паказаць гэтае відэа — хутчэй за ўсё, яно ў 4K або занадта цяжкае. Выберыце відэа ў 1080p або карацейшае. Пакуль на галоўным экране будзе фота.',
     'Без рамки': 'Без рамкі',
     'Свечение': 'Ззянне',
+    'Цифры памяти при наведении': 'Лічбы памяці пры навядзенні',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9144,6 +9152,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Теледидар бұл бейнені көрсете алмады — бәлкім, ол 4K немесе тым ауыр. 1080p немесе қысқарақ бейне таңдаңыз. Әзірге басты экранда фото тұрады.',
     'Без рамки': 'Жиексіз',
     'Свечение': 'Жарқырау',
+    'Цифры памяти при наведении': 'Таңдағанда жад көрсеткіштері',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10160,6 +10169,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor bu videoni ko‘rsata olmadi — ehtimol, u 4K yoki juda og‘ir. 1080p yoki qisqaroq video tanlang. Hozircha bosh ekranda rasm turadi.',
     'Без рамки': 'Ramkasiz',
     'Свечение': 'Yorqinlik',
+    'Цифры памяти при наведении': 'Tanlanganda xotira raqamlari',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11176,6 +11186,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Հեռուստացույցը չկարողացավ ցույց տալ այս տեսանյութը․ հավանաբար այն 4K է կամ չափազանց ծանր։ Ընտրեք 1080p կամ ավելի կարճ տեսանյութ։ Առայժմ գլխավոր էկրանին կլինի լուսանկարը։',
     'Без рамки': 'Առանց շրջանակի',
     'Свечение': 'Լուսարձակում',
+    'Цифры памяти при наведении': 'Հիշողության թվերը ընտրելիս',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12192,6 +12203,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor bu videonu göstərə bilmədi — yəqin ki, 4K-dır və ya çox ağırdır. 1080p və ya daha qısa video seçin. Hələlik əsas ekranda şəkil olacaq.',
     'Без рамки': 'Çərçivəsiz',
     'Свечение': 'Parıltı',
+    'Цифры памяти при наведении': 'Seçəndə yaddaş rəqəmləri',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13208,6 +13220,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'ტელევიზორმა ვერ აჩვენა ეს ვიდეო — სავარაუდოდ, ის 4K-ია ან ძალიან მძიმე. აირჩიეთ 1080p ან უფრო მოკლე ვიდეო. ჯერჯერობით მთავარ ეკრანზე ფოტო იქნება.',
     'Без рамки': 'ჩარჩოს გარეშე',
     'Свечение': 'ნათება',
+    'Цифры памяти при наведении': 'მეხსიერების ციფრები არჩევისას',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14224,6 +14237,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Сыналгы бул видеону көрсөтө алган жок — балким, ал 4K же өтө оор. 1080p же кыскараак видео тандаңыз. Азырынча башкы экранда сүрөт турат.',
     'Без рамки': 'Алкаксыз',
     'Свечение': 'Жаркыроо',
+    'Цифры памяти при наведении': 'Тандаганда эс тутум сандары',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15240,6 +15254,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV bu videoyu oynatamadı — büyük olasılıkla 4K ya da çok ağır. 1080p veya daha kısa bir video seçin. Şimdilik ana ekranda fotoğraf kalacak.',
     'Без рамки': 'Çerçevesiz',
     'Свечение': 'Parıltı',
+    'Цифры памяти при наведении': 'Seçilince bellek değerleri',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16256,6 +16271,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Telewizor nie odtworzył tego wideo — pewnie jest w 4K albo za ciężkie. Wybierz wideo w 1080p lub krótsze. Na razie na ekranie głównym będzie zdjęcie.',
     'Без рамки': 'Bez ramki',
     'Свечение': 'Poświata',
+    'Цифры памяти при наведении': 'Liczby pamięci po zaznaczeniu',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17272,6 +17288,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizorul nu a putut reda acest video — probabil e 4K sau prea mare. Alege un video în 1080p sau mai scurt. Deocamdată ecranul principal arată fotografia.',
     'Без рамки': 'Fără chenar',
     'Свечение': 'Strălucire',
+    'Цифры памяти при наведении': 'Cifrele memoriei la selectare',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18288,6 +18305,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': '电视无法播放这个视频——很可能是 4K 或文件太大。请选择 1080p 或更短的视频。主屏暂时显示照片。',
     'Без рамки': '无边框',
     'Свечение': '光晕',
+    'Цифры памяти при наведении': '选中时显示内存数值',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19304,6 +19322,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'テレビがこの動画を再生できませんでした。4K か重すぎる可能性があります。1080p か短い動画を選んでください。ホーム画面にはしばらく写真が表示されます。',
     'Без рамки': '枠なし',
     'Свечение': '光彩',
+    'Цифры памяти при наведении': '選択時にメモリの数値',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20320,6 +20339,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV가 이 동영상을 재생하지 못했습니다. 4K이거나 너무 무거운 것 같습니다. 1080p 또는 더 짧은 동영상을 선택하세요. 당분간 홈 화면에는 사진이 표시됩니다.',
     'Без рамки': '테두리 없음',
     'Свечение': '글로우',
+    'Цифры памяти при наведении': '선택 시 메모리 수치',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21336,6 +21356,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'टीवी यह वीडियो नहीं चला सका — शायद यह 4K है या बहुत भारी है। 1080p या छोटा वीडियो चुनें। तब तक होम स्क्रीन पर फ़ोटो रहेगी।',
     'Без рамки': 'बिना फ़्रेम',
     'Свечение': 'चमक',
+    'Цифры памяти при наведении': 'चुनने पर मेमोरी के आंकड़े',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22352,6 +22373,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV tidak bisa memutar video ini — kemungkinan 4K atau terlalu berat. Pilih video 1080p atau yang lebih pendek. Untuk sementara layar utama menampilkan foto.',
     'Без рамки': 'Tanpa bingkai',
     'Свечение': 'Pendar',
+    'Цифры памяти при наведении': 'Angka memori saat dipilih',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23368,6 +23390,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'TV không phát được video này — có lẽ là 4K hoặc quá nặng. Hãy chọn video 1080p hoặc ngắn hơn. Tạm thời màn hình chính sẽ hiện ảnh.',
     'Без рамки': 'Không viền',
     'Свечение': 'Phát sáng',
+    'Цифры памяти при наведении': 'Số liệu bộ nhớ khi chọn',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24384,6 +24407,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'ทีวีเล่นวิดีโอนี้ไม่ได้ อาจเป็น 4K หรือไฟล์ใหญ่เกินไป เลือกวิดีโอ 1080p หรือที่สั้นกว่า ระหว่างนี้หน้าหลักจะแสดงรูปภาพ',
     'Без рамки': 'ไม่มีกรอบ',
     'Свечение': 'เรืองแสง',
+    'Цифры памяти при наведении': 'ตัวเลขหน่วยความจำเมื่อเลือก',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25400,6 +25424,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'De tv kon deze video niet afspelen — waarschijnlijk 4K of te zwaar. Kies een video in 1080p of een kortere. Voorlopig toont het startscherm de foto.',
     'Без рамки': 'Zonder kader',
     'Свечение': 'Gloed',
+    'Цифры памяти при наведении': 'Geheugencijfers bij selectie',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26416,6 +26441,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Televizor toto video nepřehrál — nejspíš je ve 4K nebo příliš těžké. Vyberte video v 1080p nebo kratší. Zatím bude na hlavní obrazovce fotka.',
     'Без рамки': 'Bez rámečku',
     'Свечение': 'Záře',
+    'Цифры памяти при наведении': 'Údaje o paměti při výběru',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27432,6 +27458,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Η TV δεν μπόρεσε να παίξει αυτό το βίντεο — μάλλον είναι 4K ή πολύ βαρύ. Επιλέξτε βίντεο 1080p ή μικρότερο. Προς το παρόν η αρχική οθόνη δείχνει τη φωτογραφία.',
     'Без рамки': 'Χωρίς πλαίσιο',
     'Свечение': 'Λάμψη',
+    'Цифры памяти при наведении': 'Τιμές μνήμης κατά την επιλογή',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28448,6 +28475,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'A tévé nem tudta lejátszani ezt a videót — valószínűleg 4K vagy túl nagy. Válassz 1080p-s vagy rövidebb videót. Addig a kezdőképernyőn a fotó lesz.',
     'Без рамки': 'Keret nélkül',
     'Свечение': 'Ragyogás',
+    'Цифры памяти при наведении': 'Memóriaadatok kijelöléskor',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29464,5 +29492,6 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не смог показать это видео — скорее всего, оно в 4K или слишком тяжёлое. Выберите видео в 1080p или короче. Пока на главном экране будет фото.': 'Tv:n kunde inte spela upp videon — troligen 4K eller för tung. Välj en video i 1080p eller en kortare. Tills vidare visar startskärmen fotot.',
     'Без рамки': 'Utan ram',
     'Свечение': 'Glöd',
+    'Цифры памяти при наведении': 'Minnessiffror vid markering',
   },
 };

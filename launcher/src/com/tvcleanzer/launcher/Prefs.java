@@ -67,6 +67,9 @@ final class Prefs {
     /** 0.92 «Свечение»: a soft halo in the app's own colour instead of a frame. */
     boolean ringGlow()       { return sp.getBoolean("ringGlow", false); }
     void setRingGlow(boolean v) { sp.edit().putBoolean("ringGlow", v).apply(); }
+    /** 0.99: «ОЗУ 1,1 / 1,7 ГБ» beside the memory icon while it is selected (owners: it covers the city). */
+    boolean memLabel()       { return sp.getBoolean("memLabel", true); }
+    void setMemLabel(boolean v) { sp.edit().putBoolean("memLabel", v).apply(); }
     void setRingAccent(boolean v) { sp.edit().putBoolean(RING_ACCENT, v).apply(); }
     int tileSize()           { return clamp(sp.getInt(TILES, TILES_NORMAL), 0, 2); }
     void setTileSize(int v)  { sp.edit().putInt(TILES, clamp(v, 0, 2)).apply(); }

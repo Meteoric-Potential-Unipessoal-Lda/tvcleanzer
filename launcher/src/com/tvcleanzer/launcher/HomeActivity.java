@@ -1556,7 +1556,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             label.setGravity(Gravity.CENTER_VERTICAL);
             TopIcon mem = new TopIcon(this, TopIcon.MEM, memStatus());
             memIcon = mem;
-            mem.hook = has -> label.setVisibility(has || freeing ? View.VISIBLE : View.GONE);
+            mem.hook = has -> label.setVisibility(prefs.memLabel() && (has || freeing) ? View.VISIBLE : View.GONE);
             mem.setOnClickListener(v -> freeMemory());
             int is = Ui.dp(this, 46);
             LinearLayout.LayoutParams mp = new LinearLayout.LayoutParams(is, is);
@@ -1662,7 +1662,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             memPill = label;
             TopIcon mem = new TopIcon(this, TopIcon.MEM, memStatus(), true);
             memIcon = mem;
-            mem.hook = has -> label.setVisibility(has || freeing ? View.VISIBLE : View.GONE);
+            mem.hook = has -> label.setVisibility(prefs.memLabel() && (has || freeing) ? View.VISIBLE : View.GONE);
             mem.setOnClickListener(v -> freeMemory());
             items.add(label);
             items.add(mem);
