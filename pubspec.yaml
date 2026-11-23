@@ -23,9 +23,9 @@ dependencies:
   # Launcher wallpaper from the phone's photos
   image_picker: ^1.1.2
   # Install APK files from the phone on the TV (.apk, .apks, .xapk bundles)
-  file_picker: ^10.3.0
+  file_picker: ^13.4.1
   speech_to_text: ^7.0.0         # «Сказать голосом» in the remote: the phone listens, the TV gets text
-  share_plus: ^11.0.0            # the TV screenshot to Telegram / the gallery
+  share_plus: ^13.3.1            # the TV screenshot to Telegram / the gallery
   url_launcher: ^6.3.1           # author / donation links
   in_app_purchase: ^3.2.0        # tips in the App Store / Google Play builds
   archive: ^4.0.0
