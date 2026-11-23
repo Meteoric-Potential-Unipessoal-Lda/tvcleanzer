@@ -1445,7 +1445,27 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             corner(skin, true);
             return bar;
         }
-        if (prefs.memPill()) {
+        if (prefs.memPill() && prefs.barStyle() == Prefs.BAR_ICONS) {
+            // round icons: memory is a round icon too (0.80, an owner: no «ОЗУ …» word among the
+            // circles); its numbers show beside it while selected, OK frees memory
+            final TextView label = Ui.text(this, 15, 0xE6FFFFFF, "sans-serif-medium");
+            label.setText(Memory.label(this));
+            label.setSingleLine(true);
+            label.setVisibility(View.GONE);
+            memPill = label;
+            LinearLayout.LayoutParams llp = pillLp();
+            llp.rightMargin = Ui.dp(this, 10);
+            bar.addView(label, llp);
+            label.setGravity(Gravity.CENTER_VERTICAL);
+            TopIcon mem = new TopIcon(this, TopIcon.MEM, memStatus());
+            memIcon = mem;
+            mem.hook = has -> label.setVisibility(has || freeing ? View.VISIBLE : View.GONE);
+            mem.setOnClickListener(v -> freeMemory());
+            int is = Ui.dp(this, 46);
+            LinearLayout.LayoutParams mp = new LinearLayout.LayoutParams(is, is);
+            mp.rightMargin = Ui.dp(this, 14);
+            bar.addView(mem, mp);
+        } else if (prefs.memPill()) {
             Pill mem = new Pill(this, Memory.label(this));
             memPill = mem;
             mem.setOnClickListener(v -> freeMemory());
