@@ -212,6 +212,7 @@ public class HomeKeyService extends AccessibilityService {
                     log("power-on: " + pkg + "/" + lastCls + " left (it plays the inputs)");
                     return;
                 }
+                if (fighting(pkg)) return;
                 log("power-on: replacing " + pkg);
                 openHome();
             }, d);
@@ -648,7 +649,7 @@ public class HomeKeyService extends AccessibilityService {
                 log(pkg + ": home screen while an input opens, checking again");
                 handler.postDelayed(() -> {
                     if (pkg.equals(lastPkg) && homeCls.equals(lastCls) && pkg.equals(frontPackage())
-                            && !pkg.equals(allowedStockPkg)) {
+                            && !pkg.equals(allowedStockPkg) && !fighting(pkg)) {
                         log(pkg + ": still on its home screen, replacing");
                         quietUntil = 0;
                         openHome();
@@ -684,8 +685,28 @@ public class HomeKeyService extends AccessibilityService {
         }
         if (FEATURE_HOMES.contains(pkg) || wasSame) { log(pkg + ": the owner is in it, left"); return; }
         if (SystemClock.uptimeMillis() - lastRedirect < 1500) { log(pkg + ": loop guard"); return; }
+        if (fighting(pkg)) return;
         log(pkg + ": replacing");
         openHome();
+    }
+
+    private long fightFrom, fightPauseUntil;
+    private int fights;
+
+    /** The stock home back again and again right after we replaced it: the firmware fights.
+     *  Only the 1.5 s loop guard stood between the two homes, and a TCL Smart TV Pro (55C745)
+     *  «стал тупить жёстко» after a reboot. More than 4 times in 20 s: leave it for 2 minutes
+     *  (a Home press still opens ours). */
+    private boolean fighting(String pkg) {
+        long now = SystemClock.uptimeMillis();
+        if (now < fightPauseUntil) { log(pkg + ": it keeps coming back, left for now"); return true; }
+        if (now - fightFrom > 20000) { fightFrom = now; fights = 0; }
+        if (++fights > 4) {
+            fightPauseUntil = now + 120000;
+            log(pkg + ": came back " + fights + " times in 20 s, left for 2 min");
+            return true;
+        }
+        return false;
     }
 
     private void openHome() {
