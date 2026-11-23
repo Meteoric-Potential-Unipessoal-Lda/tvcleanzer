@@ -617,8 +617,10 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     }
   }
 
-  bool get _notHome =>
-      _installed == true && _checked && _launcher != null && _launcher != AdbPackageManager.launcherPkg;
+  /// Installed but another home screen is on. Not while an update is due: the update makes
+  /// it Home again anyway, and two orange buttons with two warnings only confuse.
+  bool get _notHome => _installed == true && !_outdated && _checked && _launcher != null &&
+      _launcher != AdbPackageManager.launcherPkg;
 
   /// One card on top: is it there, is it the home screen, is it fresh — and the one button
   /// that matters right now. The rarely needed buttons live in «Лаунчер на телевизоре» below.
@@ -655,22 +657,22 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     return _card(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Flexible(
-            child: Text('TVCleanzer Launcher',
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          // the name and the chip wrap rather than cut the name («TVCleanz…» on a phone)
+          Expanded(
+            child: Wrap(spacing: 8, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
+              Text('TVCleanzer Launcher',
+                  style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
+              if (_installed != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: chipColor.withValues(alpha: .12),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Text(chipText, style: TextStyle(fontSize: 11, color: chipColor, fontWeight: FontWeight.w600)),
+                ),
+            ]),
           ),
-          const Gap(8),
-          if (_installed != null)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: chipColor.withValues(alpha: .12),
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Text(chipText, style: TextStyle(fontSize: 11, color: chipColor, fontWeight: FontWeight.w600)),
-            ),
-          const Spacer(),
           if (tv != null)
             _checking
                 ? const Padding(
@@ -689,10 +691,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
               size: 18, color: _error != null ? AppColors.danger : ours ? AppColors.ok : AppColors.fgMuted),
           const Gap(8),
           Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Text.rich(
-                key: ValueKey(now),
+            child: Text.rich(
                 TextSpan(children: [
                   if (tv != null && _error == null && _checked)
                     TextSpan(text: '${tr('Сейчас на телевизоре')}: ', style: const TextStyle(color: AppColors.fgMuted)),
@@ -704,7 +703,6 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                 ]),
                 style: const TextStyle(fontSize: 13, height: 1.4),
               ),
-            ),
           ),
         ]),
         if (!installed && _installed != null) ...[
