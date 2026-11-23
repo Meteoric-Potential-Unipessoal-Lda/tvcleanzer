@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 64;
+  static const bundledLauncherVersion = 65;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1118,6 +1118,7 @@ class AdbPackageManager {
     if (await _frontPackage(adb) == launcherPkg) return LauncherBind.service;
     if (googleTv && !googleTvHard) {
       AppLog.error('google tv home', 'Home stays on launcherx (service bound: ${await _homeKeyBound(adb)})');
+      await _logHomeService(adb);
       return LauncherBind.needsGoogleTvHard;
     }
     return LauncherBind.failed;
@@ -1858,6 +1859,24 @@ class AdbPackageManager {
     } finally {
       adb.close();
     }
+  }
+
+  /// For «?» reports when Home stays on the stock home: what our service saw (launcher 0.65+
+  /// logs it) and whether Android refused to start our home.
+  Future<void> _logHomeService(AdbClient adb) async {
+    try {
+      final v = RegExp(r'versionName=(\S+)')
+          .firstMatch(await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -m1 versionName'))
+          ?.group(1);
+      final out = await adb.shell('logcat -d -t 2000 2>/dev/null | '
+          'grep -iE "TVCleanzerHome|tvcleanzer.launcher/.HomeActivity|background activity|app switch" | tail -8');
+      final lines = out.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
+      AppLog.error('home service', 'launcher $v; ${lines.isEmpty ? 'nothing in logcat' : '${lines.length} lines'}');
+      for (final l in lines) {
+        final i = l.indexOf(RegExp(r' [IWE] '));
+        AppLog.error('hs', i < 0 ? l : l.substring(i + 3));
+      }
+    } catch (_) {}
   }
 
   /// Is our Home-key service actually running? Being listed in the setting is not enough:

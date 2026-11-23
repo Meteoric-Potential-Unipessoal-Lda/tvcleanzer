@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="64"
-    android:versionName="0.64">
+    android:versionCode="65"
+    android:versionName="0.65">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -44,7 +44,12 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
-        <!-- the stock homes HomeKeyService replaces (Google TV launcherx among them) -->
+        <!-- the stock homes HomeKeyService replaces (Google TV launcherx among them), and who
+             plays the inputs (on TCL Google TV, launcherx itself) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="content" android:host="android.media.tv" />
+        </intent>
         <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.HOME" />

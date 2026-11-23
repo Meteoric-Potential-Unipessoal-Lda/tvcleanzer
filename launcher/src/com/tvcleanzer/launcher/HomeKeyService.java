@@ -66,6 +66,7 @@ public class HomeKeyService extends AccessibilityService {
             Prefs p = new Prefs(this);
             keyMap = p.keyMap();
             boolean want = !keyMap.isEmpty() || learn != null || volumeFiltered(this, p);
+            log("key filter " + want);
             int nf = want ? info.flags | flag : info.flags & ~flag;
             if (nf != info.flags) {
                 info.flags = nf;
@@ -189,7 +190,14 @@ public class HomeKeyService extends AccessibilityService {
             handler.postDelayed(() -> {
                 if (lastKeyAt > armed) return; // the user is already doing something
                 String pkg = frontPackage();
-                if (pkg != null && isStock(pkg) && !pkg.equals(allowedStockPkg)) openHome();
+                if (pkg == null || !isStock(pkg) || pkg.equals(allowedStockPkg)) return;
+                // a home that also plays the inputs (TCL Google TV): only when its home screen is up
+                if (playsInputs.contains(pkg) && !(pkg.equals(lastPkg) && stockHomeScreen(pkg, lastCls))) {
+                    log("power-on: " + pkg + "/" + lastCls + " left (it plays the inputs)");
+                    return;
+                }
+                log("power-on: replacing " + pkg);
+                openHome();
             }, d);
         }
     }
@@ -217,6 +225,22 @@ public class HomeKeyService extends AccessibilityService {
      *  Smart TV Pro: «источник включается и сразу летит в лаунчер»). Never replaced. */
     private final Set<String> tvPlayers = new HashSet<>();
 
+    /** Google TV's launcherx answers «view an input» itself on TCL (the G10 board, 43V6C): as a
+     *  TV player it was never replaced, so Home stayed on it (1.3.77 report). Now only the
+     *  screens that play the inputs are left alone; its home screen is replaced like elsewhere. */
+    private final Set<String> tvPlayerClasses = new HashSet<>();
+    private final Set<String> playsInputs = new HashSet<>();
+    private String lastCls = "";
+
+    /** For «?» reports and adb: logcat -d -s TVCleanzerHome */
+    static void log(String s) { android.util.Log.i("TVCleanzerHome", s); }
+
+    /** Is [cls] of [pkg] the stock home screen itself (not a panel, not an input playing)? */
+    private boolean stockHomeScreen(String pkg, String cls) {
+        if (!CLASS_STRICT.contains(pkg)) return true;
+        return cls != null && homeClasses.contains(cls) && !tvPlayerClasses.contains(cls);
+    }
+
     /** The HOME activities of the stock launchers. Google TV draws its Inputs and Settings
      *  panels from the same package: only its home screen itself is replaced. */
     private final Set<String> homeClasses = new HashSet<>();
@@ -234,6 +258,8 @@ public class HomeKeyService extends AccessibilityService {
 
     private void refreshTvPlayers() {
         tvPlayers.clear();
+        tvPlayerClasses.clear();
+        playsInputs.clear();
         PackageManager pm = getPackageManager();
         Intent[] probes = {
                 new Intent(Intent.ACTION_VIEW, android.media.tv.TvContract.buildChannelUriForPassthroughInput("x")),
@@ -242,7 +268,16 @@ public class HomeKeyService extends AccessibilityService {
         };
         for (Intent probe : probes) {
             try {
-                for (ResolveInfo ri : pm.queryIntentActivities(probe, 0)) tvPlayers.add(ri.activityInfo.packageName);
+                for (ResolveInfo ri : pm.queryIntentActivities(probe, 0)) {
+                    String p = ri.activityInfo.packageName;
+                    if (CLASS_STRICT.contains(p)) {
+                        playsInputs.add(p);
+                        tvPlayerClasses.add(ri.activityInfo.name);
+                        if (ri.activityInfo.targetActivity != null) tvPlayerClasses.add(ri.activityInfo.targetActivity);
+                    } else {
+                        tvPlayers.add(p);
+                    }
+                }
             } catch (Throwable ignored) {}
         }
         tvPlayers.addAll(Arrays.asList("com.tcl.tv", "com.tcl.sourcemenu", "com.android.tv", "com.google.android.tv",
@@ -272,6 +307,8 @@ public class HomeKeyService extends AccessibilityService {
         } catch (Throwable ignored) {}
         // in case the system hides them from the HOME query (package visibility)
         homeClasses.add("com.google.android.apps.tv.launcherx.home.HomeActivity");
+        log("stock homes " + stockHomes + "; home screens " + homeClasses + "; players " + tvPlayers
+                + "; inputs in " + playsInputs + " " + tvPlayerClasses);
     }
 
     private int lastKeyCode;
@@ -438,6 +475,7 @@ public class HomeKeyService extends AccessibilityService {
         }
         if (code == KeyEvent.KEYCODE_HOME && e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) {
             homeHeld = false;
+            log("Home key caught");
         }
         if (e.getAction() == KeyEvent.ACTION_UP && homeHeld && code == KeyEvent.KEYCODE_HOME) {
             homeHeld = false;
@@ -565,22 +603,25 @@ public class HomeKeyService extends AccessibilityService {
         String pkg = cs.toString();
         boolean wasSame = pkg.equals(lastPkg);
         lastPkg = pkg;
+        CharSequence ecls = event.getClassName();
+        lastCls = ecls == null ? "" : ecls.toString();
+        boolean watch = HIJACKERS.contains(pkg) || stockHomes.contains(pkg);
 
         if (!isStock(pkg)) {
+            if (watch) log(pkg + "/" + lastCls + ": a TV player, left");
             if (!pkg.equals(getPackageName()) && !pkg.equals("android")) allowedStockPkg = null;
             return;
         }
-        if (pkg.equals(allowedStockPkg)) return; // opened from our launcher on purpose
-        if (SystemClock.uptimeMillis() < quietUntil) return; // an input / TV just opened from us
-        if (CLASS_STRICT.contains(pkg)) {
-            // Google TV: its Inputs / Settings panels are this package too; only its home screen goes
-            CharSequence cls = event.getClassName();
-            if (cls == null || !homeClasses.contains(cls.toString())) return;
-        }
+        if (pkg.equals(allowedStockPkg)) { log(pkg + ": opened from us"); return; }
+        if (SystemClock.uptimeMillis() < quietUntil) { log(pkg + ": an input is opening"); return; }
+        // Google TV: its Inputs / Settings panels (and on TCL the inputs themselves) are this
+        // package too; only its home screen goes
+        if (!stockHomeScreen(pkg, lastCls)) { log(pkg + "/" + lastCls + ": not its home screen"); return; }
         if (SystemClock.uptimeMillis() - recentsAt < 4000) return; // Home twice: running apps
         // Settings / TV / Input key: Google TV draws these panels from its own home (TCL owners
         // lost both buttons because we kept replacing that home)
-        if (keyAsked()) return;
+        if (keyAsked()) { log(pkg + ": asked for by key " + lastKeyCode); return; }
+        if (watch) log(pkg + "/" + lastCls + ": replacing (armed " + armed() + ", same " + wasSame + ")");
         if (armed()) {
             // right after Home / power-on: the firmware put its screen over ours
             if (armedRedirects >= 6) return; // it keeps fighting: give up rather than loop
