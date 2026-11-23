@@ -9,15 +9,47 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 /**
- * The launcher's own line glyphs, drawn on canvas (no image assets, nobody's icon set):
- * network, Bluetooth, the TV's settings, a solid gear, «more» dots and an input.
- * TopIcon (round and corner icons), GearButton and the dock buttons share them.
+ * The launcher's glyphs. Wi-Fi, the VPN plate, Bluetooth, the gear and the VPN shield come from
+ * the project's own icon pack (0.72, «TV Cleanser icons»: original vector icons, white PNGs in
+ * res/drawable-nodpi, tinted to the status colour); Ethernet, the TV's settings, «more» dots and
+ * an input are drawn on canvas in the same weight. TopIcon, GearButton and the dock share them.
  */
 final class Glyphs {
     private Glyphs() {}
 
     static final int WIFI = 0, ETHERNET = 1, VPN = 2, OFFLINE = 3, TV = 4, BT = 5, BT_OFF = 6,
-            GEAR = 7, MORE = 8, INPUT = 9;
+            GEAR = 7, MORE = 8, INPUT = 9, VPN_PLATE = 10;
+
+    private static final android.graphics.Bitmap[] PACK = new android.graphics.Bitmap[11];
+    private static boolean loaded;
+    private static final Paint BMP = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+
+    /** Loads the pack once (any context of the launcher). */
+    static void init(android.content.Context c) {
+        if (loaded) return;
+        loaded = true;
+        try {
+            android.content.res.Resources r = c.getResources();
+            String[][] names = {{"" + WIFI, "tvc_wifi"}, {"" + BT, "tvc_bluetooth"}, {"" + GEAR, "tvc_settings"},
+                    {"" + VPN, "tvc_vpn_shield"}, {"" + VPN_PLATE, "tvc_vpn"}};
+            for (String[] n : names) {
+                int id = r.getIdentifier(n[1], "drawable", c.getPackageName());
+                if (id != 0) PACK[Integer.parseInt(n[0])] = android.graphics.BitmapFactory.decodeResource(r, id);
+            }
+        } catch (Throwable ignored) {}
+    }
+
+    /** A pack icon for [glyph] (the slashed ones use the plain one), drawn [s] half-size like the
+     *  canvas glyphs: the pack keeps a margin round its symbols in the 32-unit box. */
+    private static boolean pack(Canvas c, int glyph, float cx, float cy, float s, int col) {
+        int key = glyph == OFFLINE ? WIFI : glyph == BT_OFF ? BT : glyph;
+        android.graphics.Bitmap b = key < PACK.length ? PACK[key] : null;
+        if (b == null) return false;
+        float half = s * 1.38f;
+        BMP.setColorFilter(new android.graphics.PorterDuffColorFilter(col, android.graphics.PorterDuff.Mode.SRC_IN));
+        c.drawBitmap(b, null, new RectF(cx - half, cy - half, cx + half, cy + half), BMP);
+        return true;
+    }
 
     /**
      * Draws [glyph] centred on (cx, cy), [s] = half its size, in [col].
@@ -31,6 +63,10 @@ final class Glyphs {
         ink.setStrokeWidth(w * 0.065f);
         fill.setStyle(Paint.Style.FILL);
         fill.setColor(col);
+        if (pack(c, glyph, cx, cy, s, col)) {
+            if (glyph == OFFLINE || glyph == BT_OFF) c.drawLine(cx - s, cy - s, cx + s, cy + s, ink);
+            return;
+        }
         switch (glyph) {
             case WIFI:
             case OFFLINE: {

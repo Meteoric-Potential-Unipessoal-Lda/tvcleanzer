@@ -126,6 +126,9 @@ public class SettingsActivity extends Activity {
         addToggle(skin, T.t("Заставка при запуске"), prefs.splash(), T.t("Логотип, пока лаунчер загружается"), T.t("Выключена"),
                 prefs::setSplash);
 
+        addChoice(skin, T.t("Стекло"), new String[]{T.t("Светлое"), T.t("Прозрачное"), T.t("Тёмное")},
+                prefs.shelf(), prefs::setShelf);
+
         addHeader(skin, T.t("Плитки и приложения"));
         addChoice(skin, T.t("Размер плиток"), new String[]{T.t("Мелкие"), T.t("Обычные"), T.t("Крупные")},
                 prefs.tileSize(), prefs::setTileSize);
@@ -153,8 +156,6 @@ public class SettingsActivity extends Activity {
                 prefs.setAppsBelow(i > 0);
                 prefs.setFavBottom(i == 2);
             });
-            addChoice(skin, T.t("Подложка избранного"), new String[]{T.t("Стекло"), T.t("Прозрачная"), T.t("Тёмная")},
-                    prefs.shelf(), prefs::setShelf);
             if (prefs.favCols() == 0) {
                 addChoice(skin, T.t("Рамка избранного"), new String[]{T.t("Во всю ширину"), T.t("Слева"), T.t("По центру")},
                         prefs.favAlign(), prefs::setFavAlign);

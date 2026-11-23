@@ -33,9 +33,8 @@ final class GearButton extends View {
         fill.setColor(f ? 0xFFFFFFFF : 0x26FFFFFF);
         c.drawCircle(cx, cy, w / 2f, fill);
 
-        // a solid gear (0.68): eight strokes round a ring read as a sun («солнышко»)
-        gear.setStyle(Paint.Style.FILL);
-        gear.setColor(f ? 0xFF111111 : 0xE6FFFFFF);
-        c.drawPath(Glyphs.gear(cx, cy, w * 0.34f), gear);
+        // the icon pack's gear (0.72; 0.68 a drawn one: eight strokes round a ring read as a sun)
+        Glyphs.init(getContext());
+        Glyphs.draw(c, Glyphs.GEAR, cx, cy, w * 0.3f, w, f ? 0xFF111111 : 0xE6FFFFFF, gear, fill);
     }
 }

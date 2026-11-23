@@ -588,6 +588,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             tr('Анимации: {0}', [animL[look.anim]]),
             if (look.skinAuto > 0) autoL[look.skinAuto],
           ]), [
+        _pills(tr('Стекло'), [tr('Светлое'), tr('Прозрачное'), tr('Тёмное')], look.shelf,
+            (v) => _setLook(look.copyWith(shelf: v)),
+            hint: tr('Под избранным, доком, часами и значками вверху'), need: 72),
         _sw(tr('Живой фон'), tr('Свечение медленно плывёт по экрану'), look.ambient,
             (v) => _setLook(look.copyWith(ambient: v))),
         if (look.ambient)

@@ -265,7 +265,8 @@ final class Prefs {
     /** With appsBelow: favourites sit at the bottom of the first screen, over the photo. */
     boolean favBottom()      { return sp.getBoolean(FAV_BOTTOM, false); }
     void setFavBottom(boolean v) { sp.edit().putBoolean(FAV_BOTTOM, v).apply(); }
-    /** Favourites shelf: 0 glass (default), 1 transparent, 2 dark. */
+    /** Every glass on the home screen (0.72: favourites, the dock, under the clock, the corner
+     *  icons; before only the favourites): 0 light glass (default), 1 transparent, 2 dark. */
     static final int SHELF_GLASS = 0, SHELF_CLEAR = 1, SHELF_DARK = 2;
     int shelf()              { return clamp(sp.getInt(SHELF, SHELF_GLASS), 0, 2); }
     void setShelf(int v)     { sp.edit().putInt(SHELF, clamp(v, 0, 2)).apply(); }
