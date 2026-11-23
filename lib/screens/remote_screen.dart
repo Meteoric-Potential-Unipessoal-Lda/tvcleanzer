@@ -1188,11 +1188,14 @@ class _MouseLink {
           '-a com.tvcleanzer.launcher.APPLY --ez mouse true 2>&1';
       var out = await c.shell(start);
       if (out.contains('result=2') || out.contains('result=3')) {
-        // the Home-key service was off or not running (a Google TV owner): switch it on; and allow
-        // the plain pointer for boxes that switch the service off at once (T95 / be311)
+        // no running Home-key service: the plain pointer first (1.3.99: switching the service on
+        // made a be311 box kill the launcher again and again), the service only if that can't be
         await c.shell('appops set com.tvcleanzer.launcher SYSTEM_ALERT_WINDOW allow 2>&1');
-        await _ensure(c);
         out = await c.shell(start);
+        if (out.contains('result=2')) {
+          await _ensure(c);
+          out = await c.shell(start);
+        }
       }
       final plain = out.contains('result=5');
       if (!out.contains('result=1') && !plain) {

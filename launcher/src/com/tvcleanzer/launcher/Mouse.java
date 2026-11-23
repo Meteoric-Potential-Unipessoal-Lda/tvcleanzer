@@ -158,7 +158,13 @@ final class Mouse {
     private void show(boolean on) {
         main.removeCallbacks(hide);
         if (!on) {
-            if (cursor != null) cursor.setVisibility(View.GONE);
+            // 0.84: the plain pointer only fades out. A window of ours on screen is what keeps the
+            // launcher's process alive on a box with no service holding it (be311: «works for
+            // 10 seconds» — the pointer hid after 8 s and the box killed the process)
+            if (cursor != null) {
+                if (svc == null) cursor.setAlpha(0f);
+                else cursor.setVisibility(View.GONE);
+            }
             return;
         }
         size();
@@ -181,6 +187,7 @@ final class Mouse {
             }
         }
         cursor.setVisibility(View.VISIBLE);
+        cursor.setAlpha(1f);
         main.postDelayed(hide, 8000); // still: hide the pointer, it comes back with the next move
     }
 
