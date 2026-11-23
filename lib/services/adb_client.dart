@@ -128,6 +128,7 @@ class AdbClient {
   Future<Map<String, String>> connect({
     Duration timeout = const Duration(seconds: 10),
     Duration pairingTimeout = const Duration(seconds: 60),
+    void Function()? onAwaitingApproval,
   }) async {
     final keys = await _keys();
 
@@ -168,6 +169,8 @@ class AdbClient {
 
     if (msg.cmd == _cmdAuth && msg.arg0 == _authToken) {
       _send(_Msg(_cmdAuth, _authRsaPublicKey, 0, _androidPublicKey(keys)));
+      // the TV now shows «Allow USB debugging?»: the onboarding tells the owner what to press
+      onAwaitingApproval?.call();
       msg = await _read(pairingTimeout,
           'Timed out waiting for approval on the TV. Tap "Allow" and try again.');
       if (msg.cmd == _cmdCnxn) return _parseCnxn(msg);

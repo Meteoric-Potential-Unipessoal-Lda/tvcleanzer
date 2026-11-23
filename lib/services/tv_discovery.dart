@@ -59,7 +59,46 @@ class TvDiscovery {
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
-  Future<bool> _isPortOpen(String ip, int port) async {
+  /// Candidate hosts for a search: the phone's /24 plus addresses typed in by hand.
+  static Future<List<(String, int)>> candidates() async {
+    final subnet = await subnetBase();
+    final cands = <(String, int)>[
+      if (subnet != null) for (var i = 2; i <= 254; i++) ('$subnet$i', _adbPort),
+    ];
+    for (final m in await ManualTvs.load()) {
+      if (!cands.contains(m)) cands.add(m);
+    }
+    return cands;
+  }
+
+  /// Hosts among [cands] with the ADB port open (one quick pass).
+  static Future<List<(String, int)>> openPorts(List<(String, int)> cands) async {
+    final open = <(String, int)>[];
+    await _inBatches(cands, _concurrency, (c) async {
+      if (await isPortOpen(c.$1, c.$2)) open.add(c);
+    });
+    return open;
+  }
+
+  /// A VPN is up on the phone (its traffic may not reach the home network).
+  static Future<bool> vpnActive() async {
+    try {
+      final ifaces = await NetworkInterface.list(type: InternetAddressType.any);
+      const vpn = ['tun', 'utun', 'ipsec', 'ppp', 'wg', 'tap', 'wireguard', 'openvpn', 'tailscale'];
+      return ifaces.any((i) {
+        final n = i.name.toLowerCase();
+        // iOS keeps utun0..3 for the system: only a utun with an IPv4 address is a VPN
+        if (n.startsWith('utun')) return i.addresses.any((a) => a.type == InternetAddressType.IPv4);
+        return vpn.any(n.startsWith) && i.addresses.isNotEmpty;
+      });
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> _isPortOpen(String ip, int port) => isPortOpen(ip, port);
+
+  static Future<bool> isPortOpen(String ip, int port) async {
     try {
       final sock = await Socket.connect(ip, port, timeout: _portTimeout);
       sock.destroy();
@@ -72,7 +111,9 @@ class TvDiscovery {
   /// Base of the phone's (or PC's) Wi-Fi /24 subnet, e.g. "192.168.1.".
   /// Uses dart:io directly (no plugin): prefers Wi-Fi interfaces
   /// (en*/wlan*) and skips cellular, VPN and virtual ones.
-  Future<String?> _subnetBase() async {
+  Future<String?> _subnetBase() => subnetBase();
+
+  static Future<String?> subnetBase() async {
     List<NetworkInterface> ifaces;
     try {
       ifaces = await NetworkInterface.list(type: InternetAddressType.IPv4);

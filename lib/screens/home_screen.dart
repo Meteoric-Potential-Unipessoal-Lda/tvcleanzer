@@ -20,6 +20,7 @@ import 'scan_screen.dart';
 
 import '../l10n/l10n.dart';
 import 'faq_screen.dart';
+import 'onboarding_screen.dart';
 // ─── Providers ───────────────────────────────────────────────────────────────
 
 /// Singleton TvDiscovery — reuses the shared AdbPackageManager instance.
@@ -325,7 +326,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           textAlign: TextAlign.center,
           style: const TextStyle(color: AppColors.fgMuted, fontSize: 13, height: 1.4)),
       const Gap(24),
+      // the guide that stays until the TV is connected (brand → home screen → steps)
       FilledButton.icon(
+        icon: const Icon(Icons.checklist_rounded),
+        label: Text(tr('Пошаговое подключение')),
+        onPressed: () => Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const OnboardingScreen())),
+      ),
+      const Gap(8),
+      OutlinedButton.icon(
         icon: const Icon(Icons.refresh_rounded),
         label: Text(tr('Искать снова')),
         onPressed: () => ref.read(discoveryProvider.notifier).startScan(),

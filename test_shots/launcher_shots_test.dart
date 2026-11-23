@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tvcleanzer/l10n/l10n.dart';
 import 'package:tvcleanzer/models/tv_device.dart';
 import 'package:tvcleanzer/screens/launcher_screen.dart';
+import 'package:tvcleanzer/screens/onboarding_screen.dart';
 import 'package:tvcleanzer/services/adb_package_manager.dart';
 import 'package:tvcleanzer/state/current_tv.dart';
 import 'package:tvcleanzer/theme/app_theme.dart';
@@ -137,6 +138,32 @@ Future<void> _shot(WidgetTester t, String name, _Apm apm, double h, List<String>
   await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/$name.png'));
 }
 
+
+/// The first-run connection guide, page by page (taps by visible text).
+Future<void> _shotGuide(WidgetTester t, String name, List<String> taps, {double h = 852}) async {
+  t.view.physicalSize = Size(393 * 3, h * 3);
+  t.view.devicePixelRatio = 3;
+  addTearDown(t.view.reset);
+  final base = AppTheme.buildTheme();
+  final theme = base.copyWith(
+      textTheme: base.textTheme.apply(fontFamily: 'Roboto'),
+      primaryTextTheme: base.primaryTextTheme.apply(fontFamily: 'Roboto'));
+  await t.pumpWidget(ProviderScope(
+    overrides: [adbServiceProvider.overrideWithValue(_Apm(installed: false))],
+    child: MaterialApp(debugShowCheckedModeBanner: false, theme: theme, home: const OnboardingScreen(firstRun: true)),
+  ));
+  for (var i = 0; i < 6; i++) {
+    await t.pump(const Duration(milliseconds: 250));
+  }
+  for (final g in taps) {
+    await t.tap(find.text(g).hitTestable().first);
+    for (var i = 0; i < 4; i++) {
+      await t.pump(const Duration(milliseconds: 150));
+    }
+  }
+  await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/$name.png'));
+}
+
 void main() {
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -167,4 +194,12 @@ void main() {
   testWidgets('4 not installed', (t) async {
     await _shot(t, '4_none', _Apm(home: 'com.mitv.tvhome.atv', installed: false), 3300, const []);
   });
+
+  testWidgets('5 guide: welcome', (t) => _shotGuide(t, '5_welcome', const []));
+  testWidgets('6 guide: brand', (t) => _shotGuide(t, '6_brand', const ['Начать']));
+  testWidgets('7 guide: home screen', (t) => _shotGuide(t, '7_platform', const ['Начать', 'Haier']));
+  testWidgets('8 guide: a step', (t) => _shotGuide(t, '8_step', const ['Начать', 'Haier', 'Android TV', 'Дальше']));
+  testWidgets('9 guide: not found', (t) => _shotGuide(t, '9_waiting',
+      const ['Начать', 'Haier', 'Android TV', 'Дальше', 'Дальше', 'Дальше', 'Дальше', 'Отладка включена', 'Не находится?'],
+      h: 1500));
 }

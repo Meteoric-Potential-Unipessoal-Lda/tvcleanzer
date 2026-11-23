@@ -41,10 +41,11 @@ class AdbPackageManager {
   // ── Device info ─────────────────────────────────────────────────────────────
 
   /// Connect to [ip] via ADB and return a populated [TvDevice].
-  Future<TvDevice> getDeviceInfo(String ip, {int port = 5555}) async {
+  Future<TvDevice> getDeviceInfo(String ip,
+      {int port = 5555, void Function()? onAwaitingApproval}) async {
     final adb = AdbClient.open(host: ip, port: port);
     try {
-      final cnxnProps = await adb.connect();
+      final cnxnProps = await adb.connect(onAwaitingApproval: onAwaitingApproval);
 
       // Basic props + memory in one round trip.
       final propOut = await adb.shell(

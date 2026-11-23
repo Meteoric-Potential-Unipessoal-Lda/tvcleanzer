@@ -11,6 +11,7 @@ import '../state/current_tv.dart';
 import '../state/history.dart';
 import '../state/launcher_skin_state.dart';
 import '../theme/app_theme.dart';
+import 'onboarding_screen.dart';
 import 'root_shell.dart';
 
 import '../l10n/l10n.dart';
@@ -51,12 +52,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       // Will be retried on the first connection.
     }
     // Keep the animation on screen long enough to read, but no longer.
+    // first run without a TV: the step-by-step connection guide before anything else
+    final first = await OnboardingScreen.needed(hasTv: ref.read(currentTvProvider) != null);
     final left = const Duration(milliseconds: 1400) - DateTime.now().difference(started);
     if (left > Duration.zero) await Future.delayed(left);
     if (!mounted) return;
     Navigator.of(context).pushReplacement(PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 450),
-      pageBuilder: (_, __, ___) => const RootShell(),
+      pageBuilder: (_, __, ___) => first ? const OnboardingScreen(firstRun: true) : const RootShell(),
       transitionsBuilder: (_, anim, __, child) => FadeTransition(
         opacity: CurvedAnimation(parent: anim, curve: Curves.easeOut),
         child: child,
