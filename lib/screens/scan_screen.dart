@@ -78,7 +78,11 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(scanProvider(widget.device).notifier).startScan().then((_) => _maybeUpdateLauncher());
+      ref.read(scanProvider(widget.device).notifier).startScan().then((_) async {
+        // History from the TV's own copy (the phone may have been reinstalled) and back
+        await ref.read(historyProvider.notifier).syncWithTv(widget.device);
+        await _maybeUpdateLauncher();
+      });
     });
   }
 

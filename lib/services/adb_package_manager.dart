@@ -41,6 +41,36 @@ class AdbPackageManager {
   // ── Device info ─────────────────────────────────────────────────────────────
 
   /// Connect to [ip] via ADB and return a populated [TvDevice].
+  /// A copy of this TV's History kept on the TV itself: a phone reinstall, a switch between
+  /// the Telegram APK and the store app (different signatures = uninstall) or another phone
+  /// doesn't lose it. /data/local/tmp belongs to adb shell and survives everything but a
+  /// factory reset.
+  static const tvHistoryPath = '/data/local/tmp/tvcleanzer/history.json';
+
+  Future<String?> readTvHistory(TvDevice device) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      final out = await adb.shell('cat $tvHistoryPath 2>/dev/null');
+      return out.trim().isEmpty ? null : out;
+    } finally {
+      adb.close();
+    }
+  }
+
+  Future<void> writeTvHistory(TvDevice device, String json) async {
+    final adb = AdbClient.open(host: device.ipAddress, port: device.port);
+    try {
+      await adb.connect();
+      await adb.shell('mkdir -p ${tvHistoryPath.substring(0, tvHistoryPath.lastIndexOf('/'))}');
+      // written aside, then moved: a dropped connection never leaves half a file
+      await adb.execIn('cat > $tvHistoryPath.tmp', Uint8List.fromList(utf8.encode(json)));
+      await adb.shell('[ -s $tvHistoryPath.tmp ] && mv $tvHistoryPath.tmp $tvHistoryPath');
+    } finally {
+      adb.close();
+    }
+  }
+
   Future<TvDevice> getDeviceInfo(String ip,
       {int port = 5555, void Function()? onAwaitingApproval}) async {
     final adb = AdbClient.open(host: ip, port: port);

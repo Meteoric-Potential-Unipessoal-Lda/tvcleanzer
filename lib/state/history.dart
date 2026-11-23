@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/tv_device.dart';
+import '../services/adb_package_manager.dart';
+import '../services/app_log.dart';
 
 /// One finished clean: what was hidden on which TV. Kept on the phone so the
 /// user can bring the apps back at any time from the History tab.
@@ -49,9 +51,9 @@ class CleanRecord {
 
   String labelOf(String pkg) => labels[pkg] ?? pkg;
 
-  CleanRecord copyWith({bool? restored}) => CleanRecord(
+  CleanRecord copyWith({bool? restored, String? tvIp}) => CleanRecord(
         id: id,
-        tvIp: tvIp,
+        tvIp: tvIp ?? this.tvIp,
         tvName: tvName,
         packages: packages,
         labels: labels,
@@ -101,10 +103,76 @@ class CleanRecord {
 }
 
 final historyProvider =
-    StateNotifierProvider<HistoryNotifier, List<CleanRecord>>((ref) => HistoryNotifier());
+    StateNotifierProvider<HistoryNotifier, List<CleanRecord>>(
+        (ref) => HistoryNotifier(api: ref.read(adbServiceProvider)));
 
 class HistoryNotifier extends StateNotifier<List<CleanRecord>> {
-  HistoryNotifier() : super(const []);
+  HistoryNotifier({AdbPackageManager? api})
+      : _api = api,
+        super(const []);
+
+  /// Reads and writes the copy kept on each TV ([AdbPackageManager.tvHistoryPath]).
+  final AdbPackageManager? _api;
+
+  /// TVs seen this run by host, so a later «Вернуть» can update that TV's copy too.
+  final Map<String, TvDevice> _tvs = {};
+
+  static String hostOf(String id) => id.contains(':') ? id.substring(0, id.lastIndexOf(':')) : id;
+
+  /// The phone's records plus the TV's copy: records the phone lost (reinstall, APK ↔ store)
+  /// come back under the TV's current address; «Вернуть» done on either side counts.
+  static List<CleanRecord> merge(List<CleanRecord> phone, List<CleanRecord> fromTv, String tvId,
+      {int max = _max}) {
+    final byId = {for (final r in phone) r.id: r};
+    for (final t in fromTv) {
+      final p = byId[t.id];
+      if (p == null) {
+        byId[t.id] = t.copyWith(tvIp: tvId);
+      } else if (t.restored && !p.restored) {
+        byId[t.id] = p.copyWith(restored: true);
+      }
+    }
+    final all = byId.values.toList()..sort((a, b) => b.date.compareTo(a.date));
+    return all.take(max).toList();
+  }
+
+  /// Brings back what the TV remembers and leaves the TV an up-to-date copy. Quiet: a TV
+  /// that can't be reached just keeps its old copy.
+  Future<void> syncWithTv(TvDevice tv) async {
+    final api = _api;
+    if (api == null || tv.isDemo) return;
+    _tvs[hostOf(tv.id)] = tv;
+    try {
+      final fromTv = <CleanRecord>[];
+      final raw = await api.readTvHistory(tv);
+      if (raw != null) {
+        final j = jsonDecode(raw);
+        final list = j is Map ? (j['records'] as List? ?? const []) : j as List;
+        for (final e in list) {
+          try {
+            fromTv.add(CleanRecord.fromJson((e as Map).cast<String, dynamic>()));
+          } catch (_) {}
+        }
+      }
+      final merged = merge(state, fromTv, tv.id);
+      if (jsonEncode(merged.map((r) => r.toJson()).toList()) !=
+          jsonEncode(state.map((r) => r.toJson()).toList())) {
+        state = merged;
+        await _save();
+      }
+      final mine = [for (final r in state) if (hostOf(r.tvIp) == hostOf(tv.id)) r.toJson()];
+      if (mine.isEmpty) return;
+      await api.writeTvHistory(tv, jsonEncode({'v': 1, 'model': tv.modelName, 'records': mine}));
+    } catch (e) {
+      AppLog.error('history copy on TV', e);
+    }
+  }
+
+  /// After a change for the TV with [tvId]: its copy on the TV, if we know the TV.
+  void _copyTo(String tvId) {
+    final tv = _tvs[hostOf(tvId)];
+    if (tv != null) syncWithTv(tv);
+  }
 
   static const _key = 'clean_history';
   static const _max = 50;
@@ -144,6 +212,8 @@ class HistoryNotifier extends StateNotifier<List<CleanRecord>> {
     );
     state = [rec, ...state].take(_max).toList();
     await _save();
+    _tvs[hostOf(tv.id)] = tv;
+    _copyTo(tv.id);
   }
 
   Future<void> addBoost(TvDevice tv, BoostResult r) async {
@@ -163,18 +233,23 @@ class HistoryNotifier extends StateNotifier<List<CleanRecord>> {
     );
     state = [rec, ...state].take(_max).toList();
     await _save();
+    _tvs[hostOf(tv.id)] = tv;
+    _copyTo(tv.id);
   }
 
   Future<void> markRestored(String id) async {
     state = [for (final r in state) r.id == id ? r.copyWith(restored: true) : r];
     await _save();
+    for (final r in state) {
+      if (r.id == id) _copyTo(r.tvIp);
+    }
   }
 
   /// After «Вернуть всё скрытое» on the TV at [host]: its records are all put back.
   Future<void> markAllRestoredFor(String host) async {
-    String hostOf(String id) => id.contains(':') ? id.substring(0, id.lastIndexOf(':')) : id;
     state = [for (final r in state) hostOf(r.tvIp) == host ? r.copyWith(restored: true) : r];
     await _save();
+    _copyTo(host);
   }
 
   Future<void> markRestoredByBackup(String backupId) async {

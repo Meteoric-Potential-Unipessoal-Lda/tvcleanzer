@@ -23,7 +23,22 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   bool _restoringAll = false;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncCurrent());
+  }
+
+  /// History the phone lost (reinstall, Telegram APK ↔ store app) comes back from the TV.
+  void _syncCurrent() {
+    final tv = ref.read(currentTvProvider);
+    if (mounted && tv != null && !tv.isDemo) ref.read(historyProvider.notifier).syncWithTv(tv);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen<TvDevice?>(currentTvProvider, (prev, next) {
+      if (next != null && prev?.id != next.id) _syncCurrent();
+    });
     final records = ref.watch(historyProvider);
     return Scaffold(
       appBar: AppBar(title: Text(tr('История'))),
