@@ -1325,7 +1325,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
             int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
             if (prefs.ringGlow()) zoomPad += Math.round(favH * 0.3f); // «Свечение»: the halo stays whole
-            hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
+            // «Без рамки»: room below for the dot under the selected app (0.95, it was cut off here)
+            hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad + (ringColor == 0 ? Ui.dp(this, 16) : 0));
             LinearLayout row = row();
             final int fs = roundFav ? Math.round(favH * 1.2f) : 0;
             for (int i = 0; i < favorites.size(); i++) {
