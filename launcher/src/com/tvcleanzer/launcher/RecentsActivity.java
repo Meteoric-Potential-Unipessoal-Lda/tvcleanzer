@@ -39,6 +39,21 @@ public class RecentsActivity extends Activity {
     private final Handler ui = new Handler(Looper.getMainLooper());
     private LinearLayout row;
     private TextView note;
+    private List<AppEntry> shown = new ArrayList<>();
+
+    /** Apps closed here, with the time: usage stats keep the last use, so a closed app came
+     *  back on the next open (#9). It stays out until it is used again. Its own file: a change
+     *  in the launcher's settings redraws the home screen. */
+    private static android.content.SharedPreferences closedPrefs(Context c) {
+        return c.getSharedPreferences("recents_closed", Context.MODE_PRIVATE);
+    }
+
+    static void markClosed(Context c, List<String> pkgs) {
+        android.content.SharedPreferences.Editor ed = closedPrefs(c).edit();
+        long now = System.currentTimeMillis();
+        for (String p : pkgs) ed.putLong(p, now);
+        ed.apply();
+    }
 
     /** Apps the TV owner used lately, most recent first; empty without usage access. */
     static List<AppEntry> recent(Context c) {
@@ -50,6 +65,7 @@ public class RecentsActivity extends Activity {
             List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, now - 3L * 24 * 3600_000, now);
             if (stats == null || stats.isEmpty()) return out;
             Map<String, Long> last = new HashMap<>();
+            Map<String, ?> closed = closedPrefs(c).getAll();
             for (UsageStats s : stats) {
                 if (s.getLastTimeUsed() <= 0 || s.getTotalTimeInForeground() <= 0) continue;
                 Long old = last.get(s.getPackageName());
@@ -62,6 +78,8 @@ public class RecentsActivity extends Activity {
             for (String p : pkgs) {
                 AppEntry a = apps.get(p);
                 if (a == null || p.equals(c.getPackageName())) continue;
+                Object at = closed.get(p);
+                if (at instanceof Long && (Long) at >= last.get(p)) continue; // closed, not used since
                 out.add(a);
                 if (out.size() >= MAX) break;
             }
@@ -117,6 +135,9 @@ public class RecentsActivity extends Activity {
         });
         all.setOnClickListener(v -> {
             note.setText(T.t("Закрываем…"));
+            List<String> gone = new ArrayList<>();
+            for (AppEntry a : shown) gone.add(a.pkg);
+            markClosed(this, gone);
             new Thread(() -> {
                 long mb = Memory.free(this);
                 ui.post(() -> {
@@ -141,6 +162,7 @@ public class RecentsActivity extends Activity {
 
     private void fill(List<AppEntry> list) {
         if (isFinishing()) return;
+        shown = new ArrayList<>(list);
         if (list.isEmpty()) {
             note.setText(T.t("Список недоступен: подключите телефон с TVCleanzer к телевизору один раз, и он откроет доступ."));
             return;
@@ -195,11 +217,22 @@ public class RecentsActivity extends Activity {
         row.getChildAt(0).requestFocus();
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent e) {
+        int dir = e.getAction() == KeyEvent.ACTION_DOWN ? Ui.focusDir(e.getKeyCode()) : 0;
+        View before = dir != 0 ? getCurrentFocus() : null;
+        boolean handled = super.dispatchKeyEvent(e);
+        if (handled && dir != 0) Ui.navSound(before, getCurrentFocus(), dir);
+        return handled;
+    }
+
     /** Closes one app (background processes; the app goes when it is not on screen). */
     private void close(View card, AppEntry a) {
         try {
             ((ActivityManager) getSystemService(Context.ACTIVITY_SERVICE)).killBackgroundProcesses(a.pkg);
         } catch (Throwable ignored) {}
+        markClosed(this, java.util.Collections.singletonList(a.pkg));
+        shown.remove(a);
         int i = row.indexOfChild(card);
         row.removeView(card);
         if (row.getChildCount() == 0) { finish(); return; }

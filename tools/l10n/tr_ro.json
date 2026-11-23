@@ -931,5 +931,9 @@
 "Revino la aspectul implicit",
 "Revii la aspectul implicit?",
 "Toate setările din grupurile de mai sus, în afară de temă și vreme, revin ca după instalarea launcherului.",
-"Launcherul de pe TV"
+"Launcherul de pe TV",
+"Fila «Launcher» → grupurile «Bara de sus» și «Ceas»: «Salut», «Ceasul de sus», «Data și vremea pe un rând», «Memoria pe ecranul principal». La fel pe televizor: rotiță → setările launcherului.",
+"Fila «Launcher» → «Launcherul de pe TV» → «Readu launcherul standard». Nu elimina launcherul nostru din setările televizorului: dacă ecranul original era oprit, rămâi cu ecranul negru.",
+"Cum fac pictogramele rotunde?",
+"Fila «Launcher» → «Pictograme și plăci» → «Forma pictogramelor» → «Rotunde». În «Auto» devin rotunde doar pictogramele din dock și din «Vitrină»; pentru peste tot, alege «Pictograme» la «Pictogramele aplicațiilor». Pe televizor: rotiță → setările launcherului → «Forma pictogramelor»."
 ]

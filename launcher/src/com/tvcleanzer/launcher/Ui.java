@@ -11,6 +11,25 @@ import android.widget.TextView;
 final class Ui {
     private Ui() {}
 
+    /** View.FOCUS_* for an arrow key, 0 for any other key. */
+    static int focusDir(int keyCode) {
+        switch (keyCode) {
+            case android.view.KeyEvent.KEYCODE_DPAD_LEFT: return android.view.View.FOCUS_LEFT;
+            case android.view.KeyEvent.KEYCODE_DPAD_RIGHT: return android.view.View.FOCUS_RIGHT;
+            case android.view.KeyEvent.KEYCODE_DPAD_UP: return android.view.View.FOCUS_UP;
+            case android.view.KeyEvent.KEYCODE_DPAD_DOWN: return android.view.View.FOCUS_DOWN;
+            default: return 0;
+        }
+    }
+
+    /** The system «click» when an arrow moved the focus (#10). Scroll views move the focus
+     *  themselves and skip it, so rows inside them were silent. AudioManager plays it only
+     *  when the TV's sound effects are on. */
+    static void navSound(android.view.View before, android.view.View after, int dir) {
+        if (dir == 0 || after == null || after == before) return;
+        after.playSoundEffect(android.view.SoundEffectConstants.getContantForFocusDirection(dir));
+    }
+
     static int dp(Context c, float v) {
         return Math.round(TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, v, c.getResources().getDisplayMetrics()));

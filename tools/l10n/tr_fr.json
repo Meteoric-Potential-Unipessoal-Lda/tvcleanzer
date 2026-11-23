@@ -931,5 +931,9 @@
 "Rétablir l’apparence par défaut",
 "Rétablir l’apparence par défaut ?",
 "Tous les réglages des groupes ci-dessus, sauf le thème et la météo, redeviennent comme après l’installation du launcher.",
-"Launcher sur le TV"
+"Launcher sur le TV",
+"Onglet «Launcher» → groupes «Barre du haut» et «Horloge»: «Salutation», «Horloge en haut», «Date et météo sur une ligne», «Mémoire sur l’écran d’accueil». Pareil sur la TV : roue dentée → réglages du launcher.",
+"Onglet «Launcher» → «Launcher sur le TV» → «Rétablir le launcher standard». Ne supprimez pas notre launcher dans les paramètres de la TV : si l’écran d’origine était désactivé, il resterait un écran noir.",
+"Comment avoir des icônes rondes ?",
+"Onglet «Launcher» → «Icônes et tuiles» → «Forme des icônes» → «Rondes». En «Auto», seules les icônes du dock et de la «Vitrine» deviennent rondes ; pour partout, choisissez «Icônes» dans «Icônes des applis». Sur la TV : roue dentée → réglages du launcher → «Forme des icônes»."
 ]

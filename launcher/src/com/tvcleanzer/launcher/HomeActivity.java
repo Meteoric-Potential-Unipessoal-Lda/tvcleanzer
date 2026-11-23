@@ -786,7 +786,44 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             return true;
         }
         if (movingPkg != null && handleMoveKey(e)) return true;
-        return super.dispatchKeyEvent(e);
+        int code = e.getKeyCode();
+        if (code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER
+                || code == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+            if (e.getAction() == KeyEvent.ACTION_DOWN) {
+                okHeld = true;
+            } else if (e.getAction() == KeyEvent.ACTION_UP) {
+                okHeld = false;
+                if (afterOk != null) {
+                    final Runnable r = afterOk;
+                    afterOk = null;
+                    main.post(r);
+                    return true; // this release belonged to the long press
+                }
+            }
+        }
+        int dir = e.getAction() == KeyEvent.ACTION_DOWN ? Ui.focusDir(code) : 0;
+        View before = dir != 0 ? getCurrentFocus() : null;
+        boolean handled = super.dispatchKeyEvent(e);
+        if (handled && dir != 0) Ui.navSound(before, getCurrentFocus(), dir);
+        return handled;
+    }
+
+    // ── Long OK: the menu opens when OK is let go (#15: on THOMSON the menu that opened under
+    // a still-held OK froze, Back did nothing). Held too long — it opens anyway. ──
+
+    private boolean okHeld;
+    private Runnable afterOk;
+
+    private void whenOkReleased(final Runnable r) {
+        if (!okHeld) { r.run(); return; }
+        afterOk = r;
+        main.postDelayed(() -> {
+            if (afterOk == r) {
+                afterOk = null;
+                okHeld = false;
+                r.run();
+            }
+        }, 1500);
     }
 
     // ── Move mode: ◀ ▶ (and ▲ ▼ in the grid) carry the tile, OK / Back put it down ──
@@ -1901,7 +1938,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     // ── Long-press / Menu: edit favourites, hide, app info ─────────────────
 
-    private void showOptions(AppTile t) {
+    private void showOptions(final AppTile t) {
+        whenOkReleased(() -> { if (!isFinishing()) showOptionsNow(t); });
+    }
+
+    private void showOptionsNow(AppTile t) {
         final AppEntry a = t.app;
         final boolean fav = favorites.contains(a);
         final List<String> items = new ArrayList<>();
@@ -1953,6 +1994,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                             } catch (Exception ignored) {}
                             break;
                     }
+                })
+                .setCancelable(true)
+                // Back always closes it, whatever the firmware's dialog does with the key (#15)
+                .setOnKeyListener((d, code, ev) -> {
+                    if (code == KeyEvent.KEYCODE_BACK && ev.getAction() == KeyEvent.ACTION_UP) {
+                        d.dismiss();
+                        return true;
+                    }
+                    return false;
                 })
                 .show();
     }

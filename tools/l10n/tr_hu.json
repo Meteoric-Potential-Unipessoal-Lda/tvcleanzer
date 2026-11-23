@@ -931,5 +931,9 @@
 "Alapértelmezett megjelenés visszaállítása",
 "Visszaállítja az alapértelmezett megjelenést?",
 "A fenti csoportok minden beállítása – a téma és az időjárás kivételével – olyan lesz, mint a launcher telepítése után.",
-"Launcher a tévén"
+"Launcher a tévén",
+"«Launcher» lap → «Felső sáv» és «Óra» csoport: «Üdvözlés», «Óra felül», «Dátum és időjárás egy sorban», «Memória a kezdőképernyőn». A tévén ugyanígy: fogaskerék → launcher beállításai.",
+"«Launcher» lap → «Launcher a tévén» → «Normál launcher visszaállítása». Ne távolítsa el a launcherünket a tévé beállításaiban: ha az eredeti képernyő ki volt kapcsolva, fekete képernyő marad.",
+"Hogyan lesznek kerekek az ikonok?",
+"«Launcher» lap → «Ikonok és csempék» → «Ikonok alakja» → «Kerek». «Auto» módban csak a dokk és a «Kirakat» ikonjai lesznek kerekek; ha mindenhol kerek kell, az «Alkalmazásikonok» résznél válassza az «Ikonok» lehetőséget. A tévén: fogaskerék → launcher beállításai → «Ikonok alakja»."
 ]

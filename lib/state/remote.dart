@@ -79,9 +79,24 @@ class RemoteController extends StateNotifier<RemoteState> {
 
   /// Power: the key over ADB; when the TV no longer answers (deep standby), a Wake-on-LAN
   /// packet to the network card we learned while it was on.
+  /// Power. An awake TV is put to sleep with SLEEP (223), not POWER: on some TVs an injected
+  /// POWER restarts the TV instead of standby (Kivi, bug #12). If SLEEP did nothing, POWER as
+  /// before. A sleeping TV that still answers gets WAKEUP (224), then POWER if it stayed asleep.
+  /// Runs in its own session and returns at once: a TV going to sleep may drop the connection.
+  static String get powerCmd {
+    const p = Keys.power;
+    const job = 'w=\$(dumpsys power 2>/dev/null | grep -m1 -o "mWakefulness=[A-Za-z]*"); '
+        'case "\$w" in *Awake*|*Dreaming*) input keyevent 223; sleep 2; '
+        'dumpsys power 2>/dev/null | grep -q "mWakefulness=Awake" && input keyevent $p;; '
+        '*) input keyevent 224; sleep 1; '
+        'dumpsys power 2>/dev/null | grep -q "mWakefulness=Awake" || input keyevent $p;; esac';
+    return "if command -v setsid >/dev/null 2>&1; then setsid sh -c '$job' >/dev/null 2>&1 < /dev/null & "
+        "else nohup sh -c '$job' >/dev/null 2>&1 < /dev/null & fi";
+  }
+
   Future<PowerResult> power(String ip) async {
     try {
-      await _enqueue(ip, () => 'keyevent ${Keys.power}', input: true);
+      await _enqueue(ip, () => powerCmd);
       return PowerResult.sent;
     } catch (_) {
       return await WakeOnLan.wake(ip) ? PowerResult.wol : PowerResult.unreachable;

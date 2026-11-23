@@ -931,5 +931,9 @@
 "Återställ standardutseende",
 "Återställa standardutseendet?",
 "Alla inställningar i grupperna ovan, utom tema och väder, blir som efter att launchern installerades.",
-"Launcher på tv:n"
+"Launcher på tv:n",
+"Fliken «Launcher» → grupperna «Övre fältet» och «Klocka»: «Hälsning», «Klocka överst», «Datum och väder på en rad», «Minne på hemskärmen». Samma på tv:n: kugghjul → launcherinställningar.",
+"Fliken «Launcher» → «Launcher på tv:n» → «Återställ standardlaunchern». Ta inte bort vår startare i tv:ns inställningar: var originalskärmen avstängd blir skärmen svart.",
+"Hur gör jag ikonerna runda?",
+"Fliken «Launcher» → «Ikoner och rutor» → «Ikonform» → «Runda». Med «Auto» blir bara ikonerna i dockan och «Skyltfönster» runda; för runda överallt välj «Ikoner» under «Appikoner». På tv:n: kugghjul → launcherinställningar → «Ikonform»."
 ]

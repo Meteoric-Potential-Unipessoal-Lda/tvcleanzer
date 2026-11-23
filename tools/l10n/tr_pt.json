@@ -931,5 +931,9 @@
 "Repor o aspeto predefinido",
 "Repor o aspeto predefinido?",
 "Todas as definições dos grupos acima, exceto o tema e a meteorologia, voltam a ficar como após instalar o launcher.",
-"Launcher na TV"
+"Launcher na TV",
+"Separador «Launcher» → grupos «Barra superior» e «Relógio»: «Saudação», «Relógio em cima», «Data e tempo numa linha», «Memória no ecrã inicial». O mesmo na TV: roda dentada → definições do launcher.",
+"Separador «Launcher» → «Launcher na TV» → «Restaurar o launcher padrão». Não remova o nosso launcher nas definições da TV: se o ecrã original estiver desligado, fica com o ecrã preto.",
+"Como deixar os ícones redondos?",
+"Separador «Launcher» → «Ícones e mosaicos» → «Forma dos ícones» → «Redondos». Em «Auto» só ficam redondos os ícones da dock e da «Montra»; para todo o lado, escolha «Ícones» em «Ícones das apps». Na TV: roda dentada → definições do launcher → «Forma dos ícones»."
 ]

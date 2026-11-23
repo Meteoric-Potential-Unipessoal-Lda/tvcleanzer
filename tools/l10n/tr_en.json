@@ -931,5 +931,9 @@
 "Reset look to default",
 "Reset look to default?",
 "All settings in the groups above, except the theme and weather, go back to how they were after installing the launcher.",
-"Launcher on the TV"
+"Launcher on the TV",
+"«Launcher» tab → groups «Top bar» and «Clock»: «Greeting», «Clock at the top», «Date and weather on one line», «Memory on the home screen». The same on the TV: gear → launcher settings.",
+"«Launcher» tab → «Launcher on the TV» → «Restore the standard launcher». Don't remove our launcher in the TV's settings: if the stock home was switched off, you'd be left with a black screen.",
+"How do I make icons round?",
+"«Launcher» tab → «Icons and tiles» → «Icon shape» → «Round». With «Auto» only the icons in the dock and «Showcase» turn round; for round icons everywhere pick «Icons» in «App icons». On the TV: gear → launcher settings → «Icon shape»."
 ]

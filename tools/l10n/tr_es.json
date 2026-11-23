@@ -931,5 +931,9 @@
 "Restablecer el aspecto predeterminado",
 "¿Restablecer el aspecto predeterminado?",
 "Todos los ajustes de los grupos de arriba, salvo el tema y el tiempo, volverán a como estaban tras instalar el launcher.",
-"Launcher en la TV"
+"Launcher en la TV",
+"Pestaña «Launcher» → grupos «Barra superior» y «Reloj»: «Saludo», «Reloj arriba», «Fecha y tiempo en una línea», «Memoria en la pantalla de inicio». Lo mismo en la tele: engranaje → ajustes del launcher.",
+"Pestaña «Launcher» → «Launcher en la TV» → «Restaurar el launcher estándar». No quites nuestro launcher en los ajustes de la tele: si la pantalla original estaba desactivada, te quedarías con la pantalla en negro.",
+"¿Cómo hago los iconos redondos?",
+"Pestaña «Launcher» → «Iconos y mosaicos» → «Forma de los iconos» → «Redondos». Con «Auto» solo se redondean los iconos del dock y de «Escaparate»; para que lo sean en todas partes, elige «Iconos» en «Iconos de apps». En la tele: engranaje → ajustes del launcher → «Forma de los iconos»."
 ]
