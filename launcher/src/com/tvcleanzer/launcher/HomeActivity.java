@@ -461,7 +461,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         dock.setGravity(Gravity.CENTER_VERTICAL);
         dock.setBackground(Ui.shelf(Ui.dp(this, 34), prefs.shelf()));
         int dp18 = Ui.dp(this, 14);
-        dock.setPadding(dp18, dp18, dp18, Ui.dp(this, 8));
+        dock.setPadding(dp18, dp18, dp18, prefs.noLabels() ? dp18 : Ui.dp(this, 8));
         // the tile size setting works here too: compact / normal / large dock icons
         // 0.76 smaller (an owner: «нижний блок огромнейший»); «Размер плиток» still scales it
         final float[] dockScale = {0.8f, 1f, 1.2f};
@@ -1689,6 +1689,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 1.12f, anim, ringColor);
         t.setArt(new Glyphs.Face(glyph, round), true);
         t.setRound(round);
+        if (prefs.noLabels()) t.hideLabel();
         return t;
     }
 
@@ -2234,6 +2235,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private AppTile tile(AppEntry a, int w, int h, Skin skin, boolean labelsAlways, float sp, float scale,
                          int anim, int ringColor) {
         AppTile t = new AppTile(this, a, w, h, skin, labelsAlways, sp, scale, anim, ringColor);
+        if (prefs.noLabels() && !showGrid) t.hideLabel();
         t.setOnClickListener(v -> launch(a));
         t.setOnLongClickListener(v -> {
             if (!prefs.kids()) showOptions(t);

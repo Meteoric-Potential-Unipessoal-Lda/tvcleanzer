@@ -231,6 +231,10 @@ final class Prefs {
     void setFavAlign(int v)  { sp.edit().putInt("favAlign", clamp(v, 0, 2)).apply(); }
     /** Glass under the clock, date and weather (0.68, off by default). */
     boolean clockGlass()     { return sp.getBoolean("clockGlass", false); }
+    /** No names under the home screen's icons (0.83, an owner: the dock gets lower); the
+     *  all-apps grid keeps them. */
+    boolean noLabels()       { return sp.getBoolean("noLabels", false); }
+    void setNoLabels(boolean v) { sp.edit().putBoolean("noLabels", v).apply(); }
     void setClockGlass(boolean v) { sp.edit().putBoolean("clockGlass", v).apply(); }
     /** «Избранное» / «Приложения» headings over the rows (0.55+). */
     boolean sectionTitles()  { return sp.getBoolean("sectionTitles", true); }

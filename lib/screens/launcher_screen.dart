@@ -584,6 +584,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             (v) => _setLook(look.copyWith(ringAccent: v == 1))),
         _sw(tr('Названия под всеми плитками'), tr('Иначе — только у выбранной'), look.labels,
             (v) => _setLook(look.copyWith(labels: v))),
+        _sw(tr('Без названий приложений'), tr('Только значки: док и ряды станут ниже'), look.noLabels,
+            (v) => _setLook(look.copyWith(noLabels: v)), need: 83),
       ]),
       _group('motion', Icons.auto_awesome_rounded, tr('Фон и анимация'),
           join([

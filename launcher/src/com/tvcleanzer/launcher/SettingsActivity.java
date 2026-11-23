@@ -139,8 +139,12 @@ public class SettingsActivity extends Activity {
             addChoice(skin, T.t("Форма значков"), new String[]{T.t("Скруглённые"), T.t("Круглые")},
                     prefs.iconShape(), prefs::setIconShape);
         }
-        addToggle(skin, T.t("Названия приложений"), prefs.labelsAlways(), T.t("Всегда"), T.t("При наведении"),
-                prefs::setLabelsAlways);
+        addChoice(skin, T.t("Названия приложений"),
+                new String[]{T.t("Всегда"), T.t("При наведении"), T.t("Скрыто")},
+                prefs.noLabels() ? 2 : prefs.labelsAlways() ? 0 : 1, v -> {
+                    prefs.setNoLabels(v == 2);
+                    if (v != 2) prefs.setLabelsAlways(v == 0);
+                });
         if (prefs.style() == Prefs.STYLE_SHOWCASE) {
             addToggle(skin, T.t("Название приложения над плитками"), prefs.heroTitle(), T.t("Показывать"), T.t("Скрыто"),
                     prefs::setHeroTitle);

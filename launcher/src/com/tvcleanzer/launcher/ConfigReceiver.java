@@ -116,6 +116,7 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.hasExtra("barStyle")) p.setBarStyle(intent.getIntExtra("barStyle", Prefs.BAR_MINI));
         if (intent.hasExtra("favAlign")) p.setFavAlign(intent.getIntExtra("favAlign", Prefs.FAV_START));
         if (intent.hasExtra("clockGlass")) p.setClockGlass(intent.getBooleanExtra("clockGlass", false));
+        if (intent.hasExtra("noLabels")) p.setNoLabels(intent.getBooleanExtra("noLabels", false));
         if (intent.hasExtra("appsBelow")) p.setAppsBelow(intent.getBooleanExtra("appsBelow", false));
         if (intent.hasExtra("favBottom")) p.setFavBottom(intent.getBooleanExtra("favBottom", false));
         if (intent.hasExtra("shelf")) p.setShelf(intent.getIntExtra("shelf", Prefs.SHELF_GLASS));

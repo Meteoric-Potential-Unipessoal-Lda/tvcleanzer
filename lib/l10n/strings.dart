@@ -1009,6 +1009,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Move a finger — pointer, tap — click, two fingers — scroll',
     'Мышь работает на Android 7 и новее.': 'The mouse works on Android 7 and newer.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'The mouse needs the «TVCleanzer: кнопка Домой» service on. Turn it on in the TV settings: Accessibility.',
+    'Без названий приложений': 'No app names',
+    'Только значки: док и ряды станут ниже': 'Icons only: the dock and rows get lower',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2018,6 +2020,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Водіть пальцем — курсор, торкніться — клік, двома пальцями — прокрутка',
     'Мышь работает на Android 7 и новее.': 'Миша працює на Android 7 і новіших.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Миші потрібна увімкнена служба «TVCleanzer: кнопка Домой». Увімкніть її в налаштуваннях ТВ: Спеціальні можливості.',
+    'Без названий приложений': 'Без назв застосунків',
+    'Только значки: док и ряды станут ниже': 'Лише значки: док і ряди стануть нижчими',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3027,6 +3031,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Mueve el dedo — puntero, toca — clic, dos dedos — desplazar',
     'Мышь работает на Android 7 и новее.': 'El ratón funciona en Android 7 o posterior.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'El ratón necesita el servicio «TVCleanzer: кнопка Домой» activado. Actívalo en los ajustes de la TV: Accesibilidad.',
+    'Без названий приложений': 'Sin nombres de apps',
+    'Только значки: док и ряды станут ниже': 'Solo iconos: el dock y las filas serán más bajos',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4036,6 +4042,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Mova o dedo — cursor, toque — clique, dois dedos — rolar',
     'Мышь работает на Android 7 и новее.': 'O rato funciona no Android 7 ou superior.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'O rato precisa do serviço «TVCleanzer: кнопка Домой» ativo. Ative-o nas definições da TV: Acessibilidade.',
+    'Без названий приложений': 'Sem nomes das apps',
+    'Только значки: док и ряды станут ниже': 'Só ícones: a dock e as filas ficam mais baixas',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5045,6 +5053,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Finger bewegen — Zeiger, tippen — Klick, zwei Finger — scrollen',
     'Мышь работает на Android 7 и новее.': 'Die Maus läuft ab Android 7.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Die Maus braucht den Dienst «TVCleanzer: кнопка Домой». Schalte ihn in den TV-Einstellungen ein: Bedienungshilfen.',
+    'Без названий приложений': 'Ohne App-Namen',
+    'Только значки: док и ряды станут ниже': 'Nur Symbole: Dock und Reihen werden niedriger',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6054,6 +6064,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Glissez le doigt — pointeur, touchez — clic, deux doigts — défiler',
     'Мышь работает на Android 7 и новее.': 'La souris fonctionne sur Android 7 et plus.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'La souris a besoin du service «TVCleanzer: кнопка Домой». Activez-le dans les paramètres de la TV : Accessibilité.',
+    'Без названий приложений': 'Sans noms d’applis',
+    'Только значки: док и ряды станут ниже': 'Icônes seules : le dock et les rangées sont plus bas',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7063,6 +7075,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Muovi il dito — puntatore, tocca — clic, due dita — scorri',
     'Мышь работает на Android 7 и новее.': 'Il mouse funziona su Android 7 e successivi.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Il mouse richiede il servizio «TVCleanzer: кнопка Домой». Attivalo nelle impostazioni della TV: Accessibilità.',
+    'Без названий приложений': 'Senza nomi delle app',
+    'Только значки: док и ряды станут ниже': 'Solo icone: dock e righe più bassi',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8072,6 +8086,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Вадзіце пальцам — курсор, дакраніцеся — клік, двума пальцамі — пракрутка',
     'Мышь работает на Android 7 и новее.': 'Мыш працуе на Android 7 і навейшых.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Мышы патрэбна ўключаная служба «TVCleanzer: кнопка Домой». Уключыце яе ў наладах ТБ: Спецыяльныя магчымасці.',
+    'Без названий приложений': 'Без назваў праграм',
+    'Только значки: док и ряды станут ниже': 'Толькі значкі: док і рады стануць ніжэйшымі',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9081,6 +9097,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Саусақты жүргізіңіз — курсор, түртіңіз — басу, екі саусақ — айналдыру',
     'Мышь работает на Android 7 и новее.': 'Тінтуір Android 7 және жаңасында жұмыс істейді.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Тінтуірге «TVCleanzer: кнопка Домой» қызметі керек. Оны ТД баптауларында қосыңыз: Арнайы мүмкіндіктер.',
+    'Без названий приложений': 'Қолданба атауларынсыз',
+    'Только значки: док и ряды станут ниже': 'Тек белгішелер: док пен қатарлар аласарады',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10090,6 +10108,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Barmoqni suring — kursor, teging — bosish, ikki barmoq — aylantirish',
     'Мышь работает на Android 7 и новее.': 'Sichqoncha Android 7 va yangisida ishlaydi.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Sichqoncha uchun «TVCleanzer: кнопка Домой» xizmati yoqilgan boʻlishi kerak. Uni TV sozlamalarida yoqing: Maxsus imkoniyatlar.',
+    'Без названий приложений': 'Ilova nomlarisiz',
+    'Только значки: док и ряды станут ниже': 'Faqat belgilar: dok va qatorlar pastroq boʻladi',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11099,6 +11119,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Շարժեք մատը — կուրսոր, հպեք — սեղմում, երկու մատով — թերթել',
     'Мышь работает на Android 7 и новее.': 'Մկնիկն աշխատում է Android 7 և նոր տարբերակներում։',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Մկնիկին պետք է միացված «TVCleanzer: кнопка Домой» ծառայությունը։ Միացրեք այն հեռուստացույցի կարգավորումներում՝ Հատուկ հնարավորություններ։',
+    'Без названий приложений': 'Առանց հավելվածների անունների',
+    'Только значки: док и ряды станут ниже': 'Միայն պատկերակներ՝ դոկն ու շարքերը կցածրանան',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12108,6 +12130,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Barmağı sürüşdürün — kursor, toxunun — klik, iki barmaq — sürüşdürmə',
     'Мышь работает на Android 7 и новее.': 'Siçan Android 7 və yeni versiyalarda işləyir.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Siçan üçün «TVCleanzer: кнопка Домой» xidməti açıq olmalıdır. Onu TV ayarlarında açın: Əlçatımlılıq.',
+    'Без названий приложений': 'Tətbiq adları olmadan',
+    'Только значки: док и ряды станут ниже': 'Yalnız nişanlar: dok və sıralar alçalacaq',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13117,6 +13141,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'გადაატარეთ თითი — კურსორი, შეეხეთ — დაწკაპება, ორი თითი — გადახვევა',
     'Мышь работает на Android 7 и новее.': 'მაუსი მუშაობს Android 7-ზე და უფრო ახალზე.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'მაუსს სჭირდება ჩართული «TVCleanzer: кнопка Домой» სერვისი. ჩართეთ ტელევიზორის პარამეტრებში: მარტივი წვდომა.',
+    'Без названий приложений': 'აპების სახელების გარეშე',
+    'Только значки: док и ряды станут ниже': 'მხოლოდ ხატულები: დოკი და რიგები დაბლდება',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14126,6 +14152,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Манжаны жылдырыңыз — курсор, тийиңиз — басуу, эки манжа — сыдыруу',
     'Мышь работает на Android 7 и новее.': 'Чычкан Android 7 жана жаңыраагында иштейт.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Чычканга «TVCleanzer: кнопка Домой» кызматы күйүк болушу керек. Аны сыналгынын жөндөөлөрүнөн күйгүзүңүз: Атайын мүмкүнчүлүктөр.',
+    'Без названий приложений': 'Колдонмо аттарысыз',
+    'Только значки: док и ряды станут ниже': 'Сүрөтчөлөр гана: док жана катарлар жапыз болот',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15135,6 +15163,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Parmağı kaydırın — imleç, dokunun — tıklama, iki parmak — kaydırma',
     'Мышь работает на Android 7 и новее.': 'Fare Android 7 ve üzerinde çalışır.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Fare için «TVCleanzer: кнопка Домой» hizmeti açık olmalı. TV ayarlarından açın: Erişilebilirlik.',
+    'Без названий приложений': 'Uygulama adları olmadan',
+    'Только значки: док и ряды станут ниже': 'Yalnızca simgeler: dock ve satırlar alçalır',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16144,6 +16174,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Przesuń palec — kursor, dotknij — klik, dwa palce — przewijanie',
     'Мышь работает на Android 7 и новее.': 'Mysz działa na Androidzie 7 i nowszym.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mysz potrzebuje włączonej usługi «TVCleanzer: кнопка Домой». Włącz ją w ustawieniach TV: Ułatwienia dostępu.',
+    'Без названий приложений': 'Bez nazw aplikacji',
+    'Только значки: док и ряды станут ниже': 'Same ikony: dok i rzędy będą niższe',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17153,6 +17185,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Mișcă degetul — cursor, atinge — clic, două degete — derulare',
     'Мышь работает на Android 7 и новее.': 'Mouse-ul merge pe Android 7 și mai nou.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mouse-ul are nevoie de serviciul «TVCleanzer: кнопка Домой» pornit. Pornește-l din setările TV: Accesibilitate.',
+    'Без названий приложений': 'Fără numele aplicațiilor',
+    'Только значки: док и ряды станут ниже': 'Doar pictograme: dock-ul și rândurile devin mai joase',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18162,6 +18196,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': '滑动手指移动光标，轻点点击，双指滚动',
     'Мышь работает на Android 7 и новее.': '鼠标需要 Android 7 及以上。',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': '鼠标需要开启「TVCleanzer: кнопка Домой」服务。请在电视设置的「无障碍」中开启。',
+    'Без названий приложений': '不显示应用名称',
+    'Только значки: док и ряды станут ниже': '只显示图标：程序坞和各行会更矮',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19171,6 +19207,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': '指でなぞる — ポインター、タップ — クリック、2本指 — スクロール',
     'Мышь работает на Android 7 и новее.': 'マウスは Android 7 以降で使えます。',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'マウスには「TVCleanzer: кнопка Домой」サービスが必要です。テレビの設定の「ユーザー補助」でオンにしてください。',
+    'Без названий приложений': 'アプリ名を表示しない',
+    'Только значки: док и ряды станут ниже': 'アイコンのみ：ドックと列が低くなります',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20180,6 +20218,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': '손가락으로 움직이기 — 포인터, 탭 — 클릭, 두 손가락 — 스크롤',
     'Мышь работает на Android 7 и новее.': '마우스는 Android 7 이상에서 작동합니다.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': '마우스를 쓰려면 «TVCleanzer: кнопка Домой» 서비스가 켜져 있어야 합니다. TV 설정의 접근성에서 켜세요.',
+    'Без названий приложений': '앱 이름 숨기기',
+    'Только значки: док и ряды станут ниже': '아이콘만: 독과 줄이 낮아집니다',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21189,6 +21229,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'उंगली चलाएँ — पॉइंटर, टैप — क्लिक, दो उंगलियाँ — स्क्रॉल',
     'Мышь работает на Android 7 и новее.': 'माउस Android 7 और नए पर काम करता है।',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'माउस के लिए «TVCleanzer: кнопка Домой» सेवा चालू होनी चाहिए। इसे टीवी सेटिंग्स में चालू करें: सुलभता।',
+    'Без названий приложений': 'ऐप नामों के बिना',
+    'Только значки: док и ряды станут ниже': 'सिर्फ़ आइकन: डॉक और पंक्तियाँ नीची होंगी',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22198,6 +22240,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Geser jari — penunjuk, ketuk — klik, dua jari — gulir',
     'Мышь работает на Android 7 и новее.': 'Mouse berfungsi di Android 7 ke atas.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mouse memerlukan layanan «TVCleanzer: кнопка Домой» aktif. Aktifkan di setelan TV: Aksesibilitas.',
+    'Без названий приложений': 'Tanpa nama aplikasi',
+    'Только значки: док и ряды станут ниже': 'Hanya ikon: dok dan baris jadi lebih rendah',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23207,6 +23251,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Di ngón tay — con trỏ, chạm — nhấp, hai ngón — cuộn',
     'Мышь работает на Android 7 и новее.': 'Chuột hoạt động trên Android 7 trở lên.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Chuột cần bật dịch vụ «TVCleanzer: кнопка Домой». Bật trong cài đặt TV: Hỗ trợ tiếp cận.',
+    'Без названий приложений': 'Ẩn tên ứng dụng',
+    'Только значки: док и ряды станут ниже': 'Chỉ biểu tượng: dock và các hàng thấp hơn',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24216,6 +24262,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'ลากนิ้ว — ตัวชี้ แตะ — คลิก สองนิ้ว — เลื่อน',
     'Мышь работает на Android 7 и новее.': 'เมาส์ใช้ได้บน Android 7 ขึ้นไป',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'เมาส์ต้องเปิดบริการ «TVCleanzer: кнопка Домой» เปิดได้ในการตั้งค่าทีวี: การช่วยเหลือพิเศษ',
+    'Без названий приложений': 'ไม่แสดงชื่อแอป',
+    'Только значки: док и ряды станут ниже': 'เฉพาะไอคอน: ด็อกและแถวจะเตี้ยลง',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25225,6 +25273,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Vinger bewegen — aanwijzer, tikken — klik, twee vingers — scrollen',
     'Мышь работает на Android 7 и новее.': 'De muis werkt op Android 7 en nieuwer.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'De muis heeft de dienst «TVCleanzer: кнопка Домой» nodig. Zet hem aan in de tv-instellingen: Toegankelijkheid.',
+    'Без названий приложений': 'Zonder app-namen',
+    'Только значки: док и ряды станут ниже': 'Alleen pictogrammen: dock en rijen worden lager',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26234,6 +26284,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Pohyb prstem — kurzor, klepnutí — klik, dva prsty — posun',
     'Мышь работает на Android 7 и новее.': 'Myš funguje na Androidu 7 a novějším.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Myš potřebuje zapnutou službu «TVCleanzer: кнопка Домой». Zapněte ji v nastavení TV: Přístupnost.',
+    'Без названий приложений': 'Bez názvů aplikací',
+    'Только значки: док и ряды станут ниже': 'Jen ikony: dok a řady budou nižší',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27243,6 +27295,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Κινήστε το δάχτυλο — δείκτης, πατήστε — κλικ, δύο δάχτυλα — κύλιση',
     'Мышь работает на Android 7 и новее.': 'Το ποντίκι λειτουργεί σε Android 7 και νεότερα.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Το ποντίκι χρειάζεται την υπηρεσία «TVCleanzer: кнопка Домой». Ενεργοποιήστε τη στις ρυθμίσεις της TV: Προσβασιμότητα.',
+    'Без названий приложений': 'Χωρίς ονόματα εφαρμογών',
+    'Только значки: док и ряды станут ниже': 'Μόνο εικονίδια: η μπάρα και οι σειρές χαμηλώνουν',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28252,6 +28306,8 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Ujj mozgatása — mutató, koppintás — kattintás, két ujj — görgetés',
     'Мышь работает на Android 7 и новее.': 'Az egér Android 7-től működik.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Az egérhez be kell kapcsolni a «TVCleanzer: кнопка Домой» szolgáltatást. Kapcsold be a tévé beállításaiban: Kisegítő lehetőségek.',
+    'Без названий приложений': 'Alkalmazásnevek nélkül',
+    'Только значки: док и ряды станут ниже': 'Csak ikonok: a dokk és a sorok alacsonyabbak',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29261,5 +29317,7 @@ const Map<String, Map<String, String>> translations = {
     'Водите пальцем — курсор, коснитесь — клик, двумя пальцами — прокрутка': 'Dra fingret — pekare, tryck — klick, två fingrar — rulla',
     'Мышь работает на Android 7 и новее.': 'Musen fungerar på Android 7 och senare.',
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Musen behöver tjänsten «TVCleanzer: кнопка Домой». Slå på den i tv:ns inställningar: Tillgänglighet.',
+    'Без названий приложений': 'Utan appnamn',
+    'Только значки: док и ряды станут ниже': 'Bara ikoner: dockan och raderna blir lägre',
   },
 };

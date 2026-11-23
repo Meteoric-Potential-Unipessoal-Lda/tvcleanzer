@@ -25,6 +25,7 @@ final class AppTile extends LinearLayout {
     private final TextView label;   // name under the card
     private final GradientDrawable ring;
     private final boolean labelsAlways;
+    private boolean noLabel;
     private final int w, h;
     /** Soft light across the top of the card while it is selected (a lifted, glossy card). */
     private final android.view.View gloss;
@@ -198,8 +199,15 @@ final class AppTile extends LinearLayout {
         }
     }
 
+    /** No name under the card at all (0.83 «Названия приложений: Скрыто»): the row gets lower. */
+    void hideLabel() {
+        noLabel = true;
+        label.setVisibility(GONE);
+    }
+
     /** Move mode: arrows around the name, name always visible. */
     void setMoving(boolean on) {
+        if (noLabel) label.setVisibility(on ? VISIBLE : GONE);
         label.setText(on ? "◀  " + app.label + "  ▶" : app.label);
         label.animate().cancel();
         label.setAlpha(on ? 1f : (labelsAlways ? .75f : (isFocused() ? 1f : 0f)));
