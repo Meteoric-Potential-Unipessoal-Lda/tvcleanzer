@@ -1548,10 +1548,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private void miniNet(TopIcon t) {
         int[] s = netState();
         int glyph = s[2] == NET_OFF ? TopIcon.OFFLINE : s[4] == 2 ? TopIcon.ETHERNET : TopIcon.WIFI;
-        int st = s[2] == NET_OFF ? TopIcon.OFF : s[2] == NET_NO_INTERNET ? TopIcon.BAD : 0;
+        int st = s[2] == NET_OFF ? TopIcon.OFF : s[2] == NET_NO_INTERNET ? TopIcon.BAD : TopIcon.OK;
         t.set(glyph, st);
         if (vpnMini != null) {
             int want = s[3] == 1 ? View.VISIBLE : View.GONE;
+            vpnMini.set(TopIcon.VPN_PLATE, s[2] == NET_NO_INTERNET ? TopIcon.BAD : TopIcon.VPN_COLOR);
             if (vpnMini.getVisibility() != want) vpnMini.setVisibility(want);
         }
     }
@@ -1671,7 +1672,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private int memStatus() {
         try {
             long[] m = Memory.read(this);
-            return m[1] > 0 && (m[1] - m[0]) * 100 / m[1] >= 85 ? TopIcon.BAD : 0;
+            if (m[1] <= 0) return 0;
+            long used = (m[1] - m[0]) * 100 / m[1];
+            // green plenty, orange getting full, red nearly out (OK frees it)
+            return used >= 90 ? TopIcon.OFF : used >= 75 ? TopIcon.BAD : TopIcon.OK;
         } catch (Throwable t) {
             return 0;
         }

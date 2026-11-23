@@ -91,8 +91,9 @@ final class TopIcon extends View {
             fill.setColor(0xE6FFFFFF);
             c.drawRoundRect(r, rad, rad, fill);
         }
-        // white like a status bar; only trouble gets a colour (no internet, no network)
-        int col = status == BAD || status == OFF ? status : (status == IDLE ? 0x99FFFFFF : 0xF2FFFFFF);
+        // a traffic light (0.75, the owner: «главное, чтобы был светофор»): green all right,
+        // orange trouble, red down, blue a device / VPN, grey off; white where there is no state
+        int col = status == IDLE ? 0x99FFFFFF : status != 0 ? status : 0xF2FFFFFF;
         float s = h * 0.3f;
         // canvas glyphs in the pack's weight (≈ 2.2 units of 26)
         Glyphs.draw(c, glyph, cx, cy, s, s * 2.6f, col, ink, fill);
