@@ -1,7 +1,9 @@
 // Screenshots of the «Лаунчер» tab, rendered by Flutter itself (not part of `flutter test`).
-// Run:  flutter test test_shots/launcher_shots_test.dart --update-goldens
+// Run:  flutter test test_shots/launcher_shots_test.dart --update-goldens --dart-define=TVC_LANG=ru
 // PNGs land in test_shots/goldens/.
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -63,6 +65,47 @@ Future<void> _fonts() async {
   }
 }
 
+/// google_fonts looks for DMSans-*.ttf / Syne-*.ttf in the app's assets and, in a test, throws
+/// when they are missing. Serve Roboto under those names through the test asset channel
+/// (everything else still comes from the real test assets).
+void _fakeGoogleFonts() {
+  final dir = '${Platform.environment['FLUTTER_ROOT']}/bin/cache/artifacts/material_fonts';
+  Uint8List roboto(String w) {
+    final f = File('$dir/Roboto-$w.ttf');
+    return (f.existsSync() ? f : File('$dir/Roboto-Regular.ttf')).readAsBytesSync();
+  }
+  const weights = {
+    'Thin': 'Thin', 'ExtraLight': 'Thin', 'Light': 'Light', 'Regular': 'Regular', 'Medium': 'Medium',
+    'SemiBold': 'Medium', 'Bold': 'Bold', 'ExtraBold': 'Black', 'Black': 'Black',
+  };
+  final fonts = <String, Uint8List>{};
+  for (final fam in ['DMSans', 'Syne']) {
+    weights.forEach((v, r) {
+      final b = roboto(r);
+      fonts['google_fonts/$fam-$v.ttf'] = b;
+      fonts['google_fonts/$fam-${v == 'Regular' ? '' : v}Italic.ttf'] = b;
+    });
+  }
+  final assets = Platform.environment['UNIT_TEST_ASSETS'] ?? 'build/unit_test_assets';
+  TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets',
+      (ByteData? message) async {
+    final key = Uri.decodeFull(utf8.decode(message!.buffer.asUint8List(message.offsetInBytes, message.lengthInBytes)));
+    final font = fonts[key];
+    if (font != null) return ByteData.sublistView(font);
+    final file = File('$assets/$key');
+    if (key == 'AssetManifest.bin') {
+      final real = file.existsSync()
+          ? const StandardMessageCodec().decodeMessage(ByteData.sublistView(file.readAsBytesSync())) as Map<Object?, Object?>
+          : <Object?, Object?>{};
+      return const StandardMessageCodec().encodeMessage(<Object?, Object?>{
+        ...real,
+        for (final k in fonts.keys) k: [<String, Object?>{'asset': k}],
+      });
+    }
+    return file.existsSync() ? ByteData.sublistView(file.readAsBytesSync()) : null;
+  });
+}
+
 const _set = {
   'style': '0', 'icons': '1', 'iconShape': '1', 'barClock': '1', 'greeting': '0', 'oneLine': '1',
   'weatherCity': 'Лиссабон', 'favCols': '5', 'clockFont': '1', 'ambient': '1', 'tiles': '1',
@@ -97,7 +140,9 @@ Future<void> _shot(WidgetTester t, String name, _Apm apm, double h, List<String>
 
 void main() {
   setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
     GoogleFonts.config.allowRuntimeFetching = false;
+    _fakeGoogleFonts();
     // test_shots/ is outside test/, so the analyzer doesn't know it's a test
     // ignore: invalid_use_of_visible_for_testing_member
     SharedPreferences.setMockInitialValues({});
