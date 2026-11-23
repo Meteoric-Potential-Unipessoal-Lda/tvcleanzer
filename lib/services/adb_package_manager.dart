@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 65;
+  static const bundledLauncherVersion = 66;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1113,6 +1113,12 @@ class AdbPackageManager {
       await _keepGuard(adb, token);
     }
     // Google TV, Yandex, Sber…: the stock home stays; our service sends Home to us.
+    // From our own screen: Home pressed on the stock home itself only refreshes it, so the
+    // check always failed where the TV already sat on launcherx (TCL Smart TV Pro, 1.3.78).
+    if (googleTv) {
+      await adb.shell('am start -n $launcherHome');
+      await Future<void>.delayed(const Duration(milliseconds: 1500));
+    }
     await adb.shell('input keyevent 3');
     await Future<void>.delayed(const Duration(milliseconds: 2500));
     if (await _frontPackage(adb) == launcherPkg) return LauncherBind.service;
@@ -1868,9 +1874,11 @@ class AdbPackageManager {
       final v = RegExp(r'versionName=(\S+)')
           .firstMatch(await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -m1 versionName'))
           ?.group(1);
-      final out = await adb.shell('logcat -d -t 2000 2>/dev/null | '
-          'grep -iE "TVCleanzerHome|tvcleanzer.launcher/.HomeActivity|background activity|app switch" | tail -8');
-      final lines = out.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
+      // by tag: a busy TCL logcat pushed our lines out of the last 2000 within seconds
+      final ours = await adb.shell('logcat -d -s TVCleanzerHome:I 2>/dev/null | grep -v "^-" | tail -7');
+      final blocked = await adb.shell('logcat -d 2>/dev/null | '
+          'grep -iE "background activity start|abort.*tvcleanzer|app switch" | tail -2');
+      final lines = '$ours\n$blocked'.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
       AppLog.error('home service', 'launcher $v; ${lines.isEmpty ? 'nothing in logcat' : '${lines.length} lines'}');
       for (final l in lines) {
         final i = l.indexOf(RegExp(r' [IWE] '));

@@ -601,10 +601,14 @@ public class HomeKeyService extends AccessibilityService {
         CharSequence cs = event.getPackageName();
         if (cs == null) return;
         String pkg = cs.toString();
-        boolean wasSame = pkg.equals(lastPkg);
-        lastPkg = pkg;
         CharSequence ecls = event.getClassName();
-        lastCls = ecls == null ? "" : ecls.toString();
+        String cls = ecls == null ? "" : ecls.toString();
+        // «The owner is still in it»: Google TV draws its panels from the home package, so there
+        // it means the same screen, not the same package (TCL Smart TV Pro, 0.65: a launcherx
+        // screen came first and its home screen was then never replaced — «same true»)
+        boolean wasSame = pkg.equals(lastPkg) && (!CLASS_STRICT.contains(pkg) || cls.equals(lastCls));
+        lastPkg = pkg;
+        lastCls = cls;
         boolean watch = HIJACKERS.contains(pkg) || stockHomes.contains(pkg);
 
         if (!isStock(pkg)) {
@@ -621,7 +625,7 @@ public class HomeKeyService extends AccessibilityService {
         // Settings / TV / Input key: Google TV draws these panels from its own home (TCL owners
         // lost both buttons because we kept replacing that home)
         if (keyAsked()) { log(pkg + ": asked for by key " + lastKeyCode); return; }
-        if (watch) log(pkg + "/" + lastCls + ": replacing (armed " + armed() + ", same " + wasSame + ")");
+        if (watch) log(pkg + "/" + lastCls + ": home screen up (armed " + armed() + ", same " + wasSame + ")");
         if (armed()) {
             // right after Home / power-on: the firmware put its screen over ours
             if (armedRedirects >= 6) return; // it keeps fighting: give up rather than loop
@@ -637,13 +641,16 @@ public class HomeKeyService extends AccessibilityService {
             }
             return;
         }
-        if (FEATURE_HOMES.contains(pkg) || wasSame) return; // the owner is using it (Alice search…)
-        if (SystemClock.uptimeMillis() - lastRedirect < 1500) return; // loop guard
+        if (FEATURE_HOMES.contains(pkg) || wasSame) { log(pkg + ": the owner is in it, left"); return; }
+        if (SystemClock.uptimeMillis() - lastRedirect < 1500) { log(pkg + ": loop guard"); return; }
+        log(pkg + ": replacing");
         openHome();
     }
 
     private void openHome() {
         lastRedirect = SystemClock.uptimeMillis();
+        lastPkg = getPackageName();
+        lastCls = "";
         Intent i = new Intent(this, HomeActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
         try { startActivity(i); } catch (Throwable ignored) {}
