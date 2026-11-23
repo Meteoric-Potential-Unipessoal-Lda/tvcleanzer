@@ -340,9 +340,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final int h = Ui.dp(this, 36), pv = Ui.dp(this, 5);
         row.setBackground(Ui.shelf((h + 2 * pv) * 0.34f, prefs.shelf()));
         row.setPadding(Ui.dp(this, 16), pv, Ui.dp(this, 14), pv);
-        row.setMinimumHeight(h + 2 * pv);
+        // 0.85: exactly as tall as the icons' plate on the other side (an owner: the two plates
+        // did not look alike), whatever the clock size setting
 
-        TextClock big = bigClock(26);
+        TextClock big = bigClock(22);
+        big.setTextSize(22);
         big.setShadowLayer(0, 0, 0, 0);
         big.setLetterSpacing(0f);
         big.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
@@ -355,7 +357,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         TextClock date = new TextClock(this);
         date.setFormat12Hour(fmt);
         date.setFormat24Hour(fmt);
-        date.setTextSize(17);
+        date.setTextSize(16);
         date.setTextColor(0xE6FFFFFF);
         date.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
         date.setSingleLine(true);
@@ -375,7 +377,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         TextView sep = dot();
         weatherSep = sep;
         row.addView(sep, dotLp());
-        weatherView = Ui.text(this, 17, 0xE6FFFFFF, "sans-serif-medium");
+        weatherView = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif-medium");
         weatherView.setSingleLine(true);
         weatherView.setIncludeFontPadding(false);
         row.addView(weatherView, new LinearLayout.LayoutParams(
@@ -383,7 +385,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         updateWeatherView();
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | (center ? Gravity.CENTER_HORIZONTAL : Gravity.START));
+                h + 2 * pv, Gravity.TOP | (center ? Gravity.CENTER_HORIZONTAL : Gravity.START));
         // level with the status icons in the other corner
         lp.topMargin = Math.max(Ui.dp(this, 12), Math.round(dm.heightPixels * 0.028f));
         if (!center) lp.leftMargin = Math.max(Ui.dp(this, 16), Math.round(dm.widthPixels * 0.02f));
@@ -391,7 +393,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     }
 
     private TextView dot() {
-        TextView t = Ui.text(this, 17, 0x80FFFFFF, "sans-serif-medium");
+        TextView t = Ui.text(this, 16, 0x80FFFFFF, "sans-serif-medium");
         t.setText("·");
         t.setIncludeFontPadding(false);
         return t;

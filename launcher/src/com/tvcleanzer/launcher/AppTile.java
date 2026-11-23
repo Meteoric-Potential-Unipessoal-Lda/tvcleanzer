@@ -203,6 +203,9 @@ final class AppTile extends LinearLayout {
     void hideLabel() {
         noLabel = true;
         label.setVisibility(GONE);
+        // the room for the zoomed card below too, as above: the icon in the middle of the dock
+        // (0.85, an owner's photo: it sat low with the names gone)
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), getPaddingTop());
     }
 
     /** Move mode: arrows around the name, name always visible. */
