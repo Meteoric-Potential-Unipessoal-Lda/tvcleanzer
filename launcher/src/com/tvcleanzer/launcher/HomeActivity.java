@@ -326,6 +326,51 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (k < 1f) c.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, size * k * 0.97f);
     }
 
+    /** The clock home's time in one line: the big time, a hairline, the date over the weather. */
+    private void clockRow(int screenW, int screenH, int padH, boolean center) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        TextClock big = bigClock(110);
+        fitClock(big, Math.round((screenW - 2 * padH) * 0.5f), Math.round(screenH * 0.24f));
+        row.addView(big, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        View divider = new View(this);
+        divider.setBackgroundColor(0x40FFFFFF);
+        LinearLayout.LayoutParams dvp = new LinearLayout.LayoutParams(Ui.dp(this, 1), Ui.dp(this, 64));
+        dvp.leftMargin = Ui.dp(this, 28);
+        dvp.rightMargin = Ui.dp(this, 28);
+        row.addView(divider, dvp);
+        LinearLayout col = new LinearLayout(this);
+        col.setOrientation(LinearLayout.VERTICAL);
+        TextClock date = new TextClock(this);
+        date.setFormat12Hour("EEEE, d MMMM");
+        date.setFormat24Hour("EEEE, d MMMM");
+        date.setTextSize(22);
+        date.setTextColor(0xD9FFFFFF);
+        date.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
+        date.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
+        date.setSingleLine(true);
+        col.addView(date);
+        weatherView = Ui.text(this, 22, 0xD9FFFFFF, "sans-serif-medium");
+        weatherView.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
+        LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        wl.topMargin = Ui.dp(this, 6);
+        col.addView(weatherView, wl);
+        updateWeatherView();
+        row.addView(col);
+        if (prefs.clockGlass()) {
+            row.setBackground(Ui.shelf(Ui.dp(this, 30), prefs.shelf()));
+            row.setPadding(Ui.dp(this, 32), Ui.dp(this, 16), Ui.dp(this, 36), Ui.dp(this, 18));
+        }
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | (center ? Gravity.CENTER_HORIZONTAL : Gravity.START));
+        lp.topMargin = Math.round(screenH * 0.12f);
+        if (!center) lp.leftMargin = padH;
+        root.addView(row, lp);
+    }
+
     /** Clock style: date, a big clock and the weather in the middle; a glass dock below. */
     private void buildClockHome(Skin skin, int screenW, int padH, int padV, int anim, int ringColor, String focusPkg) {
         boolean center = prefs.clockPos() == Prefs.CLOCK_CENTER;
@@ -335,6 +380,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         int textGravity = center ? Gravity.CENTER_HORIZONTAL : Gravity.START;
         int screenH = getResources().getDisplayMetrics().heightPixels;
 
+        // «Дата и погода: в одну строку» (0.76): the time with the date and the weather beside it
+        // (an owner: the stacked block took half the screen)
+        if (prefs.oneLine()) {
+            clockRow(screenW, screenH, padH, center);
+        } else {
         TextClock date = new TextClock(this);
         date.setFormat12Hour("EEEE, d MMMM");
         date.setFormat24Hour("EEEE, d MMMM");
@@ -368,18 +418,20 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         mid.setPadding(padH, 0, padH, 0);
         if (prefs.clockGlass()) glassBehind(mid, center, padH);
         root.addView(mid, mlp);
+        }
 
         // Dock: inputs, favourites (icons), settings, all apps
         favGridCols = 0; // one row in the dock: ▲▼ do not move a favourite here
         LinearLayout dock = row();
         dock.setGravity(Gravity.CENTER_VERTICAL);
         dock.setBackground(Ui.shelf(Ui.dp(this, 34), prefs.shelf()));
-        int dp18 = Ui.dp(this, 18);
+        int dp18 = Ui.dp(this, 14);
         dock.setPadding(dp18, dp18, dp18, Ui.dp(this, 8));
         // the tile size setting works here too: compact / normal / large dock icons
-        final float[] dockScale = {0.85f, 1f, 1.35f};
-        int icon = Math.round(Math.max(Ui.dp(this, 64), Math.round(screenW * 0.05f)) * dockScale[prefs.tileSize()]);
-        int gap = Ui.dp(this, 16);
+        // 0.76 smaller (an owner: «нижний блок огромнейший»); «Размер плиток» still scales it
+        final float[] dockScale = {0.8f, 1f, 1.2f};
+        int icon = Math.round(Math.max(Ui.dp(this, 54), Math.round(screenW * 0.042f)) * dockScale[prefs.tileSize()]);
+        int gap = Ui.dp(this, 12);
         List<AppTile> tiles = new ArrayList<>();
         List<View> order = new ArrayList<>();
 
@@ -388,7 +440,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final boolean round = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
         // Like a Mac's dock: few apps — bigger icons (the size setting still scales them).
         int n = Math.min(8, favorites.size());
-        icon = Math.round(icon * (n <= 4 ? 1.25f : n <= 6 ? 1.12f : 1f));
+        icon = Math.round(icon * (n <= 4 ? 1.12f : n <= 6 ? 1.05f : 1f));
         // The whole dock must fit the screen (a centred dock wider than the screen loses both
         // ends): shrink the icons, then show fewer favourites, if needed.
         int avail = screenW - 2 * padH - 2 * dp18;

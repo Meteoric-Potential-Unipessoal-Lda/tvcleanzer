@@ -558,6 +558,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
               TextStyle(fontWeight: FontWeight.w800),
             ]),
         if (s1) _pills(tr('Часы на экране'), posL, look.clockPos, (v) => _setLook(look.copyWith(clockPos: v))),
+        if (s1)
+          _sw(tr('Дата и погода в одну строку'), tr('Рядом с часами, а не столбиком'), look.oneLine,
+              (v) => _setLook(look.copyWith(oneLine: v)), need: 76),
         _sw(tr('Часы 24 часа'), null, look.clock24, (v) => _setLook(look.copyWith(clock24: v))),
         _sw(tr('Стекло под часами'), tr('Полупрозрачная подложка под часами, датой и погодой'), look.clockGlass,
             (v) => _setLook(look.copyWith(clockGlass: v)), need: 68),
