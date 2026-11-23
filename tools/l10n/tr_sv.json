@@ -1007,5 +1007,7 @@
 "Musen fungerar på Android 7 och senare.",
 "Musen behöver tjänsten «TVCleanzer: кнопка Домой». Slå på den i tv:ns inställningar: Tillgänglighet.",
 "Utan appnamn",
-"Bara ikoner: dockan och raderna blir lägre"
+"Bara ikoner: dockan och raderna blir lägre",
+"Bakgrunden visas av TVCleanzer-startprogrammet, och tv:n har det inte. Installera det på fliken «Launcher».",
+"Filen kom fram, men startprogrammet ser den inte. Uppdatera startprogrammet på tv:n och försök igen."
 ]

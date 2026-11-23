@@ -1007,5 +1007,7 @@
 "La souris fonctionne sur Android 7 et plus.",
 "La souris a besoin du service «TVCleanzer: кнопка Домой». Activez-le dans les paramètres de la TV : Accessibilité.",
 "Sans noms d’applis",
-"Icônes seules : le dock et les rangées sont plus bas"
+"Icônes seules : le dock et les rangées sont plus bas",
+"Le fond d’écran est affiché par le launcher TVCleanzer, absent de la TV. Installez-le dans l’onglet « Launcher ».",
+"Le fichier est arrivé, mais le launcher ne le voit pas. Mettez à jour le launcher sur la TV et réessayez."
 ]

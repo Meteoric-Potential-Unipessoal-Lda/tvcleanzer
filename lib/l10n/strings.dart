@@ -1011,6 +1011,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'The mouse needs the «TVCleanzer: кнопка Домой» service on. Turn it on in the TV settings: Accessibility.',
     'Без названий приложений': 'No app names',
     'Только значки: док и ряды станут ниже': 'Icons only: the dock and rows get lower',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Wallpapers are shown by the TVCleanzer launcher, and the TV doesn’t have it. Install it on the «Launcher» tab.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'The file arrived, but the launcher doesn’t see it. Update the launcher on the TV and try again.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2022,6 +2024,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Миші потрібна увімкнена служба «TVCleanzer: кнопка Домой». Увімкніть її в налаштуваннях ТВ: Спеціальні можливості.',
     'Без названий приложений': 'Без назв застосунків',
     'Только значки: док и ряды станут ниже': 'Лише значки: док і ряди стануть нижчими',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Шпалери показує лаунчер TVCleanzer, а на телевізорі його немає. Встановіть його на вкладці «Лаунчер».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл дійшов, але лаунчер його не бачить. Оновіть лаунчер на ТВ і спробуйте знову.',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3033,6 +3037,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'El ratón necesita el servicio «TVCleanzer: кнопка Домой» activado. Actívalo en los ajustes de la TV: Accesibilidad.',
     'Без названий приложений': 'Sin nombres de apps',
     'Только значки: док и ряды станут ниже': 'Solo iconos: el dock y las filas serán más bajos',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'El fondo lo muestra el launcher TVCleanzer y la TV no lo tiene. Instálalo en la pestaña «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'El archivo llegó, pero el launcher no lo ve. Actualiza el launcher en la TV y vuelve a intentarlo.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4044,6 +4050,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'O rato precisa do serviço «TVCleanzer: кнопка Домой» ativo. Ative-o nas definições da TV: Acessibilidade.',
     'Без названий приложений': 'Sem nomes das apps',
     'Только значки: док и ряды станут ниже': 'Só ícones: a dock e as filas ficam mais baixas',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'O fundo é mostrado pelo launcher TVCleanzer e a TV não o tem. Instale-o no separador «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'O ficheiro chegou, mas o launcher não o vê. Atualize o launcher na TV e tente de novo.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5055,6 +5063,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Die Maus braucht den Dienst «TVCleanzer: кнопка Домой». Schalte ihn in den TV-Einstellungen ein: Bedienungshilfen.',
     'Без названий приложений': 'Ohne App-Namen',
     'Только значки: док и ряды станут ниже': 'Nur Symbole: Dock und Reihen werden niedriger',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Hintergründe zeigt der TVCleanzer-Launcher, und der ist nicht auf dem TV. Installiere ihn im Tab «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Die Datei ist angekommen, aber der Launcher sieht sie nicht. Aktualisiere den Launcher auf dem TV und versuche es erneut.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6066,6 +6076,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'La souris a besoin du service «TVCleanzer: кнопка Домой». Activez-le dans les paramètres de la TV : Accessibilité.',
     'Без названий приложений': 'Sans noms d’applis',
     'Только значки: док и ряды станут ниже': 'Icônes seules : le dock et les rangées sont plus bas',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Le fond d’écran est affiché par le launcher TVCleanzer, absent de la TV. Installez-le dans l’onglet « Launcher ».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Le fichier est arrivé, mais le launcher ne le voit pas. Mettez à jour le launcher sur la TV et réessayez.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7077,6 +7089,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Il mouse richiede il servizio «TVCleanzer: кнопка Домой». Attivalo nelle impostazioni della TV: Accessibilità.',
     'Без названий приложений': 'Senza nomi delle app',
     'Только значки: док и ряды станут ниже': 'Solo icone: dock e righe più bassi',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Lo sfondo lo mostra il launcher TVCleanzer e la TV non ce l’ha. Installalo nella scheda «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Il file è arrivato, ma il launcher non lo vede. Aggiorna il launcher sulla TV e riprova.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8088,6 +8102,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Мышы патрэбна ўключаная служба «TVCleanzer: кнопка Домой». Уключыце яе ў наладах ТБ: Спецыяльныя магчымасці.',
     'Без названий приложений': 'Без назваў праграм',
     'Только значки: док и ряды станут ниже': 'Толькі значкі: док і рады стануць ніжэйшымі',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Шпалеры паказвае лаўнчар TVCleanzer, а на тэлевізары яго няма. Усталюйце яго на ўкладцы «Лаўнчар».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл дайшоў, але лаўнчар яго не бачыць. Абнавіце лаўнчар на ТБ і паспрабуйце зноў.',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9099,6 +9115,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Тінтуірге «TVCleanzer: кнопка Домой» қызметі керек. Оны ТД баптауларында қосыңыз: Арнайы мүмкіндіктер.',
     'Без названий приложений': 'Қолданба атауларынсыз',
     'Только значки: док и ряды станут ниже': 'Тек белгішелер: док пен қатарлар аласарады',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Тұсқағазды TVCleanzer лаунчері көрсетеді, ал теледидарда ол жоқ. Оны «Лаунчер» қойындысында орнатыңыз.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл жетті, бірақ лаунчер оны көрмейді. ТД-дағы лаунчерді жаңартып, қайталап көріңіз.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10110,6 +10128,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Sichqoncha uchun «TVCleanzer: кнопка Домой» xizmati yoqilgan boʻlishi kerak. Uni TV sozlamalarida yoqing: Maxsus imkoniyatlar.',
     'Без названий приложений': 'Ilova nomlarisiz',
     'Только значки: док и ряды станут ниже': 'Faqat belgilar: dok va qatorlar pastroq boʻladi',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Fon rasmlarini TVCleanzer launcheri ko‘rsatadi, televizorda esa u yo‘q. Uni «Launcher» bo‘limida o‘rnating.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fayl yetib keldi, lekin launcher uni ko‘rmayapti. TVdagi launcherni yangilang va qayta urinib ko‘ring.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11121,6 +11141,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Մկնիկին պետք է միացված «TVCleanzer: кнопка Домой» ծառայությունը։ Միացրեք այն հեռուստացույցի կարգավորումներում՝ Հատուկ հնարավորություններ։',
     'Без названий приложений': 'Առանց հավելվածների անունների',
     'Только значки: док и ряды станут ниже': 'Միայն պատկերակներ՝ դոկն ու շարքերը կցածրանան',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Պաստառները ցույց է տալիս TVCleanzer լաունչերը, իսկ հեռուստացույցում այն չկա։ Տեղադրեք այն «Լաունչեր» ներդիրում։',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Ֆայլը հասավ, բայց լաունչերը այն չի տեսնում։ Թարմացրեք լաունչերը հեռուստացույցում և նորից փորձեք։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12132,6 +12154,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Siçan üçün «TVCleanzer: кнопка Домой» xidməti açıq olmalıdır. Onu TV ayarlarında açın: Əlçatımlılıq.',
     'Без названий приложений': 'Tətbiq adları olmadan',
     'Только значки: док и ряды станут ниже': 'Yalnız nişanlar: dok və sıralar alçalacaq',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Divar kağızını TVCleanzer launcheri göstərir, televizorda isə o yoxdur. Onu «Launcher» bölməsində quraşdırın.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fayl çatdı, amma launcher onu görmür. TV-dəki launcheri yeniləyin və yenidən cəhd edin.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13143,6 +13167,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'მაუსს სჭირდება ჩართული «TVCleanzer: кнопка Домой» სერვისი. ჩართეთ ტელევიზორის პარამეტრებში: მარტივი წვდომა.',
     'Без названий приложений': 'აპების სახელების გარეშე',
     'Только значки: док и ряды станут ниже': 'მხოლოდ ხატულები: დოკი და რიგები დაბლდება',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'ფონს აჩვენებს TVCleanzer ლაუნჩერი, ტელევიზორზე კი ის არ არის. დააინსტალირეთ ის «ლაუნჩერის» ჩანართზე.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ფაილი მივიდა, მაგრამ ლაუნჩერი მას ვერ ხედავს. განაახლეთ ლაუნჩერი ტელევიზორზე და სცადეთ თავიდან.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14154,6 +14180,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Чычканга «TVCleanzer: кнопка Домой» кызматы күйүк болушу керек. Аны сыналгынын жөндөөлөрүнөн күйгүзүңүз: Атайын мүмкүнчүлүктөр.',
     'Без названий приложений': 'Колдонмо аттарысыз',
     'Только значки: док и ряды станут ниже': 'Сүрөтчөлөр гана: док жана катарлар жапыз болот',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Тушкагазды TVCleanzer лаунчери көрсөтөт, ал сыналгыда ал жок. Аны «Лаунчер» өтмөгүнөн орнотуңуз.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Файл жетти, бирок лаунчер аны көрбөй жатат. Сыналгыдагы лаунчерди жаңыртып, кайра аракет кылыңыз.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15165,6 +15193,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Fare için «TVCleanzer: кнопка Домой» hizmeti açık olmalı. TV ayarlarından açın: Erişilebilirlik.',
     'Без названий приложений': 'Uygulama adları olmadan',
     'Только значки: док и ряды станут ниже': 'Yalnızca simgeler: dock ve satırlar alçalır',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Duvar kağıdını TVCleanzer başlatıcısı gösterir ve TV’de yok. «Başlatıcı» sekmesinden kurun.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Dosya ulaştı ama başlatıcı onu görmüyor. TV’deki başlatıcıyı güncelleyip tekrar deneyin.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16176,6 +16206,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mysz potrzebuje włączonej usługi «TVCleanzer: кнопка Домой». Włącz ją w ustawieniach TV: Ułatwienia dostępu.',
     'Без названий приложений': 'Bez nazw aplikacji',
     'Только значки: док и ряды станут ниже': 'Same ikony: dok i rzędy będą niższe',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Tapety pokazuje launcher TVCleanzer, a na telewizorze go nie ma. Zainstaluj go na karcie «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Plik dotarł, ale launcher go nie widzi. Zaktualizuj launcher na TV i spróbuj ponownie.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17187,6 +17219,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mouse-ul are nevoie de serviciul «TVCleanzer: кнопка Домой» pornit. Pornește-l din setările TV: Accesibilitate.',
     'Без названий приложений': 'Fără numele aplicațiilor',
     'Только значки: док и ряды станут ниже': 'Doar pictograme: dock-ul și rândurile devin mai joase',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Fundalul îl afișează launcherul TVCleanzer, iar televizorul nu îl are. Instalează-l din fila «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Fișierul a ajuns, dar launcherul nu îl vede. Actualizează launcherul pe TV și încearcă din nou.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18198,6 +18232,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': '鼠标需要开启「TVCleanzer: кнопка Домой」服务。请在电视设置的「无障碍」中开启。',
     'Без названий приложений': '不显示应用名称',
     'Только значки: док и ряды станут ниже': '只显示图标：程序坞和各行会更矮',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': '壁纸由 TVCleanzer 启动器显示，但电视上没有安装它。请在「启动器」标签页安装。',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': '文件已送达，但启动器看不到它。请更新电视上的启动器后重试。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19209,6 +19245,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'マウスには「TVCleanzer: кнопка Домой」サービスが必要です。テレビの設定の「ユーザー補助」でオンにしてください。',
     'Без названий приложений': 'アプリ名を表示しない',
     'Только значки: док и ряды станут ниже': 'アイコンのみ：ドックと列が低くなります',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': '壁紙は TVCleanzer ランチャーが表示しますが、テレビに入っていません。「ランチャー」タブでインストールしてください。',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ファイルは届きましたが、ランチャーが認識していません。テレビのランチャーを更新してもう一度お試しください。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20220,6 +20258,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': '마우스를 쓰려면 «TVCleanzer: кнопка Домой» 서비스가 켜져 있어야 합니다. TV 설정의 접근성에서 켜세요.',
     'Без названий приложений': '앱 이름 숨기기',
     'Только значки: док и ряды станут ниже': '아이콘만: 독과 줄이 낮아집니다',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': '배경화면은 TVCleanzer 런처가 표시하는데 TV에 없습니다. «런처» 탭에서 설치하세요.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': '파일은 도착했지만 런처가 인식하지 못합니다. TV의 런처를 업데이트하고 다시 시도하세요.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21231,6 +21271,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'माउस के लिए «TVCleanzer: кнопка Домой» सेवा चालू होनी चाहिए। इसे टीवी सेटिंग्स में चालू करें: सुलभता।',
     'Без названий приложений': 'ऐप नामों के बिना',
     'Только значки: док и ряды станут ниже': 'सिर्फ़ आइकन: डॉक और पंक्तियाँ नीची होंगी',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'वॉलपेपर TVCleanzer लॉन्चर दिखाता है, और टीवी पर वह नहीं है। उसे «लॉन्चर» टैब से इंस्टॉल करें।',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'फ़ाइल पहुँच गई, लेकिन लॉन्चर उसे नहीं देख रहा। टीवी पर लॉन्चर अपडेट करें और फिर कोशिश करें।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22242,6 +22284,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Mouse memerlukan layanan «TVCleanzer: кнопка Домой» aktif. Aktifkan di setelan TV: Aksesibilitas.',
     'Без названий приложений': 'Tanpa nama aplikasi',
     'Только значки: док и ряды станут ниже': 'Hanya ikon: dok dan baris jadi lebih rendah',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Wallpaper ditampilkan oleh launcher TVCleanzer, dan TV belum memilikinya. Pasang di tab «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'File sudah sampai, tetapi launcher tidak melihatnya. Perbarui launcher di TV lalu coba lagi.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23253,6 +23297,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Chuột cần bật dịch vụ «TVCleanzer: кнопка Домой». Bật trong cài đặt TV: Hỗ trợ tiếp cận.',
     'Без названий приложений': 'Ẩn tên ứng dụng',
     'Только значки: док и ряды станут ниже': 'Chỉ biểu tượng: dock và các hàng thấp hơn',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Hình nền do launcher TVCleanzer hiển thị, nhưng TV chưa có nó. Hãy cài trong thẻ «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Tệp đã đến nơi nhưng launcher không thấy. Hãy cập nhật launcher trên TV rồi thử lại.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24264,6 +24310,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'เมาส์ต้องเปิดบริการ «TVCleanzer: кнопка Домой» เปิดได้ในการตั้งค่าทีวี: การช่วยเหลือพิเศษ',
     'Без названий приложений': 'ไม่แสดงชื่อแอป',
     'Только значки: док и ряды станут ниже': 'เฉพาะไอคอน: ด็อกและแถวจะเตี้ยลง',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'วอลเปเปอร์แสดงโดยลอนเชอร์ TVCleanzer แต่ทีวียังไม่มี ติดตั้งได้ที่แท็บ «ลอนเชอร์»',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'ไฟล์ส่งถึงแล้ว แต่ลอนเชอร์มองไม่เห็น อัปเดตลอนเชอร์บนทีวีแล้วลองอีกครั้ง',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25275,6 +25323,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'De muis heeft de dienst «TVCleanzer: кнопка Домой» nodig. Zet hem aan in de tv-instellingen: Toegankelijkheid.',
     'Без названий приложений': 'Zonder app-namen',
     'Только значки: док и ряды станут ниже': 'Alleen pictogrammen: dock en rijen worden lager',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Achtergronden worden getoond door de TVCleanzer-launcher, en die staat niet op de tv. Installeer hem op het tabblad «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Het bestand is aangekomen, maar de launcher ziet het niet. Werk de launcher op de tv bij en probeer het opnieuw.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26286,6 +26336,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Myš potřebuje zapnutou službu «TVCleanzer: кнопка Домой». Zapněte ji v nastavení TV: Přístupnost.',
     'Без названий приложений': 'Bez názvů aplikací',
     'Только значки: док и ряды станут ниже': 'Jen ikony: dok a řady budou nižší',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Tapetu zobrazuje launcher TVCleanzer a ten v televizoru není. Nainstalujte ho na kartě «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Soubor dorazil, ale launcher ho nevidí. Aktualizujte launcher v TV a zkuste to znovu.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27297,6 +27349,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Το ποντίκι χρειάζεται την υπηρεσία «TVCleanzer: кнопка Домой». Ενεργοποιήστε τη στις ρυθμίσεις της TV: Προσβασιμότητα.',
     'Без названий приложений': 'Χωρίς ονόματα εφαρμογών',
     'Только значки: док и ряды станут ниже': 'Μόνο εικονίδια: η μπάρα και οι σειρές χαμηλώνουν',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Την ταπετσαρία τη δείχνει ο launcher TVCleanzer και η TV δεν τον έχει. Εγκαταστήστε τον στην καρτέλα «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Το αρχείο έφτασε, αλλά ο launcher δεν το βλέπει. Ενημερώστε τον launcher στην TV και δοκιμάστε ξανά.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28308,6 +28362,8 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Az egérhez be kell kapcsolni a «TVCleanzer: кнопка Домой» szolgáltatást. Kapcsold be a tévé beállításaiban: Kisegítő lehetőségek.',
     'Без названий приложений': 'Alkalmazásnevek nélkül',
     'Только значки: док и ряды станут ниже': 'Csak ikonok: a dokk és a sorok alacsonyabbak',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'A hátteret a TVCleanzer launcher mutatja, és ez nincs a tévén. Telepítsd a «Launcher» lapon.',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'A fájl megérkezett, de a launcher nem látja. Frissítsd a launchert a tévén, és próbáld újra.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29319,5 +29375,7 @@ const Map<String, Map<String, String>> translations = {
     'Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.': 'Musen behöver tjänsten «TVCleanzer: кнопка Домой». Slå på den i tv:ns inställningar: Tillgänglighet.',
     'Без названий приложений': 'Utan appnamn',
     'Только значки: док и ряды станут ниже': 'Bara ikoner: dockan och raderna blir lägre',
+    'Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».': 'Bakgrunden visas av TVCleanzer-startprogrammet, och tv:n har det inte. Installera det på fliken «Launcher».',
+    'Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.': 'Filen kom fram, men startprogrammet ser den inte. Uppdatera startprogrammet på tv:n och försök igen.',
   },
 };

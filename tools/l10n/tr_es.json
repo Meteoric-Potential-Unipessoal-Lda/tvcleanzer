@@ -1007,5 +1007,7 @@
 "El ratón funciona en Android 7 o posterior.",
 "El ratón necesita el servicio «TVCleanzer: кнопка Домой» activado. Actívalo en los ajustes de la TV: Accesibilidad.",
 "Sin nombres de apps",
-"Solo iconos: el dock y las filas serán más bajos"
+"Solo iconos: el dock y las filas serán más bajos",
+"El fondo lo muestra el launcher TVCleanzer y la TV no lo tiene. Instálalo en la pestaña «Launcher».",
+"El archivo llegó, pero el launcher no lo ve. Actualiza el launcher en la TV y vuelve a intentarlo."
 ]

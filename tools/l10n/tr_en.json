@@ -1007,5 +1007,7 @@
 "The mouse works on Android 7 and newer.",
 "The mouse needs the «TVCleanzer: кнопка Домой» service on. Turn it on in the TV settings: Accessibility.",
 "No app names",
-"Icons only: the dock and rows get lower"
+"Icons only: the dock and rows get lower",
+"Wallpapers are shown by the TVCleanzer launcher, and the TV doesn’t have it. Install it on the «Launcher» tab.",
+"The file arrived, but the launcher doesn’t see it. Update the launcher on the TV and try again."
 ]

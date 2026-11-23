@@ -1505,6 +1505,7 @@ class AdbPackageManager {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
+      await _requireLauncher(adb);
       var sent = false;
       for (var attempt = 0; attempt < 2 && !sent; attempt++) {
         await adb.execIn('cat > $tmp', jpeg);
@@ -1533,9 +1534,35 @@ class AdbPackageManager {
       }
       await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
           '-a com.tvcleanzer.launcher.APPLY --es wallpaper set');
+      // 1.3.101: owners on TCL / Chinese Xiaomi «set» a photo and saw none — the launcher says
+      // whether it has it (and the report keeps the line)
+      final st = await _launcherSettings(adb);
+      AppLog.error('wallpaper', 'sent ${jpeg.length ~/ 1024} KB, SDK $sdk, launcher has it: ${st['wallpaper'] ?? '?'}');
+      if (st['wallpaper'] == '0') throw AdbException(tr('Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.'));
     } finally {
       adb.close();
     }
+  }
+
+  /// Photos and videos are shown by our launcher: without it they would land nowhere.
+  Future<void> _requireLauncher(AdbClient adb) async {
+    final out = await adb.shell('pm path $launcherPkg 2>/dev/null');
+    if (!out.contains('package:')) {
+      AppLog.error('wallpaper', 'no launcher on the TV');
+      throw AdbException(tr('Обои показывает лаунчер TVCleanzer, а на телевизоре его нет. Установите его на вкладке «Лаунчер».'));
+    }
+  }
+
+  /// What the launcher itself reports (its StateProvider «settings»): key → value.
+  Future<Map<String, String>> _launcherSettings(AdbClient adb) async {
+    final m = <String, String>{};
+    try {
+      final out = await adb.shell('content query --uri content://$launcherPkg.state/settings 2>/dev/null');
+      for (final r in RegExp(r'key=(\w+), value=([^\n]*)').allMatches(out)) {
+        m[r.group(1)!] = r.group(2)!.trim();
+      }
+    } catch (_) {}
+    return m;
   }
 
   // ── «Живые обои» (launcher 0.61+) ────────────────────────────────────────
@@ -1551,6 +1578,7 @@ class AdbPackageManager {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
+      await _requireLauncher(adb);
       final freeKb = await _dataFreeKb(adb);
       final needKb = length * 2 ~/ 1024 + 200 * 1024;
       if (freeKb > 0 && freeKb < needKb) {
@@ -1582,6 +1610,9 @@ class AdbPackageManager {
         throw AdbException(tr('Телевизор не дал сохранить видео. Обновите лаунчер на ТВ и попробуйте снова.'));
       }
       await _broadcast(adb, '--es liveWall set --ez liveWallOn true');
+      final st = await _launcherSettings(adb);
+      AppLog.error('live wallpaper', 'sent ${length ~/ (1024 * 1024)} MB, SDK $sdk, launcher has it: ${st['liveWall'] ?? '?'}, on ${st['liveWallOn'] ?? '?'}');
+      if (st['liveWall'] == '0') throw AdbException(tr('Файл дошёл, но лаунчер его не видит. Обновите лаунчер на ТВ и попробуйте снова.'));
     } finally {
       adb.close();
     }
@@ -2009,7 +2040,7 @@ class AdbPackageManager {
       final v = RegExp(r'versionName=(\S+)')
           .firstMatch(await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -m1 versionName'))
           ?.group(1);
-      if (v == null) return '';
+      if (v == null) return '--- launcher: not installed ---\n';
       // is the Home-key service on and really running, and how long since the TV booted
       final acc = (await adb.shell('settings get secure enabled_accessibility_services')).contains('tvcleanzer');
       final bound = (await adb.shell('dumpsys accessibility 2>/dev/null | grep -i "bound services"'))
@@ -2046,12 +2077,27 @@ class AdbPackageManager {
           .where((l) => l.isNotEmpty)
           .map((l) => l.length > 160 ? '${l.substring(0, 160)}…' : l)
           .toList();
+      // 1.3.101: wallpapers «gone» — has the launcher got them, and is it the screen the owner sees
+      final st = await _launcherSettings(adb);
+      final home = (await adb.shell('cmd package resolve-activity --brief -a android.intent.action.MAIN '
+              '-c android.intent.category.HOME 2>/dev/null | tail -1'))
+          .trim();
+      final front = RegExp(r'\{\S+ \S+ (\S+?)[ }]')
+              .firstMatch(await adb.shell('dumpsys activity activities 2>/dev/null | '
+                  'grep -m1 -E "mResumedActivity|topResumedActivity|ResumedActivity"'))
+              ?.group(1) ??
+          '?';
       return '--- launcher $v ---\nservice: on $acc, running $bound, boot ${up ~/ 60} min ago, keeper ${grant == '0' ? 'no' : 'yes'}, '
           'accessibility $accOn, stopped $stopped\n'
+          'wall: photo ${st['wallpaper'] ?? '?'}, video ${st['liveWall'] ?? '?'} (on ${st['liveWallOn'] ?? '?'}), '
+          'dim ${st['wallDim'] ?? '?'}, style ${st['style'] ?? '?'}\n'
+          'home: ${home.isEmpty ? '?' : home}; on screen: $front\n'
           '${lines.join('\n')}\n'
           '${crash.isEmpty ? '' : '--- system ---\n${crash.join('\n')}\n'}';
-    } catch (_) {
-      return '';
+    } catch (e) {
+      var m = '$e'.replaceAll(RegExp(r'\s+'), ' ');
+      if (m.length > 120) m = '${m.substring(0, 120)}…';
+      return '--- launcher: no answer from the TV ($m) ---\n';
     } finally {
       adb.close();
     }

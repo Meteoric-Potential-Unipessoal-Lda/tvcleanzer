@@ -1007,5 +1007,7 @@
 "Sichqoncha Android 7 va yangisida ishlaydi.",
 "Sichqoncha uchun «TVCleanzer: кнопка Домой» xizmati yoqilgan boʻlishi kerak. Uni TV sozlamalarida yoqing: Maxsus imkoniyatlar.",
 "Ilova nomlarisiz",
-"Faqat belgilar: dok va qatorlar pastroq boʻladi"
+"Faqat belgilar: dok va qatorlar pastroq boʻladi",
+"Fon rasmlarini TVCleanzer launcheri ko‘rsatadi, televizorda esa u yo‘q. Uni «Launcher» bo‘limida o‘rnating.",
+"Fayl yetib keldi, lekin launcher uni ko‘rmayapti. TVdagi launcherni yangilang va qayta urinib ko‘ring."
 ]
