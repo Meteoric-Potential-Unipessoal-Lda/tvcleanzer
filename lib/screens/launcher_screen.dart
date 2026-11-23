@@ -315,13 +315,17 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       });
       _check(silent: true);
     });
+    final tv = ref.watch(currentTvProvider);
     return Scaffold(
       appBar: AppBar(title: Text(tr('Лаунчер'))),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
           const TvBanner(),
-          if (ref.watch(currentTvProvider) != null) const Gap(16),
+          if (tv != null) const Gap(12),
+          // what needs doing (install / update / make it Home) comes first, not under 25 settings
+          _statusCard(),
+          const Gap(16),
           _SkinPreview(skin: skin, look: look),
           const Gap(20),
           _label(tr('Тема')),
@@ -345,12 +349,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           const Gap(20),
           _label(tr('Тонкая настройка')),
           const Gap(10),
-          _lookCard(look),
-          const Gap(24),
-          _currentLauncherCard(),
-          const Gap(12),
-          _ourLauncherCard(),
-          const Gap(20),
+          ..._lookGroups(look),
+          if (_installed == true) _tvGroup(),
+          const Gap(10),
           const SupportCard(compact: true),
         ],
       ),
@@ -373,81 +374,138 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         child: Material(type: MaterialType.transparency, child: child),
       );
 
-  Widget _lookCard(LauncherLook look) {
-    Widget seg(String title, List<String> labels, int value, ValueChanged<int> onChanged) =>
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title, style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
-          const Gap(6),
-          SizedBox(
-            width: double.infinity,
-            child: SegmentedButton<int>(
-              showSelectedIcon: false,
-              style: SegmentedButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                selectedBackgroundColor: AppColors.accentDim,
-                selectedForegroundColor: AppColors.accent,
-                foregroundColor: AppColors.fgMid,
-                side: const BorderSide(color: AppColors.cardBd),
-              ),
-              segments: [
-                for (var i = 0; i < labels.length; i++)
-                  ButtonSegment<int>(value: i, label: Text(labels[i], maxLines: 1, overflow: TextOverflow.ellipsis)),
-              ],
-              selected: {value},
-              onSelectionChanged: (v) => onChanged(v.first),
-            ),
-          ),
-        ]);
-    Widget sw(String title, String? sub, bool value, ValueChanged<bool> onChanged) => SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          dense: true,
-          title: Text(title, style: const TextStyle(fontSize: 14, color: AppColors.fg)),
-          subtitle: sub == null
-              ? null
-              : Text(sub, style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
-          value: value,
-          onChanged: onChanged,
-        );
-    return _card(
+  /// Groups the owner opened (kept while the app runs, so a tab switch doesn't fold them).
+  static final Set<String> _open = {};
+
+  /// A setting the TV's launcher is too old for: say so on the row, not in one line at the end.
+  String? _need(int v) => v > 0 && _installed == true && _version != null && _version! < v
+      ? tr('Нужен лаунчер 0.{0} или новее — обновите его вверху', ['$v'])
+      : null;
+
+  Widget _group(String id, IconData icon, String title, String summary, List<Widget> children) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: _Group(
+          icon: icon,
+          title: title,
+          summary: summary,
+          open: _open.contains(id),
+          onTap: () {
+            HapticFeedback.selectionClick();
+            setState(() {
+              if (!_open.remove(id)) _open.add(id);
+            });
+          },
+          children: children,
+        ),
+      );
+
+  /// Choices as pills that wrap to a second line: the segmented buttons cut long words
+  /// («Очень медленно», «Маленькие», five clock fonts) on a phone.
+  Widget _pills(String title, List<String> labels, int value, ValueChanged<int> onChanged,
+      {List<IconData>? icons, List<TextStyle>? styles, String? hint, int need = 0}) {
+    final note = _need(need);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        seg(tr('Вид главного экрана'), [tr('Плитки'), tr('Часы и док'), tr('Витрина')], look.style,
-            (v) => _setLook(look.copyWith(style: v))),
-        const Gap(14),
-        sw(tr('Память на главном экране'), tr('Нажатие закрывает приложения в фоне и освобождает память'), look.memPill,
-            (v) => _setLook(look.copyWith(memPill: v))),
-        sw(tr('Только шестерёнка вверху'), tr('Без плашек сети и «Настройки ТВ»: шестерёнка открывает настройки ТВ, удержание — настройки лаунчера'),
-            look.cleanBar, (v) => _setLook(look.copyWith(cleanBar: v))),
-        if (look.style == 0) ...[
-          sw(tr('Приветствие'), tr('«Добрый вечер» над часами'), look.greeting,
-              (v) => _setLook(look.copyWith(greeting: v))),
-          sw(tr('Дата и погода в одну строку'), tr('Рядом с часами, а не столбиком'), look.oneLine,
-              (v) => _setLook(look.copyWith(oneLine: v))),
-          const Gap(6),
-          seg(tr('Часы вверху'), [tr('Крупные'), tr('Средние'), tr('Мелкие')], look.barClock,
-              (v) => _setLook(look.copyWith(barClock: v))),
-        ],
+        Text(title, style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
         const Gap(8),
-        if (look.style == 2) ...[
-          sw(tr('Название приложения над плитками'), null, look.heroTitle,
+        Wrap(spacing: 8, runSpacing: 8, children: [
+          for (var i = 0; i < labels.length; i++)
+            _Pill(
+              label: labels[i],
+              icon: icons?[i],
+              style: styles?[i],
+              selected: i == value,
+              onTap: () {
+                if (i != value) onChanged(i);
+              },
+            ),
+        ]),
+        if (hint != null) ...[
+          const Gap(6),
+          Text(hint, style: const TextStyle(fontSize: 12, height: 1.4, color: AppColors.fgMuted)),
+        ],
+        if (note != null) ...[
+          const Gap(6),
+          Text(note, style: const TextStyle(fontSize: 12, height: 1.4, color: AppColors.warn)),
+        ],
+      ]),
+    );
+  }
+
+  Widget _sw(String title, String? sub, bool value, ValueChanged<bool> onChanged, {int need = 0}) {
+    final note = _need(need);
+    return SwitchListTile(
+      contentPadding: EdgeInsets.zero,
+      dense: true,
+      title: Text(title, style: const TextStyle(fontSize: 14, color: AppColors.fg)),
+      subtitle: sub == null && note == null
+          ? null
+          : Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+              if (sub != null) Text(sub, style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
+              if (note != null) Text(note, style: const TextStyle(fontSize: 12, color: AppColors.warn)),
+            ]),
+      value: value,
+      onChanged: onChanged,
+    );
+  }
+
+  /// Fine settings in five folding groups, each with a one-line summary of what is set.
+  List<Widget> _lookGroups(LauncherLook look) {
+    String join(List<String> xs) => xs.where((s) => s.isNotEmpty).join(' · ');
+    final s0 = look.style == 0, s1 = look.style == 1, s2 = look.style == 2;
+
+    final styleL = [tr('Плитки'), tr('Часы и док'), tr('Витрина')];
+    final favL = [tr('Один ряд'), tr('По 4'), tr('По 5'), tr('По 6')];
+    final favI = const [0, 4, 5, 6].contains(look.favCols) ? const [0, 4, 5, 6].indexOf(look.favCols) : 0;
+    final inputsL = [tr('Вверху'), tr('Внизу'), tr('Скрыты')];
+    final barL = [tr('Крупные'), tr('Средние'), tr('Мелкие')];
+    final sizeL = [tr('Меньше'), tr('Обычные'), tr('Крупнее'), tr('Огромные')];
+    final sizeI = const [80, 100, 130, 160].indexOf(look.clockSize).clamp(0, 3);
+    final fontL = [tr('Тонкий'), tr('Лёгкий'), tr('Обычный'), tr('Узкий'), tr('Жирный')];
+    final posL = [tr('Слева'), tr('По центру')];
+    final iconsL = [tr('Авто'), tr('Иконки'), tr('ТВ-баннеры'), tr('Маленькие')];
+    final shapeL = [tr('Скруглённые'), tr('Круглые')];
+    final tilesL = [tr('Мелкие'), tr('Обычные'), tr('Крупные')];
+    final animL = [tr('Полные'), tr('Мягкие'), tr('Выкл.')];
+    final speedL = [tr('Авто'), tr('Быстро'), tr('Медленно'), tr('Очень медленно')];
+    final autoL = [tr('Нет'), tr('Каждый час'), tr('Каждый день')];
+    // «Размер часов» multiplies «Часы вверху» on the tiles screen: there the three presets are
+    // enough, the fine size stays only for whoever already changed it
+    final showSize = !s0 || look.clockSize != 100;
+    // small icons are always round; TV banners have no shape
+    final showShape = look.icons == 0 || look.icons == 1;
+
+    return [
+      _group('home', Icons.dashboard_rounded, tr('Главный экран'),
+          join([styleL[look.style], if (s0) tr('Избранное: {0}', [favL[favI]]), 'HDMI: ${inputsL[look.inputs]}']), [
+        _pills(tr('Вид главного экрана'), styleL, look.style, (v) => _setLook(look.copyWith(style: v)),
+            icons: const [Icons.grid_view_rounded, Icons.schedule_rounded, Icons.view_carousel_rounded]),
+        if (s0) ...[
+          _pills(tr('Избранное на главном экране'), favL, favI,
+              (v) => _setLook(look.copyWith(favCols: const [0, 4, 5, 6][v]))),
+          _sw(tr('Приложения на втором экране'), tr('На главном только избранное, приложения — ниже по кнопке ▼'),
+              look.appsBelow, (v) => _setLook(look.copyWith(appsBelow: v))),
+        ],
+        if (s2)
+          _sw(tr('Название приложения над плитками'), null, look.heroTitle,
               (v) => _setLook(look.copyWith(heroTitle: v))),
-          const Gap(8),
+        _pills(tr('Источники (HDMI)'), inputsL, look.inputs, (v) => _setLook(look.copyWith(inputs: v))),
+      ]),
+      _group('bar', Icons.view_day_rounded, tr('Верхняя панель'),
+          join([
+            if (s0 && !look.greeting) tr('Без приветствия'),
+            if (s0 && look.oneLine) tr('Дата в одну строку'),
+            look.weatherCity.isEmpty ? tr('Без погоды') : tr('Погода: {0}', [look.weatherCity]),
+            if (look.cleanBar) '⚙',
+          ]), [
+        if (s0) ...[
+          _sw(tr('Приветствие'), tr('«Добрый вечер» над часами'), look.greeting,
+              (v) => _setLook(look.copyWith(greeting: v)), need: 61),
+          _sw(tr('Дата и погода в одну строку'), tr('Рядом с часами, а не столбиком'), look.oneLine,
+              (v) => _setLook(look.copyWith(oneLine: v)), need: 61),
         ],
-        seg(tr('Иконки приложений'), [tr('Авто'), tr('Иконки'), tr('ТВ-баннеры'), tr('Маленькие')], look.icons,
-            (v) => _setLook(look.copyWith(icons: v))),
-        const Gap(14),
-        seg(tr('Размер часов'), [tr('Меньше'), tr('Обычные'), tr('Крупнее'), tr('Огромные')],
-            const [80, 100, 130, 160].indexOf(look.clockSize).clamp(0, 3),
-            (v) => _setLook(look.copyWith(clockSize: const [80, 100, 130, 160][v]))),
-        const Gap(14),
-        seg(tr('Шрифт часов'), [tr('Тонкий'), tr('Лёгкий'), tr('Обычный'), tr('Узкий'), tr('Жирный')], look.clockFont,
-            (v) => _setLook(look.copyWith(clockFont: v))),
-        if (look.style == 1) ...[
-          const Gap(14),
-          seg(tr('Часы на экране'), [tr('Слева'), tr('По центру')], look.clockPos,
-              (v) => _setLook(look.copyWith(clockPos: v))),
-        ],
-        const Gap(6),
         ListTile(
           contentPadding: EdgeInsets.zero,
           dense: true,
@@ -463,112 +521,145 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.fgMuted),
           onTap: () => _pickCity(look),
         ),
-        const Gap(8),
-        seg(tr('Анимации'), [tr('Полные'), tr('Мягкие'), tr('Выкл.')], look.anim,
-            (v) => _setLook(look.copyWith(anim: v))),
-        const Gap(14),
-        seg(tr('Размер плиток'), [tr('Мелкие'), tr('Обычные'), tr('Крупные')], look.tiles,
-            (v) => _setLook(look.copyWith(tiles: v))),
-        const Gap(14),
-        if (look.style == 0) ...[
-          seg(tr('Избранное на главном экране'), [tr('Один ряд'), tr('По 4'), tr('По 5'), tr('По 6')],
-              const [0, 4, 5, 6].contains(look.favCols) ? const [0, 4, 5, 6].indexOf(look.favCols) : 0,
-              (v) => _setLook(look.copyWith(favCols: const [0, 4, 5, 6][v]))),
-          const Gap(6),
-          sw(tr('Приложения на втором экране'), tr('На главном только избранное, приложения — ниже по кнопке ▼'),
-              look.appsBelow, (v) => _setLook(look.copyWith(appsBelow: v))),
-          const Gap(8),
-        ],
-        seg(tr('Источники (HDMI)'), [tr('Вверху'), tr('Внизу'), tr('Скрыты')], look.inputs,
-            (v) => _setLook(look.copyWith(inputs: v))),
-        const Gap(14),
-        seg(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет темы')], look.ringAccent ? 1 : 0,
+        _sw(tr('Память на главном экране'), tr('Нажатие закрывает приложения в фоне и освобождает память'), look.memPill,
+            (v) => _setLook(look.copyWith(memPill: v)), need: 36),
+        _sw(tr('Только шестерёнка вверху'), tr('Без плашек сети и «Настройки ТВ»: шестерёнка открывает настройки ТВ, удержание — настройки лаунчера'),
+            look.cleanBar, (v) => _setLook(look.copyWith(cleanBar: v)), need: 49),
+      ]),
+      _group('clock', Icons.schedule_rounded, tr('Часы'),
+          join([
+            if (s0) barL[look.barClock] else if (showSize) sizeL[sizeI],
+            if (s0 && showSize) sizeL[sizeI],
+            fontL[look.clockFont],
+            if (s1) posL[look.clockPos],
+            look.clock24 ? '21:45' : '9:45',
+          ]), [
+        if (s0)
+          _pills(tr('Часы вверху'), barL, look.barClock, (v) => _setLook(look.copyWith(barClock: v)), need: 61),
+        if (showSize)
+          _pills(tr('Размер часов'), sizeL, sizeI,
+              (v) => _setLook(look.copyWith(clockSize: const [80, 100, 130, 160][v]))),
+        _pills(tr('Шрифт часов'), fontL, look.clockFont, (v) => _setLook(look.copyWith(clockFont: v)),
+            styles: const [
+              TextStyle(fontWeight: FontWeight.w200),
+              TextStyle(fontWeight: FontWeight.w300),
+              TextStyle(fontWeight: FontWeight.w400),
+              TextStyle(fontWeight: FontWeight.w500, letterSpacing: -.6),
+              TextStyle(fontWeight: FontWeight.w800),
+            ]),
+        if (s1) _pills(tr('Часы на экране'), posL, look.clockPos, (v) => _setLook(look.copyWith(clockPos: v))),
+        _sw(tr('Часы 24 часа'), null, look.clock24, (v) => _setLook(look.copyWith(clock24: v))),
+      ]),
+      _group('icons', Icons.apps_rounded, tr('Значки и плитки'),
+          join([
+            iconsL[look.icons],
+            if (showShape) shapeL[look.iconShape],
+            tr('Размер плиток: {0}', [tilesL[look.tiles]]),
+          ]), [
+        _pills(tr('Иконки приложений'), iconsL, look.icons, (v) => _setLook(look.copyWith(icons: v))),
+        if (showShape)
+          _pills(tr('Форма значков'), shapeL, look.iconShape, (v) => _setLook(look.copyWith(iconShape: v)),
+              icons: const [Icons.crop_square_rounded, Icons.circle_outlined],
+              hint: look.icons == 0 && s0
+                  ? tr('В «Авто» круглые значки только в доке и «Витрине»: на широких плитках — баннеры')
+                  : null,
+              need: 62),
+        _pills(tr('Размер плиток'), tilesL, look.tiles, (v) => _setLook(look.copyWith(tiles: v))),
+        _pills(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет темы')], look.ringAccent ? 1 : 0,
             (v) => _setLook(look.copyWith(ringAccent: v == 1))),
-        const Gap(6),
-        sw(tr('Живой фон'), tr('Свечение медленно плывёт по экрану'), look.ambient,
-            (v) => _setLook(look.copyWith(ambient: v))),
-        if (look.ambient) ...[
-          seg(tr('Скорость живого фона'), [tr('Авто'), tr('Быстро'), tr('Медленно'), tr('Очень медленно')],
-              const [0, 8, 30, 90].indexOf(look.ambientSec).clamp(0, 3),
-              (v) => _setLook(look.copyWith(ambientSec: const [0, 8, 30, 90][v]))),
-          const Gap(14),
-        ],
-        seg(tr('Менять тему сама'), [tr('Нет'), tr('Каждый час'), tr('Каждый день')], look.skinAuto,
-            (v) => _setLook(look.copyWith(skinAuto: v))),
-        const Gap(14),
-        sw(tr('Часы 24 часа'), null, look.clock24, (v) => _setLook(look.copyWith(clock24: v))),
-        sw(tr('Названия под всеми плитками'), tr('Иначе — только у выбранной'), look.labels,
+        _sw(tr('Названия под всеми плитками'), tr('Иначе — только у выбранной'), look.labels,
             (v) => _setLook(look.copyWith(labels: v))),
+      ]),
+      _group('motion', Icons.auto_awesome_rounded, tr('Фон и анимация'),
+          join([
+            look.ambient ? tr('Живой фон') : tr('Без живого фона'),
+            tr('Анимации: {0}', [animL[look.anim]]),
+            if (look.skinAuto > 0) autoL[look.skinAuto],
+          ]), [
+        _sw(tr('Живой фон'), tr('Свечение медленно плывёт по экрану'), look.ambient,
+            (v) => _setLook(look.copyWith(ambient: v))),
+        if (look.ambient)
+          _pills(tr('Скорость живого фона'), speedL, const [0, 8, 30, 90].indexOf(look.ambientSec).clamp(0, 3),
+              (v) => _setLook(look.copyWith(ambientSec: const [0, 8, 30, 90][v])), need: 48),
+        _pills(tr('Анимации'), animL, look.anim, (v) => _setLook(look.copyWith(anim: v))),
+        _pills(tr('Менять тему сама'), autoL, look.skinAuto, (v) => _setLook(look.copyWith(skinAuto: v)), need: 48),
         const Gap(4),
-        Text(
-          _outdated
-              ? tr('Эти настройки появились в новой версии лаунчера: нажмите «Обновить лаунчер на ТВ» ниже.')
-              : tr('Слабый телевизор подтормаживает? Выключите анимации и живой фон.'),
-          style: TextStyle(fontSize: 12, height: 1.4, color: _outdated ? AppColors.warn : AppColors.fgMuted),
-        ),
+        Text(tr('Слабый телевизор подтормаживает? Выключите анимации и живой фон.'),
+            style: const TextStyle(fontSize: 12, height: 1.4, color: AppColors.fgMuted)),
       ]),
-    );
+      Center(
+        child: TextButton.icon(
+          style: TextButton.styleFrom(foregroundColor: AppColors.fgMid),
+          icon: const Icon(Icons.restart_alt_rounded, size: 18),
+          label: Text(tr('Вернуть вид по умолчанию')),
+          onPressed: () => _resetLook(look),
+        ),
+      ),
+      const Gap(6),
+    ];
   }
 
-  Widget _currentLauncherCard() {
-    final tv = ref.watch(currentTvProvider);
-    String body;
-    if (tv == null) {
-      body = tr('Выберите телевизор на вкладке «Очистка».');
-    } else if (_error != null) {
-      body = _error!;
-    } else if (!_checked) {
-      body = tr('Узнаем, какой лаунчер сейчас главный на «{0}».', [tv.shortName.isEmpty ? tv.ipAddress : tv.shortName]);
-    } else if (_launcher == null) {
-      body = tr('Главный лаунчер не выбран: телевизор спрашивает при нажатии «Домой».');
-    } else {
-      body = _knownLaunchers[_launcher] ?? tr('Лаунчер производителя ({0})', [_launcher]);
-    }
-    return _card(
-      child: Row(children: [
-        const Icon(Icons.home_rounded, color: AppColors.accent),
-        const Gap(12),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(tr('Сейчас на телевизоре'),
-                style: const TextStyle(fontSize: 12, color: AppColors.fgMuted)),
-            const Gap(2),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Text(body,
-                  key: ValueKey(body),
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: _error != null ? AppColors.danger : AppColors.fg,
-                      fontWeight: _checked ? FontWeight.w600 : FontWeight.w400)),
-            ),
-          ]),
-        ),
-        if (tv != null) ...[
-          const Gap(8),
-          _checking
-              ? const SizedBox(
-                  width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2))
-              : TextButton(onPressed: _check, child: Text(_checked ? tr('Обновить') : tr('Проверить'))),
+  Future<void> _resetLook(LauncherLook look) async {
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text(tr('Вернуть вид по умолчанию?')),
+        content: Text(tr('Все настройки в группах выше, кроме темы и погоды, станут как после установки лаунчера.')),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c, false), child: Text(tr('Отмена'))),
+          FilledButton(onPressed: () => Navigator.pop(c, true), child: Text(tr('Вернуть'))),
         ],
-      ]),
+      ),
     );
+    if (yes == true && mounted) {
+      _setLook(const LauncherLook()
+          .copyWith(weatherCity: look.weatherCity, lat: look.lat, lon: look.lon, wallDim: look.wallDim));
+    }
   }
 
-  Widget _ourLauncherCard() {
+  bool get _notHome =>
+      _installed == true && _checked && _launcher != null && _launcher != AdbPackageManager.launcherPkg;
+
+  /// One card on top: is it there, is it the home screen, is it fresh — and the one button
+  /// that matters right now. The rarely needed buttons live in «Лаунчер на телевизоре» below.
+  Widget _statusCard() {
     final tv = ref.watch(currentTvProvider);
     final busy = _step != null;
     final installed = _installed == true;
     final v = _version ?? 0;
+    final ours = _checked && _launcher == AdbPackageManager.launcherPkg;
     final (chipText, chipColor) = installed
         ? ('${tr('установлен')}${v > 0 ? ' · 0.$v' : ''}', _outdated ? AppColors.warn : AppColors.ok)
         : (tr('не установлен'), AppColors.fgMid);
+    final String now;
+    if (tv == null) {
+      now = tr('Выберите телевизор на вкладке «Очистка».');
+    } else if (_error != null) {
+      now = _error!;
+    } else if (!_checked) {
+      now = tr('Узнаем, какой лаунчер сейчас главный на «{0}».', [tv.shortName.isEmpty ? tv.ipAddress : tv.shortName]);
+    } else if (_launcher == null) {
+      now = tr('Главный лаунчер не выбран: телевизор спрашивает при нажатии «Домой».');
+    } else {
+      now = _knownLaunchers[_launcher] ?? tr('Лаунчер производителя ({0})', [_launcher]);
+    }
+    const bigPad = EdgeInsets.symmetric(vertical: 14);
+    Widget warnRow(IconData icon, String text) => Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Icon(icon, size: 18, color: AppColors.warn),
+            const Gap(8),
+            Expanded(child: Text(text, style: const TextStyle(fontSize: 13, color: AppColors.warn, height: 1.4))),
+          ]),
+        );
     return _card(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text('TVCleanzer Launcher',
-              style: GoogleFonts.syne(
-                  fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          Flexible(
+            child: Text('TVCleanzer Launcher',
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.syne(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.fg)),
+          ),
           const Gap(8),
           if (_installed != null)
             Container(
@@ -577,146 +668,284 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                 color: chipColor.withValues(alpha: .12),
                 borderRadius: BorderRadius.circular(50),
               ),
-              child: Text(chipText,
-                  style: TextStyle(fontSize: 11, color: chipColor, fontWeight: FontWeight.w600)),
+              child: Text(chipText, style: TextStyle(fontSize: 11, color: chipColor, fontWeight: FontWeight.w600)),
             ),
+          const Spacer(),
+          if (tv != null)
+            _checking
+                ? const Padding(
+                    padding: EdgeInsets.all(12),
+                    child: SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)))
+                : IconButton(
+                    tooltip: _checked ? tr('Обновить') : tr('Проверить'),
+                    visualDensity: VisualDensity.compact,
+                    icon: const Icon(Icons.refresh_rounded, color: AppColors.fgMuted),
+                    onPressed: _check,
+                  ),
         ]),
-        const Gap(8),
-        Text(
-          installed
-              ? tr('Тема меняется сразу: просто выберите другую выше. На телевизоре: долгое нажатие OK на приложении — добавить в избранное, переставить или скрыть; шестерёнка — настройки.')
-              : tr('Лёгкий красивый лаунчер: часы, избранное, все приложения, темы. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).'),
-          style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5),
-        ),
-        if (_outdated) ...[
-          const Gap(10),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Icon(Icons.new_releases_rounded, size: 18, color: AppColors.warn),
-            const Gap(8),
-            Expanded(
-              child: Text(tr('Есть новая версия лаунчера: исправления и новые функции. Нажмите оранжевую кнопку ниже — настройки и избранное сохранятся.'),
-                  style: const TextStyle(fontSize: 13, color: AppColors.warn, height: 1.4)),
+        const Gap(4),
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(ours ? Icons.check_circle_rounded : Icons.home_rounded,
+              size: 18, color: _error != null ? AppColors.danger : ours ? AppColors.ok : AppColors.fgMuted),
+          const Gap(8),
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: Text.rich(
+                key: ValueKey(now),
+                TextSpan(children: [
+                  if (tv != null && _error == null && _checked)
+                    TextSpan(text: '${tr('Сейчас на телевизоре')}: ', style: const TextStyle(color: AppColors.fgMuted)),
+                  TextSpan(
+                      text: now,
+                      style: TextStyle(
+                          color: _error != null ? AppColors.danger : AppColors.fg,
+                          fontWeight: _checked ? FontWeight.w600 : FontWeight.w400)),
+                ]),
+                style: const TextStyle(fontSize: 13, height: 1.4),
+              ),
             ),
-          ]),
+          ),
+        ]),
+        if (!installed && _installed != null) ...[
+          const Gap(8),
+          Text(tr('Лёгкий красивый лаунчер: часы, избранное, все приложения, темы. Меньше 100 КБ, работает даже на слабых телевизорах (Android 7+; на Android 5–6 — пробная поддержка).'),
+              style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5)),
         ],
-        if (_installError != null) ...[
-          const Gap(10),
-          Text(_installError!,
-              style: const TextStyle(fontSize: 13, color: AppColors.danger, height: 1.4)),
-        ],
-        if (_bindMsg != null) ...[
-          const Gap(10),
-          Text(_bindMsg!,
-              style: TextStyle(fontSize: 13, height: 1.4, color: _bindOk ? AppColors.ok : AppColors.warn)),
-        ] else if (installed && _checked && _launcher != null && _launcher != AdbPackageManager.launcherPkg) ...[
-          const Gap(10),
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Icon(Icons.warning_amber_rounded, size: 18, color: AppColors.warn),
-            const Gap(8),
-            Expanded(
-              child: Text(tr('Лаунчер установлен, но главный экран сейчас другой — прошивка его вернула. Нажмите «Сделать главным ещё раз».'),
-                  style: const TextStyle(fontSize: 13, color: AppColors.warn, height: 1.4)),
-            ),
-          ]),
-        ],
+        if (_outdated)
+          warnRow(Icons.new_releases_rounded,
+              tr('Есть новая версия лаунчера: исправления и новые функции. Нажмите оранжевую кнопку ниже — настройки и избранное сохранятся.')),
+        if (_installError != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text(_installError!, style: const TextStyle(fontSize: 13, color: AppColors.danger, height: 1.4)),
+          ),
+        if (_bindMsg != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text(_bindMsg!,
+                style: TextStyle(fontSize: 13, height: 1.4, color: _bindOk ? AppColors.ok : AppColors.warn)),
+          )
+        else if (_notHome)
+          warnRow(Icons.warning_amber_rounded,
+              tr('Лаунчер установлен, но главный экран сейчас другой — прошивка его вернула. Нажмите «Сделать главным ещё раз».')),
         const Gap(12),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           child: busy
               ? Row(key: const ValueKey('busy'), children: [
-                  const SizedBox(
-                      width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                  const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                   const Gap(12),
-                  Expanded(
-                      child: Text(_step!,
-                          style: const TextStyle(color: AppColors.fg, fontSize: 14))),
+                  Expanded(child: Text(_step!, style: const TextStyle(color: AppColors.fg, fontSize: 14))),
                 ])
               : SizedBox(
-                  key: ValueKey(installed),
+                  key: ValueKey('$installed$_outdated$_notHome'),
                   width: double.infinity,
-                  child: installed
-                      ? Column(children: [
-                          // #6: the update was the third grey button of four — owners never found
-                          // it and kept a launcher without Витрина or round icons. When there is a
-                          // newer one it comes first, in orange.
+                  child: !installed
+                      ? FilledButton.icon(
+                          style: FilledButton.styleFrom(padding: bigPad),
+                          icon: const Icon(Icons.download_rounded),
+                          label: Text(tr('Установить на телевизор')),
+                          onPressed: tv == null ? null : _install,
+                        )
+                      : Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                          // #6: the update must be the first thing seen, in orange
                           if (_outdated) ...[
-                            SizedBox(
-                              width: double.infinity,
-                              child: FilledButton.icon(
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: AppColors.warn,
-                                  foregroundColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
-                                ),
-                                icon: const Icon(Icons.system_update_alt_rounded),
-                                label: Text('${tr('Обновить лаунчер на ТВ')} · 0.$v → 0.${AdbPackageManager.bundledLauncherVersion}'),
-                                onPressed: tv == null ? null : _install,
+                            FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: AppColors.warn,
+                                foregroundColor: Colors.black,
+                                padding: bigPad,
                               ),
+                              icon: const Icon(Icons.system_update_alt_rounded),
+                              label: Text('${tr('Обновить лаунчер на ТВ')} · 0.$v → 0.${AdbPackageManager.bundledLauncherVersion}'),
+                              onPressed: tv == null ? null : _install,
                             ),
                             const Gap(10),
                           ],
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton.icon(
-                              icon: const Icon(Icons.tune_rounded),
-                              label: Text(tr('Настроить: избранное, детям, обои')),
-                              onPressed: tv == null ? null : () => Navigator.push(context,
-                                  MaterialPageRoute(builder: (_) => LauncherEditScreen(tv: tv))),
-                            ),
-                          ),
-                          const Gap(10),
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton.icon(
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.fg,
-                                side: const BorderSide(color: AppColors.cardBd),
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                          if (_notHome) ...[
+                            FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: AppColors.warn,
+                                foregroundColor: Colors.black,
+                                padding: bigPad,
                               ),
                               icon: const Icon(Icons.home_rounded),
                               label: Text(tr('Сделать главным ещё раз')),
                               onPressed: tv == null ? null : _rebind,
                             ),
-                          ),
-                          if (!_outdated) ...[
                             const Gap(10),
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton.icon(
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: AppColors.fg,
-                                  side: const BorderSide(color: AppColors.cardBd),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                                icon: const Icon(Icons.refresh_rounded),
-                                label: Text(tr('Переустановить лаунчер')),
-                                onPressed: tv == null ? null : _install,
-                              ),
-                            ),
                           ],
-                          const Gap(10),
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton.icon(
-                          icon: const Icon(Icons.undo_rounded, size: 18),
-                          label: Text(tr('Вернуть стандартный лаунчер')),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.fg,
-                            side: const BorderSide(color: AppColors.cardBd),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          FilledButton.icon(
+                            style: FilledButton.styleFrom(padding: bigPad),
+                            icon: const Icon(Icons.tune_rounded),
+                            label: Text(tr('Настроить: избранное, детям, обои')),
+                            onPressed: tv == null
+                                ? null
+                                : () => Navigator.push(
+                                    context, MaterialPageRoute(builder: (_) => LauncherEditScreen(tv: tv))),
                           ),
-                          onPressed: tv == null ? null : _uninstall,
-                            ),
-                          ),
-                        ])
-                      : FilledButton.icon(
-                          icon: const Icon(Icons.download_rounded),
-                          label: Text(tr('Установить на телевизор')),
-                          onPressed: tv == null ? null : _install,
-                        ),
+                        ]),
                 ),
         ),
       ]),
+    );
+  }
+
+  /// Rare buttons, folded: make Home again, reinstall, give the TV its own launcher back.
+  Widget _tvGroup() {
+    final tv = ref.watch(currentTvProvider);
+    final off = tv == null || _step != null;
+    final v = _version ?? 0;
+    Widget btn(IconData icon, String label, VoidCallback onPressed) => Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.fg,
+              side: const BorderSide(color: AppColors.cardBd),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+            icon: Icon(icon, size: 18),
+            label: Text(label),
+            onPressed: off ? null : onPressed,
+          ),
+        );
+    return _group('tv', Icons.build_rounded, tr('Лаунчер на телевизоре'),
+        '${tr('установлен')}${v > 0 ? ' · 0.$v' : ''}', [
+      Text(tr('Тема меняется сразу: просто выберите другую выше. На телевизоре: долгое нажатие OK на приложении — добавить в избранное, переставить или скрыть; шестерёнка — настройки.'),
+          style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5)),
+      const Gap(4),
+      Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        if (!_notHome) btn(Icons.home_rounded, tr('Сделать главным ещё раз'), _rebind),
+        if (!_outdated) btn(Icons.refresh_rounded, tr('Переустановить лаунчер'), _install),
+        btn(Icons.undo_rounded, tr('Вернуть стандартный лаунчер'), _uninstall),
+      ]),
+    ]);
+  }
+}
+
+/// A folding settings group: icon, title, what is set now; tap to open.
+class _Group extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String summary;
+  final bool open;
+  final VoidCallback onTap;
+  final List<Widget> children;
+  const _Group({
+    required this.icon,
+    required this.title,
+    required this.summary,
+    required this.open,
+    required this.onTap,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) => Material(
+        color: AppColors.bgCard,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.cardBd),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Semantics(
+            button: true,
+            expanded: open,
+            child: InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 10, 12),
+                child: Row(children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: AppColors.accentDim,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(icon, size: 20, color: AppColors.accent),
+                  ),
+                  const Gap(12),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(title,
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.fg)),
+                      if (summary.isNotEmpty) ...[
+                        const Gap(2),
+                        Text(summary,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 12, height: 1.3, color: AppColors.fgMuted)),
+                      ],
+                    ]),
+                  ),
+                  const Gap(4),
+                  AnimatedRotation(
+                    turns: open ? .5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(Icons.expand_more_rounded, color: AppColors.fgMuted),
+                  ),
+                ]),
+              ),
+            ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+            alignment: Alignment.topCenter,
+            child: open
+                ? Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      const Divider(height: 1, color: AppColors.cardBd),
+                      const Gap(6),
+                      ...children,
+                    ]),
+                  )
+                : const SizedBox(width: double.infinity),
+          ),
+        ]),
+      );
+}
+
+/// One choice of a setting; wraps instead of cutting the word.
+class _Pill extends StatelessWidget {
+  final String label;
+  final IconData? icon;
+  final TextStyle? style;
+  final bool selected;
+  final VoidCallback onTap;
+  const _Pill({required this.label, this.icon, this.style, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final fg = selected ? AppColors.accent : AppColors.fg;
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: Material(
+        color: selected ? AppColors.accentDim : Colors.transparent,
+        shape: StadiumBorder(side: BorderSide(color: selected ? AppColors.accent : AppColors.cardBd)),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              if (icon != null) ...[
+                Icon(icon, size: 16, color: selected ? AppColors.accent : AppColors.fgMid),
+                const Gap(6),
+              ],
+              Flexible(
+                child: Text(label,
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: fg).merge(style)),
+              ),
+            ]),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -494,7 +494,7 @@ class DemoAdbClient extends AdbClient {
       final v = au.group(1)!.replaceAll("'", '');
       _s.look['autostart'] = v == '""' || v.isEmpty ? '-' : v;
     }
-    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon|photoSec|homePhotos|frameMusic|liveWallOn|greeting|barClock|oneLine|appsBelow|icons|heroTitle|memPill|cleanBar|skinAuto|ambientSec) (\S+)').allMatches(c)) {
+    for (final m in RegExp(r'--e[izf] (anim|ringAccent|tiles|wallDim|ambient|clock24|labels|inputs|favCols|style|clockPos|clockSize|clockFont|lat|lon|photoSec|homePhotos|frameMusic|liveWallOn|greeting|barClock|oneLine|iconShape|appsBelow|icons|heroTitle|memPill|cleanBar|skinAuto|ambientSec) (\S+)').allMatches(c)) {
       final v = m.group(2)!;
       _s.look[m.group(1)!] = v == 'true' ? '1' : v == 'false' ? '0' : v;
     }
