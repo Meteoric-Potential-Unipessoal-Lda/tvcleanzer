@@ -1228,6 +1228,9 @@ class _MouseLink {
             final i = _rest.indexOf('\n');
             final l = _rest.substring(0, i).trim().split(' ');
             _rest = _rest.substring(i + 1);
+            // 1.3.127: «i …» — the TV telling how the taps go, for the «?» report (a TCL's own log
+            // came empty)
+            if (l.isNotEmpty && l[0] == 'i') AppLog.error('mouse TV', l.skip(1).join(' '));
             if (l.length >= 3 && l[0] == 't') _input('tap ${l[1]} ${l[2]}');
             if (l.length >= 3 && l[0] == 'p') _input('swipe ${l[1]} ${l[2]} ${l[1]} ${l[2]} 700');
             if (l.length >= 5 && l[0] == 'w') _input('swipe ${l[1]} ${l[2]} ${l[3]} ${l[4]} 250');

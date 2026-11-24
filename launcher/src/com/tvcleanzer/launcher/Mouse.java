@@ -258,7 +258,7 @@ final class Mouse {
             main.postDelayed(() -> {
                 if (answered[0] || gestureSeq != mine) return;
                 answered[0] = true;
-                noGestures = true;
+                dropped();
                 told("no answer");
                 if (!nodeAction(drag, fdx, fdy, ms)) back(line);
             }, ms + 1200);
@@ -267,19 +267,20 @@ final class Mouse {
                     if (answered[0]) return;
                     answered[0] = true;
                     told("done");
+                    drops = 0;
                 }
                 @Override public void onCancelled(GestureDescription d) {
                     if (answered[0]) return;
                     answered[0] = true;
                     if (gestureSeq != mine) return; // replaced by our own next gesture
-                    noGestures = true;
+                    dropped();
                     told("cancelled");
                     if (!nodeAction(drag, fdx, fdy, ms)) back(line);
                 }
             }, main);
             if (!ok) {
                 answered[0] = true;
-                noGestures = true;
+                dropped();
                 told("refused");
                 if (!nodeAction(drag, fdx, fdy, ms)) back(line);
             }
@@ -441,8 +442,24 @@ final class Mouse {
         return can && n.isVisibleToUser() ? n : null;
     }
 
+    /** 1.10: one cancel (a window opening, a remote key at that moment) switched taps to the slow
+     *  ways for good — in a browser those did nothing (a TCL: «клик иногда перестаёт работать»).
+     *  Two in a row with none done between: the TV really drops our gestures (a Haier: always). */
+    private int drops;
+
+    private void dropped() {
+        if (++drops < 2 || noGestures) return;
+        noGestures = true;
+        HomeKeyService.log("mouse: the TV drops gestures, taps by the app's views");
+        back("i the TV drops gestures: taps by the app's views / the phone");
+    }
+
     private void told(String how) {
-        if (toldTaps++ < 3) HomeKeyService.log("mouse: tap " + how);
+        // the first few, and every one that did not go as a gesture
+        if (toldTaps++ < 3 || !"done".equals(how)) {
+            HomeKeyService.log("mouse: tap " + how);
+            if (toldTaps < 12) back("i tap " + how);
+        }
     }
 
     /** A touch the phone makes for us over ADB (`input tap / swipe`). */
