@@ -240,15 +240,31 @@ final class Mouse {
                     .build();
             // 1.02: a Haier (Android 11) — the pointer moved, a click opened nothing. A gesture the
             // system drops goes to the phone, which taps over ADB; the first few say how it went
+            // 1.04: no answer at all (a service the system no longer talks to) counts as dropped
+            final boolean[] answered = {false};
+            main.postDelayed(() -> {
+                if (answered[0]) return;
+                answered[0] = true;
+                noGestures = true;
+                told("no answer");
+                if (!nodeAction(drag, fdx, fdy, ms)) back(line);
+            }, ms + 1200);
             boolean ok = svc.dispatchGesture(g, new AccessibilityService.GestureResultCallback() {
-                @Override public void onCompleted(GestureDescription d) { told("done"); }
+                @Override public void onCompleted(GestureDescription d) {
+                    if (answered[0]) return;
+                    answered[0] = true;
+                    told("done");
+                }
                 @Override public void onCancelled(GestureDescription d) {
+                    if (answered[0]) return;
+                    answered[0] = true;
                     noGestures = true;
                     told("cancelled");
                     if (!nodeAction(drag, fdx, fdy, ms)) back(line);
                 }
             }, main);
             if (!ok) {
+                answered[0] = true;
                 noGestures = true;
                 told("refused");
                 if (!nodeAction(drag, fdx, fdy, ms)) back(line);

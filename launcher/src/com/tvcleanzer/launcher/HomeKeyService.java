@@ -186,6 +186,11 @@ public class HomeKeyService extends AccessibilityService {
         boolean booting = SystemClock.elapsedRealtime() < BOOT_WINDOW_MS;
         log("unbound" + (booting ? " right after boot" : ""));
         if (!booting) new Prefs(this).setServiceWanted(false);
+        // 1.04: an unbound service can't touch the screen any more (a TCL: the pointer moved, no
+        // click worked, «running false»); dropping the mouse makes the phone connect again, and
+        // then it gets the plain pointer
+        if (running == this) running = null;
+        if (mouse != null) mouse.stop();
         return super.onUnbind(intent);
     }
 
