@@ -76,6 +76,9 @@ final class Prefs {
     /** 1.22: the clock, the date and the weather on the home screen; off leaves only the icons
      *  (an owner: «вообще не было надписей, только иконки приложений»). */
     boolean showClock()      { return sp.getBoolean("showClock", true); }
+    /** 1.38: the weather block's day and date bold (UMID) or thin (small TVs blur bold text). */
+    boolean dateBold()       { return sp.getBoolean("dateBold", true); }
+    void setDateBold(boolean v) { sp.edit().putBoolean("dateBold", v).apply(); }
     void setShowClock(boolean v) { sp.edit().putBoolean("showClock", v).apply(); }
     void setRingAccent(boolean v) { sp.edit().putBoolean(RING_ACCENT, v).apply(); }
     int tileSize()           { return clamp(sp.getInt(TILES, TILES_NORMAL), 0, 2); }

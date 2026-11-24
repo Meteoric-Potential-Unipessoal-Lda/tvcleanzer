@@ -133,6 +133,9 @@ public class SettingsActivity extends Activity {
         addChoice(skin, T.t("Часы вверху"), new String[]{T.t("Крупные"), T.t("Средние"), T.t("Мелкие")},
                 prefs.barClock(), prefs::setBarClock);
         addToggle(skin, T.t("Дата и погода"), prefs.oneLine(), T.t("В одну строку"), T.t("Столбиком"), prefs::setOneLine);
+        if (!prefs.oneLine()) {
+            addToggle(skin, T.t("Шрифт даты"), prefs.dateBold(), T.t("Жирный"), T.t("Тонкий"), prefs::setDateBold);
+        }
         addToggle(skin, T.t("Стекло под часами"), prefs.clockGlass(), T.t("Включено"), T.t("Выключено"), prefs::setClockGlass);
         addToggle(skin, T.t("Заставка при запуске"), prefs.splash(), T.t("Логотип, пока лаунчер загружается"), T.t("Выключена"),
                 prefs::setSplash);

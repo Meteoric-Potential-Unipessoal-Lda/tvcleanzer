@@ -1027,6 +1027,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Turn it off to keep only the icons on the home screen',
     'Точка': 'Dot',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Needs launcher {0} or newer — update it above',
+    'Шрифт даты': 'Date font',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2054,6 +2055,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Вимкніть — на головному екрані залишаться лише значки',
     'Точка': 'Крапка',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Потрібен лаунчер {0} або новіший — оновіть його вгорі',
+    'Шрифт даты': 'Шрифт дати',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3081,6 +3083,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Desactívalo y en la pantalla de inicio quedarán solo los iconos',
     'Точка': 'Punto',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Requiere launcher {0} o posterior: actualízalo arriba',
+    'Шрифт даты': 'Fuente de la fecha',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4108,6 +4111,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Desative para deixar só os ícones na tela inicial',
     'Точка': 'Ponto',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Requer launcher {0} ou mais recente — atualize-o acima',
+    'Шрифт даты': 'Fonte da data',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5135,6 +5139,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Ausschalten, damit auf dem Startbildschirm nur die Symbole bleiben',
     'Точка': 'Punkt',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Benötigt Launcher {0} oder neuer – oben aktualisieren',
+    'Шрифт даты': 'Schrift des Datums',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6162,6 +6167,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Désactivez pour ne garder que les icônes sur l\'écran d\'accueil',
     'Точка': 'Point',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Nécessite le launcher {0} ou plus récent — mettez-le à jour ci-dessus',
+    'Шрифт даты': 'Police de la date',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7189,6 +7195,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Disattiva per lasciare solo le icone nella schermata Home',
     'Точка': 'Punto',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Serve il launcher {0} o più recente: aggiornalo qui sopra',
+    'Шрифт даты': 'Carattere della data',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8216,6 +8223,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Выключыце — на галоўным экране застануцца толькі значкі',
     'Точка': 'Кропка',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Патрэбны лаўнчар {0} або навейшы — абнавіце яго ўверсе',
+    'Шрифт даты': 'Шрыфт даты',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9243,6 +9251,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Өшірсеңіз, басты экранда тек белгішелер қалады',
     'Точка': 'Нүкте',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Лаунчер {0} немесе жаңасы керек — оны жоғарыда жаңартыңыз',
+    'Шрифт даты': 'Күн қарпі',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10270,6 +10279,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'O‘chirsangiz, bosh ekranda faqat belgilar qoladi',
     'Точка': 'Nuqta',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Launcher {0} yoki yangirog‘i kerak — uni yuqorida yangilang',
+    'Шрифт даты': 'Sana shrifti',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11297,6 +11307,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Անջատեք, և գլխավոր էկրանին կմնան միայն պատկերակները',
     'Точка': 'Կետ',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Անհրաժեշտ է {0} կամ ավելի նոր գործարկիչ․ թարմացրեք այն վերևում',
+    'Шрифт даты': 'Ամսաթվի տառատեսակ',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12324,6 +12335,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Söndürün — əsas ekranda yalnız ikonlar qalacaq',
     'Точка': 'Nöqtə',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Launcher {0} və ya daha yenisi lazımdır — onu yuxarıda yeniləyin',
+    'Шрифт даты': 'Tarix şrifti',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13351,6 +13363,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'გამორთეთ და მთავარ ეკრანზე მხოლოდ ხატულები დარჩება',
     'Точка': 'წერტილი',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'საჭიროა ლაუნჩერი {0} ან უფრო ახალი — განაახლეთ ზემოთ',
+    'Шрифт даты': 'თარიღის შრიფტი',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14378,6 +14391,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Өчүрсөңүз, башкы экранда сүрөтчөлөр гана калат',
     'Точка': 'Чекит',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Лаунчер {0} же жаңыраагы керек — аны жогорудан жаңыртыңыз',
+    'Шрифт даты': 'Күндүн шрифти',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15405,6 +15419,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Kapatın, ana ekranda yalnızca simgeler kalsın',
     'Точка': 'Nokta',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Başlatıcı {0} veya daha yenisi gerekir — yukarıdan güncelleyin',
+    'Шрифт даты': 'Tarih yazı tipi',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16432,6 +16447,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Wyłącz, a na ekranie głównym zostaną tylko ikony',
     'Точка': 'Kropka',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Wymaga launchera {0} lub nowszego — zaktualizuj go powyżej',
+    'Шрифт даты': 'Czcionka daty',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17459,6 +17475,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Dezactivați și pe ecranul principal rămân doar pictogramele',
     'Точка': 'Punct',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Necesită launcher {0} sau mai nou — actualizează-l mai sus',
+    'Шрифт даты': 'Fontul datei',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18486,6 +18503,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': '关闭后主屏幕上只保留图标',
     'Точка': '圆点',
     'Нужен лаунчер {0} или новее — обновите его вверху': '需要启动器 {0} 或更新版本——请在上方更新',
+    'Шрифт даты': '日期字体',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19513,6 +19531,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'オフにするとホーム画面にはアイコンだけが残ります',
     'Точка': 'ドット',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'ランチャー {0} 以降が必要です — 上で更新してください',
+    'Шрифт даты': '日付のフォント',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20540,6 +20559,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': '끄면 홈 화면에 아이콘만 남습니다',
     'Точка': '점',
     'Нужен лаунчер {0} или новее — обновите его вверху': '런처 {0} 이상이 필요합니다 — 위에서 업데이트하세요',
+    'Шрифт даты': '날짜 글꼴',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21567,6 +21587,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'बंद करें — होम स्क्रीन पर सिर्फ़ आइकन रहेंगे',
     'Точка': 'बिंदु',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'लॉन्चर {0} या नया चाहिए — इसे ऊपर अपडेट करें',
+    'Шрифт даты': 'तारीख़ का फ़ॉन्ट',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22594,6 +22615,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Matikan agar layar utama hanya berisi ikon',
     'Точка': 'Titik',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Perlu launcher {0} atau lebih baru — perbarui di atas',
+    'Шрифт даты': 'Huruf tanggal',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23621,6 +23643,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Tắt để màn hình chính chỉ còn biểu tượng',
     'Точка': 'Chấm',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Cần launcher {0} trở lên — hãy cập nhật ở trên',
+    'Шрифт даты': 'Phông chữ ngày',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24648,6 +24671,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'ปิดเพื่อให้หน้าจอหลักเหลือแค่ไอคอน',
     'Точка': 'จุด',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'ต้องใช้ลอนเชอร์ {0} ขึ้นไป — อัปเดตได้ด้านบน',
+    'Шрифт даты': 'แบบอักษรวันที่',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25675,6 +25699,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Zet uit om alleen de pictogrammen op het startscherm te houden',
     'Точка': 'Stip',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Vereist launcher {0} of nieuwer — werk hem hierboven bij',
+    'Шрифт даты': 'Lettertype datum',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26702,6 +26727,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Vypněte a na ploše zůstanou jen ikony',
     'Точка': 'Tečka',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Vyžaduje launcher {0} nebo novější — aktualizujte ho nahoře',
+    'Шрифт даты': 'Písmo data',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27729,6 +27755,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Απενεργοποιήστε το για να μείνουν μόνο τα εικονίδια στην αρχική οθόνη',
     'Точка': 'Τελεία',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Χρειάζεται launcher {0} ή νεότερο — ενημερώστε το παραπάνω',
+    'Шрифт даты': 'Γραμματοσειρά ημερομηνίας',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28756,6 +28783,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Kapcsolja ki, és a kezdőképernyőn csak az ikonok maradnak',
     'Точка': 'Pötty',
     'Нужен лаунчер {0} или новее — обновите его вверху': '{0} vagy újabb launcher kell — frissítse fent',
+    'Шрифт даты': 'Dátum betűtípusa',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29783,5 +29811,6 @@ const Map<String, Map<String, String>> translations = {
     'Выключите — на главном экране останутся только значки': 'Stäng av så att bara ikonerna finns kvar på startskärmen',
     'Точка': 'Prick',
     'Нужен лаунчер {0} или новее — обновите его вверху': 'Kräver launcher {0} eller senare — uppdatera den ovan',
+    'Шрифт даты': 'Datumets typsnitt',
   },
 };

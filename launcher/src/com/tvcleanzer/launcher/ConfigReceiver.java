@@ -78,6 +78,7 @@ public class ConfigReceiver extends BroadcastReceiver {
         else if (intent.hasExtra("ringOff")) p.setRingDot(false);
         if (intent.hasExtra("memLabel")) p.setMemLabel(intent.getBooleanExtra("memLabel", true));
         if (intent.hasExtra("showClock")) p.setShowClock(intent.getBooleanExtra("showClock", true));
+        if (intent.hasExtra("dateBold")) p.setDateBold(intent.getBooleanExtra("dateBold", true));
         if (intent.hasExtra("tiles")) p.setTileSize(intent.getIntExtra("tiles", Prefs.TILES_NORMAL));
         if (intent.hasExtra("wallDim")) p.setWallDim(intent.getIntExtra("wallDim", 40));
         if (intent.hasExtra("ambient")) p.setAmbient(intent.getBooleanExtra("ambient", true));

@@ -45,6 +45,7 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"ringDot", p.ringDot() ? 1 : 0});
             c.addRow(new Object[]{"memLabel", p.memLabel() ? 1 : 0});
             c.addRow(new Object[]{"showClock", p.showClock() ? 1 : 0});
+            c.addRow(new Object[]{"dateBold", p.dateBold() ? 1 : 0});
             c.addRow(new Object[]{"tiles", p.tileSize()});
             c.addRow(new Object[]{"wallDim", p.wallDim()});
             c.addRow(new Object[]{"ambient", p.ambient() ? 1 : 0});

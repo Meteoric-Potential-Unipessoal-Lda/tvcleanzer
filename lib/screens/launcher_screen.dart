@@ -512,6 +512,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
               (v) => _setLook(look.copyWith(greeting: v)), need: 61),
           _sw(tr('Дата и погода в одну строку'), tr('Рядом с часами, а не столбиком'), look.oneLine,
               (v) => _setLook(look.copyWith(oneLine: v)), need: 61),
+          if (!look.oneLine)
+            _pills(tr('Шрифт даты'), [tr('Жирный'), tr('Тонкий')], look.dateBold ? 0 : 1,
+                (v) => _setLook(look.copyWith(dateBold: v == 0)), need: 138),
         ],
         ListTile(
           contentPadding: EdgeInsets.zero,
