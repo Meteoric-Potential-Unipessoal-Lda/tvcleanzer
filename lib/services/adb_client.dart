@@ -720,9 +720,20 @@ class AdbStream {
     _finish();
   }
 
+  /// One write after another (1.3.118): writes made at once (the mouse sends a line every
+  /// 16 ms) all woke on the same OKAY, sent together and lost track of their OKAYs — on a slow
+  /// network (Haier, Android 11) the pointer then stood still for up to 15 s.
+  Future<void> _tail = Future<void>.value();
+
   /// Sends [bytes]; resolves when the TV has taken them. [chunk]: bytes per ADB message (a
   /// bulk stream such as screen mirroring wants the TV's maximum, not 4 KB).
-  Future<void> write(List<int> bytes, {int chunk = 4096}) async {
+  Future<void> write(List<int> bytes, {int chunk = 4096}) {
+    final f = _tail.then((_) => _write(bytes, chunk));
+    _tail = f.catchError((_) {});
+    return f;
+  }
+
+  Future<void> _write(List<int> bytes, int chunk) async {
     if (_closed) throw AdbException('TV closed the connection.');
     final max = min(_c._peerMaxData, chunk);
     for (var off = 0; off < bytes.length; off += max) {

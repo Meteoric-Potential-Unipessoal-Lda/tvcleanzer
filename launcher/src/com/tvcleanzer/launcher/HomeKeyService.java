@@ -427,10 +427,16 @@ public class HomeKeyService extends AccessibilityService {
         final int dir = code == KeyEvent.KEYCODE_VOLUME_UP ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER;
         if (e.getAction() == KeyEvent.ACTION_UP) {
             stopVolRepeat();
+            // 1.01: what a held Volume did (a Haier: one step only, and nothing in the report)
+            long held = e.getEventTime() - e.getDownTime();
+            if (held > 500) log("volume key held " + held + " ms: " + volRepeats + " repeats from the remote, "
+                    + volSteps + " steps by us");
             return false;
         }
         if (e.getAction() != KeyEvent.ACTION_DOWN) return false;
+        if (e.getRepeatCount() == 0) { volRepeats = 0; volSteps = 0; }
         if (e.getRepeatCount() > 0) {
+            volRepeats++;
             stopVolRepeat(); // the remote repeats by itself: one step per repeat
             if (e.getRepeatCount() == 1) android.util.Log.i("TVCleanzerVol", "remote repeats");
             volumeStep(dir);
@@ -452,6 +458,7 @@ public class HomeKeyService extends AccessibilityService {
     }
 
     private boolean volLogged;
+    private int volRepeats, volSteps;
 
     /** 0.100: a Haier (Android 11, Google TV home on) — held Volume moved one step only: the first
      *  press is the system's own, the repeats are ours, and our «suggested» step changed nothing
@@ -461,6 +468,7 @@ public class HomeKeyService extends AccessibilityService {
         try {
             AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
             if (am == null) return;
+            volSteps++;
             final int s = AudioManager.STREAM_MUSIC;
             final int max = am.getStreamMaxVolume(s), before = am.getStreamVolume(s);
             am.adjustSuggestedStreamVolume(dir, AudioManager.USE_DEFAULT_STREAM_TYPE, AudioManager.FLAG_SHOW_UI);

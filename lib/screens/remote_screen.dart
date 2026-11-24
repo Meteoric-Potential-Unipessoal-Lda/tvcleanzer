@@ -1260,13 +1260,24 @@ class _MouseLink {
     _flush ??= Timer(const Duration(milliseconds: 16), _send);
   }
 
+  /// A move still on its way to the TV: the next one gathers everything moved meanwhile
+  /// (1.3.118: no pile of lines waiting behind a slow network).
+  bool _moving = false;
+
   void _send() {
     _flush = null;
+    if (_moving) return;
     if (_dx.abs() < .5 && _dy.abs() < .5) return;
+    final s = _s;
+    if (s == null || s.isClosed) return;
     final l = 'm ${_dx.toStringAsFixed(1)} ${_dy.toStringAsFixed(1)}';
     _dx = 0;
     _dy = 0;
-    send(l);
+    _moving = true;
+    s.write(utf8.encode('$l\n')).catchError((_) {}).whenComplete(() {
+      _moving = false;
+      if (_dx.abs() >= .5 || _dy.abs() >= .5) _flush ??= Timer(Duration.zero, _send);
+    });
   }
 
   void send(String line) {
