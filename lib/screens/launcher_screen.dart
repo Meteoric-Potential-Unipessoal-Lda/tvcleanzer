@@ -1018,7 +1018,6 @@ class _SkinPreview extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xFF0A78FF),
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.black54, width: 1),
             ),
           ),
         ),

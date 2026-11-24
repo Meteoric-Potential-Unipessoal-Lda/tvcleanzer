@@ -230,8 +230,7 @@ final class AppTile extends LinearLayout {
         GradientDrawable dd = new GradientDrawable();
         dd.setShape(GradientDrawable.OVAL);
         dd.setColor(DOT_BLUE);
-        // a thin dark edge: the dot stays a dot on a white or blue icon
-        dd.setStroke(Math.max(1, Math.round(1.5f * dp)), 0x8C000000);
+        // 1.27: no dark edge (the owner: «чёрную полосу убрать») — the notch already sets it apart
         // the notch needs the card in a layer of its own (a clear circle there, not a hole to the
         // window): only while the dot shows, see onFocus
         dot.setBackground(dd);
