@@ -1674,6 +1674,18 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             top.addView(weatherDiv, wd);
             top.addView(dateCol);
             block.addView(top);
+            // 1.34, for the «?» report: UMID saw no day and date here on 1.31
+            final LinearLayout dc = dateCol;
+            dc.postDelayed(() -> {
+                StringBuilder sb = new StringBuilder("top bar date: col " + dc.getWidth() + "x" + dc.getHeight()
+                        + (dc.isShown() ? "" : " hidden"));
+                for (int i = 0; i < dc.getChildCount(); i++) {
+                    View v = dc.getChildAt(i);
+                    sb.append(", ").append(v.getWidth()).append(" '")
+                            .append(v instanceof TextView ? ((TextView) v).getText() : "").append("'");
+                }
+                HomeKeyService.log(sb.toString());
+            }, 3000);
             weatherView.setSingleLine(true);
             weatherView.setIncludeFontPadding(false);
             weatherView.setTextColor(0xE6FFFFFF); // the city line as bright as on the picture

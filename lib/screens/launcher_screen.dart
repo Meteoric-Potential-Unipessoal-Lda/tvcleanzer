@@ -149,7 +149,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
       if ((_version ?? 0) < AdbPackageManager.bundledLauncherVersion) {
         final msg = 'TV keeps v$_version, bundled v${AdbPackageManager.bundledLauncherVersion}';
         AppLog.error('launcher install', msg);
-        _installError = tr('Установка не удалась: {0}', ['0.$_version → 0.${AdbPackageManager.bundledLauncherVersion}']);
+        _installError = tr('Установка не удалась: {0}', ['${_lv(_version ?? 0)} → ${_lv(AdbPackageManager.bundledLauncherVersion)}']);
       }
       _showBind(bind);
     } on AdbException catch (e) {
@@ -379,8 +379,10 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
 
   /// A setting the TV's launcher is too old for: say so on the row, not in one line at the end.
   // versionCode 122 is «1.22», 99 is «0.99» (1.3.141: it said «0.122»)
+  String _lv(int v) => '${v ~/ 100}.${(v % 100).toString().padLeft(2, '0')}';
+
   String? _need(int v) => v > 0 && _installed == true && _version != null && _version! < v
-      ? tr('Нужен лаунчер {0} или новее — обновите его вверху', ['${v ~/ 100}.${(v % 100).toString().padLeft(2, '0')}'])
+      ? tr('Нужен лаунчер {0} или новее — обновите его вверху', [_lv(v)])
       : null;
 
   Widget _group(String id, IconData icon, String title, String summary, List<Widget> children) =>
@@ -663,7 +665,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
     final v = _version ?? 0;
     final ours = _checked && _launcher == AdbPackageManager.launcherPkg;
     final (chipText, chipColor) = installed
-        ? ('${tr('установлен')}${v > 0 ? ' · 0.$v' : ''}', _outdated ? AppColors.warn : AppColors.ok)
+        ? ('${tr('установлен')}${v > 0 ? ' · ${_lv(v)}' : ''}', _outdated ? AppColors.warn : AppColors.ok)
         : (tr('не установлен'), AppColors.fgMid);
     final String now;
     if (tv == null) {
@@ -788,7 +790,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
                                 padding: bigPad,
                               ),
                               icon: const Icon(Icons.system_update_alt_rounded),
-                              label: Text('${tr('Обновить лаунчер на ТВ')} · 0.$v → 0.${AdbPackageManager.bundledLauncherVersion}'),
+                              label: Text('${tr('Обновить лаунчер на ТВ')} · ${_lv(v)} → ${_lv(AdbPackageManager.bundledLauncherVersion)}'),
                               onPressed: tv == null ? null : _install,
                             ),
                             const Gap(10),
@@ -841,7 +843,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           ),
         );
     return _group('tv', Icons.build_rounded, tr('Лаунчер на телевизоре'),
-        '${tr('установлен')}${v > 0 ? ' · 0.$v' : ''}', [
+        '${tr('установлен')}${v > 0 ? ' · ${_lv(v)}' : ''}', [
       Text(tr('Тема меняется сразу: просто выберите другую выше. На телевизоре: долгое нажатие OK на приложении — добавить в избранное, переставить или скрыть; шестерёнка — настройки.'),
           style: const TextStyle(fontSize: 13, color: AppColors.fgMid, height: 1.5)),
       const Gap(4),
