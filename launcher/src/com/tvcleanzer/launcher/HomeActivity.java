@@ -1699,12 +1699,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             LinearLayout days = new LinearLayout(this);
             days.setOrientation(LinearLayout.VERTICAL);
             days.setGravity(Gravity.CENTER_VERTICAL);
-            blockDay = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif");
-            blockDate = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif");
+            // 1.37 (UMID): as bold as the weather line under it
+            blockDay = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif-medium");
+            blockDate = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif-medium");
             for (TextView tv : new TextView[]{blockDay, blockDate}) {
                 tv.setSingleLine(true);
                 tv.setIncludeFontPadding(false);
-                tv.setLetterSpacing(0.04f);
+                tv.setLetterSpacing(0.02f);
                 tv.setShadowLayer(Ui.dp(this, 6), 0, Ui.dp(this, 1), 0x55000000);
             }
             days.addView(blockDay);
