@@ -1377,6 +1377,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.setClipChildren(true);
             hs.setClipToPadding(false);
             hs.setHorizontalScrollBarEnabled(false);
+            // 1.14: a selected app keeps its distance from the bar's ends (the scroll view only
+            // keeps its fading-edge length clear, so the first app sat on the edge) and the app cut
+            // off at an end fades out instead of sticking out of the glass (UMID's photo)
+            hs.setHorizontalFadingEdgeEnabled(true);
+            hs.setFadingEdgeLength(inset + Ui.dp(this, 18));
             hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
             // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
             int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
@@ -1398,8 +1403,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // card (shown or waiting for the focus) counts as part of the room below
             if (!tiles.isEmpty()) {
                 AppTile t0 = tiles.get(tiles.size() - 1);
-                int bottom = Ui.dp(this, 14) + zoomPad;
-                int top = Math.max(Ui.dp(this, 10) + zoomPad, bottom + t0.roomBelow() - t0.getPaddingTop());
+                // 1.14: a lower bar (UMID: «бар чуть уменьшить по высоте»), 8 dp less above and below
+                int bottom = Ui.dp(this, 6) + zoomPad;
+                int top = Math.max(Ui.dp(this, 4) + zoomPad, bottom + t0.roomBelow() - t0.getPaddingTop());
                 hs.setPadding(inset, top, inset, bottom);
             }
             shelf.addView(hs);
