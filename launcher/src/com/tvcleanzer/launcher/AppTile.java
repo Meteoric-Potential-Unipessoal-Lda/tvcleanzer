@@ -32,9 +32,12 @@ final class AppTile extends LinearLayout {
     private final android.view.View gloss;
     /** «Свечение» (0.92): the halo behind the card, in the app's colour; null otherwise. */
     private final Glow glow;
-    /** «Без рамки» (0.93, a chat request): a small dot under the selected app — the lift alone
-     *  is easy to miss from the sofa. */
+    /** «Точка» (1.23, an owner's picture): a small blue dot down and to the right of the selected
+     *  app, no frame. Null in the other kinds of highlight. */
     private android.view.View dot;
+    /** The ringColor that asks for the dot (0 is «Без рамки», 1 «Свечение», real colours are opaque). */
+    static final int RING_DOT = 2;
+    private static final int DOT_BLUE = 0xFF0A78FF;
 
     /** Told when a tile gets the focus («Витрина» shows that app above the row). */
     interface Hook { void focused(AppTile t); }
@@ -121,7 +124,7 @@ final class AppTile extends LinearLayout {
         // itself it was cut by the card's rounded clip (owners: "выделение отрезано").
         int stroke = Ui.dp(c, 3);
         ringStroke = stroke;
-        ringC = ringColor == 1 ? 0 : ringColor;
+        ringC = ringColor == 1 || ringColor == RING_DOT ? 0 : ringColor;
         ring = Ui.ring(ringC, stroke, radius + stroke);
         if (ringColor == 1) {
             float gp = Math.max(Ui.dp(c, 16), Math.min(w, h) * 0.22f);
@@ -135,6 +138,16 @@ final class AppTile extends LinearLayout {
             glow = null;
         }
         int dotSpace = 0; // 0.97: no dot under «Без рамки» any more (the owner: «убираем точку»)
+        if (ringColor == RING_DOT) {
+            dot = new android.view.View(c);
+            dot.setAlpha(0f);
+            dot.setScaleX(0.5f);
+            dot.setScaleY(0.5f);
+            dot.setOutlineProvider(null); // no shadow of its own
+            dot.setTranslationZ(Ui.dp(c, 41)); // above the lifted card, like the ring
+            holder.addView(dot);
+            placeDot(radius, false);
+        }
         ringView = new android.view.View(c);
         ringView.setBackground(ring);
         ringView.setOutlineProvider(null); // no shadow of its own
@@ -177,6 +190,34 @@ final class AppTile extends LinearLayout {
         ringView.setLayoutParams(rl);
         gloss.setVisibility(GONE);
         if (glow != null) { glow.oval = true; glow.invalidate(); }
+        placeDot(w / 2f, true);
+    }
+
+    /** Where the «Точка» dot sits, inside [holder] so it zooms with the card. Round icon: just
+     *  outside its edge, down and to the right, with a hair of space (the owner's picture: 15 % of
+     *  the icon across, its centre 38° below the middle line). Square card or banner: on the
+     *  rounded corner, overlapping it a little, so it never leaves the room kept for the zoom.
+     *  [rc] is the corner radius (half the card for a circle). */
+    private void placeDot(float rc, boolean round) {
+        if (dot == null) return;
+        float dp = getResources().getDisplayMetrics().density;
+        float m = Math.min(w, h);
+        int d = Math.round(Math.max(8 * dp, Math.min(20 * dp, m * 0.15f)));
+        float gap = Math.max(2 * dp, m * 0.025f);
+        double a = Math.toRadians(round ? 38 : 45);
+        float dist = round ? rc + gap + d / 2f : rc + d * 0.15f;
+        float cx = (float) (w - rc + dist * Math.cos(a));
+        float cy = (float) (h - rc + dist * Math.sin(a));
+        GradientDrawable dd = new GradientDrawable();
+        dd.setShape(GradientDrawable.OVAL);
+        dd.setColor(DOT_BLUE);
+        // a thin dark edge: the dot stays a dot on a white or blue icon
+        dd.setStroke(Math.max(1, Math.round(1.5f * dp)), 0x8C000000);
+        dot.setBackground(dd);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(d, d, Gravity.TOP | Gravity.START);
+        lp.leftMargin = Math.round(cx - d / 2f);
+        lp.topMargin = Math.round(cy - d / 2f);
+        dot.setLayoutParams(lp);
     }
 
     /** Size of the card itself (what the art is drawn for). */
@@ -224,8 +265,15 @@ final class AppTile extends LinearLayout {
         card.animate().translationZ(has ? z : 0).setDuration(duration).setInterpolator(EASE).start();
         ringView.setVisibility(has && glow == null ? VISIBLE : INVISIBLE);
         if (dot != null) {
-            if (anim == Prefs.ANIM_OFF) dot.setAlpha(has ? 1f : 0f);
-            else dot.animate().alpha(has ? 1f : 0f).setDuration(duration).start();
+            if (anim == Prefs.ANIM_OFF) {
+                dot.setAlpha(has ? 1f : 0f);
+                dot.setScaleX(1f);
+                dot.setScaleY(1f);
+            } else {
+                float ds = has ? 1f : 0.5f;
+                dot.animate().alpha(has ? 1f : 0f).scaleX(ds).scaleY(ds).setDuration(duration)
+                        .setInterpolator(EASE).start();
+            }
         }
         if (glow != null) {
             if (anim == Prefs.ANIM_OFF) glow.setAlpha(has ? 1f : 0f);

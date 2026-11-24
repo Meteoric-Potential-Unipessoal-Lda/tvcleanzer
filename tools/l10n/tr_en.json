@@ -1021,5 +1021,7 @@
 "Show all",
 "Back on the home screen: {0}",
 "Clock, date and weather",
-"Turn it off to keep only the icons on the home screen"
+"Turn it off to keep only the icons on the home screen",
+"Dot",
+"Needs launcher {0} or newer — update it above"
 ]

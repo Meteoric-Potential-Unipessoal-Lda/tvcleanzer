@@ -73,6 +73,9 @@ public class ConfigReceiver extends BroadcastReceiver {
         if (intent.hasExtra("ringAccent")) p.setRingAccent(intent.getBooleanExtra("ringAccent", false));
         if (intent.hasExtra("ringOff")) p.setRingOff(intent.getBooleanExtra("ringOff", false));
         if (intent.hasExtra("ringGlow")) p.setRingGlow(intent.getBooleanExtra("ringGlow", false));
+        // an older phone app knows no «Точка»: what it picked (it always sends the frame) wins
+        if (intent.hasExtra("ringDot")) p.setRingDot(intent.getBooleanExtra("ringDot", false));
+        else if (intent.hasExtra("ringOff")) p.setRingDot(false);
         if (intent.hasExtra("memLabel")) p.setMemLabel(intent.getBooleanExtra("memLabel", true));
         if (intent.hasExtra("showClock")) p.setShowClock(intent.getBooleanExtra("showClock", true));
         if (intent.hasExtra("tiles")) p.setTileSize(intent.getIntExtra("tiles", Prefs.TILES_NORMAL));

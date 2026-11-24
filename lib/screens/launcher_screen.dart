@@ -378,8 +378,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   static final Set<String> _open = {};
 
   /// A setting the TV's launcher is too old for: say so on the row, not in one line at the end.
+  // versionCode 122 is «1.22», 99 is «0.99» (1.3.141: it said «0.122»)
   String? _need(int v) => v > 0 && _installed == true && _version != null && _version! < v
-      ? tr('Нужен лаунчер 0.{0} или новее — обновите его вверху', ['$v'])
+      ? tr('Нужен лаунчер {0} или новее — обновите его вверху', ['${v ~/ 100}.${(v % 100).toString().padLeft(2, '0')}'])
       : null;
 
   Widget _group(String id, IconData icon, String title, String summary, List<Widget> children) =>
@@ -584,9 +585,15 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
               // launcher 0.88: «Плитки» favourites turn round too, the hint about banners is gone
               need: 62),
         _pills(tr('Размер плиток'), tilesL, look.tiles, (v) => _setLook(look.copyWith(tiles: v))),
-        _pills(tr('Подсветка выбора'), [tr('Белая'), tr('Цвет темы'), tr('Без рамки'), tr('Свечение')],
-            look.ringGlow ? 3 : (look.ringOff ? 2 : (look.ringAccent ? 1 : 0)),
-            (v) => _setLook(look.copyWith(ringAccent: v == 1, ringOff: v == 2, ringGlow: v == 3))),
+        _pills(
+            tr('Подсветка выбора'),
+            [
+              tr('Белая'), tr('Цвет темы'), tr('Без рамки'), tr('Свечение'),
+              // «Точка» from launcher 1.23 on
+              if (!(_installed == true && _version != null && _version! < 123) || look.ringDot) tr('Точка'),
+            ],
+            look.ringDot ? 4 : (look.ringGlow ? 3 : (look.ringOff ? 2 : (look.ringAccent ? 1 : 0))),
+            (v) => _setLook(look.copyWith(ringAccent: v == 1, ringOff: v == 2, ringGlow: v == 3, ringDot: v == 4))),
         _sw(tr('Названия под всеми плитками'), tr('Иначе — только у выбранной'), look.labels,
             (v) => _setLook(look.copyWith(labels: v))),
         _sw(tr('Без названий приложений'), tr('Только значки: док и ряды станут ниже'), look.noLabels,
@@ -983,21 +990,40 @@ class _SkinPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ring = look.ringOff || look.ringGlow ? Colors.transparent : (look.ringAccent ? skin.accent : Colors.white);
+    final ring = look.ringOff || look.ringGlow || look.ringDot ? Colors.transparent : (look.ringAccent ? skin.accent : Colors.white);
     final focusScale = switch (look.anim) { 2 => 1.0, 1 => 1.03, _ => 1.06 };
     final cols = const [7, 6, 5][look.tiles];
     final favs = const [5, 4, 3][look.tiles];
     final live = look.ambient && look.anim != 2;
-    Widget tile({bool focused = false, double radius = 8}) => AnimatedContainer(
-          duration: _d,
-          curve: Curves.easeOut,
-          decoration: BoxDecoration(
-            color: focused ? skin.accent.withValues(alpha: .25) : skin.tile,
-            borderRadius: BorderRadius.circular(radius),
-            border: Border.all(
-                color: focused ? ring : Colors.transparent, width: 2),
+    Widget tile({bool focused = false, double radius = 8}) {
+      final box = AnimatedContainer(
+        duration: _d,
+        curve: Curves.easeOut,
+        decoration: BoxDecoration(
+          color: focused ? skin.accent.withValues(alpha: .25) : skin.tile,
+          borderRadius: BorderRadius.circular(radius),
+          border: Border.all(color: focused ? ring : Colors.transparent, width: 2),
+        ),
+      );
+      if (!focused || !look.ringDot) return box;
+      // «Точка»: the blue dot down and to the right of the selected tile
+      return Stack(clipBehavior: Clip.none, fit: StackFit.passthrough, children: [
+        box,
+        Positioned(
+          right: -3,
+          bottom: -3,
+          child: Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(
+              color: const Color(0xFF0A78FF),
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.black54, width: 1),
+            ),
           ),
-        );
+        ),
+      ]);
+    }
 
     return AspectRatio(
       aspectRatio: 16 / 9,

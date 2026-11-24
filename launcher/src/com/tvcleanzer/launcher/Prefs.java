@@ -67,6 +67,9 @@ final class Prefs {
     /** 0.92 «Свечение»: a soft halo in the app's own colour instead of a frame. */
     boolean ringGlow()       { return sp.getBoolean("ringGlow", false); }
     void setRingGlow(boolean v) { sp.edit().putBoolean("ringGlow", v).apply(); }
+    /** «Точка» (1.23, an owner's picture): a small blue dot beside the selected app, no frame. */
+    boolean ringDot()        { return sp.getBoolean("ringDot", false); }
+    void setRingDot(boolean v) { sp.edit().putBoolean("ringDot", v).apply(); }
     /** 0.99: «ОЗУ 1,1 / 1,7 ГБ» beside the memory icon while it is selected (owners: it covers the city). */
     boolean memLabel()       { return sp.getBoolean("memLabel", true); }
     void setMemLabel(boolean v) { sp.edit().putBoolean("memLabel", v).apply(); }
