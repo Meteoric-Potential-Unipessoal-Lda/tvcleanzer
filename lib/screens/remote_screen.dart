@@ -1356,6 +1356,7 @@ class _MousePadState extends State<_MousePad> {
   bool _moved = false, _longDone = false, _two = false;
   Timer? _long, _scrollTick;
   Offset _scroll = Offset.zero;
+  bool _scrolling = false;
 
   @override
   void dispose() {
@@ -1401,9 +1402,7 @@ class _MousePadState extends State<_MousePad> {
       // `input swipe`s over ADB, slow — fewer, bigger ones there
       _scrollTick ??= Timer(Duration(milliseconds: widget.link.isPlain ? 220 : 60), () {
         _scrollTick = null;
-        final d = _scroll * 3.2;
-        _scroll = Offset.zero;
-        if (d.distance > 4) widget.link.send('s ${d.dx.toStringAsFixed(0)} ${d.dy.toStringAsFixed(0)}');
+        _flushScroll();
       });
       return;
     }
@@ -1413,9 +1412,28 @@ class _MousePadState extends State<_MousePad> {
     widget.link.move(e.delta.dx * k, e.delta.dy * k);
   }
 
+  /// 1.3.125: with the service a bit further than before (3.6, it was 3.2 — «туго»), and the
+  /// TV lets the page glide on when the fingers leave.
+  void _flushScroll() {
+    final d = _scroll * (widget.link.isPlain ? 3.2 : 3.6);
+    _scroll = Offset.zero;
+    if (d.distance > 2) {
+      widget.link.send('s ${d.dx.toStringAsFixed(0)} ${d.dy.toStringAsFixed(0)}');
+      _scrolling = true;
+    }
+  }
+
   void _up(PointerEvent e) {
     if (!_p.containsKey(e.pointer)) return;
     _p.remove(e.pointer);
+    if (_scrolling && _p.length < 2) {
+      // the scroll is over: what is left, then the word for the TV to lift its finger
+      _scrollTick?.cancel();
+      _scrollTick = null;
+      _flushScroll();
+      _scrolling = false;
+      widget.link.send('e');
+    }
     if (_p.isNotEmpty) return;
     _long?.cancel();
     final quick = DateTime.now().difference(_downAt) < const Duration(milliseconds: 350);
