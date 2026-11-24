@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -222,6 +223,14 @@ final class Mouse {
             back(line);
             return;
         }
+        // 1.03: a TV that drops our gestures (Haier, Android 11) — the phone's `input` over ADB
+        // took a second a touch there, and touches piled up («через несколько секунд всё сразу»):
+        // the app's own click / scroll under the pointer instead, the phone only where none is
+        if (noGestures) {
+            if (!nodeAction(drag, dx, dy, ms)) back(line);
+            return;
+        }
+        final float fdx = dx, fdy = dy;
         Path path = new Path();
         path.moveTo(x, y);
         if (drag) path.lineTo(ex, ey);
@@ -233,9 +242,17 @@ final class Mouse {
             // system drops goes to the phone, which taps over ADB; the first few say how it went
             boolean ok = svc.dispatchGesture(g, new AccessibilityService.GestureResultCallback() {
                 @Override public void onCompleted(GestureDescription d) { told("done"); }
-                @Override public void onCancelled(GestureDescription d) { told("cancelled, the phone taps"); back(line); }
+                @Override public void onCancelled(GestureDescription d) {
+                    noGestures = true;
+                    told("cancelled");
+                    if (!nodeAction(drag, fdx, fdy, ms)) back(line);
+                }
             }, main);
-            if (!ok) { told("refused, the phone taps"); back(line); }
+            if (!ok) {
+                noGestures = true;
+                told("refused");
+                if (!nodeAction(drag, fdx, fdy, ms)) back(line);
+            }
         } catch (Throwable t) {
             HomeKeyService.log("mouse: " + t);
             back(line);
@@ -243,6 +260,55 @@ final class Mouse {
     }
 
     private int toldTaps;
+    /** The system drops our gestures here: no more waiting for them this session. */
+    private boolean noGestures;
+    private float scrollAcc;
+    private long scrolledAt;
+
+    /** Click, long click or scroll the app's own view under the pointer (accessibility). */
+    private boolean nodeAction(boolean drag, float dx, float dy, long ms) {
+        try {
+            AccessibilityNodeInfo root = svc.getRootInActiveWindow();
+            if (root == null) return false;
+            int px = Math.round(x), py = Math.round(y);
+            if (!drag) {
+                boolean longPress = ms > 300;
+                AccessibilityNodeInfo n = under(root, px, py, longPress ? 2 : 1);
+                boolean ok = n != null && n.performAction(longPress
+                        ? AccessibilityNodeInfo.ACTION_LONG_CLICK : AccessibilityNodeInfo.ACTION_CLICK);
+                told(ok ? "by the app's view" : "no view here, the phone taps");
+                return ok;
+            }
+            // a page at a time is a lot: only a real swipe scrolls, and not more than ~3 a second
+            boolean vertical = Math.abs(dy) >= Math.abs(dx);
+            scrollAcc += vertical ? dy : dx;
+            long now = android.os.SystemClock.uptimeMillis();
+            if (Math.abs(scrollAcc) < 220 || now - scrolledAt < 300) return true;
+            boolean forward = scrollAcc < 0; // the finger goes up / left: on through the page
+            scrollAcc = 0;
+            scrolledAt = now;
+            AccessibilityNodeInfo n = under(root, px, py, 3);
+            return n != null && n.performAction(forward
+                    ? AccessibilityNodeInfo.ACTION_SCROLL_FORWARD : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /** The innermost view at (x, y) that can: 1 click, 2 long click, 3 scroll. */
+    private static AccessibilityNodeInfo under(AccessibilityNodeInfo n, int x, int y, int what) {
+        android.graphics.Rect r = new android.graphics.Rect();
+        n.getBoundsInScreen(r);
+        if (!r.contains(x, y)) return null;
+        for (int i = n.getChildCount() - 1; i >= 0; i--) {
+            AccessibilityNodeInfo c = n.getChild(i);
+            if (c == null) continue;
+            AccessibilityNodeInfo f = under(c, x, y, what);
+            if (f != null) return f;
+        }
+        boolean can = what == 1 ? n.isClickable() : what == 2 ? n.isLongClickable() : n.isScrollable();
+        return can && n.isVisibleToUser() ? n : null;
+    }
 
     private void told(String how) {
         if (toldTaps++ < 3) HomeKeyService.log("mouse: tap " + how);
