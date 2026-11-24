@@ -32,11 +32,14 @@ final class FavScroll extends HorizontalScrollView {
     protected void dispatchDraw(Canvas c) {
         // 1.17: cut only where more apps go on: at an end the selected app and its ring stay whole
         // (the last one was cut at the right end)
+        // 1.18: by where the apps really end, not by the scroll position — at the last app the
+        // view can stop a little short of its end, and the last one was still cut (UMID)
         int x = getScrollX();
-        int max = getChildCount() == 0 ? 0
-                : Math.max(0, getChildAt(0).getWidth() - (getWidth() - getPaddingLeft() - getPaddingRight()));
+        android.view.View row = getChildCount() == 0 ? null : getChildAt(0);
+        boolean moreLeft = row != null && row.getLeft() < x - 1;
+        boolean moreRight = row != null && row.getRight() > x + getWidth() + 1;
         c.save();
-        c.clipRect(x + (x > 0 ? clip : -getWidth()), 0, x + getWidth() - (x < max ? clip : -getWidth()), getHeight());
+        c.clipRect(x + (moreLeft ? clip : -getWidth()), 0, x + getWidth() - (moreRight ? clip : -getWidth()), getHeight());
         super.dispatchDraw(c);
         c.restore();
     }
