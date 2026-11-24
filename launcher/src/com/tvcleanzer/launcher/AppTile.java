@@ -38,6 +38,12 @@ final class AppTile extends LinearLayout {
     /** The ringColor that asks for the dot (0 is «Без рамки», 1 «Свечение», real colours are opaque). */
     static final int RING_DOT = 2;
     private static final int DOT_BLUE = 0xFF0A78FF;
+    /** The dot's centre and the notch's radius in the card's own pixels (set by placeDot). */
+    private float dotCx, dotCy, notchR;
+    private static final android.graphics.Paint CLEAR = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+    static {
+        CLEAR.setXfermode(new android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR));
+    }
 
     /** Told when a tile gets the focus («Витрина» shows that app above the row). */
     interface Hook { void focused(AppTile t); }
@@ -83,7 +89,15 @@ final class AppTile extends LinearLayout {
 
         // square cards (dock, «Витрина», icon grids): rounded like a phone app icon
         float radius = Math.abs(w - h) < w * 0.2f ? Math.max(Ui.dp(c, 14), w * 0.225f) : Ui.dp(c, 14);
-        card = new FrameLayout(c);
+        // «Точка» (1.25): the card cuts a round notch round the dot, so the dot sits in the icon
+        // with a little air round it (an owner's photo); see cutNotch
+        card = new FrameLayout(c) {
+            @Override
+            protected void dispatchDraw(android.graphics.Canvas cv) {
+                super.dispatchDraw(cv);
+                cutNotch(cv);
+            }
+        };
         card.setBackground(Ui.round(skin.tile, radius));
         card.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         card.setClipToOutline(true);
@@ -193,31 +207,45 @@ final class AppTile extends LinearLayout {
         placeDot(w / 2f, true);
     }
 
-    /** Where the «Точка» dot sits, inside [holder] so it zooms with the card. Round icon: just
-     *  outside its edge, down and to the right, with a hair of space (the owner's picture: 15 % of
-     *  the icon across, its centre 38° below the middle line). Square card or banner: on the
-     *  rounded corner, overlapping it a little, so it never leaves the room kept for the zoom.
-     *  [rc] is the corner radius (half the card for a circle). */
+    /** Where the «Точка» dot sits, inside [holder] so it zooms with the card: on the edge down and
+     *  to the right, set into the icon, and the card cuts a notch round it, so a ring of air
+     *  shows between the two (1.25, the owner's photo: the dot 22 % of the icon across, its centre
+     *  a little outside the edge at 45°, the air 4 %). The same on the rounded corner of a square
+     *  card or a banner. [rc] is the corner radius (half the card for a circle). */
     private void placeDot(float rc, boolean round) {
         if (dot == null) return;
         float dp = getResources().getDisplayMetrics().density;
         float m = Math.min(w, h);
-        int d = Math.round(Math.max(8 * dp, Math.min(20 * dp, m * 0.15f)));
-        float gap = Math.max(2 * dp, m * 0.025f);
-        double a = Math.toRadians(round ? 38 : 45);
-        float dist = round ? rc + gap + d / 2f : rc + d * 0.15f;
+        int d = Math.round(Math.max(8 * dp, Math.min(24 * dp, m * 0.22f)));
+        float gap = Math.max(2 * dp, Math.min(5 * dp, m * 0.04f));
+        double a = Math.toRadians(45);
+        float dist = rc * 1.06f;
         float cx = (float) (w - rc + dist * Math.cos(a));
         float cy = (float) (h - rc + dist * Math.sin(a));
+        dotCx = cx;
+        dotCy = cy;
+        notchR = d / 2f + gap;
+        card.invalidate();
         GradientDrawable dd = new GradientDrawable();
         dd.setShape(GradientDrawable.OVAL);
         dd.setColor(DOT_BLUE);
         // a thin dark edge: the dot stays a dot on a white or blue icon
         dd.setStroke(Math.max(1, Math.round(1.5f * dp)), 0x8C000000);
+        // the notch needs the card in a layer of its own (a clear circle there, not a hole to the
+        // window): only while the dot shows, see onFocus
         dot.setBackground(dd);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(d, d, Gravity.TOP | Gravity.START);
         lp.leftMargin = Math.round(cx - d / 2f);
         lp.topMargin = Math.round(cy - d / 2f);
         dot.setLayoutParams(lp);
+    }
+
+    /** «Точка»: the notch round the dot, as wide as the dot is shown (it opens and closes with it). */
+    private void cutNotch(android.graphics.Canvas cv) {
+        if (dot == null || notchR <= 0) return;
+        float a = dot.getAlpha();
+        if (a < 0.02f || card.getLayerType() == LAYER_TYPE_NONE) return;
+        cv.drawCircle(dotCx, dotCy, notchR * a * dot.getScaleX(), CLEAR);
     }
 
     /** Size of the card itself (what the art is drawn for). */
@@ -265,14 +293,23 @@ final class AppTile extends LinearLayout {
         card.animate().translationZ(has ? z : 0).setDuration(duration).setInterpolator(EASE).start();
         ringView.setVisibility(has && glow == null ? VISIBLE : INVISIBLE);
         if (dot != null) {
+            if (has) card.setLayerType(LAYER_TYPE_HARDWARE, null);
             if (anim == Prefs.ANIM_OFF) {
                 dot.setAlpha(has ? 1f : 0f);
                 dot.setScaleX(1f);
                 dot.setScaleY(1f);
+                card.invalidate();
+                if (!has) card.setLayerType(LAYER_TYPE_NONE, null);
             } else {
                 float ds = has ? 1f : 0.5f;
                 dot.animate().alpha(has ? 1f : 0f).scaleX(ds).scaleY(ds).setDuration(duration)
-                        .setInterpolator(EASE).start();
+                        .setInterpolator(EASE)
+                        .setUpdateListener(va -> card.invalidate()) // the notch opens with the dot
+                        .withEndAction(() -> {
+                            if (!isFocused()) card.setLayerType(LAYER_TYPE_NONE, null);
+                            card.invalidate();
+                        })
+                        .start();
             }
         }
         if (glow != null) {
