@@ -220,11 +220,12 @@ final class AppTile extends LinearLayout {
         // 1.26 (the owner: «чуть уменьшить и чуть глубже»): 17 % across, its centre inside the edge
         int d = Math.round(Math.max(7 * dp, Math.min(19 * dp, m * 0.17f)));
         float gap = Math.max(2 * dp, Math.min(5 * dp, m * 0.04f));
-        double a = Math.toRadians(45);
-        float dist = rc * 0.9f;
+        // 1.29 (UMID: «ровно половина заходит в приложение, половина торчит»): the centre right on
+        // the edge, a little below the diagonal (48°, where 1.28's «чуть вниз» had it)
+        double a = Math.toRadians(48);
+        float dist = rc;
         float cx = (float) (w - rc + dist * Math.cos(a));
-        // 1.28 (UMID: «не вовнутрь, а вниз, чуток»): a little lower, as far in as before
-        float cy = (float) (h - rc + dist * Math.sin(a)) + rc * 0.08f;
+        float cy = (float) (h - rc + dist * Math.sin(a));
         dotCx = cx;
         dotCy = cy;
         notchR = d / 2f + gap;
