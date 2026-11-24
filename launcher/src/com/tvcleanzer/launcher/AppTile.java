@@ -24,6 +24,7 @@ final class AppTile extends LinearLayout {
     private final TextView inner;   // name inside the card when there is no banner
     private final TextView label;   // name under the card
     private final GradientDrawable ring;
+    private int ringStroke, ringC;
     private final boolean labelsAlways;
     private boolean noLabel;
     private final int w, h;
@@ -119,7 +120,9 @@ final class AppTile extends LinearLayout {
         // The ring is its own view just outside the card, above it: drawn on the card
         // itself it was cut by the card's rounded clip (owners: "выделение отрезано").
         int stroke = Ui.dp(c, 3);
-        ring = Ui.ring(ringColor == 1 ? 0 : ringColor, stroke, radius + stroke);
+        ringStroke = stroke;
+        ringC = ringColor == 1 ? 0 : ringColor;
+        ring = Ui.ring(ringC, stroke, radius + stroke);
         if (ringColor == 1) {
             float gp = Math.max(Ui.dp(c, 16), Math.min(w, h) * 0.22f);
             glow = new Glow(c, gp, radius);
@@ -164,6 +167,9 @@ final class AppTile extends LinearLayout {
         card.setBackground(oval);
         card.setElevation(0);
         ring.setShape(GradientDrawable.OVAL);
+        // 1.16: the ring reaches 2 dp over the round icon's edge: the soft edge of the circle-cut
+        // art showed the dark bar through it, a thin black line inside the white ring (UMID, YouTube)
+        ring.setStroke(ringStroke + Ui.dp(getContext(), 2), ringC);
         gloss.setVisibility(GONE);
         if (glow != null) { glow.oval = true; glow.invalidate(); }
     }
