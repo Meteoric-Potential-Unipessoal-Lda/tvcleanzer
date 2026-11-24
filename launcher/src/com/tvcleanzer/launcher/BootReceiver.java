@@ -30,12 +30,37 @@ public class BootReceiver extends BroadcastReceiver {
             try {
                 Thread.sleep(8000);
                 keep(app);
+                Thread.sleep(6000);
+                ownHomeAfterBoot(app);
             } catch (Throwable t) {
                 HomeKeyService.log("boot: " + t);
             } finally {
                 r.finish();
             }
         }).start();
+    }
+
+    /** 1.21: a box whose firmware drops our service at every boot and opens its own home there
+     *  (be311 / t950s, com.master.t972 — a system app, can't be switched off): Home already opens
+     *  us (we are the HOME app), only the power-on screen was theirs. Without the service, the
+     *  launcher opens itself once after boot — allowed from the background with «draw over other
+     *  apps», which the phone grants. */
+    static void ownHomeAfterBoot(Context c) {
+        try {
+            if (HomeKeyService.running != null) return; // the service does it, and better
+            Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
+            android.content.pm.ResolveInfo ri = c.getPackageManager().resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY);
+            boolean ours = ri != null && ri.activityInfo != null && c.getPackageName().equals(ri.activityInfo.packageName);
+            if (!ours) { HomeKeyService.log("boot: not the HOME app, own home left"); return; }
+            if (android.os.Build.VERSION.SDK_INT >= 29 && !Mouse.canOverlay(c)) {
+                HomeKeyService.log("boot: service down, no overlay permission to open our home");
+                return;
+            }
+            HomeKeyService.log("boot: service down, opening our home");
+            c.startActivity(new Intent(c, HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        } catch (Throwable t) {
+            HomeKeyService.log("boot: " + t);
+        }
     }
 
     static boolean canWrite(Context c) {

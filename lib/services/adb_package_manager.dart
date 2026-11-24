@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 120;
+  static const bundledLauncherVersion = 121;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   /// 1.3.123: the TV's own settings write it short («…/.HomeKeyService»). Left in the list, our
@@ -976,6 +976,9 @@ class AdbPackageManager {
     // 0.69: the launcher puts its Home-key service back after a reboot if the TV dropped it
     // (TCL Smart TV Pro 55C745: fine until a reboot, then the stock home again)
     await adb.shell('pm grant $launcherPkg android.permission.WRITE_SECURE_SETTINGS 2>&1');
+    // 1.3.138: «draw over other apps» lets the launcher open itself after a boot where the firmware
+    // drops our service (be311 / com.master.t972), and the plain mouse pointer needs it anyway
+    await adb.shell('appops set $launcherPkg SYSTEM_ALERT_WINDOW allow 2>&1');
     // Bluetooth pill (0.63): what is connected needs BLUETOOTH_CONNECT on Android 12+
     if (sdk >= 31) {
       await adb.shell('pm grant $launcherPkg android.permission.BLUETOOTH_CONNECT 2>&1');
