@@ -94,6 +94,24 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private TextView weatherTemp;
     private View weatherDiv;
     private int weatherPicPx;
+    /** 1.35: the block's day and date as plain text, set by us (TextClocks there stayed empty on
+     *  UMID's TCL, Android 12, even with a width), checked every minute while the home is up. */
+    private TextView blockDay, blockDate;
+    private final Runnable blockDateTick = new Runnable() {
+        @Override public void run() {
+            updateBlockDate();
+            if (resumed && blockDay != null) main.postDelayed(this, 60_000L);
+        }
+    };
+
+    private void updateBlockDate() {
+        if (blockDay == null || blockDate == null) return;
+        java.util.Date now = new java.util.Date();
+        java.util.Locale l = java.util.Locale.getDefault();
+        blockDay.setText(new java.text.SimpleDateFormat("EEEE", l).format(now));
+        blockDate.setText(new java.text.SimpleDateFormat(
+                android.text.format.DateFormat.getBestDateTimePattern(l, "dMMMM"), l).format(now));
+    }
     /** The «·» before the weather in the one-line clock: hidden with it. */
     private View weatherSep;
     private final List<View> ambientGlows = new ArrayList<>();
@@ -170,6 +188,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         super.onResume();
         resumed = true;
         armFrame();
+        if (blockDay != null) { main.removeCallbacks(blockDateTick); main.post(blockDateTick); }
         if (prefs.nextSkinIfDue()) dirty = true; // «Автосмена темы»
         if (dirty) { dirty = false; build(); } else startAmbient();
         if (liveWall != null) liveWall.play();
@@ -939,6 +958,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onPause() {
         resumed = false;
         main.removeCallbacks(frameTick);
+        main.removeCallbacks(blockDateTick);
         main.removeCallbacks(weatherTick);
         main.removeCallbacks(memTick);
         main.removeCallbacks(homePhotoTick);
@@ -1278,6 +1298,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     // ── UI ──────────────────────────────────────────────────────────────────
 
     private void build() {
+        blockDay = null;
+        blockDate = null;
+        main.removeCallbacks(blockDateTick);
         weatherPic = null;
         weatherTemp = null;
         weatherDiv = null;
@@ -1672,20 +1695,27 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             wd.leftMargin = Ui.dp(this, 18);
             wd.rightMargin = Ui.dp(this, 18);
             top.addView(weatherDiv, wd);
-            top.addView(dateCol);
+            // the day and the date as plain text (1.35), see blockDay
+            LinearLayout days = new LinearLayout(this);
+            days.setOrientation(LinearLayout.VERTICAL);
+            days.setGravity(Gravity.CENTER_VERTICAL);
+            blockDay = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif");
+            blockDate = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif");
+            for (TextView tv : new TextView[]{blockDay, blockDate}) {
+                tv.setSingleLine(true);
+                tv.setIncludeFontPadding(false);
+                tv.setLetterSpacing(0.04f);
+                tv.setShadowLayer(Ui.dp(this, 6), 0, Ui.dp(this, 1), 0x55000000);
+            }
+            days.addView(blockDay);
+            LinearLayout.LayoutParams dl2 = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dl2.topMargin = Ui.dp(this, 4);
+            days.addView(blockDate, dl2);
+            updateBlockDate();
+            if (resumed) main.postDelayed(blockDateTick, 60_000L);
+            top.addView(days);
             block.addView(top);
-            // 1.34, for the «?» report: UMID saw no day and date here on 1.31
-            final LinearLayout dc = dateCol;
-            dc.postDelayed(() -> {
-                StringBuilder sb = new StringBuilder("top bar date: col " + dc.getWidth() + "x" + dc.getHeight()
-                        + (dc.isShown() ? "" : " hidden"));
-                for (int i = 0; i < dc.getChildCount(); i++) {
-                    View v = dc.getChildAt(i);
-                    sb.append(", ").append(v.getWidth()).append(" '")
-                            .append(v instanceof TextView ? ((TextView) v).getText() : "").append("'");
-                }
-                HomeKeyService.log(sb.toString());
-            }, 3000);
             weatherView.setSingleLine(true);
             weatherView.setIncludeFontPadding(false);
             weatherView.setTextColor(0xE6FFFFFF); // the city line as bright as on the picture
