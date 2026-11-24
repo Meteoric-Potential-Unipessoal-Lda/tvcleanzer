@@ -36,6 +36,7 @@ public class StateProvider extends ContentProvider {
             c.addRow(new Object[]{"wallpaper", Wallpaper.exists(getContext()) ? 1 : 0});
             c.addRow(new Object[]{"liveWall", LiveWall.exists(getContext()) ? 1 : 0});
             c.addRow(new Object[]{"liveWallOn", p.liveWallOn() ? 1 : 0});
+            c.addRow(new Object[]{"liveSound", p.liveSound() ? 1 : 0});
             c.addRow(new Object[]{"version", version()});
             c.addRow(new Object[]{"anim", p.anim()});
             c.addRow(new Object[]{"ringAccent", p.ringAccent() ? 1 : 0});

@@ -1017,6 +1017,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'No frame',
     'Свечение': 'Glow',
     'Цифры памяти при наведении': 'Memory figures on focus',
+    'Звук живых обоев': 'Live wallpaper sound',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2034,6 +2035,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Без рамки',
     'Свечение': 'Сяйво',
     'Цифры памяти при наведении': 'Цифри пам’яті при наведенні',
+    'Звук живых обоев': 'Звук живих шпалер',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3051,6 +3053,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Sin marco',
     'Свечение': 'Brillo',
     'Цифры памяти при наведении': 'Cifras de memoria al seleccionar',
+    'Звук живых обоев': 'Sonido del fondo animado',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4068,6 +4071,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Sem moldura',
     'Свечение': 'Brilho',
     'Цифры памяти при наведении': 'Valores de memória ao selecionar',
+    'Звук живых обоев': 'Som do fundo animado',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5085,6 +5089,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Ohne Rahmen',
     'Свечение': 'Leuchten',
     'Цифры памяти при наведении': 'Speicherwerte bei Auswahl',
+    'Звук живых обоев': 'Ton des Live-Hintergrunds',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6102,6 +6107,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Sans cadre',
     'Свечение': 'Halo',
     'Цифры памяти при наведении': 'Chiffres de mémoire à la sélection',
+    'Звук живых обоев': 'Son du fond animé',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7119,6 +7125,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Senza cornice',
     'Свечение': 'Bagliore',
     'Цифры памяти при наведении': 'Valori di memoria alla selezione',
+    'Звук живых обоев': 'Audio dello sfondo animato',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8136,6 +8143,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Без рамкі',
     'Свечение': 'Ззянне',
     'Цифры памяти при наведении': 'Лічбы памяці пры навядзенні',
+    'Звук живых обоев': 'Гук жывых шпалер',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9153,6 +9161,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Жиексіз',
     'Свечение': 'Жарқырау',
     'Цифры памяти при наведении': 'Таңдағанда жад көрсеткіштері',
+    'Звук живых обоев': 'Тірі тұсқағаз дыбысы',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10170,6 +10179,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Ramkasiz',
     'Свечение': 'Yorqinlik',
     'Цифры памяти при наведении': 'Tanlanganda xotira raqamlari',
+    'Звук живых обоев': 'Jonli fon ovozi',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11187,6 +11197,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Առանց շրջանակի',
     'Свечение': 'Լուսարձակում',
     'Цифры памяти при наведении': 'Հիշողության թվերը ընտրելիս',
+    'Звук живых обоев': 'Կենդանի պաստառի ձայնը',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12204,6 +12215,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Çərçivəsiz',
     'Свечение': 'Parıltı',
     'Цифры памяти при наведении': 'Seçəndə yaddaş rəqəmləri',
+    'Звук живых обоев': 'Canlı fonun səsi',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13221,6 +13233,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'ჩარჩოს გარეშე',
     'Свечение': 'ნათება',
     'Цифры памяти при наведении': 'მეხსიერების ციფრები არჩევისას',
+    'Звук живых обоев': 'ცოცხალი ფონის ხმა',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14238,6 +14251,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Алкаксыз',
     'Свечение': 'Жаркыроо',
     'Цифры памяти при наведении': 'Тандаганда эс тутум сандары',
+    'Звук живых обоев': 'Жандуу тушкагаздын үнү',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15255,6 +15269,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Çerçevesiz',
     'Свечение': 'Parıltı',
     'Цифры памяти при наведении': 'Seçilince bellek değerleri',
+    'Звук живых обоев': 'Canlı duvar kâğıdı sesi',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16272,6 +16287,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Bez ramki',
     'Свечение': 'Poświata',
     'Цифры памяти при наведении': 'Liczby pamięci po zaznaczeniu',
+    'Звук живых обоев': 'Dźwięk animowanej tapety',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17289,6 +17305,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Fără chenar',
     'Свечение': 'Strălucire',
     'Цифры памяти при наведении': 'Cifrele memoriei la selectare',
+    'Звук живых обоев': 'Sunetul fundalului animat',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18306,6 +18323,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': '无边框',
     'Свечение': '光晕',
     'Цифры памяти при наведении': '选中时显示内存数值',
+    'Звук живых обоев': '动态壁纸声音',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19323,6 +19341,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': '枠なし',
     'Свечение': '光彩',
     'Цифры памяти при наведении': '選択時にメモリの数値',
+    'Звук живых обоев': 'ライブ壁紙の音',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20340,6 +20359,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': '테두리 없음',
     'Свечение': '글로우',
     'Цифры памяти при наведении': '선택 시 메모리 수치',
+    'Звук живых обоев': '라이브 배경화면 소리',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21357,6 +21377,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'बिना फ़्रेम',
     'Свечение': 'चमक',
     'Цифры памяти при наведении': 'चुनने पर मेमोरी के आंकड़े',
+    'Звук живых обоев': 'लाइव वॉलपेपर की आवाज़',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22374,6 +22395,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Tanpa bingkai',
     'Свечение': 'Pendar',
     'Цифры памяти при наведении': 'Angka memori saat dipilih',
+    'Звук живых обоев': 'Suara wallpaper hidup',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23391,6 +23413,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Không viền',
     'Свечение': 'Phát sáng',
     'Цифры памяти при наведении': 'Số liệu bộ nhớ khi chọn',
+    'Звук живых обоев': 'Âm thanh hình nền động',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24408,6 +24431,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'ไม่มีกรอบ',
     'Свечение': 'เรืองแสง',
     'Цифры памяти при наведении': 'ตัวเลขหน่วยความจำเมื่อเลือก',
+    'Звук живых обоев': 'เสียงวอลเปเปอร์เคลื่อนไหว',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25425,6 +25449,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Zonder kader',
     'Свечение': 'Gloed',
     'Цифры памяти при наведении': 'Geheugencijfers bij selectie',
+    'Звук живых обоев': 'Geluid van bewegende achtergrond',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26442,6 +26467,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Bez rámečku',
     'Свечение': 'Záře',
     'Цифры памяти при наведении': 'Údaje o paměti při výběru',
+    'Звук живых обоев': 'Zvuk živé tapety',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27459,6 +27485,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Χωρίς πλαίσιο',
     'Свечение': 'Λάμψη',
     'Цифры памяти при наведении': 'Τιμές μνήμης κατά την επιλογή',
+    'Звук живых обоев': 'Ήχος ζωντανής ταπετσαρίας',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28476,6 +28503,7 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Keret nélkül',
     'Свечение': 'Ragyogás',
     'Цифры памяти при наведении': 'Memóriaadatok kijelöléskor',
+    'Звук живых обоев': 'Élő háttér hangja',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29493,5 +29521,6 @@ const Map<String, Map<String, String>> translations = {
     'Без рамки': 'Utan ram',
     'Свечение': 'Glöd',
     'Цифры памяти при наведении': 'Minnessiffror vid markering',
+    'Звук живых обоев': 'Ljud för levande bakgrund',
   },
 };

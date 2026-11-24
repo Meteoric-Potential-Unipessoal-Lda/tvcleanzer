@@ -197,6 +197,9 @@ final class Prefs {
     /** «Живые обои» (0.61+): the phone's video behind the home screen, when there is one. */
     boolean liveWallOn()     { return sp.getBoolean("liveWallOn", true); }
     void setLiveWallOn(boolean v) { sp.edit().putBoolean("liveWallOn", v).apply(); }
+    /** 1.05: the clip's own sound on the home screen (an owner: a fireplace without its crackle). */
+    boolean liveSound()      { return sp.getBoolean("liveSound", false); }
+    void setLiveSound(boolean v) { sp.edit().putBoolean("liveSound", v).apply(); }
     void setFrameMusic(boolean v) { sp.edit().putBoolean(FRAME_MUSIC, v).apply(); }
     /** Loading screen with the logo while the launcher starts. */
     boolean splash()         { return sp.getBoolean(SPLASH, true); }

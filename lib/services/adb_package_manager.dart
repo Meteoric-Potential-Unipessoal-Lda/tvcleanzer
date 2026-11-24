@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 104;
+  static const bundledLauncherVersion = 105;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1661,6 +1661,10 @@ class AdbPackageManager {
   Future<void> removeLiveWall(TvDevice device) => _apply(device, '--es liveWall none');
 
   Future<void> setLiveWallOn(TvDevice device, bool on) => _apply(device, '--ez liveWallOn $on');
+
+  /// The clip's own sound on the home screen (launcher 1.05+).
+  Future<void> setLiveSound(TvDevice device, bool on) => _apply(device, '--ez liveSound $on');
+  static const liveSoundLauncher = 105;
 
   Future<void> removeWallpaper(TvDevice device) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);

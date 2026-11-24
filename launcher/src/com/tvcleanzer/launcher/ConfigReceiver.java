@@ -158,6 +158,7 @@ public class ConfigReceiver extends BroadcastReceiver {
             p.bumpWallpaper(); // a new video (or none): the home screen picks it up
         }
         if (intent.hasExtra("liveWallOn")) p.setLiveWallOn(intent.getBooleanExtra("liveWallOn", true));
+        if (intent.hasExtra("liveSound")) p.setLiveSound(intent.getBooleanExtra("liveSound", false));
 
         String pin = intent.getStringExtra("pin");
         if (Pin.valid(pin)) p.setPin(pin);

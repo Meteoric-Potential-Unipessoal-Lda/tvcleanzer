@@ -578,6 +578,20 @@ class _LauncherEditScreenState extends ConsumerState<LauncherEditScreen> {
               }),
             ),
           ),
+        if (has && st.version >= AdbPackageManager.liveSoundLauncher)
+          Material(
+            type: MaterialType.transparency,
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: st.settings['liveSound'] == '1',
+              activeThumbColor: AppColors.accent,
+              title: Text(tr('Звук живых обоев'), style: const TextStyle(color: AppColors.fg, fontSize: 14)),
+              onChanged: busy ? null : (v) => _run(tr('Сохранено'), () async {
+                await ref.read(adbServiceProvider).setLiveSound(widget.tv, v);
+                await _load();
+              }),
+            ),
+          ),
       ],
     ];
   }

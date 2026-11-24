@@ -235,6 +235,7 @@ public class SettingsActivity extends Activity {
                 prefs.setLiveWallOn(v);
                 prefs.bumpWallpaper();
             });
+            addToggle(skin, T.t("Звук живых обоев"), prefs.liveSound(), T.t("Включено"), T.t("Выключено"), prefs::setLiveSound);
             addRow(skin, T.t("Убрать живые обои"), "", () -> {
                 LiveWall.delete(this);
                 prefs.bumpWallpaper();

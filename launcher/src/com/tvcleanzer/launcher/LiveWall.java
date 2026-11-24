@@ -70,7 +70,16 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
     void play() {
         wanted = true;
         if (player == null) open();
-        else if (prepared && !player.isPlaying()) player.start();
+        else if (prepared) {
+            volume(player);
+            if (!player.isPlaying()) player.start();
+        }
+    }
+
+    /** Silent unless the owner turned the sound on (1.05); quieter than the clip itself. */
+    private void volume(MediaPlayer m) {
+        float v = new Prefs(getContext()).liveSound() ? 0.7f : 0f;
+        try { m.setVolume(v, v); } catch (Exception ignored) {}
     }
 
     /** The home screen is covered: give the decoder back. */
@@ -95,7 +104,7 @@ final class LiveWall extends TextureView implements TextureView.SurfaceTextureLi
             m.setDataSource(file(getContext()).getPath());
             m.setSurface(surface);
             m.setLooping(true);
-            m.setVolume(0f, 0f);
+            volume(m);
             m.setOnPreparedListener(mp -> {
                 if (player != mp) return;
                 removeCallbacks(stuck);
