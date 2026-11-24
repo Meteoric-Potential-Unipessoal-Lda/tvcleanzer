@@ -161,6 +161,7 @@ final class AppTile extends LinearLayout {
             dot.setTranslationZ(Ui.dp(c, 41)); // above the lifted card, like the ring
             holder.addView(dot);
             placeDot(radius, false);
+            card.setElevation(0); // no shadow to show through the notch
         }
         ringView = new android.view.View(c);
         ringView.setBackground(ring);
@@ -222,7 +223,8 @@ final class AppTile extends LinearLayout {
         double a = Math.toRadians(45);
         float dist = rc * 0.9f;
         float cx = (float) (w - rc + dist * Math.cos(a));
-        float cy = (float) (h - rc + dist * Math.sin(a));
+        // 1.28 (UMID: «не вовнутрь, а вниз, чуток»): a little lower, as far in as before
+        float cy = (float) (h - rc + dist * Math.sin(a)) + rc * 0.08f;
         dotCx = cx;
         dotCy = cy;
         notchR = d / 2f + gap;
@@ -290,7 +292,8 @@ final class AppTile extends LinearLayout {
         float s = has ? focusScale : 1f;
         float z = anim == Prefs.ANIM_OFF ? 0 : Ui.dp(getContext(), anim == Prefs.ANIM_SOFT ? 10 : 20);
         holder.animate().scaleX(s).scaleY(s).setDuration(duration).setInterpolator(EASE).start();
-        card.animate().translationZ(has ? z : 0).setDuration(duration).setInterpolator(EASE).start();
+        // «Точка» (1.28): no lift shadow — under the notch it showed as a dark ring round the dot
+        card.animate().translationZ(has && dot == null ? z : 0).setDuration(duration).setInterpolator(EASE).start();
         ringView.setVisibility(has && glow == null ? VISIBLE : INVISIBLE);
         if (dot != null) {
             if (has) card.setLayerType(LAYER_TYPE_HARDWARE, null);
