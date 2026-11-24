@@ -394,6 +394,19 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         t.setIncludeFontPadding(false);
         // the last letter's spacing is not counted in the measured width: give it room
         t.setPadding(0, 0, Ui.dp(this, 6), 0);
+        // 1.33: as wide as the longest day or date of the week ahead. A wrap_content clock is
+        // measured before its text arrives; inside the weather block (1.31) the date stayed at
+        // nothing on UMID's TV («день недели и число нет там»)
+        try {
+            java.text.SimpleDateFormat f = new java.text.SimpleDateFormat(fmt, java.util.Locale.getDefault());
+            java.util.Calendar c = java.util.Calendar.getInstance();
+            float max = 0;
+            for (int i = 0; i < 7; i++) {
+                max = Math.max(max, t.getPaint().measureText(f.format(c.getTime()).toUpperCase(java.util.Locale.getDefault())));
+                c.add(java.util.Calendar.DAY_OF_MONTH, 1);
+            }
+            t.setMinWidth(Math.round(max) + Ui.dp(this, 10));
+        } catch (Exception ignored) {}
         return t;
     }
 
