@@ -188,6 +188,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         super.onResume();
         resumed = true;
         armFrame();
+        HomeWatch.ensure(this); // 1.39: be311 / com.master.t972 — the box drops the Home-key service
         if (blockDay != null) { main.removeCallbacks(blockDateTick); main.post(blockDateTick); }
         if (prefs.nextSkinIfDue()) dirty = true; // «Автосмена темы»
         if (dirty) { dirty = false; build(); } else startAmbient();

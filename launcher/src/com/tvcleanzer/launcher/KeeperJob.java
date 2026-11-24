@@ -35,6 +35,7 @@ public class KeeperJob extends JobService {
     @Override
     public boolean onStartJob(final JobParameters p) {
         HomeKeyService.log("keeper job: service " + (HomeKeyService.running != null ? "running" : "not running"));
+        HomeWatch.ensure(this); // 1.39: the watch, where the box drops the service
         if (HomeKeyService.running != null) return false;
         new Thread(() -> {
             try {
