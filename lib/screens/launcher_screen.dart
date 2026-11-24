@@ -548,6 +548,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             if (s1) posL[look.clockPos],
             look.clock24 ? '21:45' : '9:45',
           ]), [
+        _sw(tr('Часы, дата и погода'), tr('Выключите — на главном экране останутся только значки'), look.showClock,
+            (v) => _setLook(look.copyWith(showClock: v)), need: 122),
         if (s0)
           _pills(tr('Часы вверху'), barL, look.barClock, (v) => _setLook(look.copyWith(barClock: v)), need: 61),
         if (showSize)

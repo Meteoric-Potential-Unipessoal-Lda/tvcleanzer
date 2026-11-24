@@ -75,6 +75,9 @@ class LauncherLook {
   /// The memory numbers beside the memory icon while it is selected (launcher 0.99+).
   final bool memLabel;
 
+  /// launcher 1.22: clock, date and weather on the home screen
+  final bool showClock;
+
   const LauncherLook({
     this.anim = 0,
     this.ringAccent = false,
@@ -112,13 +115,14 @@ class LauncherLook {
     this.ringOff = false,
     this.ringGlow = false,
     this.memLabel = true,
+    this.showClock = true,
   });
 
   LauncherLook copyWith({int? anim, bool? ringAccent, int? tiles, int? wallDim,
           bool? ambient, bool? clock24, bool? labels, int? inputs, int? favCols, int? style, int? clockPos,
           int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon, bool? appsBelow, int? icons, bool? heroTitle, bool? memPill, bool? cleanBar, int? skinAuto, int? ambientSec,
           bool? greeting, int? barClock, bool? oneLine, int? iconShape, bool? btPill,
-          int? barStyle, int? favAlign, bool? clockGlass, int? shelf, bool? noLabels, bool? ringOff, bool? ringGlow, bool? memLabel}) =>
+          int? barStyle, int? favAlign, bool? clockGlass, int? shelf, bool? noLabels, bool? ringOff, bool? ringGlow, bool? memLabel, bool? showClock}) =>
       LauncherLook(
         anim: anim ?? this.anim,
         ringAccent: ringAccent ?? this.ringAccent,
@@ -156,13 +160,14 @@ class LauncherLook {
         ringOff: ringOff ?? this.ringOff,
         ringGlow: ringGlow ?? this.ringGlow,
         memLabel: memLabel ?? this.memLabel,
+        showClock: showClock ?? this.showClock,
       );
 
   /// Extras for `am broadcast … com.tvcleanzer.launcher.APPLY`.
   String get extras => '--ei anim $anim --ez ringAccent $ringAccent --ei tiles $tiles '
       '--ei wallDim $wallDim --ez ambient $ambient --ez clock24 $clock24 --ez labels $labels '
       '--ei inputs $inputs --ei favCols $favCols --ei style $style --ei clockPos $clockPos --ei clockSize $clockSize '
-      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --ez heroTitle $heroTitle --ez memPill $memPill --ez cleanBar $cleanBar --ei skinAuto $skinAuto --ei ambientSec $ambientSec --ez greeting $greeting --ei barClock $barClock --ez oneLine $oneLine --ei iconShape $iconShape --ez btPill $btPill --ei barStyle $barStyle --ei favAlign $favAlign --ez clockGlass $clockGlass --ei shelf $shelf --ez noLabels $noLabels --ez ringOff $ringOff --ez ringGlow $ringGlow --ez memLabel $memLabel --es weatherCity ${_q(weatherCity)}'
+      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --ez heroTitle $heroTitle --ez memPill $memPill --ez cleanBar $cleanBar --ei skinAuto $skinAuto --ei ambientSec $ambientSec --ez greeting $greeting --ei barClock $barClock --ez oneLine $oneLine --ei iconShape $iconShape --ez btPill $btPill --ei barStyle $barStyle --ei favAlign $favAlign --ez clockGlass $clockGlass --ei shelf $shelf --ez noLabels $noLabels --ez ringOff $ringOff --ez ringGlow $ringGlow --ez memLabel $memLabel --ez showClock $showClock --es weatherCity ${_q(weatherCity)}'
       '${weatherCity.isEmpty ? '' : ' --ef lat ${lat.toStringAsFixed(4)} --ef lon ${lon.toStringAsFixed(4)}'}';
 
   /// Single-quoted for the TV's shell (city names may have spaces or apostrophes).
@@ -180,6 +185,7 @@ class LauncherLook {
         'ringOff': ringOff,
         'ringGlow': ringGlow,
         'memLabel': memLabel,
+        'showClock': showClock,
       };
 
   static int _i(Object? v, int def, int lo, int hi) =>
@@ -225,5 +231,6 @@ class LauncherLook {
         ringOff: _b(m['ringOff'], false),
         ringGlow: _b(m['ringGlow'], false),
         memLabel: _b(m['memLabel'], true),
+        showClock: _b(m['showClock'], true),
       );
 }

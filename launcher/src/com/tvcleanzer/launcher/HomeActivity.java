@@ -421,7 +421,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // «Дата и погода: в одну строку» (0.76): the time with the date and the weather beside it
         // (an owner: the stacked block took half the screen)
         weatherSep = null;
-        if (prefs.oneLine()) {
+        if (!prefs.showClock()) {
+            weatherView = null;   // 1.22: «Часы, дата и погода» off: only the dock
+        } else if (prefs.oneLine()) {
             clockRow(screenW, screenH, padH, center);
         } else {
         TextClock date = new TextClock(this);
@@ -1545,8 +1547,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         LinearLayout.LayoutParams trp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         trp.topMargin = Ui.dp(this, 4);
-        left.addView(timeRow, trp);
-        if (prefs.clockGlass()) {
+        // 1.22: «Часы, дата и погода» off: no clock, date or weather up top, only the icons
+        if (prefs.showClock()) left.addView(timeRow, trp); else weatherView = null;
+        if (prefs.clockGlass() && prefs.showClock()) {
             left.setBackground(Ui.shelf(Ui.dp(this, 26), prefs.shelf()));
             left.setPadding(Ui.dp(this, 24), Ui.dp(this, 14), Ui.dp(this, 28), Ui.dp(this, 16));
             bar.addView(left, new LinearLayout.LayoutParams(

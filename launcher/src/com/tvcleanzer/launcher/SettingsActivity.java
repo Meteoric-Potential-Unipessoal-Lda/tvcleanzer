@@ -190,6 +190,7 @@ public class SettingsActivity extends Activity {
         });
 
         addHeader(skin, T.t("Часы и погода"));
+        addToggle(skin, T.t("Часы, дата и погода"), prefs.showClock(), T.t("Показывать"), T.t("Скрыто"), prefs::setShowClock);
         addToggle(skin, T.t("Часы"), prefs.clock24(), T.t("24 часа"), T.t("12 часов"), prefs::setClock24);
         addChoice(skin, T.t("Часы: шрифт"), Prefs.CLOCK_FONT_NAMES, prefs.clockFont(), prefs::setClockFont);
         final int[] sizes = {60, 80, 100, 120, 140, 160, 180};

@@ -1023,6 +1023,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Show selected',
     'Показать все': 'Show all',
     'Вернули на главный экран: {0}': 'Back on the home screen: {0}',
+    'Часы, дата и погода': 'Clock, date and weather',
+    'Выключите — на главном экране останутся только значки': 'Turn it off to keep only the icons on the home screen',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2046,6 +2048,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Показати вибрані',
     'Показать все': 'Показати всі',
     'Вернули на главный экран: {0}': 'Повернули на головний екран: {0}',
+    'Часы, дата и погода': 'Годинник, дата й погода',
+    'Выключите — на главном экране останутся только значки': 'Вимкніть — на головному екрані залишаться лише значки',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3069,6 +3073,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Mostrar seleccionadas',
     'Показать все': 'Mostrar todas',
     'Вернули на главный экран: {0}': 'De vuelta en inicio: {0}',
+    'Часы, дата и погода': 'Reloj, fecha y tiempo',
+    'Выключите — на главном экране останутся только значки': 'Desactívalo y en la pantalla de inicio quedarán solo los iconos',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4092,6 +4098,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Mostrar selecionados',
     'Показать все': 'Mostrar todos',
     'Вернули на главный экран: {0}': 'De volta à tela inicial: {0}',
+    'Часы, дата и погода': 'Relógio, data e tempo',
+    'Выключите — на главном экране останутся только значки': 'Desative para deixar só os ícones na tela inicial',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5115,6 +5123,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Ausgewählte zeigen',
     'Показать все': 'Alle zeigen',
     'Вернули на главный экран: {0}': 'Wieder auf dem Startbildschirm: {0}',
+    'Часы, дата и погода': 'Uhr, Datum und Wetter',
+    'Выключите — на главном экране останутся только значки': 'Ausschalten, damit auf dem Startbildschirm nur die Symbole bleiben',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6138,6 +6148,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Afficher la sélection',
     'Показать все': 'Tout afficher',
     'Вернули на главный экран: {0}': 'De retour sur l\'accueil : {0}',
+    'Часы, дата и погода': 'Horloge, date et météo',
+    'Выключите — на главном экране останутся только значки': 'Désactivez pour ne garder que les icônes sur l\'écran d\'accueil',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7161,6 +7173,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Mostra selezionate',
     'Показать все': 'Mostra tutte',
     'Вернули на главный экран: {0}': 'Di nuovo nella Home: {0}',
+    'Часы, дата и погода': 'Orologio, data e meteo',
+    'Выключите — на главном экране останутся только значки': 'Disattiva per lasciare solo le icone nella schermata Home',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8184,6 +8198,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Паказаць выбраныя',
     'Показать все': 'Паказаць усе',
     'Вернули на главный экран: {0}': 'Вярнулі на галоўны экран: {0}',
+    'Часы, дата и погода': 'Гадзіннік, дата і надвор\'е',
+    'Выключите — на главном экране останутся только значки': 'Выключыце — на галоўным экране застануцца толькі значкі',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9207,6 +9223,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Таңдалғандарды көрсету',
     'Показать все': 'Барлығын көрсету',
     'Вернули на главный экран: {0}': 'Басты экранға қайтарылды: {0}',
+    'Часы, дата и погода': 'Сағат, күн және ауа райы',
+    'Выключите — на главном экране останутся только значки': 'Өшірсеңіз, басты экранда тек белгішелер қалады',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10230,6 +10248,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Tanlanganlarni ko‘rsatish',
     'Показать все': 'Hammasini ko‘rsatish',
     'Вернули на главный экран: {0}': 'Bosh ekranga qaytarildi: {0}',
+    'Часы, дата и погода': 'Soat, sana va ob-havo',
+    'Выключите — на главном экране останутся только значки': 'O‘chirsangiz, bosh ekranda faqat belgilar qoladi',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11253,6 +11273,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Ցույց տալ ընտրվածները',
     'Показать все': 'Ցույց տալ բոլորը',
     'Вернули на главный экран: {0}': 'Վերադարձվեց գլխավոր էկրան՝ {0}',
+    'Часы, дата и погода': 'Ժամացույց, ամսաթիվ և եղանակ',
+    'Выключите — на главном экране останутся только значки': 'Անջատեք, և գլխավոր էկրանին կմնան միայն պատկերակները',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12276,6 +12298,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Seçilənləri göstər',
     'Показать все': 'Hamısını göstər',
     'Вернули на главный экран: {0}': 'Əsas ekrana qaytarıldı: {0}',
+    'Часы, дата и погода': 'Saat, tarix və hava',
+    'Выключите — на главном экране останутся только значки': 'Söndürün — əsas ekranda yalnız ikonlar qalacaq',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13299,6 +13323,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'არჩეულის ჩვენება',
     'Показать все': 'ყველას ჩვენება',
     'Вернули на главный экран: {0}': 'მთავარ ეკრანზე დაბრუნდა: {0}',
+    'Часы, дата и погода': 'საათი, თარიღი და ამინდი',
+    'Выключите — на главном экране останутся только значки': 'გამორთეთ და მთავარ ეკრანზე მხოლოდ ხატულები დარჩება',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14322,6 +14348,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Тандалгандарды көрсөтүү',
     'Показать все': 'Баарын көрсөтүү',
     'Вернули на главный экран: {0}': 'Башкы экранга кайтарылды: {0}',
+    'Часы, дата и погода': 'Саат, күн жана аба ырайы',
+    'Выключите — на главном экране останутся только значки': 'Өчүрсөңүз, башкы экранда сүрөтчөлөр гана калат',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15345,6 +15373,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Seçilenleri göster',
     'Показать все': 'Tümünü göster',
     'Вернули на главный экран: {0}': 'Ana ekrana geri alındı: {0}',
+    'Часы, дата и погода': 'Saat, tarih ve hava durumu',
+    'Выключите — на главном экране останутся только значки': 'Kapatın, ana ekranda yalnızca simgeler kalsın',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16368,6 +16398,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Pokaż zaznaczone',
     'Показать все': 'Pokaż wszystkie',
     'Вернули на главный экран: {0}': 'Przywrócono na ekran główny: {0}',
+    'Часы, дата и погода': 'Zegar, data i pogoda',
+    'Выключите — на главном экране останутся только значки': 'Wyłącz, a na ekranie głównym zostaną tylko ikony',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17391,6 +17423,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Arată selectate',
     'Показать все': 'Arată tot',
     'Вернули на главный экран: {0}': 'Readuse pe ecranul principal: {0}',
+    'Часы, дата и погода': 'Ceas, dată și vreme',
+    'Выключите — на главном экране останутся только значки': 'Dezactivați și pe ecranul principal rămân doar pictogramele',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18414,6 +18448,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': '显示所选',
     'Показать все': '全部显示',
     'Вернули на главный экран: {0}': '已恢复到主屏幕：{0}',
+    'Часы, дата и погода': '时钟、日期和天气',
+    'Выключите — на главном экране останутся только значки': '关闭后主屏幕上只保留图标',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19437,6 +19473,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': '選択したものを表示',
     'Показать все': 'すべて表示',
     'Вернули на главный экран: {0}': 'ホーム画面に戻しました：{0}',
+    'Часы, дата и погода': '時計・日付・天気',
+    'Выключите — на главном экране останутся только значки': 'オフにするとホーム画面にはアイコンだけが残ります',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20460,6 +20498,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': '선택 항목 표시',
     'Показать все': '모두 표시',
     'Вернули на главный экран: {0}': '홈 화면으로 되돌림: {0}',
+    'Часы, дата и погода': '시계, 날짜, 날씨',
+    'Выключите — на главном экране останутся только значки': '끄면 홈 화면에 아이콘만 남습니다',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21483,6 +21523,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'चुने हुए दिखाएँ',
     'Показать все': 'सभी दिखाएँ',
     'Вернули на главный экран: {0}': 'होम स्क्रीन पर वापस: {0}',
+    'Часы, дата и погода': 'घड़ी, तारीख़ और मौसम',
+    'Выключите — на главном экране останутся только значки': 'बंद करें — होम स्क्रीन पर सिर्फ़ आइकन रहेंगे',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22506,6 +22548,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Tampilkan yang dipilih',
     'Показать все': 'Tampilkan semua',
     'Вернули на главный экран: {0}': 'Dikembalikan ke layar utama: {0}',
+    'Часы, дата и погода': 'Jam, tanggal, dan cuaca',
+    'Выключите — на главном экране останутся только значки': 'Matikan agar layar utama hanya berisi ikon',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -23529,6 +23573,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Hiện mục đã chọn',
     'Показать все': 'Hiện tất cả',
     'Вернули на главный экран: {0}': 'Đã đưa lại màn hình chính: {0}',
+    'Часы, дата и погода': 'Đồng hồ, ngày và thời tiết',
+    'Выключите — на главном экране останутся только значки': 'Tắt để màn hình chính chỉ còn biểu tượng',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -24552,6 +24598,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'แสดงที่เลือก',
     'Показать все': 'แสดงทั้งหมด',
     'Вернули на главный экран: {0}': 'นำกลับไปที่หน้าจอหลักแล้ว: {0}',
+    'Часы, дата и погода': 'นาฬิกา วันที่ และสภาพอากาศ',
+    'Выключите — на главном экране останутся только значки': 'ปิดเพื่อให้หน้าจอหลักเหลือแค่ไอคอน',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -25575,6 +25623,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Geselecteerde tonen',
     'Показать все': 'Alles tonen',
     'Вернули на главный экран: {0}': 'Terug op het startscherm: {0}',
+    'Часы, дата и погода': 'Klok, datum en weer',
+    'Выключите — на главном экране останутся только значки': 'Zet uit om alleen de pictogrammen op het startscherm te houden',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -26598,6 +26648,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Zobrazit vybrané',
     'Показать все': 'Zobrazit vše',
     'Вернули на главный экран: {0}': 'Vráceno na plochu: {0}',
+    'Часы, дата и погода': 'Hodiny, datum a počasí',
+    'Выключите — на главном экране останутся только значки': 'Vypněte a na ploše zůstanou jen ikony',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -27621,6 +27673,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Εμφάνιση επιλεγμένων',
     'Показать все': 'Εμφάνιση όλων',
     'Вернули на главный экран: {0}': 'Επέστρεψαν στην αρχική: {0}',
+    'Часы, дата и погода': 'Ρολόι, ημερομηνία και καιρός',
+    'Выключите — на главном экране останутся только значки': 'Απενεργοποιήστε το για να μείνουν μόνο τα εικονίδια στην αρχική οθόνη',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -28644,6 +28698,8 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Kijelöltek megjelenítése',
     'Показать все': 'Összes megjelenítése',
     'Вернули на главный экран: {0}': 'Visszakerült a kezdőképernyőre: {0}',
+    'Часы, дата и погода': 'Óra, dátum és időjárás',
+    'Выключите — на главном экране останутся только значки': 'Kapcsolja ki, és a kezdőképernyőn csak az ikonok maradnak',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -29667,5 +29723,7 @@ const Map<String, Map<String, String>> translations = {
     'Показать выбранные': 'Visa valda',
     'Показать все': 'Visa alla',
     'Вернули на главный экран: {0}': 'Tillbaka på startskärmen: {0}',
+    'Часы, дата и погода': 'Klocka, datum och väder',
+    'Выключите — на главном экране останутся только значки': 'Stäng av så att bara ikonerna finns kvar på startskärmen',
   },
 };
