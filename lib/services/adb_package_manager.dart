@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 123;
+  static const bundledLauncherVersion = 124;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   /// 1.3.123: the TV's own settings write it short («…/.HomeKeyService»). Left in the list, our
@@ -1842,6 +1842,10 @@ class AdbPackageManager {
       }
       await adb.shell('settings put secure screensaver_components $photoDream');
       await adb.shell('settings put secure screensaver_enabled 1');
+      // 1.3.142: the screensaver comes at the idle time only with this on; a Xiaomi MiTV-AFKR0
+      // (Android 14) never started the frame by itself
+      await adb.shell('settings put secure screensaver_activate_on_sleep 1');
+      await _logDream(adb);
     } finally {
       adb.close();
     }
@@ -1926,16 +1930,39 @@ class AdbPackageManager {
     }
   }
 
-  /// Starts the screensaver right now (SystemUI's "start now"). False if the TV refused.
+  /// Shows the photo frame right now. False if the TV refused.
+  ///
+  /// 1.3.142: the launcher's own frame screen first (launcher 1.24): SystemUI's «start the
+  /// screensaver now» did nothing on a Xiaomi MiTV-AFKR0 (Android 14). An older launcher: as before.
   Future<bool> startScreensaverNow(TvDevice device) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
-      final out = await adb.shell('am start -n com.android.systemui/.Somnambulator 2>&1');
-      return !out.contains('Error') && !out.contains('Exception');
+      bool ok(String out) => !out.contains('Error') && !out.contains('Exception');
+      var out = await adb.shell('am start -n $launcherPkg/.FrameActivity 2>&1');
+      if (ok(out)) return true;
+      out = await adb.shell('am start -n com.android.systemui/.Somnambulator 2>&1');
+      if (!ok(out)) {
+        AppLog.error('photo frame', 'start now: ${out.trim()}');
+        await _logDream(adb);
+      }
+      return ok(out);
     } finally {
       adb.close();
     }
+  }
+
+  /// For «?» reports: what the TV's screensaver settings are (why the frame does not come).
+  Future<void> _logDream(AdbClient adb) async {
+    try {
+      final s = await adb.shell('echo "comp=\$(settings get secure screensaver_components) '
+          'on=\$(settings get secure screensaver_enabled) sleep=\$(settings get secure screensaver_activate_on_sleep) '
+          'dock=\$(settings get secure screensaver_activate_on_dock) off=\$(settings get system screen_off_timeout) '
+          'attentive=\$(settings get secure attentive_timeout)"');
+      AppLog.error('photo frame', s.trim());
+      final d = await adb.shell('dumpsys dreams 2>/dev/null | grep -i -E "dreamsEnabled|activatedOnSleep|ActivatedOnSleep|DreamComponent|mCurrentDream|Supported" | head -8');
+      if (d.trim().isNotEmpty) AppLog.error('photo frame', d.trim().replaceAll(RegExp(r'\s+'), ' '));
+    } catch (_) {}
   }
 
   /// Gives the TV its previous screensaver back.

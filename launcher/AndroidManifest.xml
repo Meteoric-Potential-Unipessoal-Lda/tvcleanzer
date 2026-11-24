@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="123"
-    android:versionName="1.23">
+    android:versionCode="124"
+    android:versionName="1.24">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -172,6 +172,15 @@
             android:name=".CastActivity"
             android:theme="@style/HomeTheme"
             android:exported="true"
+            android:screenOrientation="landscape" />
+
+        <!-- the photo frame on request (1.24): where the TV won't start its screensaver at once -->
+        <activity
+            android:name=".FrameActivity"
+            android:theme="@style/HomeTheme"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
             android:screenOrientation="landscape" />
 
         <!-- pictures from a USB stick / the TV's memory: wallpaper and photo frame -->
