@@ -89,6 +89,15 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       if (err == null) {
         _mouse = link;
         _mouseTv = tv.id;
+        // 1.3.139: the pointer could not come back: the «Повторить» button instead of a dead pad
+        link.onLost = (e) {
+          if (!mounted || _mouse != link) return;
+          setState(() {
+            _mouse = null;
+            _mouseTv = null;
+            _mouseErr = e;
+          });
+        };
       } else {
         _mouseErr = err;
       }
@@ -1173,6 +1182,9 @@ class _MouseLink {
   /// again, a few times, and it comes back as the plain pointer.
   TvDevice? _tv;
   bool _closing = false;
+
+  /// 1.3.139: connecting again gave up (the network was gone for over a minute).
+  void Function(String error)? onLost;
   int _retries = 0;
   DateTime _openedAt = DateTime.now();
   AdbStream? _s;
@@ -1204,7 +1216,7 @@ class _MouseLink {
       isPlain = plain;
       if (!out.contains('result=1') && !plain) {
         AppLog.error('mouse', out.trim());
-        close();
+        _shut();
         if (out.contains('result=2') || out.contains('result=3')) {
           return tr('Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.');
         }
@@ -1242,15 +1254,20 @@ class _MouseLink {
       return null;
     } catch (e) {
       AppLog.error('mouse', e);
-      close();
-      return tr('Не получилось подключить мышь. Попробуйте ещё раз.');
+      _shut();
+      return _noLink;
     }
   }
+
+  static String get _noLink => tr('Не получилось подключить мышь. Попробуйте ещё раз.');
 
   Future<void> _dropped() async {
     if (_closing || _tv == null) return;
     if (DateTime.now().difference(_openedAt) > const Duration(seconds: 20)) _retries = 0;
-    if (_retries++ >= 3) return;
+    if (_retries++ >= 3) {
+      onLost?.call(_noLink);
+      return;
+    }
     AppLog.error('mouse', 'dropped by the TV, connecting again');
     _back = null;
     _s = null;
@@ -1258,9 +1275,19 @@ class _MouseLink {
       _c?.close();
     } catch (_) {}
     _c = null;
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-    if (_closing) return;
-    await open(_tv!);
+    // 1.3.139: MiTV-MSSP3 + Galaxy S21: the phone's Wi-Fi blinked (errno 103), then the TV did not
+    // answer on 5555 for a while, and the one try left a pad that did nothing. Now it keeps trying
+    // for about a minute, then says so.
+    String? err;
+    for (var i = 0; i < 6; i++) {
+      await Future<void>.delayed(Duration(milliseconds: i == 0 ? 400 : 2000 * i));
+      if (_closing) return;
+      err = await open(_tv!);
+      if (err == null || _closing) return;
+      if (err != _noLink) break; // the TV answered with a reason: trying again changes nothing
+    }
+    AppLog.error('mouse', 'gave up connecting again');
+    onLost?.call(err ?? _noLink);
   }
 
   void move(double dx, double dy) {
@@ -1297,6 +1324,11 @@ class _MouseLink {
 
   void close() {
     _closing = true;
+    _shut();
+  }
+
+  /// Lets go of the connection; a link closed by the owner ([close]) never connects again.
+  void _shut() {
     _back?.cancel();
     _back = null;
     _flush?.cancel();
