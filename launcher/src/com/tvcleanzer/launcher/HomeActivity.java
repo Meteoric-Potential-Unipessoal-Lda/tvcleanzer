@@ -907,15 +907,29 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // 0.96: ▼ from the one-row favourites goes straight to the app below (an owner: with «apps on
         // the second screen» it took two presses — the first only scrolled the page)
         if (code == KeyEvent.KEYCODE_DPAD_DOWN && e.getAction() == KeyEvent.ACTION_DOWN && favGridCols == 0
-                && before instanceof AppTile && firstGridRow != null && favShelf != null && inside(before, favShelf)) {
+                && before instanceof AppTile && favShelf != null && inside(before, favShelf)) {
+            // 1.12: the first row of apps below the shelf is looked up now, among the tiles that
+            // are on the page at this moment (a kept row could be an old one: scrolled to the right
+            // end of the favourites, ▼ did nothing — UMID's video; at the left end the system's
+            // own search found the app straight below)
             int[] p = new int[2];
             before.getLocationOnScreen(p);
-            int fx = p[0] + before.getWidth() / 2, bd = Integer.MAX_VALUE;
-            View best = null;
-            for (int i = 0; i < firstGridRow.getChildCount(); i++) {
-                View c = firstGridRow.getChildAt(i);
-                if (!c.isFocusable() || c.getVisibility() != View.VISIBLE) continue;
+            int fx = p[0] + before.getWidth() / 2;
+            favShelf.getLocationOnScreen(p);
+            int shelfBottom = p[1] + favShelf.getHeight();
+            java.util.ArrayList<View> all = root.getFocusables(View.FOCUS_DOWN);
+            int rowTop = Integer.MAX_VALUE;
+            for (View c : all) {
+                if (!(c instanceof AppTile) || inside(c, favShelf) || !c.isShown()) continue;
                 c.getLocationOnScreen(p);
+                if (p[1] >= shelfBottom - 2) rowTop = Math.min(rowTop, p[1]);
+            }
+            View best = null;
+            int bd = Integer.MAX_VALUE;
+            for (View c : all) {
+                if (!(c instanceof AppTile) || inside(c, favShelf) || !c.isShown()) continue;
+                c.getLocationOnScreen(p);
+                if (Math.abs(p[1] - rowTop) > Ui.dp(this, 12)) continue;
                 int d = Math.abs(p[0] + c.getWidth() / 2 - fx);
                 if (d < bd) { bd = d; best = c; }
             }
