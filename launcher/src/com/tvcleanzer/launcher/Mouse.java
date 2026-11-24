@@ -250,9 +250,13 @@ final class Mouse {
             // 1.02: a Haier (Android 11) — the pointer moved, a click opened nothing. A gesture the
             // system drops goes to the phone, which taps over ADB; the first few say how it went
             // 1.04: no answer at all (a service the system no longer talks to) counts as dropped
+            // 1.09: a gesture cancelled because we sent another one after it (a scroll piece over
+            // a tap) is not the TV dropping gestures — taken as one, it switched taps to the
+            // slow ways for the rest of the session (a TCL: «клик не работает» from 1.07 on)
+            final int mine = ++gestureSeq;
             final boolean[] answered = {false};
             main.postDelayed(() -> {
-                if (answered[0]) return;
+                if (answered[0] || gestureSeq != mine) return;
                 answered[0] = true;
                 noGestures = true;
                 told("no answer");
@@ -267,6 +271,7 @@ final class Mouse {
                 @Override public void onCancelled(GestureDescription d) {
                     if (answered[0]) return;
                     answered[0] = true;
+                    if (gestureSeq != mine) return; // replaced by our own next gesture
                     noGestures = true;
                     told("cancelled");
                     if (!nodeAction(drag, fdx, fdy, ms)) back(line);
@@ -285,6 +290,8 @@ final class Mouse {
     }
 
     private int toldTaps;
+    /** Every gesture we send; a cancel of one that is not the latest was our own doing. */
+    private int gestureSeq;
 
     // 1.07: two-finger scrolling as one finger held down and moved piece by piece (Android 8+:
     // continued strokes), not a separate short swipe for every piece — those jerked and flung
@@ -354,6 +361,7 @@ final class Mouse {
                     : scrollStroke.continueStroke(path, 0, ms, more);
             GestureDescription g = new GestureDescription.Builder().addStroke(st).build();
             inFlight = true;
+            gestureSeq++;
             boolean ok = svc.dispatchGesture(g, new AccessibilityService.GestureResultCallback() {
                 @Override public void onCompleted(GestureDescription d) { next(); }
                 @Override public void onCancelled(GestureDescription d) {
