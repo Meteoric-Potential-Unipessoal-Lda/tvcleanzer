@@ -670,8 +670,13 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 105;
+  static const bundledLauncherVersion = 106;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
+
+  /// 1.3.123: the TV's own settings write it short («…/.HomeKeyService»). Left in the list, our
+  /// «off and on» never switched it off, and a service the system marked crashed stayed unbound
+  /// (a TCL, Android 12: enabled twice, bound never).
+  static bool _isHomeKeyService(String s) => s == _homeKeyService || s == '$launcherPkg/.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
@@ -997,7 +1002,7 @@ class AdbPackageManager {
     final serviceListed = (await adb.shell('settings get secure enabled_accessibility_services'))
         .trim()
         .split(':')
-        .contains(_homeKeyService);
+        .any(_isHomeKeyService);
     if (!gentle || serviceListed) await _ensureHomeKeyService(adb);
 
     onStep?.call(tr('Проверяем кнопку «Домой»…'));
@@ -1980,7 +1985,7 @@ class AdbPackageManager {
 
   Future<void> _ensureHomeKeyService(AdbClient adb) async {
     final raw = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
-    final listed = raw.split(':').contains(_homeKeyService);
+    final listed = raw.split(':').any(_isHomeKeyService);
     final on = (await adb.shell('settings get secure accessibility_enabled')).trim() == '1';
     if (listed && on && await _homeKeyBound(adb)) return;
     if (!listed || !on) {
@@ -2012,7 +2017,7 @@ class AdbPackageManager {
   Future<void> _setHomeKeyService(AdbClient adb, {required bool enabled}) async {
     final raw = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
     final list = (raw.isEmpty || raw == 'null' ? <String>[] : raw.split(':'))
-        .where((s) => s.isNotEmpty && s != _homeKeyService)
+        .where((s) => s.isNotEmpty && !_isHomeKeyService(s))
         .toList();
     if (enabled) list.add(_homeKeyService);
     if (list.isEmpty) {

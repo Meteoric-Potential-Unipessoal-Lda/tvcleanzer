@@ -44,7 +44,13 @@ public class BootReceiver extends BroadcastReceiver {
 
     static boolean listed(Context c) {
         String s = Settings.Secure.getString(c.getContentResolver(), KEY);
-        return s != null && s.contains(SERVICE);
+        if (s == null) return false;
+        for (String p : s.split(":")) if (ours(p)) return true;
+        return false;
+    }
+
+    static boolean ours(String p) {
+        return p.equals(SERVICE) || p.equals("com.tvcleanzer.launcher/.HomeKeyService");
     }
 
     /** The service should run and does not: listed back (or off and on, when listed but not
@@ -57,7 +63,7 @@ public class BootReceiver extends BroadcastReceiver {
         String cur = Settings.Secure.getString(cr, KEY);
         cur = cur == null || cur.equals("null") ? "" : cur;
         final String without = strip(cur);
-        if (cur.contains(SERVICE)) {
+        if (!without.equals(cur)) {
             HomeKeyService.log("boot: listed but not running, off and on");
             Settings.Secure.putString(cr, KEY, without);
             try { Thread.sleep(1500); } catch (InterruptedException ignored) {}
@@ -81,7 +87,9 @@ public class BootReceiver extends BroadcastReceiver {
     private static String strip(String s) {
         StringBuilder b = new StringBuilder();
         for (String p : s.split(":")) {
-            if (p.isEmpty() || p.equals(SERVICE)) continue;
+            // 1.06: the short spelling too («…launcher/.HomeKeyService», as the TV's own settings
+            // write it) — left in, «off and on» never switched it off (a TCL: enabled, never bound)
+            if (p.isEmpty() || ours(p)) continue;
             if (b.length() > 0) b.append(':');
             b.append(p);
         }
