@@ -169,6 +169,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onResume() {
         super.onResume();
         resumed = true;
+        armFrame();
         if (prefs.nextSkinIfDue()) dirty = true; // «Автосмена темы»
         if (dirty) { dirty = false; build(); } else startAmbient();
         if (liveWall != null) liveWall.play();
@@ -296,6 +297,48 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         weatherView.setVisibility(w == null ? View.GONE : View.VISIBLE);
         WeatherIcons.apply(this, prefs, weatherView); // 1.30: the pack's picture before the text
         if (weatherSep != null) weatherSep.setVisibility(w == null ? View.GONE : View.VISIBLE);
+    }
+
+    // ── 1.32: the photo frame when the TV does not start it ─────────────────────────────
+    // Xiaomi MiTV-AFKR0 (Android 14): the frame is the TV's screensaver and opens on request, but
+    // the TV never started it after the idle time. While the home screen is in front and nobody
+    // presses anything, we open it ourselves half a minute after the time the TV should have.
+    // Where the TV does start it, the home screen is covered (no window focus) and nothing happens.
+    private final Runnable frameTick = () -> {
+        if (!resumed || !hasWindowFocus()) return;
+        HomeKeyService.log("frame: the TV did not start its screensaver, opening the photo frame");
+        try {
+            startActivity(new Intent(this, FrameActivity.class));
+        } catch (Exception e) {
+            HomeKeyService.log("frame: " + e);
+        }
+    };
+
+    /** Idle time before our own photo frame, or 0: only when the frame is the TV's screensaver. */
+    private long frameDelayMs() {
+        try {
+            android.content.ContentResolver cr = getContentResolver();
+            String comp = Settings.Secure.getString(cr, "screensaver_components");
+            if (comp == null || !comp.contains("PhotoDream")) return 0;
+            if (Settings.Secure.getInt(cr, "screensaver_enabled", 1) == 0) return 0;
+            long off = Settings.System.getLong(cr, Settings.System.SCREEN_OFF_TIMEOUT, 0);
+            if (off <= 0 || off > 6 * 60 * 60 * 1000L) return 0;
+            return off + 30_000L;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private void armFrame() {
+        main.removeCallbacks(frameTick);
+        long d = frameDelayMs();
+        if (d > 0) main.postDelayed(frameTick, d);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        if (resumed) armFrame(); // a key pressed: the idle time starts again
     }
 
     /** The top bar's weather block (1.31): picture, «+16°», a line, and «📍 Наманган · ясно» under. */
@@ -882,6 +925,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onPause() {
         resumed = false;
+        main.removeCallbacks(frameTick);
         main.removeCallbacks(weatherTick);
         main.removeCallbacks(memTick);
         main.removeCallbacks(homePhotoTick);
