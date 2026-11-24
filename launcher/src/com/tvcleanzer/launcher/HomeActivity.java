@@ -1715,7 +1715,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             updateBlockDate();
             if (resumed) main.postDelayed(blockDateTick, 60_000L);
             top.addView(days);
-            block.addView(top);
+            // 1.36, the real cause (UMID: «когда город меняю — дата появляется»): added without
+            // params, a row in a vertical layout is match_parent, and a wrap_content column does not
+            // count such a child: the block was as wide as the city line and cut the date off
+            block.addView(top, new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             weatherView.setSingleLine(true);
             weatherView.setIncludeFontPadding(false);
             weatherView.setTextColor(0xE6FFFFFF); // the city line as bright as on the picture
