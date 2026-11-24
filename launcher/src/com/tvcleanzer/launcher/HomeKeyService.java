@@ -451,13 +451,40 @@ public class HomeKeyService extends AccessibilityService {
         return false;
     }
 
+    private boolean volLogged;
+
+    /** 0.100: a Haier (Android 11, Google TV home on) — held Volume moved one step only: the first
+     *  press is the system's own, the repeats are ours, and our «suggested» step changed nothing
+     *  there. Now a step that changed nothing is made on the music stream directly, and the first
+     *  hold says in the report (TVCleanzerHome) what happened. */
     private void volumeStep(int dir) {
         try {
             AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
-            if (am != null) am.adjustSuggestedStreamVolume(dir, AudioManager.USE_DEFAULT_STREAM_TYPE,
-                    AudioManager.FLAG_SHOW_UI);
+            if (am == null) return;
+            final int s = AudioManager.STREAM_MUSIC;
+            final int max = am.getStreamMaxVolume(s), before = am.getStreamVolume(s);
+            am.adjustSuggestedStreamVolume(dir, AudioManager.USE_DEFAULT_STREAM_TYPE, AudioManager.FLAG_SHOW_UI);
+            int after = am.getStreamVolume(s);
+            boolean edge = dir == AudioManager.ADJUST_RAISE ? before >= max : before <= 0;
+            String how = "suggested";
+            if (after == before && !edge) {
+                am.adjustStreamVolume(s, dir, AudioManager.FLAG_SHOW_UI);
+                after = am.getStreamVolume(s);
+                how = "music";
+                if (after == before) {
+                    am.setStreamVolume(s, Math.max(0, Math.min(max, before + (dir == AudioManager.ADJUST_RAISE ? 1 : -1))),
+                            AudioManager.FLAG_SHOW_UI);
+                    after = am.getStreamVolume(s);
+                    how = after == before ? "nothing worked" : "set";
+                }
+            }
+            if (!volLogged) {
+                volLogged = true;
+                log("volume held: " + before + "→" + after + " of " + max + " (" + how + ")");
+            }
         } catch (Throwable t) {
             android.util.Log.w("TVCleanzerVol", "step failed: " + t);
+            if (!volLogged) { volLogged = true; log("volume held: " + t); }
         }
     }
 
