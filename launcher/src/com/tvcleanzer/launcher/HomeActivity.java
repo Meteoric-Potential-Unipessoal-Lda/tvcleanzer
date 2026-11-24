@@ -88,6 +88,12 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** Clock style: the full app grid is open ("All apps"); Back or Home returns to the clock. */
     private boolean showGrid;
     private TextView weatherView;
+    /** 1.31, the top bar as on UMID's picture: the weather's picture and a big temperature beside
+     *  the date, [weatherView] the city and the sky under both. Null in the other layouts. */
+    private android.widget.ImageView weatherPic;
+    private TextView weatherTemp;
+    private View weatherDiv;
+    private int weatherPicPx;
     /** The «·» before the weather in the one-line clock: hidden with it. */
     private View weatherSep;
     private final List<View> ambientGlows = new ArrayList<>();
@@ -281,11 +287,39 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private void updateWeatherView() {
         if (weatherView == null) return;
+        if (weatherTemp != null) {
+            updateWeatherBlock();
+            return;
+        }
         String w = Weather.line(prefs);
         weatherView.setText(w == null ? "" : w);
         weatherView.setVisibility(w == null ? View.GONE : View.VISIBLE);
         WeatherIcons.apply(this, prefs, weatherView); // 1.30: the pack's picture before the text
         if (weatherSep != null) weatherSep.setVisibility(w == null ? View.GONE : View.VISIBLE);
+    }
+
+    /** The top bar's weather block (1.31): picture, «+16°», a line, and «📍 Наманган · ясно» under. */
+    private void updateWeatherBlock() {
+        boolean any = Weather.line(prefs) != null;
+        String temp = any ? Weather.temp(prefs) : null;
+        Drawable pic = any ? WeatherIcons.picture(this, prefs, weatherPicPx) : null;
+        weatherPic.setImageDrawable(pic);
+        weatherPic.setVisibility(pic == null ? View.GONE : View.VISIBLE);
+        if (temp == null) {
+            weatherTemp.setText("");
+        } else {
+            // «+16» medium, the «°» thin, as on the picture
+            android.text.SpannableString ts = new android.text.SpannableString(temp);
+            int dg = temp.length() - 1;
+            ts.setSpan(new android.text.style.TypefaceSpan("sans-serif-light"), dg, temp.length(), 0);
+            ts.setSpan(new android.text.style.ForegroundColorSpan(0xD9FFFFFF), dg, temp.length(), 0);
+            weatherTemp.setText(ts);
+        }
+        weatherTemp.setVisibility(temp == null ? View.GONE : View.VISIBLE);
+        weatherDiv.setVisibility(any ? View.VISIBLE : View.GONE);
+        String detail = any ? Weather.detail(prefs) : null;
+        weatherView.setText(detail == null ? "" : WeatherIcons.withPin(detail, weatherView));
+        weatherView.setVisibility(detail == null ? View.GONE : View.VISIBLE);
     }
 
     private TextClock bigClock(float sizeSp) {
@@ -1187,6 +1221,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     // ── UI ──────────────────────────────────────────────────────────────────
 
     private void build() {
+        weatherPic = null;
+        weatherTemp = null;
+        weatherDiv = null;
         String focusPkg = null;
         View cf = getCurrentFocus();
         if (cf instanceof AppTile) focusPkg = ((AppTile) cf).app.pkg;
@@ -1540,12 +1577,56 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             dateCol.addView(dayMonth, dml);
         }
         weatherView = Ui.text(this, 15, 0xB3FFFFFF, "sans-serif-medium");
-        LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (oneLine) wl.leftMargin = Ui.dp(this, 18); else wl.topMargin = Ui.dp(this, 4);
-        dateCol.addView(weatherView, wl);
+        if (oneLine) {
+            LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            wl.leftMargin = Ui.dp(this, 18);
+            dateCol.addView(weatherView, wl);
+            timeRow.addView(dateCol);
+        } else {
+            // 1.31 (UMID's picture): the weather's picture and a big «+16°», a line, then the day
+            // and the date; under them «📍 Наманган · переменная облачность». No weather: the date
+            // alone, as before.
+            android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
+            float tempSp = Math.max(20, clockSp * 0.44f);
+            weatherPicPx = Math.round(android.util.TypedValue.applyDimension(
+                    android.util.TypedValue.COMPLEX_UNIT_SP, Math.max(28, clockSp * 0.66f), dm));
+            LinearLayout block = new LinearLayout(this);
+            block.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout top = new LinearLayout(this);
+            top.setOrientation(LinearLayout.HORIZONTAL);
+            top.setGravity(Gravity.CENTER_VERTICAL);
+            weatherPic = new android.widget.ImageView(this);
+            weatherPic.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+            LinearLayout.LayoutParams pl = new LinearLayout.LayoutParams(weatherPicPx, weatherPicPx);
+            pl.rightMargin = Ui.dp(this, 10);
+            top.addView(weatherPic, pl);
+            weatherTemp = Ui.text(this, tempSp, 0xFFFFFFFF, "sans-serif-medium");
+            weatherTemp.setSingleLine(true);
+            weatherTemp.setIncludeFontPadding(false);
+            weatherTemp.setShadowLayer(Ui.dp(this, 8), 0, Ui.dp(this, 1), 0x55000000);
+            top.addView(weatherTemp, new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            weatherDiv = new View(this);
+            weatherDiv.setBackgroundColor(0x40FFFFFF);
+            LinearLayout.LayoutParams wd = new LinearLayout.LayoutParams(Ui.dp(this, 1),
+                    Math.round(android.util.TypedValue.applyDimension(
+                            android.util.TypedValue.COMPLEX_UNIT_SP, tempSp * 1.25f, dm)));
+            wd.leftMargin = Ui.dp(this, 18);
+            wd.rightMargin = Ui.dp(this, 18);
+            top.addView(weatherDiv, wd);
+            top.addView(dateCol);
+            block.addView(top);
+            weatherView.setSingleLine(true);
+            weatherView.setIncludeFontPadding(false);
+            weatherView.setTextColor(0xE6FFFFFF); // the city line as bright as on the picture
+            LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            wl.topMargin = Ui.dp(this, 8);
+            block.addView(weatherView, wl);
+            timeRow.addView(block);
+        }
         updateWeatherView();
-        timeRow.addView(dateCol);
         LinearLayout.LayoutParams trp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         trp.topMargin = Ui.dp(this, 4);

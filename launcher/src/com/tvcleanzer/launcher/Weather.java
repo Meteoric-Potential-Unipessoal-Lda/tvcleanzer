@@ -168,6 +168,20 @@ final class Weather {
         return (t > 0 ? "+" : "") + t + "° · " + describe(p.weatherCode()) + " · " + p.weatherCity();
     }
 
+    /** «+16°» for the top bar's weather block (1.31), or null with no fresh answer. */
+    static String temp(Prefs p) {
+        if (!p.hasWeather() || p.weatherTs() == 0) return null;
+        int t = p.weatherTemp();
+        return (t > 0 ? "+" : "") + t + "°";
+    }
+
+    /** «Наманган · переменная облачность» under it (1.31), or «Наманган · погода недоступна». */
+    static String detail(Prefs p) {
+        if (!p.hasWeather()) return null;
+        if (p.weatherTs() == 0) return p.weatherCity() + " · " + T.t("погода недоступна");
+        return p.weatherCity() + " · " + describe(p.weatherCode());
+    }
+
     /** WMO weather interpretation codes (Open-Meteo). */
     static String describe(int code) {
         if (code == 0) return T.t("ясно");

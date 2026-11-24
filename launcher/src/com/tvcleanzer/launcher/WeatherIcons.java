@@ -70,6 +70,48 @@ final class WeatherIcons {
         return d;
     }
 
+    /** The picture at [px] across, for an ImageView (the top bar's weather block, 1.31). */
+    static Drawable picture(Context c, Prefs p, int px) {
+        return icon(c, p, px / 1.4f);
+    }
+
+    /** «📍 Наманган · ясно»: a drawn map pin (the text's colour) before [text]. */
+    static CharSequence withPin(String text, android.widget.TextView v) {
+        float s = v.getTextSize();
+        Drawable pin = new Pin(v.getCurrentTextColor());
+        pin.setBounds(0, 0, Math.round(s * 0.8f), Math.round(s * 1.0f));
+        android.text.SpannableStringBuilder sb = new android.text.SpannableStringBuilder("\uFFFC");
+        sb.setSpan(new IconSpan(pin, Math.round(s * 0.4f)), 0, 1, android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sb.append(text);
+        return sb;
+    }
+
+    /** An outline map pin: a round head with a hole and a point below. */
+    static final class Pin extends Drawable {
+        private final android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        Pin(int color) {
+            paint.setColor(color);
+            paint.setStyle(android.graphics.Paint.Style.STROKE);
+            paint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
+            paint.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+        }
+        @Override public void draw(android.graphics.Canvas cv) {
+            android.graphics.Rect b = getBounds();
+            float w = b.width(), h = b.height(), sw = Math.max(1f, w * 0.13f);
+            paint.setStrokeWidth(sw);
+            float cx = b.left + w / 2f, r = w / 2f - sw, cy = b.top + sw / 2f + r;
+            android.graphics.Path path = new android.graphics.Path();
+            path.arcTo(new android.graphics.RectF(cx - r, cy - r, cx + r, cy + r), 140, 260, true);
+            path.lineTo(cx, b.bottom - sw / 2f);
+            path.close();
+            cv.drawPath(path, paint);
+            cv.drawCircle(cx, cy, r * 0.35f, paint);
+        }
+        @Override public void setAlpha(int a) { paint.setAlpha(a); }
+        @Override public void setColorFilter(android.graphics.ColorFilter f) { paint.setColorFilter(f); }
+        @Override public int getOpacity() { return android.graphics.PixelFormat.TRANSLUCENT; }
+    }
+
     /** Puts the icon before the weather text already in [v]. Inside the text, not beside the
      *  view: on the clock home the line is as wide as the screen and centred, and an icon at the
      *  view's edge would stand far from the words. */
