@@ -242,6 +242,7 @@ final class PhotoFrame {
         String w = Weather.line(prefs);
         weather.setText(w == null ? "" : w);
         weather.setVisibility(w == null ? View.GONE : View.VISIBLE);
+        WeatherIcons.apply(ctx, prefs, weather);
     }
 
     void start() {

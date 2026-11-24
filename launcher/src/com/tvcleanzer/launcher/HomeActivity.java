@@ -284,6 +284,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         String w = Weather.line(prefs);
         weatherView.setText(w == null ? "" : w);
         weatherView.setVisibility(w == null ? View.GONE : View.VISIBLE);
+        WeatherIcons.apply(this, prefs, weatherView); // 1.30: the pack's picture before the text
         if (weatherSep != null) weatherSep.setVisibility(w == null ? View.GONE : View.VISIBLE);
     }
 

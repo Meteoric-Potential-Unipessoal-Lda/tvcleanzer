@@ -85,16 +85,19 @@ final class Weather {
         p.setWeatherNow((int) Math.round(t), wmo(sym));
     }
 
-    /** met.no symbol ("lightrainshowers_day") → the WMO code that [describe] knows. */
+    /** met.no symbol ("lightrainshowers_day") → the WMO code that [describe] knows. 1.30: the
+     *  strength too (light / heavy), so the icons tell drizzle-like rain from a downpour. */
     static int wmo(String sym) {
         String s = sym.replaceAll("_(day|night|polartwilight)$", "");
-        if (s.contains("thunder")) return 95;
-        if (s.contains("snowshowers")) return 85;
-        if (s.contains("rainshowers") || s.contains("sleetshowers")) return 80;
-        if (s.contains("snow")) return 73;
-        if (s.contains("sleet")) return 67;
+        boolean heavy = s.startsWith("heavy"), light = s.startsWith("light");
+        if (s.contains("thunder")) return 96; // met.no's thunder always comes with rain, sleet or snow
+        if (s.contains("snowshowers")) return heavy ? 86 : 85;
+        if (s.contains("sleetshowers")) return heavy ? 67 : 66;
+        if (s.contains("rainshowers")) return heavy ? 82 : light ? 80 : 81;
+        if (s.contains("snow")) return heavy ? 75 : light ? 71 : 73;
+        if (s.contains("sleet")) return heavy ? 67 : 66;
         if (s.contains("drizzle")) return 53;
-        if (s.contains("rain")) return 63;
+        if (s.contains("rain")) return heavy ? 65 : light ? 61 : 63;
         if (s.equals("fog")) return 45;
         if (s.equals("cloudy")) return 3;
         if (s.equals("partlycloudy")) return 2;

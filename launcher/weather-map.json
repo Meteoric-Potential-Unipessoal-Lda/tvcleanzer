@@ -1,0 +1,53 @@
+{
+  "provider": "Open-Meteo WMO weather_code",
+  "array_order": [
+    "day",
+    "night"
+  ],
+  "fallback": "unknown",
+  "codes": {
+    "0": [
+      "clear_day",
+      "clear_night"
+    ],
+    "1": [
+      "partly_cloudy_day",
+      "partly_cloudy_night"
+    ],
+    "2": [
+      "partly_cloudy_day",
+      "partly_cloudy_night"
+    ],
+    "3": "overcast",
+    "45": "fog",
+    "48": "fog",
+    "51": "drizzle",
+    "53": "drizzle",
+    "55": "drizzle",
+    "56": "sleet",
+    "57": "sleet",
+    "61": "rain",
+    "63": "rain",
+    "65": "heavy_rain",
+    "66": "sleet",
+    "67": "sleet",
+    "71": "snow",
+    "73": "snow",
+    "75": "heavy_snow",
+    "77": "snow",
+    "80": [
+      "showers_day",
+      "showers_night"
+    ],
+    "81": [
+      "showers_day",
+      "showers_night"
+    ],
+    "82": "heavy_rain",
+    "85": "snow",
+    "86": "heavy_snow",
+    "95": "thunderstorm",
+    "96": "thunderstorm_rain",
+    "99": "thunderstorm_rain"
+  }
+}
