@@ -216,10 +216,11 @@ final class AppTile extends LinearLayout {
         if (dot == null) return;
         float dp = getResources().getDisplayMetrics().density;
         float m = Math.min(w, h);
-        int d = Math.round(Math.max(8 * dp, Math.min(24 * dp, m * 0.22f)));
+        // 1.26 (the owner: «чуть уменьшить и чуть глубже»): 17 % across, its centre inside the edge
+        int d = Math.round(Math.max(7 * dp, Math.min(19 * dp, m * 0.17f)));
         float gap = Math.max(2 * dp, Math.min(5 * dp, m * 0.04f));
         double a = Math.toRadians(45);
-        float dist = rc * 1.06f;
+        float dist = rc * 0.9f;
         float cx = (float) (w - rc + dist * Math.cos(a));
         float cy = (float) (h - rc + dist * Math.sin(a));
         dotCx = cx;
