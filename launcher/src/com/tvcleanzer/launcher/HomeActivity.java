@@ -904,6 +904,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
         int dir = e.getAction() == KeyEvent.ACTION_DOWN ? Ui.focusDir(code) : 0;
         View before = dir != 0 ? getCurrentFocus() : null;
+        // 1.13: ◀ / ▶ at the end of the favourites stays there. The system looked further, outside
+        // the bar, and found an app of the grid below: holding ◀ back to the start, the page
+        // dropped to the apps (UMID's video: «с конца в начало — не должно вниз спуститься»)
+        if ((code == KeyEvent.KEYCODE_DPAD_LEFT || code == KeyEvent.KEYCODE_DPAD_RIGHT)
+                && e.getAction() == KeyEvent.ACTION_DOWN && before instanceof AppTile
+                && favShelf instanceof ViewGroup && inside(before, favShelf)) {
+            View nx = android.view.FocusFinder.getInstance().findNextFocus((ViewGroup) favShelf, before,
+                    code == KeyEvent.KEYCODE_DPAD_LEFT ? View.FOCUS_LEFT : View.FOCUS_RIGHT);
+            if (nx == null) return true;
+        }
         // 0.96: ▼ from the one-row favourites goes straight to the app below (an owner: with «apps on
         // the second screen» it took two presses — the first only scrolled the page)
         if (code == KeyEvent.KEYCODE_DPAD_DOWN && e.getAction() == KeyEvent.ACTION_DOWN && favGridCols == 0
