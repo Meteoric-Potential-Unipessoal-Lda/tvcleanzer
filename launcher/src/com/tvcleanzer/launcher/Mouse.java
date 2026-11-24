@@ -235,10 +235,13 @@ final class Mouse {
         // 1.03: a TV that drops our gestures (Haier, Android 11) — the phone's `input` over ADB
         // took a second a touch there, and touches piled up («через несколько секунд всё сразу»):
         // the app's own click / scroll under the pointer instead, the phone only where none is
-        if (noGestures) {
+        // 1.11: now and then a tap tries a gesture again (a TCL dropped two right after the
+        // mouse opened and took gestures fine later; the slow ways missed clicks in a browser)
+        if (noGestures && (drag || ++sinceProbe < 4)) {
             if (!nodeAction(drag, dx, dy, ms)) back(line);
             return;
         }
+        sinceProbe = 0;
         final float fdx = dx, fdy = dy;
         Path path = new Path();
         path.moveTo(x, y);
@@ -268,6 +271,10 @@ final class Mouse {
                     answered[0] = true;
                     told("done");
                     drops = 0;
+                    if (noGestures) {
+                        noGestures = false;
+                        back("i gestures work again");
+                    }
                 }
                 @Override public void onCancelled(GestureDescription d) {
                     if (answered[0]) return;
@@ -406,6 +413,12 @@ final class Mouse {
             if (!drag) {
                 boolean longPress = ms > 300;
                 AccessibilityNodeInfo n = under(root, px, py, longPress ? 2 : 1);
+                // a web page: its views stand for links badly (a click «by the view» did nothing in
+                // the Yandex browser) — the phone's real tap there
+                if (n != null && inWeb(n)) {
+                    told("web page, the phone taps");
+                    return false;
+                }
                 boolean ok = n != null && n.performAction(longPress
                         ? AccessibilityNodeInfo.ACTION_LONG_CLICK : AccessibilityNodeInfo.ACTION_CLICK);
                 told(ok ? "by the app's view" : "no view here, the phone taps");
@@ -427,6 +440,14 @@ final class Mouse {
         }
     }
 
+    private static boolean inWeb(AccessibilityNodeInfo n) {
+        for (int i = 0; n != null && i < 40; i++, n = n.getParent()) {
+            CharSequence c = n.getClassName();
+            if (c != null && c.toString().contains("WebView")) return true;
+        }
+        return false;
+    }
+
     /** The innermost view at (x, y) that can: 1 click, 2 long click, 3 scroll. */
     private static AccessibilityNodeInfo under(AccessibilityNodeInfo n, int x, int y, int what) {
         android.graphics.Rect r = new android.graphics.Rect();
@@ -445,7 +466,7 @@ final class Mouse {
     /** 1.10: one cancel (a window opening, a remote key at that moment) switched taps to the slow
      *  ways for good — in a browser those did nothing (a TCL: «клик иногда перестаёт работать»).
      *  Two in a row with none done between: the TV really drops our gestures (a Haier: always). */
-    private int drops;
+    private int drops, sinceProbe;
 
     private void dropped() {
         if (++drops < 2 || noGestures) return;
