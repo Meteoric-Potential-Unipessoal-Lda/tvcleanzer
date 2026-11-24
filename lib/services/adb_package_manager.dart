@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 101;
+  static const bundledLauncherVersion = 102;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   Future<bool> isLauncherInstalled(TvDevice device) async {
@@ -1587,8 +1587,17 @@ class AdbPackageManager {
       }
       await adb.execInStream('cat > $tmp', data, onProgress: onProgress,
           timeout: Duration(seconds: max(120, length ~/ (1024 * 1024))));
-      final size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first) ?? -1;
+      // 1.3.119: the TV may still be writing the end of the file when the upload closes (a Haier
+      // FF Pro, Android 14: «файл не дошёл» again and again) — wait while it grows
+      var size = -1;
+      for (var i = 0; i < 20; i++) {
+        final was = size;
+        size = int.tryParse((await adb.shell('wc -c < $tmp')).trim().split(RegExp(r'\s+')).first) ?? -1;
+        if (size == length || (i > 2 && size == was)) break;
+        await Future<void>.delayed(const Duration(seconds: 1));
+      }
       if (size != length) {
+        AppLog.error('live wallpaper', 'upload: $size of $length bytes on the TV');
         await adb.shell('rm -f $tmp');
         throw AdbException(tr('Файл не дошёл до телевизора. Попробуйте ещё раз.'));
       }

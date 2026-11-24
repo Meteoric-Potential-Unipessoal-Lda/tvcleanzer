@@ -215,17 +215,11 @@ final class Mouse {
             ex = Math.max(1, Math.min(sw - 2, x + dx * k));
             ey = Math.max(1, Math.min(sh - 2, y + dy * k));
         }
+        final String line = drag ? "w " + Math.round(x) + " " + Math.round(y) + " " + Math.round(ex) + " " + Math.round(ey)
+                : (ms > 300 ? "p " : "t ") + Math.round(x) + " " + Math.round(y);
         if (svc == null || android.os.Build.VERSION.SDK_INT < 24) {
             // no gestures here: the phone touches the screen for us over ADB
-            final String line = drag ? "w " + Math.round(x) + " " + Math.round(y) + " " + Math.round(ex) + " " + Math.round(ey)
-                    : (ms > 300 ? "p " : "t ") + Math.round(x) + " " + Math.round(y);
-            new Thread(() -> {
-                OutputStream o = client;
-                if (o == null) return;
-                try {
-                    synchronized (Mouse.this) { o.write((line + "\n").getBytes("UTF-8")); o.flush(); }
-                } catch (Throwable ignored) {}
-            }).start();
+            back(line);
             return;
         }
         Path path = new Path();
@@ -235,10 +229,34 @@ final class Mouse {
             GestureDescription g = new GestureDescription.Builder()
                     .addStroke(new GestureDescription.StrokeDescription(path, 0, ms))
                     .build();
-            svc.dispatchGesture(g, null, null);
+            // 1.02: a Haier (Android 11) — the pointer moved, a click opened nothing. A gesture the
+            // system drops goes to the phone, which taps over ADB; the first few say how it went
+            boolean ok = svc.dispatchGesture(g, new AccessibilityService.GestureResultCallback() {
+                @Override public void onCompleted(GestureDescription d) { told("done"); }
+                @Override public void onCancelled(GestureDescription d) { told("cancelled, the phone taps"); back(line); }
+            }, main);
+            if (!ok) { told("refused, the phone taps"); back(line); }
         } catch (Throwable t) {
             HomeKeyService.log("mouse: " + t);
+            back(line);
         }
+    }
+
+    private int toldTaps;
+
+    private void told(String how) {
+        if (toldTaps++ < 3) HomeKeyService.log("mouse: tap " + how);
+    }
+
+    /** A touch the phone makes for us over ADB (`input tap / swipe`). */
+    private void back(final String line) {
+        new Thread(() -> {
+            OutputStream o = client;
+            if (o == null) return;
+            try {
+                synchronized (Mouse.this) { o.write((line + "\n").getBytes("UTF-8")); o.flush(); }
+            } catch (Throwable ignored) {}
+        }).start();
     }
 
     private void remove() {
