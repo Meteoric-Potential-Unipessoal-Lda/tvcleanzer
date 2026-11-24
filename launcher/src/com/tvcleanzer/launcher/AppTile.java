@@ -169,7 +169,12 @@ final class AppTile extends LinearLayout {
         ring.setShape(GradientDrawable.OVAL);
         // 1.16: the ring reaches 2 dp over the round icon's edge: the soft edge of the circle-cut
         // art showed the dark bar through it, a thin black line inside the white ring (UMID, YouTube)
-        ring.setStroke(ringStroke + Ui.dp(getContext(), 2), ringC);
+        // 1.17: thinner (UMID: «через чур жирный»): 2 dp outside the icon, 1.5 dp over its edge
+        int out = Ui.dp(getContext(), 2), over = Math.round(1.5f * getResources().getDisplayMetrics().density);
+        ring.setStroke(out + over, ringC);
+        FrameLayout.LayoutParams rl = (FrameLayout.LayoutParams) ringView.getLayoutParams();
+        rl.setMargins(-out, -out, -out, -out);
+        ringView.setLayoutParams(rl);
         gloss.setVisibility(GONE);
         if (glow != null) { glow.oval = true; glow.invalidate(); }
     }

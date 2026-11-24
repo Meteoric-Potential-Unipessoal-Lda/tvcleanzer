@@ -30,9 +30,13 @@ final class FavScroll extends HorizontalScrollView {
 
     @Override
     protected void dispatchDraw(Canvas c) {
+        // 1.17: cut only where more apps go on: at an end the selected app and its ring stay whole
+        // (the last one was cut at the right end)
         int x = getScrollX();
+        int max = getChildCount() == 0 ? 0
+                : Math.max(0, getChildAt(0).getWidth() - (getWidth() - getPaddingLeft() - getPaddingRight()));
         c.save();
-        c.clipRect(x + clip, 0, x + getWidth() - clip, getHeight());
+        c.clipRect(x + (x > 0 ? clip : -getWidth()), 0, x + getWidth() - (x < max ? clip : -getWidth()), getHeight());
         super.dispatchDraw(c);
         c.restore();
     }
