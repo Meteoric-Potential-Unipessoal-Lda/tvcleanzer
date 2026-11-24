@@ -1164,6 +1164,9 @@ class _MouseLink {
   final void Function(String) _input;
   AdbClient? _c;
   StreamSubscription<Uint8List>? _back;
+
+  /// The pointer without the Home-key service: every touch is an `input` over ADB, slow.
+  bool isPlain = false;
   String _rest = '';
 
   /// 1.3.96: the TV dropped the pointer (its service was switched off by the firmware): connect
@@ -1198,6 +1201,7 @@ class _MouseLink {
         }
       }
       final plain = out.contains('result=5');
+      isPlain = plain;
       if (!out.contains('result=1') && !plain) {
         AppLog.error('mouse', out.trim());
         close();
@@ -1392,7 +1396,10 @@ class _MousePadState extends State<_MousePad> {
     if (_p.length >= 2) {
       // two fingers: drag the page; sent in pieces (each one a short drag on the TV)
       _scroll += e.delta / _p.length.toDouble();
-      _scrollTick ??= Timer(const Duration(milliseconds: 220), () {
+      // 1.3.124: with the service the TV keeps one finger down and moves it with every piece,
+      // so short pieces scroll smoothly («прокрутку по плавнее»); the plain pointer's pieces are
+      // `input swipe`s over ADB, slow — fewer, bigger ones there
+      _scrollTick ??= Timer(Duration(milliseconds: widget.link.isPlain ? 220 : 60), () {
         _scrollTick = null;
         final d = _scroll * 3.2;
         _scroll = Offset.zero;

@@ -131,7 +131,7 @@ final class Mouse {
                 case 'l': main.post(() -> touch(0, 0, 700)); break;
                 case 's': {
                     final float dx = Float.parseFloat(p[1]), dy = Float.parseFloat(p[2]);
-                    main.post(() -> touch(dx, dy, 260));
+                    main.post(() -> scrollBy(dx, dy));
                     break;
                 }
                 default: break;
@@ -276,6 +276,67 @@ final class Mouse {
     }
 
     private int toldTaps;
+
+    // 1.07: two-finger scrolling as one finger held down and moved piece by piece (Android 8+:
+    // continued strokes), not a separate short swipe for every piece — those jerked and flung
+    // («прокрутку надо сделать по плавнее»)
+    private GestureDescription.StrokeDescription scrollStroke;
+    private float fx, fy;
+    private static final long SEG = 70;
+    private final Runnable scrollEnd = this::endScroll;
+
+    private void scrollBy(float dx, float dy) {
+        if (svc == null || noGestures || android.os.Build.VERSION.SDK_INT < 26) {
+            touch(dx, dy, 260);
+            return;
+        }
+        if (sw == 0) size();
+        show(true);
+        float k = sw / 1920f;
+        if (scrollStroke == null) { fx = x; fy = y; }
+        float nx = Math.max(1, Math.min(sw - 2, fx + dx * k)), ny = Math.max(1, Math.min(sh - 2, fy + dy * k));
+        if (nx == fx && ny == fy) { endScroll(); return; } // the finger is at the edge: lift it
+        Path path = new Path();
+        path.moveTo(fx, fy);
+        path.lineTo(nx, ny);
+        try {
+            GestureDescription.StrokeDescription s = scrollStroke == null
+                    ? new GestureDescription.StrokeDescription(path, 0, SEG, true)
+                    : scrollStroke.continueStroke(path, 0, SEG, true);
+            if (!send(s)) { scrollStroke = null; touch(dx, dy, 260); return; }
+            scrollStroke = s;
+            fx = nx;
+            fy = ny;
+            main.removeCallbacks(scrollEnd);
+            main.postDelayed(scrollEnd, 350);
+        } catch (Throwable t) {
+            scrollStroke = null;
+            touch(dx, dy, 260);
+        }
+    }
+
+    /** The fingers left the phone: the finger on the TV is lifted where it is (no fling). */
+    private void endScroll() {
+        main.removeCallbacks(scrollEnd);
+        GestureDescription.StrokeDescription last = scrollStroke;
+        scrollStroke = null;
+        if (last == null) return;
+        try {
+            Path path = new Path();
+            path.moveTo(fx, fy);
+            path.lineTo(fx, fy + (fy < sh - 3 ? 1 : -1));
+            send(last.continueStroke(path, 0, 120, false));
+        } catch (Throwable ignored) {}
+    }
+
+    private boolean send(GestureDescription.StrokeDescription s) {
+        GestureDescription g = new GestureDescription.Builder().addStroke(s).build();
+        return svc.dispatchGesture(g, new AccessibilityService.GestureResultCallback() {
+            @Override public void onCancelled(GestureDescription d) {
+                if (scrollStroke == s) scrollStroke = null;
+            }
+        }, main);
+    }
     /** The system drops our gestures here: no more waiting for them this session. */
     private boolean noGestures;
     private float scrollAcc;
