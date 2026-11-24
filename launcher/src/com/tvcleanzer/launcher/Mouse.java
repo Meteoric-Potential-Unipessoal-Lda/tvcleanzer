@@ -421,8 +421,16 @@ final class Mouse {
                 }
                 boolean ok = n != null && n.performAction(longPress
                         ? AccessibilityNodeInfo.ACTION_LONG_CLICK : AccessibilityNodeInfo.ACTION_CLICK);
-                told(ok ? "by the app's view" : "no view here, the phone taps");
-                return ok;
+                if (ok) { told("by the app's view"); return true; }
+                // 1.20: an item made for the remote — focus it, the phone presses OK (long: held OK)
+                AccessibilityNodeInfo f = under(root, px, py, 4);
+                if (f != null && !inWeb(f) && (f.isFocused() || f.performAction(AccessibilityNodeInfo.ACTION_FOCUS))) {
+                    told("focus + OK");
+                    back(longPress ? "K 23" : "k 23");
+                    return true;
+                }
+                told("no view here, the phone taps");
+                return false;
             }
             // a page at a time is a lot: only a real swipe scrolls, and not more than ~3 a second
             boolean vertical = Math.abs(dy) >= Math.abs(dx);
@@ -433,8 +441,11 @@ final class Mouse {
             scrollAcc = 0;
             scrolledAt = now;
             AccessibilityNodeInfo n = under(root, px, py, 3);
-            return n != null && n.performAction(forward
-                    ? AccessibilityNodeInfo.ACTION_SCROLL_FORWARD : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            if (n != null && n.performAction(forward
+                    ? AccessibilityNodeInfo.ACTION_SCROLL_FORWARD : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)) return true;
+            // 1.20: nothing scrolls by itself here (a TV app): the arrows do, as on the remote
+            back("k " + (vertical ? (forward ? 20 : 19) : (forward ? 22 : 21)));
+            return true;
         } catch (Throwable t) {
             return false;
         }
@@ -448,7 +459,7 @@ final class Mouse {
         return false;
     }
 
-    /** The innermost view at (x, y) that can: 1 click, 2 long click, 3 scroll. */
+    /** The innermost view at (x, y) that can: 1 click, 2 long click, 3 scroll, 4 take the focus. */
     private static AccessibilityNodeInfo under(AccessibilityNodeInfo n, int x, int y, int what) {
         android.graphics.Rect r = new android.graphics.Rect();
         n.getBoundsInScreen(r);
@@ -459,7 +470,8 @@ final class Mouse {
             AccessibilityNodeInfo f = under(c, x, y, what);
             if (f != null) return f;
         }
-        boolean can = what == 1 ? n.isClickable() : what == 2 ? n.isLongClickable() : n.isScrollable();
+        boolean can = what == 1 ? n.isClickable() : what == 2 ? n.isLongClickable()
+                : what == 3 ? n.isScrollable() : n.isFocusable();
         return can && n.isVisibleToUser() ? n : null;
     }
 

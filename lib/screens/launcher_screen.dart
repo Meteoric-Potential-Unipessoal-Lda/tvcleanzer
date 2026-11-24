@@ -479,12 +479,13 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
 
     return [
       _group('home', Icons.dashboard_rounded, tr('Главный экран'),
-          join([styleL[look.style], if (s0) tr('Избранное: {0}', [favL[favI]]), 'HDMI: ${inputsL[look.inputs]}']), [
+          join([styleL[look.style], tr('Избранное: {0}', [favL[favI]]), 'HDMI: ${inputsL[look.inputs]}']), [
         _pills(tr('Вид главного экрана'), styleL, look.style, (v) => _setLook(look.copyWith(style: v)),
             icons: const [Icons.grid_view_rounded, Icons.schedule_rounded, Icons.view_carousel_rounded]),
+        // 1.3.136: in every view, as on the TV (only «Плитки» had it here)
+        _pills(tr('Избранное на главном экране'), favL, favI,
+            (v) => _setLook(look.copyWith(favCols: const [0, 4, 5, 6][v]))),
         if (s0) ...[
-          _pills(tr('Избранное на главном экране'), favL, favI,
-              (v) => _setLook(look.copyWith(favCols: const [0, 4, 5, 6][v]))),
           if (favI == 0)
             _pills(tr('Рамка избранного'), [tr('Во всю ширину'), tr('Слева'), tr('По центру')], look.favAlign,
                 (v) => _setLook(look.copyWith(favAlign: v)), need: 68),
@@ -604,7 +605,7 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           _pills(tr('Скорость живого фона'), speedL, const [0, 8, 30, 90].indexOf(look.ambientSec).clamp(0, 3),
               (v) => _setLook(look.copyWith(ambientSec: const [0, 8, 30, 90][v])), need: 48),
         _pills(tr('Анимации'), animL, look.anim, (v) => _setLook(look.copyWith(anim: v))),
-        _pills(tr('Менять тему сама'), autoL, look.skinAuto, (v) => _setLook(look.copyWith(skinAuto: v)), need: 48),
+        _pills(tr('Автосмена темы'), autoL, look.skinAuto, (v) => _setLook(look.copyWith(skinAuto: v)), need: 48),
         const Gap(4),
         Text(tr('Слабый телевизор подтормаживает? Выключите анимации и живой фон.'),
             style: const TextStyle(fontSize: 12, height: 1.4, color: AppColors.fgMuted)),

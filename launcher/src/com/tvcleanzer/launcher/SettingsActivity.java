@@ -98,7 +98,7 @@ public class SettingsActivity extends Activity {
         addChoice(skin, T.t("Тема"), skinNames, skinIdx, i -> prefs.setSkin(Skin.ALL[i]));
         addChoice(skin, T.t("Вид главного экрана"), new String[]{T.t("Плитки"), T.t("Часы и док"), T.t("Витрина")},
                 prefs.style(), prefs::setStyle);
-        addChoice(skin, T.t("Менять тему сама"), new String[]{T.t("Нет"), T.t("Каждый час"), T.t("Каждый день")},
+        addChoice(skin, T.t("Автосмена темы"), new String[]{T.t("Нет"), T.t("Каждый час"), T.t("Каждый день")},
                 prefs.skinAuto(), prefs::setSkinAuto);
         addChoice(skin, T.t("Анимации"), new String[]{T.t("Полные"), T.t("Мягкие"), T.t("Выключены")},
                 prefs.anim(), prefs::setAnim);
@@ -183,11 +183,7 @@ public class SettingsActivity extends Activity {
         }
         addChoice(skin, T.t("Источники (ТВ, HDMI)"), new String[]{T.t("Вверху"), T.t("Внизу"), T.t("Скрыты")},
                 prefs.inputsPos(), prefs::setInputsPos);
-        addRow(skin, T.t("Скрытые приложения"), hidden == 0 ? T.t("Нет") : T.f("Показать все ({0})", hidden), () -> {
-            if (prefs.hidden().isEmpty()) return;
-            prefs.setHidden(new HashSet<String>());
-            Toast.makeText(this, T.t("Все приложения снова на главном экране"), Toast.LENGTH_SHORT).show();
-        });
+        addRow(skin, T.t("Скрытые приложения"), hidden == 0 ? T.t("Нет") : T.f("Скрыто: {0}", hidden), this::pickHidden);
         addRow(skin, T.t("Избранное"), T.t("Сбросить"), () -> {
             prefs.resetFavorites();
             Toast.makeText(this, T.t("Избранное сброшено"), Toast.LENGTH_SHORT).show();
@@ -622,6 +618,44 @@ public class SettingsActivity extends Activity {
                 .setSingleChoiceItems(labels, cur, (d, which) -> {
                     d.dismiss();
                     pick.set(which);
+                    build();
+                })
+                .setNegativeButton(T.t("Отмена"), null)
+                .show();
+    }
+
+    /** 1.19: a list of the hidden apps, ticked ones come back (an owner: «показать все» brought back
+     *  every one of them, and the rest had to be hidden again one by one). */
+    private void pickHidden() {
+        final java.util.List<String> keys = new java.util.ArrayList<>(prefs.hidden());
+        if (keys.isEmpty()) return;
+        final android.content.pm.PackageManager pm = getPackageManager();
+        final java.util.Map<String, String> label = new java.util.HashMap<>();
+        for (String k : keys) {
+            String pkg = k.contains("/") ? k.substring(0, k.indexOf('/')) : k;
+            String n = pkg;
+            try { n = pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString(); } catch (Throwable ignored) {}
+            label.put(k, n);
+        }
+        java.util.Collections.sort(keys, (a, b) -> label.get(a).compareToIgnoreCase(label.get(b)));
+        final String[] names = new String[keys.size()];
+        for (int i = 0; i < names.length; i++) names[i] = label.get(keys.get(i));
+        final boolean[] on = new boolean[names.length];
+        new android.app.AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+                .setTitle(T.t("Вернуть на главный экран"))
+                .setMultiChoiceItems(names, on, (d, which, checked) -> on[which] = checked)
+                .setPositiveButton(T.t("Показать выбранные"), (d, w) -> {
+                    java.util.Set<String> h = prefs.hidden();
+                    int n = 0;
+                    for (int i = 0; i < on.length; i++) if (on[i] && h.remove(keys.get(i))) n++;
+                    if (n == 0) return;
+                    prefs.setHidden(h);
+                    Toast.makeText(this, T.f("Вернули на главный экран: {0}", n), Toast.LENGTH_SHORT).show();
+                    build();
+                })
+                .setNeutralButton(T.t("Показать все"), (d, w) -> {
+                    prefs.setHidden(new HashSet<String>());
+                    Toast.makeText(this, T.t("Все приложения снова на главном экране"), Toast.LENGTH_SHORT).show();
                     build();
                 })
                 .setNegativeButton(T.t("Отмена"), null)

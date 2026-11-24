@@ -752,7 +752,7 @@
 "Fast",
 "Slow",
 "Very slow",
-"Change theme by itself",
+"Auto theme change",
 "No",
 "Every hour",
 "Every day",
@@ -1014,5 +1014,10 @@
 "No frame",
 "Glow",
 "Memory figures on focus",
-"Live wallpaper sound"
+"Live wallpaper sound",
+"Hidden: {0}",
+"Back to the home screen",
+"Show selected",
+"Show all",
+"Back on the home screen: {0}"
 ]

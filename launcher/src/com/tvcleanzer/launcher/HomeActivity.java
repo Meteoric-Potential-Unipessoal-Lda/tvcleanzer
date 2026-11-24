@@ -163,7 +163,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onResume() {
         super.onResume();
         resumed = true;
-        if (prefs.nextSkinIfDue()) dirty = true; // «Менять тему сама»
+        if (prefs.nextSkinIfDue()) dirty = true; // «Автосмена темы»
         if (dirty) { dirty = false; build(); } else startAmbient();
         if (liveWall != null) liveWall.play();
         maybeAutostart();
