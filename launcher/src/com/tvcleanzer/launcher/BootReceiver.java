@@ -21,7 +21,10 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context c, Intent i) {
         final Context app = c.getApplicationContext();
-        HomeKeyService.log("boot: service " + (HomeKeyService.running != null ? "running" : "not running")
+        // 1.50: also after an update (Xiaomi MSSP1: the update stopped us and the service stayed
+        // down — the force stop also cancels the keeper job)
+        final boolean replaced = Intent.ACTION_MY_PACKAGE_REPLACED.equals(i.getAction());
+        HomeKeyService.log((replaced ? "updated" : "boot") + ": service " + (HomeKeyService.running != null ? "running" : "not running")
                 + ", listed " + listed(app) + ", wanted " + new Prefs(app).serviceWanted() + ", can write " + canWrite(app));
         KeeperJob.schedule(app);
         final PendingResult r = goAsync();
@@ -31,7 +34,7 @@ public class BootReceiver extends BroadcastReceiver {
                 Thread.sleep(8000);
                 keep(app);
                 Thread.sleep(6000);
-                ownHomeAfterBoot(app);
+                if (!replaced) ownHomeAfterBoot(app);
                 LanRemote.ensure(app); // 1.40
                 HomeWatch.ensure(app); // 1.39
             } catch (Throwable t) {

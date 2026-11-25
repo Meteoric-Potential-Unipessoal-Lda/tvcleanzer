@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 149;
+  static const bundledLauncherVersion = 150;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   /// 1.3.123: the TV's own settings write it short («…/.HomeKeyService»). Left in the list, our

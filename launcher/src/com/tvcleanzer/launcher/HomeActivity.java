@@ -212,6 +212,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (nowPlaying != null) nowPlaying.resume();
         showBattery();
         HomeWatch.ensure(this); // 1.39: be311 / com.master.t972 — the box drops the Home-key service
+        KeeperJob.schedule(this); // 1.50: a force stop (an update) cancels it
         if (blockDay != null) { main.removeCallbacks(blockDateTick); main.post(blockDateTick); }
         if (prefs.nextSkinIfDue()) dirty = true; // «Автосмена темы»
         if (dirty) { dirty = false; build(); } else startAmbient();
