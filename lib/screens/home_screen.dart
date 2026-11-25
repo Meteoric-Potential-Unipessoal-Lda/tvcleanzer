@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
 import '../services/demo_tv.dart';
@@ -103,10 +104,24 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
     if (!state.scanning) await startScan();
   }
 
+  static Future<bool> _pairedWithoutAdb(String host) async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      return sp.getString('noadb_atv_$host') == '1' || sp.getString('noadb_lan_$host') != null;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<void> startScan() async {
     // Wireless-debugging TVs aren't on port 5555: keep the one we paired with.
     final cur = _ref.read(currentTvProvider);
-    state = DiscoveryState(scanning: true, devices: [if (cur != null && (cur.isWireless || cur.isDemo)) cur]);
+    // 1.3.164: a TV paired without ADB (Google's remote / the launcher's Wi-Fi remote) stays in the
+    // list though the ADB search can't find it (Haier tester: «закрыл приложение, повторно не
+    // подключается» — «Телевизоры не найдены» with debugging off)
+    final noAdb = cur != null && !cur.isDemo && await _pairedWithoutAdb(cur.ipAddress);
+    if (!mounted) return;
+    state = DiscoveryState(scanning: true, devices: [if (cur != null && (cur.isWireless || cur.isDemo || noAdb)) cur]);
     // Store screenshots (--dart-define=TVC_DEMO_ONLY=true): never show real TVs.
     if (const bool.fromEnvironment('TVC_DEMO_ONLY')) {
       state = DiscoveryState(devices: state.devices);

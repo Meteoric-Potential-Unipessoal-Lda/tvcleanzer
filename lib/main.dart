@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/l10n.dart';
+import 'services/app_log.dart';
 import 'services/tip_jar.dart';
 import 'services/tv_names.dart';
 import 'screens/splash_screen.dart';
@@ -10,6 +11,25 @@ import 'theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // 1.3.164: a part of a screen that fails to build or lay out shows as a blank space in a release
+  // build (Haier tester: the remote's buttons under the arrows were gone) and «?» said nothing.
+  // Now the error goes into «?» with where it happened, and the place says so on the screen.
+  FlutterError.onError = (d) {
+    final where = (d.stack?.toString() ?? '')
+        .split('\n')
+        .where((l) => l.contains('package:tvcleanzer/'))
+        .take(3)
+        .map((l) => l.replaceAll(RegExp(r'^#\d+\s+'), '').trim())
+        .join(' ← ');
+    AppLog.error('ui', '${d.exceptionAsString()}${where.isEmpty ? '' : ' @ $where'}');
+    FlutterError.presentError(d);
+  };
+  ErrorWidget.builder = (d) => Container(
+        padding: const EdgeInsets.all(8),
+        color: const Color(0x33FF5252),
+        child: Text(tr('Ошибка на экране. Нажмите «?» → «Сообщить о проблеме» и пришлите отчёт.'),
+            style: const TextStyle(fontSize: 12, color: Color(0xFFFFFFFF))),
+      );
   initLanguage();
   await TvNames.load();
 
