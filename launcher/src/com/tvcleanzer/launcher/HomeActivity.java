@@ -1890,7 +1890,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         timeRow.setOrientation(LinearLayout.HORIZONTAL);
         timeRow.setGravity(Gravity.CENTER_VERTICAL);
         TextClock tc = bigClock(clockSp);
-        if (tinyClock) tc.setTypeface(android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.BOLD));
+        // (1.60 forced bold here; 1.64: the «Шрифт часов» choice applies — Sergey: «шрифт часов не
+        // меняется, если они мелкие»)
         timeRow.addView(tc);
 
         View divider = new View(this);
