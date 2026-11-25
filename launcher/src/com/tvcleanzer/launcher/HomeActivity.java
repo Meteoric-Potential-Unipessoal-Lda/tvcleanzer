@@ -434,6 +434,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // screen moves (the block's place was tuned with UMID)
         final int ph = Ui.dp(this, 12), pv = Ui.dp(this, 6);
         final float r = Ui.dp(this, 200); // 1.55: a full pill (an owner: «нет полного закругления»)
+        // 1.57: the two-line block a rounded card, not a capsule (Karaganda: «здесь менее закруглённые»)
+        final float rr = v instanceof TextView ? r : Ui.dp(this, 18);
         v.setFocusable(true);
         v.setClickable(true);
         // 1.50: Android 8+ also drew its own grey focus band over the whole view (the full-width
@@ -445,7 +447,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             int[] lr = textSpan(x);
             // 1.50: an InsetDrawable gives the view its insets as padding: the text moved (negative:
             // the weather picture cut off on the left, Hyundai) — this one gives none
-            x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, r),
+            x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, rr),
                     lr[0] - ph, -pv, lr[1] - ph, -pv) {
                 @Override public boolean getPadding(android.graphics.Rect p) {
                     p.set(0, 0, 0, 0);
@@ -1925,7 +1927,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         trp.topMargin = Ui.dp(this, 4);
         // 1.22: «Часы, дата и погода» off: no clock, date or weather up top, only the icons
         if (prefs.showClock()) left.addView(timeRow, trp); else weatherView = null;
+        clockGlassView = null;
         if (prefs.clockGlass() && prefs.showClock()) {
+            clockGlassView = left;
             left.setBackground(glass(left, Ui.dp(this, 26)));
             // 1.56: a thinner glass under the clock (Sergey: «рамки стекла огромные везде»)
             left.setPadding(Ui.dp(this, 16), Ui.dp(this, 8), Ui.dp(this, 18), Ui.dp(this, 10));
@@ -2053,13 +2057,21 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
         android.graphics.Bitmap b = Frost.blurred(wallBitmap, dm.widthPixels, dm.heightPixels);
         if (b == null) return plain;
-        host.getViewTreeObserver().addOnScrollChangedListener(host::invalidate);
-        return new Frost(host, b, r, Math.round(prefs.wallDim() * 2.55f), plain);
+        final Frost f = new Frost(host, b, r, Math.round(prefs.wallDim() * 2.55f), plain);
+        // 1.57: a background keeps its first drawing until the drawable itself says it changed
+        // (Sergey: the top of the photo showed in the favourites' glass until he scrolled)
+        host.getViewTreeObserver().addOnScrollChangedListener(f::invalidateSelf);
+        host.addOnLayoutChangeListener((v, l, t, r2, bb, ol, ot, or, ob) -> f.invalidateSelf());
+        host.postDelayed(f::invalidateSelf, 700);
+        host.postDelayed(f::invalidateSelf, 1600);
+        return f;
     }
 
     /** 1.52: the corner's top in «Плитки» = the page's top, level with the clock's glass (Sergey:
      *  «погода и часы всегда ниже верхних значков»); -1 elsewhere. */
     private int cornerTop = -1;
+    /** The clock's glass in «Плитки» (1.57): the corner sits level with its middle. */
+    private View clockGlassView;
 
     /** [withMore]: «Все приложения» in the corner too (the dock without ⚙ and ⋯, 1.46). */
     private void corner(Skin skin, boolean withGear, boolean withMore) {
@@ -2069,7 +2081,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setClipChildren(false);
         row.setClipToPadding(false);
-        final int h = Ui.dp(this, 36), gap = Ui.dp(this, 6), ph = Ui.dp(this, 8), pv = Ui.dp(this, 5);
+        // 1.57: smaller (Sergey: «верхние кнопки сделать меньше»), 32 dp (was 36)
+        final int h = Ui.dp(this, 32), gap = Ui.dp(this, 6), ph = Ui.dp(this, 8), pv = Ui.dp(this, 4);
         // one glass under all of them, the same look as every other glass on the screen («Стекло»)
         row.setBackground(glass(row, (h + 2 * pv) * 0.34f));
         row.setPadding(ph, pv, ph, pv);
@@ -2157,6 +2170,18 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         clp.topMargin = cornerTop >= 0 ? cornerTop : Math.max(Ui.dp(this, 12), Math.round(dm.heightPixels * 0.028f));
         clp.rightMargin = Math.max(Ui.dp(this, 16), Math.round(dm.widthPixels * 0.02f));
         row.setTranslationZ(Ui.dp(this, 30)); // over the page that scrolls under it
+        // 1.57: level with the middle of the clock's glass in «Плитки» (Sergey: «криво всё»)
+        final View align = cornerTop >= 0 ? clockGlassView : null;
+        if (align != null) {
+            row.addOnLayoutChangeListener((v, l, t, r2, b, ol, ot, or, ob) -> {
+                int d = (align.getHeight() - v.getHeight()) / 2;
+                v.setTranslationY(Math.max(0, d));
+            });
+            align.addOnLayoutChangeListener((v, l, t, r2, b, ol, ot, or, ob) -> {
+                int d = (v.getHeight() - row.getHeight()) / 2;
+                row.setTranslationY(Math.max(0, d));
+            });
+        }
         root.addView(row, clp);
     }
 

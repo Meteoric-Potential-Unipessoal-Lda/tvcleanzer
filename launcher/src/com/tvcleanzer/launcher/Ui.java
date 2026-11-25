@@ -65,6 +65,10 @@ final class Ui {
         g.setCornerRadius(radiusPx);
         if (look == Prefs.SHELF_CLEAR) {
             g.setColor(0x00000000);
+        } else if (look == Prefs.SHELF_FROST) {
+            // 1.57: barely tinted — the blurred photo under it is the glass (testers: «мутное»)
+            g.setColor(0x08FFFFFF);
+            g.setStroke(1, 0x24FFFFFF);
         } else if (look == Prefs.SHELF_DARK) {
             g.setColor(0x73000000);
             g.setStroke(1, 0x1FFFFFFF);

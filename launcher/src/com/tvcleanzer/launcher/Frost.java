@@ -39,7 +39,7 @@ final class Frost extends Drawable {
             int[] px = new int[w * h];
             small.getPixels(px, 0, w, 0, 0, w, h);
             // 1.56: a light blur — the photo still shows through (testers: «прозрачности почти нет»)
-            for (int i = 0; i < 2; i++) box(px, w, h, 2);
+            for (int i = 0; i < 2; i++) box(px, w, h, 1); // 1.57: lighter still
             small.setPixels(px, 0, w, 0, 0, w, h);
             cacheSrc = wall;
             cacheW = screenW;
