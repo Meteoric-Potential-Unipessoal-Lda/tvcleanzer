@@ -1828,11 +1828,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (prefs.greeting()) left.addView(greet); else greetView = null;
 
         final boolean oneLine = prefs.oneLine();
-        final int clockSp = new int[]{64, 46, 32}[prefs.barClock()];
+        // 1.60: one line with the small clock — the time in the line's own size, bold (Sergey: «шрифт
+        // часов как у погоды, но жирный»): the glass is no taller than the corner's
+        final boolean tinyClock = oneLine && prefs.barClock() == 2;
+        final int clockSp = tinyClock ? 22 : new int[]{64, 46, 32}[prefs.barClock()];
         LinearLayout timeRow = new LinearLayout(this);
         timeRow.setOrientation(LinearLayout.HORIZONTAL);
         timeRow.setGravity(Gravity.CENTER_VERTICAL);
-        timeRow.addView(bigClock(clockSp));
+        TextClock tc = bigClock(clockSp);
+        if (tinyClock) tc.setTypeface(android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.BOLD));
+        timeRow.addView(tc);
 
         View divider = new View(this);
         divider.setBackgroundColor(0x40FFFFFF);
