@@ -436,6 +436,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final float r = Ui.dp(this, 14);
         v.setFocusable(true);
         v.setClickable(true);
+        // 1.50: Android 8+ also drew its own grey focus band over the whole view (the full-width
+        // «полоса» on Xiaomi MSSP1): only our plate
+        if (android.os.Build.VERSION.SDK_INT >= 26) v.setDefaultFocusHighlightEnabled(false);
         v.setOnFocusChangeListener((x, has) -> {
             // 1.48: around the words, not the whole width (a Xiaomi MSSP1, layout «Планшет»: the
             // line stretched across the screen)
@@ -458,16 +461,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         int[] out = {0, 0};
         if (!(x instanceof TextView)) return out;
         TextView t = (TextView) x;
-        android.text.Layout l = t.getLayout();
-        if (l == null || t.getWidth() == 0 || l.getLineCount() == 0) return out;
-        float left = Float.MAX_VALUE, right = 0;
-        for (int i = 0; i < l.getLineCount(); i++) {
-            left = Math.min(left, l.getLineLeft(i));
-            right = Math.max(right, l.getLineRight(i));
-        }
-        boolean picture = t.getCompoundDrawables()[0] != null;
-        int a = picture ? t.getPaddingLeft() : t.getTotalPaddingLeft() + Math.round(left);
-        int b = t.getTotalPaddingLeft() + Math.round(right);
+        int w = t.getWidth();
+        if (w == 0 || t.getText() == null) return out;
+        // the words' own width (pictures in spans counted), placed by the view's gravity
+        int text = (int) Math.ceil(android.text.Layout.getDesiredWidth(t.getText(), t.getPaint()));
+        int inL = t.getTotalPaddingLeft(), inR = t.getTotalPaddingRight(), avail = w - inL - inR;
+        if (text <= 0 || text >= avail) return out;
+        int g = Gravity.getAbsoluteGravity(t.getGravity(), t.getLayoutDirection()) & Gravity.HORIZONTAL_GRAVITY_MASK;
+        int a = g == Gravity.CENTER_HORIZONTAL ? inL + (avail - text) / 2 : g == Gravity.RIGHT ? w - inR - text : inL;
+        int b = a + text;
+        if (t.getCompoundDrawables()[0] != null) a = t.getPaddingLeft();
         if (a < 0 || b <= a || b > t.getWidth()) return out;
         out[0] = a;
         out[1] = t.getWidth() - b;
