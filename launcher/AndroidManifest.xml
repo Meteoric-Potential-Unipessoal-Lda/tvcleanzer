@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="142"
-    android:versionName="1.42">
+    android:versionCode="143"
+    android:versionName="1.43">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -246,6 +246,20 @@
             android:name=".KeeperJob"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <!-- 1.43, TCL only (TclInput): an empty TV input, the reason TCL's boot manager lets the
+             launcher start and bind its services at boot. Off here, switched on at run time on a TCL. -->
+        <service
+            android:name=".TclInput"
+            android:enabled="false"
+            android:exported="true"
+            android:label="TVCleanzer"
+            android:permission="android.permission.BIND_TV_INPUT">
+            <intent-filter>
+                <action android:name="android.media.tv.TvInputService" />
+            </intent-filter>
+            <meta-data android:name="android.media.tv.input" android:resource="@xml/tcl_input" />
+        </service>
 
         <receiver
             android:name=".BootReceiver"

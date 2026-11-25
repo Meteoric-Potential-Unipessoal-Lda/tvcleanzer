@@ -136,6 +136,7 @@ public class HomeWatch extends Service {
     };
 
     private void check() {
+        if (CrashGuard.standingAside(this)) return; // 1.43: the TV's own home for a few minutes
         UsageStatsManager usm = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
         long now = System.currentTimeMillis();
         UsageEvents ev = usm.queryEvents(since, now);

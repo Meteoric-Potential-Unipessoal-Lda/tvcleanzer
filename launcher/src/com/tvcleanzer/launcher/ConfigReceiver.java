@@ -26,6 +26,7 @@ public class ConfigReceiver extends BroadcastReceiver {
             return;
         }
         if (!"com.tvcleanzer.launcher.APPLY".equals(intent.getAction())) return;
+        CrashGuard.reset(context); // 1.43: settings from the phone: a fresh try
         if (intent.hasExtra("mouse")) {
             // the virtual mouse: 1 through the Home-key service (gestures), 5 an ordinary overlay
             // whose touches the phone makes over ADB (0.79: a be311 box switches the service off

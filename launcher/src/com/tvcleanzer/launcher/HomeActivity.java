@@ -138,6 +138,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onCreate(Bundle b) {
         Glyphs.init(this);
         super.onCreate(b);
+        // 1.43: crashed twice lately (CrashGuard): the TV's own home for a few minutes, never a loop
+        CrashGuard.install(this);
+        if (CrashGuard.standingAside(this) && CrashGuard.openStockHome(this)) {
+            aside = true;
+            finish();
+            return;
+        }
+        CrashGuard.started(this);
+        TclInput.ensure(this); // 1.43: TCL lets apps with a TV input start at boot
         prefs = new Prefs(this);
         pm = getPackageManager();
         root = new FrameLayout(this);
@@ -171,6 +180,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     @Override
     protected void onDestroy() {
+        if (aside) { super.onDestroy(); return; }
+        CrashGuard.settled(this); // a normal close is no crash
+        main.removeCallbacks(settle);
         prefs.sp.unregisterOnSharedPreferenceChangeListener(this);
         try { unregisterReceiver(packages); } catch (Exception ignored) {}
         try { unregisterReceiver(netChanged); } catch (Exception ignored) {}
@@ -186,7 +198,12 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onResume() {
         super.onResume();
+        if (aside) return;
         resumed = true;
+        // a start that reached the screen and lived a few seconds is a good one (short: a box that
+        // kills the home's process often — be311 — must not count as crashing)
+        main.removeCallbacks(settle);
+        main.postDelayed(settle, 5000);
         armFrame();
         LanRemote.ensure(this); // 1.40: the phone's remote over Wi-Fi
         HomeWatch.ensure(this); // 1.39: be311 / com.master.t972 — the box drops the Home-key service
@@ -280,6 +297,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (aside) return;
         if (showGrid) { showGrid = false; build(); }
         maybeChooseInput(intent);
     }
@@ -359,6 +377,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
+        if (aside) return;
         if (resumed) armFrame(); // a key pressed: the idle time starts again
     }
 
@@ -376,6 +395,28 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             android.widget.Toast.makeText(this, T.t("Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности)."),
                     android.widget.Toast.LENGTH_LONG).show();
         }
+    }
+
+    /** 1.43: standing aside after crashes (CrashGuard): nothing else runs in this instance. */
+    private boolean aside;
+    private final Runnable settle = () -> CrashGuard.settled(this);
+
+    /** The TV's assistant (Google Assistant / Gemini), else Android's voice search. False when
+     *  neither answers: the key goes on to Android. */
+    private boolean openAssistant(int deviceId) {
+        Intent[] tries = {
+                new Intent(Intent.ACTION_ASSIST).putExtra(Intent.EXTRA_ASSIST_INPUT_DEVICE_ID, deviceId),
+                new Intent("android.speech.action.WEB_SEARCH"),
+        };
+        for (Intent i : tries) {
+            try {
+                startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                HomeKeyService.log("search key: " + i.getAction());
+                return true;
+            } catch (Exception ignored) {}
+        }
+        HomeKeyService.log("search key: no assistant answered");
+        return false;
     }
 
     /** 1.42: OK on the weather opens the week's forecast (a Play review). The weather can take
@@ -999,6 +1040,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     @Override
     protected void onPause() {
+        if (aside) { super.onPause(); return; }
         resumed = false;
         main.removeCallbacks(frameTick);
         main.removeCallbacks(blockDateTick);
@@ -1029,6 +1071,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** Home must never close itself; Back jumps to the top instead. */
     @Override
     public void onBackPressed() {
+        if (aside) return;
         if (showGrid) { showGrid = false; build(); return; }
         if (scroll != null && scroll.getScrollY() > 0) {
             scroll.smoothScrollTo(0, 0);
@@ -1038,6 +1081,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent e) {
+        if (aside) return super.dispatchKeyEvent(e);
+        // 1.43: the remote's Search key (TCL, Android 11: it reached the home and nothing happened)
+        // opens the TV's assistant, as the stock home does (the idea from couch-tv, VoiceKeys)
+        if (e.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
+            if (e.getAction() == KeyEvent.ACTION_UP && e.getRepeatCount() == 0 && !e.isCanceled()) {
+                if (prefs.kids() || openAssistant(e.getDeviceId())) return true;
+                return super.dispatchKeyEvent(e);
+            }
+            return true;
+        }
         // a key while loading: skip the loading screen, the press only does that
         if (splash != null && !splash.leaving()) {
             if (e.getAction() == KeyEvent.ACTION_DOWN) hideSplash.run();
@@ -1253,6 +1306,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent e) {
+        if (aside) return super.onKeyDown(keyCode, e);
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             if (prefs.kids()) return true;
             View f = getCurrentFocus();

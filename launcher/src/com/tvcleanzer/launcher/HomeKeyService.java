@@ -153,6 +153,8 @@ public class HomeKeyService extends AccessibilityService {
         connectedAt = SystemClock.elapsedRealtime();
         log("connected, " + SystemClock.elapsedRealtime() / 1000 + " s after boot");
         new Prefs(this).setServiceWanted(true);
+        CrashGuard.install(this);
+        TclInput.ensure(this);
         LanRemote.ensure(this); // 1.40: the phone's remote over Wi-Fi
         KeeperJob.schedule(this);
         updateKeyFilter();
@@ -539,7 +541,11 @@ public class HomeKeyService extends AccessibilityService {
         if (code == KeyEvent.KEYCODE_APP_SWITCH && new Prefs(this).kids()) return true;
         if (stockKey(e)) return true;
         // 191 = the "Mi" button on Xiaomi remotes (elsewhere it is a gamepad key)
-        boolean miKey = code == 191 && android.os.Build.MANUFACTURER.toLowerCase().contains("xiaomi");
+        boolean xiaomi = android.os.Build.MANUFACTURER.toLowerCase().contains("xiaomi");
+        // 1.43: MiTV-MOOQ1's Mi-logo key is BUTTON_5 with scan code 580, not HOME (seen by couch-tv)
+        boolean miKey = xiaomi && (code == 191 || (code == KeyEvent.KEYCODE_BUTTON_5 && e.getScanCode() == 580));
+        // 1.43: crashed twice lately (CrashGuard): Home is the TV's own for a few minutes
+        if ((code == KeyEvent.KEYCODE_HOME || miKey) && CrashGuard.standingAside(this)) return false;
         if (code != KeyEvent.KEYCODE_HOME && !miKey) {
             // the owner picked something (OK, Alice / voice key): leave the stock screens alone
             if (e.getAction() == KeyEvent.ACTION_DOWN && (code == KeyEvent.KEYCODE_DPAD_CENTER
@@ -781,6 +787,7 @@ public class HomeKeyService extends AccessibilityService {
     }
 
     private void openHome() {
+        if (CrashGuard.standingAside(this)) return; // 1.43: the TV's own home for a few minutes
         lastRedirect = SystemClock.uptimeMillis();
         lastPkg = getPackageName();
         lastCls = "";

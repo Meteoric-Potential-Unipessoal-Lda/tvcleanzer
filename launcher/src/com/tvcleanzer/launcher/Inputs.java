@@ -137,6 +137,15 @@ final class Inputs {
 
     private Inputs() {}
 
+    /** Our own TV input (TclInput, switched on on TCL for the boot start): never a source. */
+    private static boolean ours(Context c, TvInputInfo info) {
+        try {
+            return info.getServiceInfo() != null && c.getPackageName().equals(info.getServiceInfo().packageName);
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
     static List<Item> load(Context c) {
         List<Item> out = new ArrayList<>();
         boolean tuner = false;
@@ -145,6 +154,7 @@ final class Inputs {
             TvInputManager tim = (TvInputManager) c.getSystemService(Context.TV_INPUT_SERVICE);
             if (tim != null) {
                 for (TvInputInfo info : tim.getTvInputList()) {
+                    if (ours(c, info)) continue; // 1.43: TclInput
                     if (!info.isPassthroughInput()) {
                         if (info.getType() == TvInputInfo.TYPE_TUNER) {
                             tuner = true;
@@ -174,6 +184,7 @@ final class Inputs {
         try {
             TvInputManager tim = (TvInputManager) c.getSystemService(Context.TV_INPUT_SERVICE);
             if (tim != null) for (TvInputInfo info : tim.getTvInputList()) {
+                if (ours(c, info)) continue;
                 if (!info.isPassthroughInput() && info.getType() == TvInputInfo.TYPE_TUNER) { tunerId = info.getId(); break; }
             }
         } catch (Throwable ignored) {}
