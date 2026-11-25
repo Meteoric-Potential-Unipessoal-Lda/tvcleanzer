@@ -219,5 +219,14 @@
 "Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Távirányító vagy billentyűzet csatlakozik Bluetooth-on: kikapcsolás után nem fog működni. Visszakapcsolni a tévé saját gombjaival vagy a telefonon a TVCleanzerből lehet («Távirányító»).",
 "На этом телевизоре Bluetooth переключается в его настройках": "Ezen a tévén a Bluetooth a beállításokban kapcsolható",
 "VPN-приложения": "VPN-alkalmazások",
-"Настройки VPN": "VPN-beállítások"
+"Настройки VPN": "VPN-beállítások",
+"Код для телефона": "Kód a telefonhoz",
+"Код для телефона: {0}": "Kód a telefonhoz: {0}",
+"Телефон подключён": "Telefon csatlakoztatva",
+"Введите его в TVCleanzer на телефоне": "Írja be a telefonon a TVCleanzerbe",
+"Введите его в TVCleanzer на телефоне «{0}»": "Írja be a(z) «{0}» TVCleanzer alkalmazásába",
+"Пульт с телефона по Wi-Fi": "Távirányító telefonról Wi-Fi-n",
+"Подключённые телефоны": "Csatlakoztatott telefonok",
+"Забыть все": "Összes elfelejtése",
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonok elfelejtve: a Wi-Fi-s távirányítóhoz csatlakoztassa őket újra"
 }

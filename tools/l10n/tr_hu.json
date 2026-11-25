@@ -1024,5 +1024,21 @@
 "Kapcsolja ki, és a kezdőképernyőn csak az ikonok maradnak",
 "Pötty",
 "{0} vagy újabb launcher kell — frissítse fent",
-"Dátum betűtípusa"
+"Dátum betűtípusa",
+"Hibakeresés nélkül csatlakozva",
+"A hibakeresés nem érhető el — anélkül is csatlakozhat",
+"Csatlakozás hibakeresés nélkül",
+"Kész: a távirányító hibakeresés nélkül működik.",
+"Kész: a távirányító a launcheren keresztül, Wi-Fi-n működik. A nyilakhoz, a «Vissza» gombhoz és a szöveghez be kell kapcsolni a tévén a «TVCleanzer: кнопка Домой» szolgáltatást.",
+"Kód a tévé képernyőjéről",
+"A tévé egy 6 karakteres kódot mutat (számok és A–F betűk). Írja be:",
+"A tévé 6 számjegyet mutat. Írja be:",
+"Hibás kód. Hátralévő próbák: {0}",
+"A kód nem egyezik. Próbálja újra — a tévé újat mutat.",
+"A kód háromszor nem egyezett. Próbálja újra — a tévé újat mutat.",
+"A tévé most egy másik telefont csatlakoztat. Próbálja egy perc múlva.",
+"Túl sok hibás kód. Próbálja 10 perc múlva.",
+"A tévé nem válaszolt. Ellenőrizze, hogy be van-e kapcsolva és ugyanazon a Wi-Fi-hálózaton van-e.",
+"Hibakeresés nélkül ez a gomb akkor működik, ha a tévén be van kapcsolva a «TVCleanzer: кнопка Домой» szolgáltatás (Beállítások → Kisegítő lehetőségek).",
+"Hibakeresés nélkül az egér a TVCleanzer 1.40-es vagy újabb launcherrel működik."
 ]

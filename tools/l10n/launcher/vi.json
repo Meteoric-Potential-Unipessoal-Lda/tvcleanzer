@@ -219,5 +219,14 @@
 "Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Remote hoặc bàn phím đang kết nối qua Bluetooth: tắt đi chúng sẽ ngừng hoạt động. Bật lại bằng nút trên TV hoặc từ TVCleanzer trên điện thoại («Điều khiển»).",
 "На этом телевизоре Bluetooth переключается в его настройках": "Trên TV này Bluetooth được bật/tắt trong cài đặt",
 "VPN-приложения": "Ứng dụng VPN",
-"Настройки VPN": "Cài đặt VPN"
+"Настройки VPN": "Cài đặt VPN",
+"Код для телефона": "Mã cho điện thoại",
+"Код для телефона: {0}": "Mã cho điện thoại: {0}",
+"Телефон подключён": "Đã kết nối điện thoại",
+"Введите его в TVCleanzer на телефоне": "Nhập mã này vào TVCleanzer trên điện thoại",
+"Введите его в TVCleanzer на телефоне «{0}»": "Nhập mã này vào TVCleanzer trên «{0}»",
+"Пульт с телефона по Wi-Fi": "Điều khiển từ điện thoại qua Wi-Fi",
+"Подключённые телефоны": "Điện thoại đã kết nối",
+"Забыть все": "Quên tất cả",
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Đã quên điện thoại: hãy kết nối lại để dùng điều khiển qua Wi-Fi"
 }

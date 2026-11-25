@@ -219,5 +219,14 @@
 "Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Pult yoki klaviatura Bluetooth orqali ulangan: o‘chirilgach ular ishlamay qoladi. Qayta yoqish televizorning o‘z tugmalari yoki telefondagi TVCleanzer orqali («Pult»).",
 "На этом телевизоре Bluetooth переключается в его настройках": "Bu televizorda Bluetooth sozlamalarda almashtiriladi",
 "VPN-приложения": "VPN ilovalari",
-"Настройки VPN": "VPN sozlamalari"
+"Настройки VPN": "VPN sozlamalari",
+"Код для телефона": "Telefon uchun kod",
+"Код для телефона: {0}": "Telefon uchun kod: {0}",
+"Телефон подключён": "Telefon ulandi",
+"Введите его в TVCleanzer на телефоне": "Uni telefondagi TVCleanzer’ga kiriting",
+"Введите его в TVCleanzer на телефоне «{0}»": "Uni «{0}» telefonidagi TVCleanzer’ga kiriting",
+"Пульт с телефона по Wi-Fi": "Telefondan Wi-Fi orqali pult",
+"Подключённые телефоны": "Ulangan telefonlar",
+"Забыть все": "Hammasini unutish",
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonlar unutildi: Wi-Fi pult uchun ularni qayta ulang"
 }

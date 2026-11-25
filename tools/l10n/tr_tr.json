@@ -1024,5 +1024,21 @@
 "Kapatın, ana ekranda yalnızca simgeler kalsın",
 "Nokta",
 "Başlatıcı {0} veya daha yenisi gerekir — yukarıdan güncelleyin",
-"Tarih yazı tipi"
+"Tarih yazı tipi",
+"Hata ayıklama olmadan bağlandı",
+"Hata ayıklama kullanılamıyor — onsuz bağlanabilirsiniz",
+"Hata ayıklama olmadan bağlan",
+"Tamam: kumanda hata ayıklama olmadan çalışıyor.",
+"Tamam: kumanda başlatıcı üzerinden Wi-Fi ile çalışıyor. Oklar, «Geri» ve metin için TV’de «TVCleanzer: кнопка Домой» hizmeti açık olmalı.",
+"TV ekranındaki kod",
+"TV 6 karakterli bir kod gösterdi (rakamlar ve A–F harfleri). Girin:",
+"TV 6 rakam gösterdi. Girin:",
+"Yanlış kod. Kalan deneme: {0}",
+"Kod eşleşmedi. Tekrar deneyin — TV yenisini gösterecek.",
+"Kod üç kez eşleşmedi. Tekrar deneyin — TV yenisini gösterecek.",
+"TV şu anda başka bir telefonu bağlıyor. Bir dakika sonra deneyin.",
+"Çok fazla yanlış kod. 10 dakika sonra deneyin.",
+"TV yanıt vermedi. Açık ve aynı Wi-Fi ağında olduğunu kontrol edin.",
+"Hata ayıklama olmadan bu tuş, TV’de «TVCleanzer: кнопка Домой» hizmeti açıkken çalışır (Ayarlar → Erişilebilirlik).",
+"Hata ayıklama olmadan fare, TVCleanzer 1.40 veya daha yeni başlatıcıyla çalışır."
 ]

@@ -1024,5 +1024,21 @@
 "Wyłącz, a na ekranie głównym zostaną tylko ikony",
 "Kropka",
 "Wymaga launchera {0} lub nowszego — zaktualizuj go powyżej",
-"Czcionka daty"
+"Czcionka daty",
+"Połączono bez debugowania",
+"Debugowanie niedostępne — możesz połączyć się bez niego",
+"Połącz bez debugowania",
+"Gotowe: pilot działa bez debugowania.",
+"Gotowe: pilot działa przez launcher po Wi-Fi. Strzałki, «Wstecz» i tekst wymagają włączonej usługi «TVCleanzer: кнопка Домой» na TV.",
+"Kod z ekranu telewizora",
+"Telewizor pokazał 6-znakowy kod (cyfry i litery A–F). Wpisz go:",
+"Telewizor pokazał 6 cyfr. Wpisz je:",
+"Błędny kod. Pozostałe próby: {0}",
+"Kod się nie zgadza. Spróbuj ponownie — telewizor pokaże nowy.",
+"Kod trzy razy się nie zgadzał. Spróbuj ponownie — telewizor pokaże nowy.",
+"Telewizor łączy teraz inny telefon. Spróbuj za minutę.",
+"Za dużo błędnych kodów. Spróbuj za 10 minut.",
+"Telewizor nie odpowiedział. Sprawdź, czy jest włączony i w tej samej sieci Wi-Fi.",
+"Bez debugowania ten przycisk działa, gdy na TV włączona jest usługa «TVCleanzer: кнопка Домой» (Ustawienia → Ułatwienia dostępu).",
+"Bez debugowania mysz działa przez launcher TVCleanzer 1.40 lub nowszy."
 ]

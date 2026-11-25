@@ -1024,5 +1024,21 @@
 "Désactivez pour ne garder que les icônes sur l'écran d'accueil",
 "Point",
 "Nécessite le launcher {0} ou plus récent — mettez-le à jour ci-dessus",
-"Police de la date"
+"Police de la date",
+"Connecté sans débogage",
+"Le débogage est indisponible — vous pouvez vous connecter sans",
+"Connecter sans débogage",
+"C’est prêt : la télécommande fonctionne sans débogage.",
+"C’est prêt : la télécommande passe par le launcher en Wi-Fi. Les flèches, «Retour» et le texte demandent le service «TVCleanzer: кнопка Домой» activé sur la TV.",
+"Code affiché sur la TV",
+"La TV affiche un code de 6 caractères (chiffres et lettres A–F). Saisissez-le :",
+"La TV affiche 6 chiffres. Saisissez-les :",
+"Code incorrect. Essais restants : {0}",
+"Le code ne correspond pas. Réessayez : la TV en affichera un nouveau.",
+"Le code a échoué trois fois. Réessayez : la TV en affichera un nouveau.",
+"La TV connecte un autre téléphone en ce moment. Réessayez dans une minute.",
+"Trop de codes incorrects. Réessayez dans 10 minutes.",
+"La TV n’a pas répondu. Vérifiez qu’elle est allumée et sur le même réseau Wi-Fi.",
+"Sans débogage, ce bouton demande le service «TVCleanzer: кнопка Домой» activé sur la TV (Paramètres → Accessibilité).",
+"Sans débogage, la souris passe par le launcher TVCleanzer 1.40 ou plus récent."
 ]

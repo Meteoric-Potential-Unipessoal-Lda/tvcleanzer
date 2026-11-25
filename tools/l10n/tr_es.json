@@ -1024,5 +1024,21 @@
 "Desactívalo y en la pantalla de inicio quedarán solo los iconos",
 "Punto",
 "Requiere launcher {0} o posterior: actualízalo arriba",
-"Fuente de la fecha"
+"Fuente de la fecha",
+"Conectado sin depuración",
+"La depuración no está disponible: puedes conectarte sin ella",
+"Conectar sin depuración",
+"Listo: el mando funciona sin depuración.",
+"Listo: el mando funciona a través del launcher por Wi-Fi. Las flechas, «Atrás» y el texto necesitan el servicio «TVCleanzer: кнопка Домой» activado en la TV.",
+"Código de la pantalla de la TV",
+"La TV muestra un código de 6 caracteres (números y letras A–F). Introdúcelo:",
+"La TV muestra 6 números. Introdúcelos:",
+"Código incorrecto. Intentos restantes: {0}",
+"El código no coincide. Inténtalo de nuevo: la TV mostrará uno nuevo.",
+"El código falló tres veces. Inténtalo de nuevo: la TV mostrará uno nuevo.",
+"La TV está conectando otro teléfono ahora. Inténtalo en un minuto.",
+"Demasiados códigos incorrectos. Inténtalo en 10 minutos.",
+"La TV no respondió. Comprueba que esté encendida y en la misma red Wi-Fi.",
+"Sin depuración, este botón necesita el servicio «TVCleanzer: кнопка Домой» activado en la TV (Ajustes → Accesibilidad).",
+"Sin depuración, el ratón funciona con el launcher TVCleanzer 1.40 o posterior."
 ]

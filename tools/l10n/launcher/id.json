@@ -219,5 +219,14 @@
 "Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Ada remote atau keyboard yang terhubung lewat Bluetooth: setelah dimatikan tidak akan berfungsi. Nyalakan lagi dengan tombol di TV atau dari TVCleanzer di ponsel («Remote»).",
 "На этом телевизоре Bluetooth переключается в его настройках": "Di TV ini Bluetooth diubah lewat setelannya",
 "VPN-приложения": "Aplikasi VPN",
-"Настройки VPN": "Setelan VPN"
+"Настройки VPN": "Setelan VPN",
+"Код для телефона": "Kode untuk ponsel",
+"Код для телефона: {0}": "Kode untuk ponsel: {0}",
+"Телефон подключён": "Ponsel terhubung",
+"Введите его в TVCleanzer на телефоне": "Masukkan di TVCleanzer pada ponsel",
+"Введите его в TVCleanzer на телефоне «{0}»": "Masukkan di TVCleanzer pada «{0}»",
+"Пульт с телефона по Wi-Fi": "Remote dari ponsel lewat Wi-Fi",
+"Подключённые телефоны": "Ponsel terhubung",
+"Забыть все": "Lupakan semua",
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Ponsel dilupakan: hubungkan lagi untuk remote Wi-Fi"
 }

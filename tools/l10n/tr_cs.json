@@ -1024,5 +1024,21 @@
 "Vypněte a na ploše zůstanou jen ikony",
 "Tečka",
 "Vyžaduje launcher {0} nebo novější — aktualizujte ho nahoře",
-"Písmo data"
+"Písmo data",
+"Připojeno bez ladění",
+"Ladění není k dispozici — můžete se připojit bez něj",
+"Připojit bez ladění",
+"Hotovo: ovladač funguje bez ladění.",
+"Hotovo: ovladač funguje přes launcher po Wi-Fi. Šipky, «Zpět» a text potřebují na TV zapnutou službu «TVCleanzer: кнопка Домой».",
+"Kód z obrazovky televize",
+"Televize ukázala 6místný kód (číslice a písmena A–F). Zadejte ho:",
+"Televize ukázala 6 číslic. Zadejte je:",
+"Špatný kód. Zbývá pokusů: {0}",
+"Kód nesouhlasí. Zkuste to znovu — televize ukáže nový.",
+"Kód třikrát nesouhlasil. Zkuste to znovu — televize ukáže nový.",
+"Televize právě připojuje jiný telefon. Zkuste to za minutu.",
+"Příliš mnoho špatných kódů. Zkuste to za 10 minut.",
+"Televize neodpověděla. Zkontrolujte, že je zapnutá a ve stejné síti Wi-Fi.",
+"Bez ladění funguje toto tlačítko, když je na TV zapnutá služba «TVCleanzer: кнопка Домой» (Nastavení → Přístupnost).",
+"Bez ladění funguje myš přes launcher TVCleanzer 1.40 nebo novější."
 ]

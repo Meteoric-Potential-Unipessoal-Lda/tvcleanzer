@@ -20,6 +20,7 @@ import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
 import '../services/demo_tv.dart';
 import '../services/mirror.dart';
+import '../services/no_adb.dart';
 import '../state/current_tv.dart';
 import '../state/remote.dart';
 import '../theme/app_theme.dart';
@@ -49,10 +50,13 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   DateTime? _sleepAt;
   String? _busy; // what is being sent to the TV right now
   StreamSubscription<String?>? _mirrorEnded;
+  StreamSubscription<String>? _notices;
+  bool _pairing = false;
 
   @override
   void initState() {
     super.initState();
+    _notices = ref.read(remoteProvider.notifier).notices.listen(_snack);
     Mirror.sync();
     _mirrorEnded = Mirror.ended.listen((reason) {
       // 'connect|<system error>': the detail helps when someone sends a screenshot
@@ -77,9 +81,20 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       _mouseOpening = true;
       _mouseErr = null;
     });
-    final link = _MouseLink(ref.read(adbServiceProvider).ensureHomeKeyService,
-        (cmd) => ref.read(remoteProvider.notifier).input(tv.id, cmd));
-    final err = await link.open(tv);
+    // 1.3.158: without ADB the pointer goes through the launcher's Wi-Fi remote
+    final remote = ref.read(remoteProvider.notifier);
+    var alt = remote.altLink(tv.id);
+    var link = alt != null
+        ? _MouseLink.alt(alt)
+        : _MouseLink(ref.read(adbServiceProvider).ensureHomeKeyService, (cmd) => remote.input(tv.id, cmd));
+    var err = await link.open(tv);
+    if (err != null && alt == null && mounted && _mode == 2) {
+      alt = await remote.ensureAlt(tv.id);
+      if (alt != null) {
+        link = _MouseLink.alt(alt);
+        err = await link.open(tv);
+      }
+    }
     if (!mounted || _mode != 2) {
       link.close();
       return;
@@ -113,6 +128,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   @override
   void dispose() {
     _closeMouse();
+    _notices?.cancel();
     _mirrorEnded?.cancel();
     _speech.cancel();
     _text.dispose();
@@ -122,6 +138,62 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
 
   void _key(TvDevice tv, int code) =>
       ref.read(remoteProvider.notifier).key(tv.id, code);
+
+  /// 1.3.158: pairing without ADB. The TV shows a code; the owner types it here.
+  Future<void> _pairNoAdb(TvDevice tv, AltKind kind) async {
+    setState(() => _pairing = true);
+    final err = await ref.read(remoteProvider.notifier).pair(tv.id, kind, (left) => _askCode(kind, left));
+    if (!mounted) return;
+    setState(() => _pairing = false);
+    if (err != null) {
+      _snack(err);
+    } else if (ref.read(remoteProvider).status == RemoteStatus.ready) {
+      _snack(kind == AltKind.atv
+          ? tr('Готово: пульт работает без отладки.')
+          : tr('Готово: пульт работает через лаунчер по Wi-Fi. Стрелки, «Назад» и текст — когда на ТВ включена служба «TVCleanzer: кнопка Домой».'));
+    }
+  }
+
+  /// The code from the TV screen: 6 characters 0-9 A-F (Google's protocol, [left] null) or
+  /// 6 digits (the launcher), null when cancelled.
+  Future<String?> _askCode(AltKind kind, int? left) {
+    final c = TextEditingController();
+    final hex = kind == AltKind.atv;
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.bgCard,
+        title: Text(tr('Код с экрана телевизора')),
+        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            hex ? tr('Телевизор показал код из 6 знаков (цифры и буквы A–F). Введите его:') : tr('Телевизор показал 6 цифр. Введите их:'),
+            style: const TextStyle(color: AppColors.fgMid, height: 1.4),
+          ),
+          if (left != null && left < 3) ...[
+            const Gap(8),
+            Text(tr('Неверный код. Осталось попыток: {0}', ['$left']),
+                style: const TextStyle(color: AppColors.danger)),
+          ],
+          const Gap(12),
+          TextField(
+            controller: c,
+            autofocus: true,
+            maxLength: 7,
+            textCapitalization: TextCapitalization.characters,
+            keyboardType: hex ? TextInputType.visiblePassword : TextInputType.number,
+            style: const TextStyle(color: AppColors.fg, fontSize: 24, letterSpacing: 4),
+            decoration: InputDecoration(hintText: hex ? 'A1B2C3' : '123456', counterText: ''),
+            onSubmitted: (v) => Navigator.pop(ctx, v.trim()),
+          ),
+        ]),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Отмена'))),
+          FilledButton(onPressed: () => Navigator.pop(ctx, c.text.trim()), child: Text(tr('Подключить'))),
+        ],
+      ),
+    ).whenComplete(c.dispose);
+  }
 
   void _snack(String m) {
     if (!mounted) return;
@@ -223,7 +295,12 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       _key(tv, 84); // the Search key: the TV's own search screen
       return;
     }
-    await _run(tr('Ищем на ТВ…'), () => ref.read(adbServiceProvider).tvSearch(tv, value));
+    if (ref.read(remoteProvider.notifier).altLink(tv.id) != null) {
+      // without ADB: the text goes into the field in focus (the TV's own search, opened first)
+      await ref.read(remoteProvider.notifier).text(tv.id, value).catchError((_) {});
+    } else {
+      await _run(tr('Ищем на ТВ…'), () => ref.read(adbServiceProvider).tvSearch(tv, value));
+    }
     if (!keep) _text.clear();
   }
 
@@ -552,6 +629,19 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
             child: Column(children: [
               _status(tv, rs),
+              if (rs.status == RemoteStatus.needsPair && rs.via != null) ...[
+                const Gap(10),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: _pairing ? null : () => _pairNoAdb(tv, rs.via!),
+                    icon: _pairing
+                        ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        : const Icon(Icons.link_rounded),
+                    label: Text(tr('Подключить без отладки')),
+                  ),
+                ),
+              ],
               if (_busy != null) ...[
                 const Gap(10),
                 Row(children: [
@@ -701,6 +791,11 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                 avatar: const Icon(Icons.play_circle_outline_rounded, size: 18, color: AppColors.accent),
                 label: Text(a.label),
                 onPressed: () => _run(tr('Открываем на ТВ…'), () async {
+                  final alt = ref.read(remoteProvider.notifier).altLink(tv.id);
+                  if (alt != null) {
+                    alt.launch(a.pkg);
+                    return;
+                  }
                   if (!await ref.read(adbServiceProvider).openApp(tv, a.pkg)) {
                     throw AdbException(tr('Не удалось открыть {0}', [a.label]));
                   }
@@ -763,8 +858,9 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     final (color, text) = switch (rs.status) {
       RemoteStatus.idle => (AppColors.fgMuted, tr('Нажмите любую кнопку, чтобы подключиться')),
       RemoteStatus.connecting => (AppColors.warn, tr('Подключаемся…')),
-      RemoteStatus.ready => (AppColors.ok, tr('Подключено')),
+      RemoteStatus.ready => (AppColors.ok, rs.via != null ? tr('Подключено без отладки') : tr('Подключено')),
       RemoteStatus.error => (AppColors.danger, rs.message ?? tr('Нет связи')),
+      RemoteStatus.needsPair => (AppColors.warn, tr('Отладка недоступна — можно подключиться без неё')),
     };
     final sw = TvBanner.canSwitch(ref);
     final card = Container(
@@ -1166,7 +1262,16 @@ class _RockerState extends State<_Rocker> {
 /// listens on the TV's loopback, an ADB «tcp:» stream reaches it. Moves are gathered and sent
 /// every frame, in units of a 1920-wide screen.
 class _MouseLink {
-  _MouseLink(this._ensure, this._input);
+  _MouseLink(this._ensure, this._input) : _lan = null;
+
+  /// 1.3.158: the pointer through the launcher's Wi-Fi remote (no ADB): lines go over [a].
+  _MouseLink.alt(AltLink a)
+      : _lan = a,
+        _ensure = _noEnsure,
+        _input = _noInput;
+  static Future<void> _noEnsure(AdbClient _) async {}
+  static void _noInput(String _) {}
+  final AltLink? _lan;
   final Future<void> Function(AdbClient) _ensure;
 
   /// Runs `input …` on the TV (over the remote's own connection).
@@ -1195,6 +1300,16 @@ class _MouseLink {
   Future<String?> open(TvDevice tv) async {
     _tv = tv;
     _closing = false;
+    final lan = _lan;
+    if (lan != null) {
+      if (!lan.isOpen) return _noLink;
+      if (!lan.canMouse) {
+        return lan.kind == AltKind.lan
+            ? tr('Мышь работает, когда включена служба «TVCleanzer: кнопка Домой». Включите её в настройках ТВ: Специальные возможности.')
+            : tr('Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.');
+      }
+      return null;
+    }
     try {
       final c = AdbClient.open(host: tv.ipAddress, port: tv.port);
       _c = c;
@@ -1304,6 +1419,16 @@ class _MouseLink {
     _flush = null;
     if (_moving) return;
     if (_dx.abs() < .5 && _dy.abs() < .5) return;
+    final lan = _lan;
+    if (lan != null) {
+      final l = 'm ${_dx.toStringAsFixed(1)} ${_dy.toStringAsFixed(1)}';
+      _dx = 0;
+      _dy = 0;
+      try {
+        lan.mouse(l);
+      } catch (_) {}
+      return;
+    }
     final s = _s;
     if (s == null || s.isClosed) return;
     final l = 'm ${_dx.toStringAsFixed(1)} ${_dy.toStringAsFixed(1)}';
@@ -1317,6 +1442,14 @@ class _MouseLink {
   }
 
   void send(String line) {
+    final lan = _lan;
+    if (lan != null) {
+      if (line == 'q') return; // the Wi-Fi remote stays: it carries the keys too
+      try {
+        lan.mouse(line);
+      } catch (_) {}
+      return;
+    }
     final s = _s;
     if (s == null || s.isClosed) return;
     s.write(utf8.encode('$line\n')).catchError((_) {});

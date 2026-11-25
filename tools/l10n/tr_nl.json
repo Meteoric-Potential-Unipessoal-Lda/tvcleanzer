@@ -1024,5 +1024,21 @@
 "Zet uit om alleen de pictogrammen op het startscherm te houden",
 "Stip",
 "Vereist launcher {0} of nieuwer — werk hem hierboven bij",
-"Lettertype datum"
+"Lettertype datum",
+"Verbonden zonder foutopsporing",
+"Foutopsporing niet beschikbaar — je kunt zonder verbinden",
+"Verbinden zonder foutopsporing",
+"Klaar: de afstandsbediening werkt zonder foutopsporing.",
+"Klaar: de afstandsbediening werkt via de launcher over wifi. Pijlen, «Terug» en tekst hebben de dienst «TVCleanzer: кнопка Домой» op de tv nodig.",
+"Code van het tv-scherm",
+"De tv toont een code van 6 tekens (cijfers en letters A–F). Voer hem in:",
+"De tv toont 6 cijfers. Voer ze in:",
+"Verkeerde code. Pogingen over: {0}",
+"De code klopt niet. Probeer opnieuw — de tv toont een nieuwe.",
+"De code klopte drie keer niet. Probeer opnieuw — de tv toont een nieuwe.",
+"De tv verbindt nu een andere telefoon. Probeer het over een minuut.",
+"Te veel verkeerde codes. Probeer het over 10 minuten.",
+"De tv reageerde niet. Controleer of hij aan staat en op hetzelfde wifinetwerk zit.",
+"Zonder foutopsporing werkt deze knop als de dienst «TVCleanzer: кнопка Домой» op de tv aan staat (Instellingen → Toegankelijkheid).",
+"Zonder foutopsporing werkt de muis via de TVCleanzer-launcher 1.40 of nieuwer."
 ]

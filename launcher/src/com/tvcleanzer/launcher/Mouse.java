@@ -140,6 +140,22 @@ final class Mouse {
         } catch (Throwable ignored) {}
     }
 
+    /** 1.40: the same commands from the Wi-Fi remote (LanRemote); its lines back go to [back]. */
+    void feed(String line, OutputStream back) {
+        if (client != back) {
+            client = back;
+            main.post(() -> show(true));
+        }
+        handle(line.trim());
+    }
+
+    /** The Wi-Fi phone left. */
+    void release(OutputStream back) {
+        if (client != back) return;
+        client = null;
+        main.post(() -> show(false));
+    }
+
     private WindowManager wm() { return (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE); }
 
     private void size() {

@@ -1024,5 +1024,21 @@
 "Stäng av så att bara ikonerna finns kvar på startskärmen",
 "Prick",
 "Kräver launcher {0} eller senare — uppdatera den ovan",
-"Datumets typsnitt"
+"Datumets typsnitt",
+"Ansluten utan felsökning",
+"Felsökning är inte tillgänglig — du kan ansluta utan den",
+"Anslut utan felsökning",
+"Klart: fjärrkontrollen fungerar utan felsökning.",
+"Klart: fjärrkontrollen går via startprogrammet över wifi. Pilar, «Tillbaka» och text kräver tjänsten «TVCleanzer: кнопка Домой» på tv:n.",
+"Kod från tv-skärmen",
+"Tv:n visar en kod med 6 tecken (siffror och bokstäverna A–F). Ange den:",
+"Tv:n visar 6 siffror. Ange dem:",
+"Fel kod. Försök kvar: {0}",
+"Koden stämde inte. Försök igen — tv:n visar en ny.",
+"Koden stämde inte tre gånger. Försök igen — tv:n visar en ny.",
+"Tv:n ansluter en annan telefon just nu. Försök om en minut.",
+"För många fel koder. Försök om 10 minuter.",
+"Tv:n svarade inte. Kontrollera att den är på och i samma wifinätverk.",
+"Utan felsökning kräver den här knappen tjänsten «TVCleanzer: кнопка Домой» på tv:n (Inställningar → Tillgänglighet).",
+"Utan felsökning fungerar musen via TVCleanzer-startprogrammet 1.40 eller senare."
 ]

@@ -153,6 +153,7 @@ public class HomeKeyService extends AccessibilityService {
         connectedAt = SystemClock.elapsedRealtime();
         log("connected, " + SystemClock.elapsedRealtime() / 1000 + " s after boot");
         new Prefs(this).setServiceWanted(true);
+        LanRemote.ensure(this); // 1.40: the phone's remote over Wi-Fi
         KeeperJob.schedule(this);
         updateKeyFilter();
         updateNight();
@@ -239,6 +240,9 @@ public class HomeKeyService extends AccessibilityService {
     }
 
     private long lastKeyAt;
+
+    /** The app on screen (LanRemote's state line). */
+    String frontPackageNow() { return frontPackage(); }
 
     private String frontPackage() {
         try {

@@ -282,6 +282,16 @@ public class SettingsActivity extends Activity {
             if (v) Toast.makeText(this, T.t("Если «Домой» перестанет открывать лаунчер, верните «По одному шагу»"),
                     Toast.LENGTH_LONG).show();
         });
+        addToggle(skin, T.t("Пульт с телефона по Wi-Fi"), prefs.lanRemote(), T.t("Включён"), T.t("Выключен"), v -> {
+            prefs.setLanRemote(v);
+            LanRemote.ensure(this);
+        });
+        if (LanRemote.pairedCount(this) > 0) {
+            addRow(skin, T.t("Подключённые телефоны"), T.t("Забыть все"), () -> {
+                LanRemote.forgetAll(this);
+                Toast.makeText(this, T.t("Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново"), Toast.LENGTH_LONG).show();
+            });
+        }
         addRow(skin, T.t("При включении ТВ"), autostartName(), this::chooseAutostart);
         addRow(skin, T.t("Детский режим"), prefs.kids() ? T.t("Включён") : (prefs.hasPin() ? T.t("Выключен") : T.t("Настроить")),
                 this::kidsMode);

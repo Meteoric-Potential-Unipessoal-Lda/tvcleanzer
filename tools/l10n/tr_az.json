@@ -1024,5 +1024,21 @@
 "Söndürün — əsas ekranda yalnız ikonlar qalacaq",
 "Nöqtə",
 "Launcher {0} və ya daha yenisi lazımdır — onu yuxarıda yeniləyin",
-"Tarix şrifti"
+"Tarix şrifti",
+"Sazlamasız qoşuldu",
+"Sazlama əlçatan deyil — onsuz qoşulmaq olar",
+"Sazlamasız qoş",
+"Hazırdır: pult sazlamasız işləyir.",
+"Hazırdır: pult launcher vasitəsilə Wi-Fi ilə işləyir. Oxlar, «Geri» və mətn üçün TV-də «TVCleanzer: кнопка Домой» xidməti açıq olmalıdır.",
+"Televizor ekranındakı kod",
+"Televizor 6 simvollu kod göstərdi (rəqəmlər və A–F hərfləri). Onu daxil edin:",
+"Televizor 6 rəqəm göstərdi. Onları daxil edin:",
+"Kod səhvdir. Qalan cəhd: {0}",
+"Kod uyğun gəlmədi. Yenidən cəhd edin — televizor yenisini göstərəcək.",
+"Kod üç dəfə uyğun gəlmədi. Yenidən cəhd edin — televizor yenisini göstərəcək.",
+"Televizor indi başqa telefonu qoşur. Bir dəqiqədən sonra cəhd edin.",
+"Çox sayda səhv kod. 10 dəqiqədən sonra cəhd edin.",
+"Televizor cavab vermədi. Onun açıq və eyni Wi-Fi şəbəkəsində olduğunu yoxlayın.",
+"Sazlamasız bu düymə TV-də «TVCleanzer: кнопка Домой» xidməti açıq olanda işləyir (Ayarlar → Əlçatımlılıq).",
+"Sazlamasız siçan TVCleanzer 1.40 və ya daha yeni launcher ilə işləyir."
 ]

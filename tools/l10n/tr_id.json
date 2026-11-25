@@ -1024,5 +1024,21 @@
 "Matikan agar layar utama hanya berisi ikon",
 "Titik",
 "Perlu launcher {0} atau lebih baru — perbarui di atas",
-"Huruf tanggal"
+"Huruf tanggal",
+"Terhubung tanpa debugging",
+"Debugging tidak tersedia — bisa terhubung tanpanya",
+"Hubungkan tanpa debugging",
+"Selesai: remote berfungsi tanpa debugging.",
+"Selesai: remote berfungsi lewat launcher melalui Wi-Fi. Panah, «Kembali», dan teks perlu layanan «TVCleanzer: кнопка Домой» aktif di TV.",
+"Kode dari layar TV",
+"TV menampilkan kode 6 karakter (angka dan huruf A–F). Masukkan:",
+"TV menampilkan 6 angka. Masukkan:",
+"Kode salah. Sisa percobaan: {0}",
+"Kode tidak cocok. Coba lagi — TV akan menampilkan kode baru.",
+"Kode tiga kali tidak cocok. Coba lagi — TV akan menampilkan kode baru.",
+"TV sedang menghubungkan ponsel lain. Coba lagi semenit lagi.",
+"Terlalu banyak kode salah. Coba lagi dalam 10 menit.",
+"TV tidak merespons. Pastikan TV menyala dan di jaringan Wi-Fi yang sama.",
+"Tanpa debugging, tombol ini perlu layanan «TVCleanzer: кнопка Домой» aktif di TV (Setelan → Aksesibilitas).",
+"Tanpa debugging, mouse berfungsi lewat launcher TVCleanzer 1.40 atau lebih baru."
 ]

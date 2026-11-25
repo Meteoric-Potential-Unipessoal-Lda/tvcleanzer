@@ -1024,5 +1024,21 @@
 "Tắt để màn hình chính chỉ còn biểu tượng",
 "Chấm",
 "Cần launcher {0} trở lên — hãy cập nhật ở trên",
-"Phông chữ ngày"
+"Phông chữ ngày",
+"Đã kết nối không cần gỡ lỗi",
+"Không dùng được gỡ lỗi — có thể kết nối mà không cần",
+"Kết nối không cần gỡ lỗi",
+"Xong: điều khiển hoạt động không cần gỡ lỗi.",
+"Xong: điều khiển hoạt động qua launcher bằng Wi-Fi. Phím mũi tên, «Quay lại» và nhập chữ cần bật dịch vụ «TVCleanzer: кнопка Домой» trên TV.",
+"Mã trên màn hình TV",
+"TV hiện mã 6 ký tự (chữ số và chữ A–F). Hãy nhập mã:",
+"TV hiện 6 chữ số. Hãy nhập:",
+"Sai mã. Còn {0} lần thử",
+"Mã không khớp. Hãy thử lại — TV sẽ hiện mã mới.",
+"Mã sai ba lần. Hãy thử lại — TV sẽ hiện mã mới.",
+"TV đang kết nối điện thoại khác. Hãy thử lại sau một phút.",
+"Quá nhiều mã sai. Hãy thử lại sau 10 phút.",
+"TV không phản hồi. Hãy kiểm tra TV đang bật và cùng mạng Wi-Fi.",
+"Không có gỡ lỗi, nút này cần bật dịch vụ «TVCleanzer: кнопка Домой» trên TV (Cài đặt → Hỗ trợ tiếp cận).",
+"Không có gỡ lỗi, chuột hoạt động qua launcher TVCleanzer 1.40 trở lên."
 ]

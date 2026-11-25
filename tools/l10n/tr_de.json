@@ -1024,5 +1024,21 @@
 "Ausschalten, damit auf dem Startbildschirm nur die Symbole bleiben",
 "Punkt",
 "Benötigt Launcher {0} oder neuer – oben aktualisieren",
-"Schrift des Datums"
+"Schrift des Datums",
+"Ohne Debugging verbunden",
+"Debugging nicht verfügbar – du kannst ohne verbinden",
+"Ohne Debugging verbinden",
+"Fertig: Die Fernbedienung funktioniert ohne Debugging.",
+"Fertig: Die Fernbedienung läuft über den Launcher per WLAN. Pfeile, «Zurück» und Text brauchen den Dienst «TVCleanzer: кнопка Домой» auf dem Fernseher.",
+"Code vom Fernsehbildschirm",
+"Der Fernseher zeigt einen 6-stelligen Code (Ziffern und Buchstaben A–F). Gib ihn ein:",
+"Der Fernseher zeigt 6 Ziffern. Gib sie ein:",
+"Falscher Code. Verbleibende Versuche: {0}",
+"Der Code passt nicht. Versuche es erneut – der Fernseher zeigt einen neuen.",
+"Der Code war dreimal falsch. Versuche es erneut – der Fernseher zeigt einen neuen.",
+"Der Fernseher verbindet gerade ein anderes Handy. Versuche es in einer Minute.",
+"Zu viele falsche Codes. Versuche es in 10 Minuten.",
+"Der Fernseher hat nicht geantwortet. Prüfe, ob er an und im selben WLAN ist.",
+"Ohne Debugging braucht diese Taste den Dienst «TVCleanzer: кнопка Домой» auf dem Fernseher (Einstellungen → Bedienungshilfen).",
+"Ohne Debugging funktioniert die Maus über den TVCleanzer-Launcher 1.40 oder neuer."
 ]

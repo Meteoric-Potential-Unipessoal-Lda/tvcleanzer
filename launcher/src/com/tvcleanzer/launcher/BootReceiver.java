@@ -32,6 +32,7 @@ public class BootReceiver extends BroadcastReceiver {
                 keep(app);
                 Thread.sleep(6000);
                 ownHomeAfterBoot(app);
+                LanRemote.ensure(app); // 1.40
                 HomeWatch.ensure(app); // 1.39
             } catch (Throwable t) {
                 HomeKeyService.log("boot: " + t);

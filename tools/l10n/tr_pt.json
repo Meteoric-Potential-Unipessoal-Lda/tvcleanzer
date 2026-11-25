@@ -1024,5 +1024,21 @@
 "Desative para deixar só os ícones na tela inicial",
 "Ponto",
 "Requer launcher {0} ou mais recente — atualize-o acima",
-"Fonte da data"
+"Fonte da data",
+"Ligado sem depuração",
+"A depuração não está disponível — pode ligar sem ela",
+"Ligar sem depuração",
+"Pronto: o comando funciona sem depuração.",
+"Pronto: o comando funciona através do launcher por Wi-Fi. Setas, «Voltar» e texto precisam do serviço «TVCleanzer: кнопка Домой» ativo na TV.",
+"Código do ecrã da TV",
+"A TV mostra um código de 6 caracteres (algarismos e letras A–F). Introduza-o:",
+"A TV mostra 6 algarismos. Introduza-os:",
+"Código errado. Tentativas restantes: {0}",
+"O código não coincide. Tente de novo — a TV mostrará um novo.",
+"O código falhou três vezes. Tente de novo — a TV mostrará um novo.",
+"A TV está a ligar outro telefone agora. Tente daqui a um minuto.",
+"Demasiados códigos errados. Tente daqui a 10 minutos.",
+"A TV não respondeu. Verifique se está ligada e na mesma rede Wi-Fi.",
+"Sem depuração, este botão precisa do serviço «TVCleanzer: кнопка Домой» ativo na TV (Definições → Acessibilidade).",
+"Sem depuração, o rato funciona com o launcher TVCleanzer 1.40 ou mais recente."
 ]

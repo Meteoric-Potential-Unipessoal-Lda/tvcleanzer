@@ -1024,5 +1024,21 @@
 "Dezactivați și pe ecranul principal rămân doar pictogramele",
 "Punct",
 "Necesită launcher {0} sau mai nou — actualizează-l mai sus",
-"Fontul datei"
+"Fontul datei",
+"Conectat fără depanare",
+"Depanarea nu este disponibilă — vă puteți conecta fără ea",
+"Conectează fără depanare",
+"Gata: telecomanda funcționează fără depanare.",
+"Gata: telecomanda funcționează prin launcher pe Wi-Fi. Săgețile, «Înapoi» și textul au nevoie de serviciul «TVCleanzer: кнопка Домой» pornit pe TV.",
+"Codul de pe ecranul TV",
+"Televizorul afișează un cod de 6 caractere (cifre și litere A–F). Introduceți-l:",
+"Televizorul afișează 6 cifre. Introduceți-le:",
+"Cod greșit. Încercări rămase: {0}",
+"Codul nu se potrivește. Încercați din nou — televizorul va afișa unul nou.",
+"Codul a fost greșit de trei ori. Încercați din nou — televizorul va afișa unul nou.",
+"Televizorul conectează acum alt telefon. Încercați peste un minut.",
+"Prea multe coduri greșite. Încercați peste 10 minute.",
+"Televizorul nu a răspuns. Verificați că e pornit și în aceeași rețea Wi-Fi.",
+"Fără depanare, acest buton funcționează când pe TV e pornit serviciul «TVCleanzer: кнопка Домой» (Setări → Accesibilitate).",
+"Fără depanare, mouse-ul funcționează prin launcherul TVCleanzer 1.40 sau mai nou."
 ]

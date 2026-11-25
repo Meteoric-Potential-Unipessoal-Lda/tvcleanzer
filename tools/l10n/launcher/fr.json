@@ -219,5 +219,14 @@
 "Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Une télécommande ou un clavier est connecté en Bluetooth : il cessera de fonctionner. Réactivez-le avec les boutons du téléviseur ou depuis TVCleanzer sur le téléphone («Télécommande»).",
 "На этом телевизоре Bluetooth переключается в его настройках": "Sur ce téléviseur, le Bluetooth se change dans ses réglages",
 "VPN-приложения": "Applis VPN",
-"Настройки VPN": "Paramètres VPN"
+"Настройки VPN": "Paramètres VPN",
+"Код для телефона": "Code pour le téléphone",
+"Код для телефона: {0}": "Code pour le téléphone : {0}",
+"Телефон подключён": "Téléphone connecté",
+"Введите его в TVCleanzer на телефоне": "Saisissez-le dans TVCleanzer sur le téléphone",
+"Введите его в TVCleanzer на телефоне «{0}»": "Saisissez-le dans TVCleanzer sur «{0}»",
+"Пульт с телефона по Wi-Fi": "Télécommande du téléphone par Wi-Fi",
+"Подключённые телефоны": "Téléphones connectés",
+"Забыть все": "Tout oublier",
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Téléphones oubliés : reconnectez-les pour la télécommande Wi-Fi"
 }

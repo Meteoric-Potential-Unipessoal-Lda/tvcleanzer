@@ -1,14 +1,18 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/tv_device.dart';
 import '../services/adb_client.dart';
+import '../services/app_log.dart';
+import '../services/no_adb.dart';
 import '../services/wake_on_lan.dart';
 import 'current_tv.dart';
 
 import '../l10n/l10n.dart';
-enum RemoteStatus { idle, connecting, ready, error }
+enum RemoteStatus { idle, connecting, ready, error, needsPair }
 
 /// Non-Latin text needs TVCleanzer Launcher 0.42+ on the TV.
 class NeedsLauncher implements Exception {
@@ -21,7 +25,27 @@ enum PowerResult { sent, wol, unreachable }
 class RemoteState {
   final RemoteStatus status;
   final String? message;
-  const RemoteState(this.status, [this.message]);
+
+  /// 1.3.158: connected without ADB, and how ([RemoteStatus.ready]); or what can be paired
+  /// ([RemoteStatus.needsPair]).
+  final AltKind? via;
+  const RemoteState(this.status, [this.message, this.via]);
+}
+
+/// SharedPreferences for [NoAdb] (loaded once; writes go through at once).
+class _PrefsStore implements NoAdbStore {
+  _PrefsStore(this.p);
+  final SharedPreferences p;
+  @override
+  String? get(String key) => p.getString(key);
+  @override
+  Future<void> set(String key, String? value) async {
+    if (value == null) {
+      await p.remove(key);
+    } else {
+      await p.setString(key, value);
+    }
+  }
 }
 
 /// Android key codes used by the remote.
@@ -54,6 +78,122 @@ class RemoteController extends StateNotifier<RemoteState> {
   String? _ip;
   Future<void> _chain = Future.value();
 
+  // ── 1.3.158: the remote without ADB (Google's Android TV Remote, or the launcher's Wi-Fi
+  // remote), used when ADB does not answer; see services/no_adb.dart ──
+  AltLink? _alt;
+  String? _altIp;
+  Future<bool>? _falling;
+  NoAdb? _noAdb;
+  final _notices = StreamController<String>.broadcast();
+
+  /// Things to tell the owner while the remote works without ADB (a key the TV can't do so).
+  Stream<String> get notices => _notices.stream;
+
+  Future<NoAdb> _no() async => _noAdb ??= NoAdb(_PrefsStore(await SharedPreferences.getInstance()));
+
+  static String _host(String ip) {
+    final i = ip.lastIndexOf(':');
+    return i < 0 ? ip : ip.substring(0, i);
+  }
+
+  /// The link without ADB, when it is open for [ip].
+  AltLink? _altFor(String ip) {
+    final a = _alt;
+    if (a == null || _altIp != ip) return null;
+    if (!a.isOpen) {
+      _alt = null;
+      return null;
+    }
+    return a;
+  }
+
+  /// The open link without ADB, for the screen (mouse, hints); null over ADB.
+  AltLink? altLink(String ip) => _altFor(ip);
+
+  /// The link without ADB, connecting it when one was paired before (the mouse opening while
+  /// ADB does not answer).
+  Future<AltLink?> ensureAlt(String ip) async => await _fallback(ip) ? _altFor(ip) : null;
+
+  /// ADB did not answer: connect the way paired before, else say what could be paired.
+  /// True when a link without ADB is open now.
+  Future<bool> _fallback(String ip) {
+    if (_altFor(ip) != null) return Future.value(true);
+    return _falling ??= () async {
+      try {
+        final no = await _no();
+        final host = _host(ip);
+        final a = await no.connect(host);
+        if (a != null) {
+          _use(ip, a);
+          return true;
+        }
+        final k = await no.probe(host);
+        if (k != null) {
+          _set(RemoteState(RemoteStatus.needsPair, null, k));
+        }
+      } catch (e) {
+        AppLog.error('remote', 'no-adb: $e');
+      }
+      return false;
+    }()
+        .whenComplete(() => _falling = null);
+  }
+
+  void _use(String ip, AltLink a) {
+    _alt?.close();
+    _alt = a;
+    _altIp = ip;
+    AppLog.error('remote', 'without ADB: ${a.kind.name}');
+    a.onClosed = () {
+      if (_alt != a) return;
+      _alt = null;
+      _set(const RemoteState(RemoteStatus.idle));
+    };
+    a.onRefused = (what) {
+      if (what.startsWith('k ') || what == 't' || what == 'mouse') {
+        _notices.add(tr('Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).'));
+      }
+    };
+    _set(RemoteState(RemoteStatus.ready, null, a.kind));
+  }
+
+  /// Pairs without ADB ([kind] from the needsPair state). [askCode] shows the code dialog:
+  /// [triesLeft] is null for Google's protocol (6 characters 0-9 A-F), else the tries left for
+  /// the launcher's 6 digits. Returns null when paired, else what to tell the owner.
+  Future<String?> pair(String ip, AltKind kind, Future<String?> Function(int? triesLeft) askCode) async {
+    final no = await _no();
+    final host = _host(ip);
+    try {
+      _set(const RemoteState(RemoteStatus.connecting));
+      final a = kind == AltKind.atv
+          ? await no.pairAtv(host, () => askCode(null))
+          : await no.pairLan(host, Platform.isIOS ? 'iPhone' : 'Android', (left) => askCode(left));
+      _use(ip, a);
+      return null;
+    } on AtvError catch (e) {
+      AppLog.error('remote', 'atv pairing: $e');
+      _set(RemoteState(RemoteStatus.needsPair, null, kind));
+      if (e.message == 'cancelled') return null;
+      return e.kind == 'code'
+          ? tr('Код не подошёл. Попробуйте ещё раз — телевизор покажет новый.')
+          : tr('Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.');
+    } on LanError catch (e) {
+      AppLog.error('remote', 'lan pairing: $e');
+      _set(RemoteState(RemoteStatus.needsPair, null, kind));
+      return switch (e.kind) {
+        'tries' => tr('Код не подошёл три раза. Попробуйте ещё раз — телевизор покажет новый.'),
+        'busy' => tr('Телевизор сейчас подключает другой телефон. Попробуйте через минуту.'),
+        'later' => tr('Слишком много неверных кодов. Попробуйте через 10 минут.'),
+        _ when e.message == 'cancelled' => null,
+        _ => tr('Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.'),
+      };
+    } catch (e) {
+      AppLog.error('remote', 'pairing: $e');
+      _set(RemoteState(RemoteStatus.needsPair, null, kind));
+      return tr('Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.');
+    }
+  }
+
   /// Presses waiting for the TV. They all go, none is dropped: while the TV is
   /// still busy with the previous command they pile up here and then leave
   /// together as one `input keyevent 22 22 22` (one start of the TV's key tool
@@ -66,16 +206,30 @@ class RemoteController extends StateNotifier<RemoteState> {
 
   /// Fire-and-forget key press.
   void key(String ip, int code) {
+    final a = _altFor(ip);
+    if (a != null) {
+      a.key(code);
+      return;
+    }
     if (_keys.length >= 20) return; // a stuck TV: don't build an endless queue
     _keys.add(code);
     if (_keysQueued) return;
     _keysQueued = true;
+    var sent = const <int>[];
     _enqueue(ip, () {
       _keysQueued = false;
       final batch = List<int>.of(_keys);
       _keys.clear();
+      sent = batch;
       return batch.isEmpty ? null : 'keyevent ${batch.join(' ')}';
-    }, input: true).catchError((_) {}); // shown via state
+    }, input: true).catchError((_) async {
+      // no ADB: the same presses without it, when that works
+      if (await _fallback(ip)) {
+        for (final k in sent) {
+          _altFor(ip)?.key(k);
+        }
+      }
+    });
   }
 
   /// Power: the key over ADB; when the TV no longer answers (deep standby), a Wake-on-LAN
@@ -96,10 +250,19 @@ class RemoteController extends StateNotifier<RemoteState> {
   }
 
   Future<PowerResult> power(String ip) async {
+    final a = _altFor(ip);
+    if (a != null) {
+      a.key(Keys.power);
+      return PowerResult.sent;
+    }
     try {
       await _enqueue(ip, () => powerCmd);
       return PowerResult.sent;
     } catch (_) {
+      if (await _fallback(ip)) {
+        _altFor(ip)?.key(Keys.power);
+        return PowerResult.sent;
+      }
       return await WakeOnLan.wake(ip) ? PowerResult.wol : PowerResult.unreachable;
     }
   }
@@ -107,6 +270,7 @@ class RemoteController extends StateNotifier<RemoteState> {
   /// The TV's screen brightness 0–255 (`settings system screen_brightness`); null when the
   /// firmware does not keep one.
   Future<int?> brightness(String ip) async {
+    if (_altFor(ip) != null) return null; // only over ADB
     int? v;
     await _enqueue(ip, () => 'settings get system screen_brightness',
         onOut: (out) => v = int.tryParse(out.trim()));
@@ -121,6 +285,11 @@ class RemoteController extends StateNotifier<RemoteState> {
   /// «Запущенные»: many TVs do nothing on the Recents key, so our launcher (0.47+) shows its
   /// own row of recent apps; the Recents key only where the launcher is older or missing.
   Future<void> recents(String ip) async {
+    final a = _altFor(ip);
+    if (a != null) {
+      a.key(Keys.recents);
+      return;
+    }
     var opened = false;
     await _enqueue(ip, () => 'appops set com.tvcleanzer.launcher GET_USAGE_STATS allow >/dev/null 2>&1; '
         'am start -n com.tvcleanzer.launcher/.RecentsActivity 2>&1',
@@ -132,13 +301,37 @@ class RemoteController extends StateNotifier<RemoteState> {
   void input(String ip, String args) => _enqueue(ip, () => args, input: true).catchError((_) {});
 
   /// A long press (the TV's «options» on a tile).
-  void longKey(String ip, int code) =>
-      _enqueue(ip, () => 'keyevent --longpress $code', input: true).catchError((_) {});
+  void longKey(String ip, int code) {
+    final a = _altFor(ip);
+    if (a != null) {
+      a.longKey(code);
+      return;
+    }
+    _enqueue(ip, () => 'keyevent --longpress $code', input: true).catchError((_) async {
+      if (await _fallback(ip)) _altFor(ip)?.longKey(code);
+    });
+  }
 
   /// Types text into the focused field on the TV. Latin goes through `input text`; any
   /// other letters (Russian…) through the TV's clipboard — our launcher (0.42+) puts them
   /// there — and the Paste key.
   Future<void> text(String ip, String value) async {
+    final a = _altFor(ip);
+    if (a != null) {
+      a.text(value);
+      return;
+    }
+    try {
+      await _textAdb(ip, value);
+    } on NeedsLauncher {
+      rethrow;
+    } catch (_) {
+      if (!await _fallback(ip)) rethrow;
+      _altFor(ip)?.text(value);
+    }
+  }
+
+  Future<void> _textAdb(String ip, String value) async {
     if (RegExp(r'^[\x20-\x7E]*$').hasMatch(value)) {
       final escaped = value
           .replaceAll("'", "'\\''")
@@ -219,10 +412,22 @@ class RemoteController extends StateNotifier<RemoteState> {
   /// Forget the connection (e.g. another TV was selected).
   void reset() {
     _drop();
+    _dropAlt();
     _set(const RemoteState(RemoteStatus.idle));
   }
 
-  void close() => _drop();
+  void close() {
+    _drop();
+    _dropAlt();
+    _notices.close();
+  }
+
+  void _dropAlt() {
+    final a = _alt;
+    _alt = null;
+    _altIp = null;
+    a?.close();
+  }
 
   void _drop() {
     _client?.close();

@@ -219,5 +219,14 @@
 "Пульт или клавиатура подключены по Bluetooth: после выключения они перестанут работать. Включить обратно можно кнопками на самом телевизоре или из TVCleanzer на телефоне («Пульт»).": "Er is een afstandsbediening of toetsenbord via Bluetooth verbonden: die werkt dan niet meer. Weer aanzetten met de knoppen op de tv of via TVCleanzer op de telefoon («Afstandsbediening»).",
 "На этом телевизоре Bluetooth переключается в его настройках": "Op deze tv schakel je Bluetooth in de instellingen",
 "VPN-приложения": "VPN-apps",
-"Настройки VPN": "VPN-instellingen"
+"Настройки VPN": "VPN-instellingen",
+"Код для телефона": "Code voor de telefoon",
+"Код для телефона: {0}": "Code voor de telefoon: {0}",
+"Телефон подключён": "Telefoon verbonden",
+"Введите его в TVCleanzer на телефоне": "Voer hem in TVCleanzer op de telefoon in",
+"Введите его в TVCleanzer на телефоне «{0}»": "Voer hem in TVCleanzer op «{0}» in",
+"Пульт с телефона по Wi-Fi": "Afstandsbediening via wifi met de telefoon",
+"Подключённые телефоны": "Verbonden telefoons",
+"Забыть все": "Alles vergeten",
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefoons vergeten: verbind ze opnieuw voor de wifi-afstandsbediening"
 }
