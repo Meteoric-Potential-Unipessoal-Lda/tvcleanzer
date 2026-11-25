@@ -432,8 +432,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (!prefs.hasWeather() || prefs.kids()) return;
         // the plate reaches a little past the text (negative insets): no padding, so nothing on the
         // screen moves (the block's place was tuned with UMID)
-        final int ph = Ui.dp(this, 10), pv = Ui.dp(this, 6);
-        final float r = Ui.dp(this, 14);
+        final int ph = Ui.dp(this, 12), pv = Ui.dp(this, 6);
+        final float r = Ui.dp(this, 200); // 1.55: a full pill (an owner: «нет полного закругления»)
         v.setFocusable(true);
         v.setClickable(true);
         // 1.50: Android 8+ also drew its own grey focus band over the whole view (the full-width
@@ -1667,6 +1667,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 shelf.addView(grid);
                 page.addView(shelf, shp);
             } else {
+            // 1.55: one row closer together and a thinner frame too (Sergey: «рамка меньше не стала»)
+            inset = Ui.dp(this, 14);
+            final int fgap = Ui.dp(this, 14);
             // 1.15: apps keep off the bar's ends, the one cut at an end is cut inside the glass
             HorizontalScrollView hs = new FavScroll(this, inset + Ui.dp(this, 4), Ui.dp(this, 10));
             hs.setClipChildren(true);
@@ -1684,7 +1687,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                         : tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (i > 0) lp.leftMargin = gap;
+                if (i > 0) lp.leftMargin = fgap;
                 row.addView(t, lp);
                 tiles.add(t);
             }
