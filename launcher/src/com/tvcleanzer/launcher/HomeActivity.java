@@ -592,18 +592,21 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        final int h = Ui.dp(this, 36), pv = Ui.dp(this, 5);
+        // 1.65: the corner's size (28 + 2×4 dp since 1.59) — Sergey: «панель погоды в один размер
+        // с панелью иконок справа»
+        final int h = Ui.dp(this, 28), pv = Ui.dp(this, 4);
         row.setBackground(glass(row, glassR()));
         row.setPadding(Ui.dp(this, 16), pv, Ui.dp(this, 14), pv);
         // 0.85: exactly as tall as the icons' plate on the other side (an owner: the two plates
         // did not look alike), whatever the clock size setting
 
-        TextClock big = bigClock(22);
-        big.setTextSize(22);
+        TextClock big = bigClock(20);
+        big.setTextSize(20);
+        big.setIncludeFontPadding(false);
         big.setShadowLayer(0, 0, 0, 0);
         big.setLetterSpacing(0f);
         big.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
-        fitClock(big, Math.round(screenW * 0.12f), Ui.dp(this, 40));
+        fitClock(big, Math.round(screenW * 0.12f), Ui.dp(this, 28));
         row.addView(big, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -728,7 +731,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // the tile size setting works here too: compact / normal / large dock icons
         // 0.76 smaller (an owner: «нижний блок огромнейший»); «Размер плиток» still scales it
         final float[] dockScale = {0.8f, 1f, 1.2f};
-        int icon = Math.round(Math.max(Ui.dp(this, 54), Math.round(screenW * 0.042f)) * dockScale[prefs.tileSize()]);
+        // 1.65: bigger (Sergey: «шарики мелкие»)
+        int icon = Math.round(Math.max(Ui.dp(this, 64), Math.round(screenW * 0.05f)) * dockScale[prefs.tileSize()]);
         int gap = Ui.dp(this, 12);
         List<AppTile> tiles = new ArrayList<>();
         List<View> order = new ArrayList<>();
@@ -858,7 +862,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         page.setClipToPadding(false);
         page.setPadding(padH, padV, padH, padV * 3);
         scroll.addView(page);
+        cornerTop = padV; // 1.65: «Витрина» too — the corner level with the clock's glass, the bar clear of it
         page.addView(topBar(skin));
+        cornerTop = -1;
         final int inputsPos = prefs.inputsPos();
         if (inputsPos == Prefs.INPUTS_TOP) addInputs(page);
 
@@ -1674,7 +1680,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 final int ggap = Ui.dp(this, 10), ginset = Ui.dp(this, 12);
                 grid.setPadding(ginset, Ui.dp(this, 6), ginset, Ui.dp(this, 6));
                 int fw = (contentW - 2 * ginset - ggap * (fc - 1)) / fc;
-                if (favAlign != Prefs.FAV_FULL) fw = Math.min(fw, tileW);
+                // 1.65: «Размер плиток» in rows: a share of the full width, so «Обычные» and
+                // «Крупные» differ even with many per row (Sergey: «обычные и крупные одинаковые»)
+                if (favAlign != Prefs.FAV_FULL) fw = Math.min(Math.round(fw * new float[]{0.72f, 0.86f, 1f}[size]), tileW * (size + 3) / 3);
                 int fh = fw * 9 / 16;
                 if (roundFav) fw = fh = Math.min(fw, Math.round(fh * 1.2f)); // circles, see the one-row case
                 LinearLayout row = null;
