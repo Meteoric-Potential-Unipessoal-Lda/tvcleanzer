@@ -1620,8 +1620,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // «Рамка избранного» (0.68): as wide as its tiles, on the left or in the middle (owners:
             // «зачем она на всю ширину?»), or the whole width; a grid always fills the width
             // 1.52: a grid is as wide as its tiles too (Sergey: «рамка очень большая», the tiles
-            // spread over the whole width), in the middle unless «слева» is chosen
-            final int favAlign = fc > 0 ? (prefs.favAlign() == Prefs.FAV_START ? Prefs.FAV_START : Prefs.FAV_CENTER) : prefs.favAlign();
+            // spread over the whole width). 1.53: in the middle — «слева» is the default nobody
+            // chose for a grid (Roman: «док панель не по центру»); «на всю ширину» stays as it was
+            final int favAlign = fc > 0 ? (prefs.favAlign() == Prefs.FAV_FULL ? Prefs.FAV_FULL : Prefs.FAV_CENTER) : prefs.favAlign();
             final boolean roundFav = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
             LinearLayout.LayoutParams shp = new LinearLayout.LayoutParams(
                     favAlign == Prefs.FAV_FULL ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -1643,7 +1644,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 // grid's tiles are never bigger than the apps' tiles of that size)
                 final int ggap = Ui.dp(this, 14), ginset = Ui.dp(this, 16);
                 grid.setPadding(ginset, Ui.dp(this, 8), ginset, Ui.dp(this, 8));
-                int fw = Math.min((contentW - 2 * ginset - ggap * (fc - 1)) / fc, tileW);
+                int fw = (contentW - 2 * ginset - ggap * (fc - 1)) / fc;
+                if (favAlign != Prefs.FAV_FULL) fw = Math.min(fw, tileW);
                 int fh = fw * 9 / 16;
                 if (roundFav) fw = fh = Math.min(fw, Math.round(fh * 1.2f)); // circles, see the one-row case
                 LinearLayout row = null;
