@@ -389,7 +389,8 @@ class DemoAdbClient extends AdbClient {
       return '';
     }
     if (c.contains('resolve-activity') && c.contains('category.HOME')) return '${s.home}\n';
-    if (c == 'pm path com.tvcleanzer.launcher') {
+    // 1.3.169: the app asks «pm path … 2>/dev/null» since 1.3.13x — the demo TV said «no launcher»
+    if (c.startsWith('pm path com.tvcleanzer.launcher')) {
       return s.launcherInstalled ? 'package:/data/app/com.tvcleanzer.launcher/base.apk\n' : '';
     }
     if (c.startsWith('cmd role add-role-holder android.app.role.HOME ') ||
