@@ -2106,7 +2106,7 @@ class AdbPackageManager {
       await adb.connect();
       // 1.3.168 «Сейчас играет»: the launcher sees the TV's players only through an allowed
       // notification listener (it reads no notifications); taken back when switched off
-      final listener = '$launcherPkg/$launcherPkg.NowPlayingListener';
+      const listener = '$launcherPkg/$launcherPkg.NowPlayingListener';
       await adb.shell('cmd notification ${look.nowPlaying ? 'allow_listener' : 'disallow_listener'} $listener >/dev/null 2>&1; '
           'am broadcast -n $launcherPkg/.ConfigReceiver '
           '-a com.tvcleanzer.launcher.APPLY ${look.extras}');
