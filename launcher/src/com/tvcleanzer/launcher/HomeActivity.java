@@ -682,8 +682,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         weatherView = Ui.text(this, 20, 0xD9FFFFFF, "sans-serif-medium");
         weatherView.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
         weatherView.setGravity(textGravity);
+        // 1.51: as wide as its words (centred by «mid» when the clock is in the middle): the focus
+        // plate was a band across the whole screen on a Xiaomi MSSP1 even after 1.50
         LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         wlp.topMargin = Ui.dp(this, 6);
         mid.addView(weatherView, wlp);
         forecastOnOk(weatherView);
