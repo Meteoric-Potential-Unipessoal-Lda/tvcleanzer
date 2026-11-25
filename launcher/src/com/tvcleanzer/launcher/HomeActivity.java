@@ -2170,18 +2170,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         clp.topMargin = cornerTop >= 0 ? cornerTop : Math.max(Ui.dp(this, 12), Math.round(dm.heightPixels * 0.028f));
         clp.rightMargin = Math.max(Ui.dp(this, 16), Math.round(dm.widthPixels * 0.02f));
         row.setTranslationZ(Ui.dp(this, 30)); // over the page that scrolls under it
-        // 1.57: level with the middle of the clock's glass in «Плитки» (Sergey: «криво всё»)
-        final View align = cornerTop >= 0 ? clockGlassView : null;
-        if (align != null) {
-            row.addOnLayoutChangeListener((v, l, t, r2, b, ol, ot, or, ob) -> {
-                int d = (align.getHeight() - v.getHeight()) / 2;
-                v.setTranslationY(Math.max(0, d));
-            });
-            align.addOnLayoutChangeListener((v, l, t, r2, b, ol, ot, or, ob) -> {
-                int d = (v.getHeight() - row.getHeight()) / 2;
-                row.setTranslationY(Math.max(0, d));
-            });
-        }
+        // (1.57 centred it on the clock's glass; 1.58 back to level with its top — Roman: lower, it
+        // covered the favourites on the second screen)
         root.addView(row, clp);
     }
 
