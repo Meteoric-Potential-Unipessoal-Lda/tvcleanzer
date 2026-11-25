@@ -432,7 +432,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (!prefs.hasWeather() || prefs.kids()) return;
         // the plate reaches a little past the text (negative insets): no padding, so nothing on the
         // screen moves (the block's place was tuned with UMID)
-        final int ph = Ui.dp(this, 12), pv = Ui.dp(this, 6);
+        // 1.61: a one-line weather inside the thin clock glass: the plate keeps inside it (Sergey:
+        // «обводка ниже рамки блока»)
+        final int ph = Ui.dp(this, 12), pv = v instanceof TextView && prefs.oneLine() ? Ui.dp(this, 2) : Ui.dp(this, 6);
         final float r = Ui.dp(this, 200); // 1.55: a full pill (an owner: «нет полного закругления»)
         // 1.57: the two-line block a rounded card, not a capsule (Karaganda: «здесь менее закруглённые»)
         final float rr = v instanceof TextView ? r : Ui.dp(this, 18);
@@ -582,7 +584,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         final int h = Ui.dp(this, 36), pv = Ui.dp(this, 5);
-        row.setBackground(glass(row, (h + 2 * pv) * 0.34f));
+        row.setBackground(glass(row, glassR()));
         row.setPadding(Ui.dp(this, 16), pv, Ui.dp(this, 14), pv);
         // 0.85: exactly as tall as the icons' plate on the other side (an owner: the two plates
         // did not look alike), whatever the clock size setting
@@ -711,7 +713,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         favGridCols = 0; // one row in the dock: ▲▼ do not move a favourite here
         LinearLayout dock = row();
         dock.setGravity(Gravity.CENTER_VERTICAL);
-        dock.setBackground(glass(dock, Ui.dp(this, 34)));
+        dock.setBackground(glass(dock, glassR()));
         int dp18 = Ui.dp(this, 10); // 1.56: 10 dp (was 14), a thinner dock glass
         dock.setPadding(dp18, dp18, dp18, prefs.noLabels() ? dp18 : Ui.dp(this, 8));
         // the tile size setting works here too: compact / normal / large dock icons
@@ -1624,7 +1626,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             page.addView(favTitle);
             FrameLayout shelf = new FrameLayout(this);
             favShelf = shelf;
-            shelf.setBackground(glass(shelf, Ui.dp(this, 30)));
+            shelf.setBackground(glass(shelf, glassR()));
             shelf.setClipChildren(true);
             final int fc = prefs.favCols();
             // «Рамка избранного» (0.68): as wide as its tiles, on the left or in the middle (owners:
@@ -1721,7 +1723,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 // 1.14: a lower bar (UMID: «бар чуть уменьшить по высоте»), 8 dp less above and below
                 int bottom = Ui.dp(this, 3) + zoomPad; // 1.56: 3 dp (was 6)
                 // 1.56: half the name's room above, not all of it (a thinner frame)
-                int top = Math.max(Ui.dp(this, 2), bottom + t0.roomBelow() / 2 - t0.getPaddingTop());
+                // 1.61: the cards in the middle of the glass (Sergey: «немного выше, не по центру»):
+                // as much glass above the card as below its name's room
+                int top = Math.max(Ui.dp(this, 2), bottom + t0.roomBelow() - t0.getPaddingTop());
                 int side = Math.max(0, inset - t0.getPaddingLeft()); // 1.60: the tile's own room counts
                 hs.setPadding(side, top, side, bottom);
             }
@@ -1752,6 +1756,23 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             page.addView(appsTitle);
             View firstRow = null;
             LinearLayout row = null;
+            // 1.61: «Матовое» — the apps below in a glass of their own too (Sergey)
+            LinearLayout appsBox = null;
+            if (!kids && prefs.shelf() == Prefs.SHELF_FROST) {
+                appsBox = new LinearLayout(this);
+                appsBox.setOrientation(LinearLayout.VERTICAL);
+                appsBox.setClipChildren(false);
+                appsBox.setClipToPadding(false);
+                int bp = Ui.dp(this, 14);
+                appsBox.setPadding(bp, Ui.dp(this, 2), bp, Ui.dp(this, 10));
+                appsBox.setBackground(glass(appsBox, glassR()));
+                LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                blp.leftMargin = -bp; // the tiles keep their width; the glass reaches past them
+                blp.rightMargin = -bp;
+                blp.topMargin = Ui.dp(this, 8);
+                page.addView(appsBox, blp);
+            }
             // 0.89: «Круглые» makes the apps below circles too (an owner: like the favourites);
             // each circle sits in the middle of its column so the grid keeps its lines
             final boolean roundRest = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
@@ -1761,7 +1782,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 if (i % cols == 0) {
                     row = row();
                     row.setPadding(0, Ui.dp(this, 12) + Math.round(tileH * 0.05f), 0, Ui.dp(this, 4));
-                    page.addView(row);
+                    (appsBox != null ? appsBox : page).addView(row);
                     if (firstRow == null) { firstRow = row; firstGridRow = row; }
                 }
                 AppTile t = roundRest
@@ -1779,7 +1800,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // the grid starts just below it (▼ scrolls down to it)
             if (!kids && prefs.appsBelow()) {
                 View favTop = favTitle != null && favTitle.getVisibility() == View.VISIBLE ? favTitle : favShelf;
-                pushBelow(favTop, favShelf, appsTitle.getVisibility() == View.VISIBLE ? appsTitle : firstRow,
+                pushBelow(favTop, favShelf, appsTitle.getVisibility() == View.VISIBLE ? appsTitle
+                        : appsBox != null ? appsBox : firstRow,
                         prefs.favBottom());
             }
         }
@@ -1947,7 +1969,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         clockGlassView = null;
         if (prefs.clockGlass() && prefs.showClock()) {
             clockGlassView = left;
-            left.setBackground(glass(left, Ui.dp(this, 20)));
+            left.setBackground(glass(left, glassR()));
             // 1.56: a thinner glass under the clock (Sergey: «рамки стекла огромные везде»)
             // 1.60: one line — as thin as the corner's glass (Sergey: «рамка часов толще кнопок»)
             if (prefs.oneLine()) left.setPadding(Ui.dp(this, 14), Ui.dp(this, 3), Ui.dp(this, 16), Ui.dp(this, 3));
@@ -2068,6 +2090,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
      *  when the page scrolls. The dock home has its own gear. */
     private void corner(Skin skin, boolean withGear) { corner(skin, withGear, false); }
 
+    /** 1.61: every glass on the screen has the same corners (Sergey: «скругление разное»). */
+    private float glassR() { return Ui.dp(this, 16); }
+
     /** The glass under a block: «Матовое» (1.54) over a photo shows that photo blurred; its piece
      *  of the photo follows the page as it scrolls. */
     private android.graphics.drawable.Drawable glass(View host, float r) {
@@ -2103,7 +2128,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // 1.57: smaller (Sergey: «верхние кнопки сделать меньше»), 32 dp (was 36)
         final int h = Ui.dp(this, 28), gap = Ui.dp(this, 4), ph = Ui.dp(this, 7), pv = Ui.dp(this, 4); // 1.59: 28 dp
         // one glass under all of them, the same look as every other glass on the screen («Стекло»)
-        row.setBackground(glass(row, (h + 2 * pv) * 0.34f));
+        row.setBackground(glass(row, glassR())); // 1.61: one rounding for every glass (Sergey)
         row.setPadding(ph, pv, ph, pv);
         final boolean clean = prefs.cleanBar();
         List<View> items = new ArrayList<>();
@@ -2248,7 +2273,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** Glass under the big clock, date and weather (clock home): as wide as the longest line. */
     private void glassBehind(final LinearLayout mid, final boolean center, final int padH) {
         final View glass = new View(this);
-        glass.setBackground(glass(glass, Ui.dp(this, 30)));
+        glass.setBackground(glass(glass, glassR()));
         root.addView(glass, new FrameLayout.LayoutParams(0, 0, Gravity.TOP | Gravity.START));
         final int gp = Ui.dp(this, 30);
         mid.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
