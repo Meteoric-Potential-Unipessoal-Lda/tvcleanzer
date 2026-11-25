@@ -71,6 +71,11 @@ public class HomeKeyService extends AccessibilityService {
             boolean want = !keyMap.isEmpty() || learn != null || volumeFiltered(this, p);
             log("key filter " + want);
             int nf = want ? info.flags | flag : info.flags & ~flag;
+            // 1.45: every window's content, not only the active one's — the mouse finds the item
+            // under the pointer even where the active window gives none (Haier FF Pro without ADB)
+            if (android.os.Build.VERSION.SDK_INT >= 21) {
+                nf |= android.accessibilityservice.AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
+            }
             if (nf != info.flags) {
                 info.flags = nf;
                 setServiceInfo(info);

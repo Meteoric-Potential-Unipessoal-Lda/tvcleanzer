@@ -146,6 +146,7 @@ final class Mouse {
         if (client != back) {
             client = back;
             lanClient = true;
+            toldTaps = 0; // a new phone: the first taps' story goes to its «?» again
             main.post(() -> show(true));
         }
         handle(line.trim());
@@ -425,9 +426,12 @@ final class Mouse {
     /** Click, long click or scroll the app's own view under the pointer (accessibility). */
     private boolean nodeAction(boolean drag, float dx, float dy, long ms) {
         try {
-            AccessibilityNodeInfo root = svc.getRootInActiveWindow();
-            if (root == null) return false;
             int px = Math.round(x), py = Math.round(y);
+            AccessibilityNodeInfo root = rootAt(px, py);
+            if (root == null) {
+                told("no window content here");
+                return false;
+            }
             if (!drag) {
                 boolean longPress = ms > 300;
                 AccessibilityNodeInfo n = under(root, px, py, longPress ? 2 : 1);
@@ -465,8 +469,39 @@ final class Mouse {
             key(vertical ? (forward ? 20 : 19) : (forward ? 22 : 21), false);
             return true;
         } catch (Throwable t) {
+            told("error " + t.getClass().getSimpleName());
             return false;
         }
+    }
+
+    /** 1.45: the content under the point: the active window's, else the top window that covers
+     *  the point (Haier FF Pro: every tap ended with nothing logged — the active window gave no
+     *  content). */
+    private AccessibilityNodeInfo rootAt(int px, int py) {
+        android.graphics.Rect r = new android.graphics.Rect();
+        AccessibilityNodeInfo root = svc.getRootInActiveWindow();
+        if (root != null) {
+            root.getBoundsInScreen(r);
+            if (r.contains(px, py)) return root;
+        }
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            try {
+                java.util.List<android.view.accessibility.AccessibilityWindowInfo> ws = svc.getWindows();
+                AccessibilityNodeInfo best = null;
+                int layer = Integer.MIN_VALUE;
+                for (android.view.accessibility.AccessibilityWindowInfo w : ws) {
+                    if (w.getType() == android.view.accessibility.AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY) continue;
+                    w.getBoundsInScreen(r);
+                    if (!r.contains(px, py) || w.getLayer() < layer) continue;
+                    AccessibilityNodeInfo wr = w.getRoot();
+                    if (wr == null) continue;
+                    best = wr;
+                    layer = w.getLayer();
+                }
+                if (best != null) return best;
+            } catch (Throwable ignored) {}
+        }
+        return root;
     }
 
     private static boolean inWeb(AccessibilityNodeInfo n) {
