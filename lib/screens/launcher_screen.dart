@@ -6,6 +6,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../models/launcher_look.dart';
 import '../models/launcher_skin.dart';
@@ -14,6 +16,7 @@ import '../services/adb_client.dart';
 import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
 import '../services/geo.dart';
+import '../services/look_code.dart';
 import '../state/current_tv.dart';
 import '../state/launcher_look_state.dart';
 import '../state/launcher_skin_state.dart';
@@ -280,6 +283,87 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
   bool get _outdated =>
       _installed == true && _version != null && _version! < AdbPackageManager.bundledLauncherVersion;
 
+  /// 1.3.168: the look as a code and a QR, to send to a friend.
+  Future<void> _shareLook(LauncherLook look) async {
+    final code = LookCode.encode(look, ref.read(selectedSkinProvider).id);
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.bgCard,
+        title: Text(tr('Код вида лаунчера')),
+        content: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(10),
+              child: QrImageView(data: code, size: 200, backgroundColor: Colors.white),
+            ),
+            const Gap(12),
+            SelectableText(code, style: const TextStyle(fontSize: 11, color: AppColors.fgMid)),
+            const Gap(10),
+            Text(tr('Друг вводит этот код в TVCleanzer: Лаунчер → Дополнительно → «Ввести код вида». Тема, часы, значки и фон станут как у вас; приложения, избранное и город не передаются.'),
+                style: const TextStyle(fontSize: 12, height: 1.4, color: AppColors.fgMuted)),
+          ]),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: code));
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('Код скопирован'))));
+            },
+            child: Text(tr('Копировать')),
+          ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              try {
+                await SharePlus.instance.share(ShareParams(text: code));
+              } catch (_) {}
+            },
+            child: Text(tr('Поделиться')),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 1.3.168: a friend's look from their code (the city and the apps stay ours).
+  Future<void> _importLook(LauncherLook look) async {
+    final c = TextEditingController();
+    final text = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.bgCard,
+        title: Text(tr('Ввести код вида')),
+        content: TextField(
+          controller: c,
+          autofocus: true,
+          minLines: 2,
+          maxLines: 5,
+          style: const TextStyle(color: AppColors.fg, fontSize: 13),
+          decoration: const InputDecoration(hintText: 'TVC1-…'),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Отмена'))),
+          FilledButton(onPressed: () => Navigator.pop(ctx, c.text), child: Text(tr('Применить'))),
+        ],
+      ),
+    );
+    c.dispose();
+    if (text == null || text.trim().isEmpty || !mounted) return;
+    final m = LookCode.decode(text);
+    if (m == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(tr('Код не подошёл: проверьте, что он скопирован целиком.'))));
+      return;
+    }
+    final sk = m['skin'];
+    if (sk is String && sk.isNotEmpty) _selectSkin(LauncherSkin.byId(sk));
+    _setLook(LookCode.apply(look, m));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(tr('Вид применён'))));
+  }
+
   /// Pick a skin; if the launcher is already on the TV, apply it right away.
   void _selectSkin(LauncherSkin s) {
     ref.read(selectedSkinProvider.notifier).select(s);
@@ -498,6 +582,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         if (s2)
           _sw(tr('Название приложения над плитками'), null, look.heroTitle,
               (v) => _setLook(look.copyWith(heroTitle: v))),
+        if (look.style == 1)
+          _sw(tr('Значки ⚙ и ⋯ в доке'), look.dockButtons ? null : tr('Скрыты — они в правом верхнем углу'),
+              look.dockButtons, (v) => _setLook(look.copyWith(dockButtons: v)), need: 146),
         _pills(tr('Источники (HDMI)'), inputsL, look.inputs, (v) => _setLook(look.copyWith(inputs: v))),
       ]),
       _group('bar', Icons.view_day_rounded, tr('Верхняя панель'),
@@ -628,6 +715,39 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         const Gap(4),
         Text(tr('Слабый телевизор подтормаживает? Выключите анимации и живой фон.'),
             style: const TextStyle(fontSize: 12, height: 1.4, color: AppColors.fgMuted)),
+      ]),
+      // 1.3.168: extras, all off by default (ideas from couch-tv), and the look as a code
+      _group('extra', Icons.extension_rounded, tr('Дополнительно'),
+          join([
+            if (look.btBattery) tr('Заряд пульта'),
+            if (look.nowPlaying) tr('Сейчас играет'),
+            if (look.weatherFx) tr('Погода на обоях'),
+            if (!look.btBattery && !look.nowPlaying && !look.weatherFx) tr('Всё выключено'),
+          ]), [
+        _sw(tr('Заряд пульта у значка Bluetooth'), tr('Сколько осталось у Bluetooth-пульта; оранжевым, когда пора заряжать'),
+            look.btBattery, (v) => _setLook(look.copyWith(btBattery: v)), need: 146),
+        _sw(tr('Сейчас играет'), tr('Музыка или видео на паузе: обложка и кнопки ⏮ ⏯ ⏭ на главном экране'),
+            look.nowPlaying, (v) => _setLook(look.copyWith(nowPlaying: v)), need: 146),
+        _sw(tr('Погода на обоях'), tr('Дождь, снег, туман или гроза поверх фона — по погоде в вашем городе'),
+            look.weatherFx, (v) => _setLook(look.copyWith(weatherFx: v)), need: 146),
+        const Gap(8),
+        Row(children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.qr_code_2_rounded, size: 18),
+              label: Text(tr('Поделиться видом')),
+              onPressed: () => _shareLook(look),
+            ),
+          ),
+          const Gap(10),
+          Expanded(
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.input_rounded, size: 18),
+              label: Text(tr('Ввести код вида')),
+              onPressed: () => _importLook(look),
+            ),
+          ),
+        ]),
       ]),
       Center(
         child: TextButton.icon(

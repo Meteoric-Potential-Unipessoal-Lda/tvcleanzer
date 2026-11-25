@@ -239,5 +239,7 @@
 "«Назад» — закрыть": "«Wstecz» — zamknij",
 "Сегодня": "Dzisiaj",
 "Завтра": "Jutro",
-"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Menu zasilania otwiera się, gdy włączona jest usługa «TVCleanzer: кнопка Домой» (Ustawienia → Ułatwienia dostępu)."
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Menu zasilania otwiera się, gdy włączona jest usługa «TVCleanzer: кнопка Домой» (Ustawienia → Ułatwienia dostępu).",
+"Включена": "Włączona",
+"Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Włącz «Teraz odtwarzane» w TVCleanzer na telefonie (Launcher → Dodatki): telefon da launcherowi dostęp do odtwarzacza."
 }

@@ -81,6 +81,17 @@ final class Prefs {
     void setLanRemote(boolean v) { sp.edit().putBoolean("lanRemote", v).apply(); }
     /** 1.38: the weather block's day and date bold (UMID) or thin (small TVs blur bold text). */
     boolean dateBold()       { return sp.getBoolean("dateBold", true); }
+    /** 1.46 «Дополнительно» (all off by default): the Bluetooth remote's charge next to its icon,
+     *  the «Сейчас играет» card, rain / snow / fog over the wallpaper. */
+    /** 1.46: ⚙ and ⋯ in the clock home's dock; off — they sit in the top right corner. */
+    boolean dockButtons()    { return sp.getBoolean("dockButtons", true); }
+    void setDockButtons(boolean v) { sp.edit().putBoolean("dockButtons", v).apply(); }
+    boolean btBattery()      { return sp.getBoolean("btBattery", false); }
+    void setBtBattery(boolean v) { sp.edit().putBoolean("btBattery", v).apply(); }
+    boolean nowPlaying()     { return sp.getBoolean("nowPlaying", false); }
+    void setNowPlaying(boolean v) { sp.edit().putBoolean("nowPlaying", v).apply(); }
+    boolean weatherFx()      { return sp.getBoolean("weatherFx", false); }
+    void setWeatherFx(boolean v) { sp.edit().putBoolean("weatherFx", v).apply(); }
     /** 1.42: a power button in the top corner (a chat wish: switch off / restart from home). */
     boolean powerIcon()      { return sp.getBoolean("powerIcon", false); }
     void setPowerIcon(boolean v) { sp.edit().putBoolean("powerIcon", v).apply(); }

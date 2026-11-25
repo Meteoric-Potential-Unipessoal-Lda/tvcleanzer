@@ -90,6 +90,15 @@ class LauncherLook {
   /// launcher 1.42: a power button in the top corner
   final bool powerIcon;
 
+  /// launcher 1.46 «Дополнительно»: the remote's charge by the Bluetooth icon, the «Сейчас
+  /// играет» card, rain / snow / fog over the wallpaper.
+  final bool btBattery;
+  final bool nowPlaying;
+  final bool weatherFx;
+
+  /// launcher 1.46: ⚙ and ⋯ in the clock home's dock (off: in the top right corner).
+  final bool dockButtons;
+
   const LauncherLook({
     this.anim = 0,
     this.ringAccent = false,
@@ -132,13 +141,17 @@ class LauncherLook {
     this.dateBold = true,
     this.showCity = true,
     this.powerIcon = false,
+    this.btBattery = false,
+    this.nowPlaying = false,
+    this.weatherFx = false,
+    this.dockButtons = true,
   });
 
   LauncherLook copyWith({int? anim, bool? ringAccent, int? tiles, int? wallDim,
           bool? ambient, bool? clock24, bool? labels, int? inputs, int? favCols, int? style, int? clockPos,
           int? clockSize, int? clockFont, String? weatherCity, double? lat, double? lon, bool? appsBelow, int? icons, bool? heroTitle, bool? memPill, bool? cleanBar, int? skinAuto, int? ambientSec,
           bool? greeting, int? barClock, bool? oneLine, int? iconShape, bool? btPill,
-          int? barStyle, int? favAlign, bool? clockGlass, int? shelf, bool? noLabels, bool? ringOff, bool? ringGlow, bool? ringDot, bool? memLabel, bool? showClock, bool? dateBold, bool? showCity, bool? powerIcon}) =>
+          int? barStyle, int? favAlign, bool? clockGlass, int? shelf, bool? noLabels, bool? ringOff, bool? ringGlow, bool? ringDot, bool? memLabel, bool? showClock, bool? dateBold, bool? showCity, bool? powerIcon, bool? btBattery, bool? nowPlaying, bool? weatherFx, bool? dockButtons}) =>
       LauncherLook(
         anim: anim ?? this.anim,
         ringAccent: ringAccent ?? this.ringAccent,
@@ -181,13 +194,17 @@ class LauncherLook {
         dateBold: dateBold ?? this.dateBold,
         showCity: showCity ?? this.showCity,
         powerIcon: powerIcon ?? this.powerIcon,
+        btBattery: btBattery ?? this.btBattery,
+        nowPlaying: nowPlaying ?? this.nowPlaying,
+        weatherFx: weatherFx ?? this.weatherFx,
+        dockButtons: dockButtons ?? this.dockButtons,
       );
 
   /// Extras for `am broadcast … com.tvcleanzer.launcher.APPLY`.
   String get extras => '--ei anim $anim --ez ringAccent $ringAccent --ei tiles $tiles '
       '--ei wallDim $wallDim --ez ambient $ambient --ez clock24 $clock24 --ez labels $labels '
       '--ei inputs $inputs --ei favCols $favCols --ei style $style --ei clockPos $clockPos --ei clockSize $clockSize '
-      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --ez heroTitle $heroTitle --ez memPill $memPill --ez cleanBar $cleanBar --ei skinAuto $skinAuto --ei ambientSec $ambientSec --ez greeting $greeting --ei barClock $barClock --ez oneLine $oneLine --ei iconShape $iconShape --ez btPill $btPill --ei barStyle $barStyle --ei favAlign $favAlign --ez clockGlass $clockGlass --ei shelf $shelf --ez noLabels $noLabels --ez ringOff $ringOff --ez ringGlow $ringGlow --ez ringDot $ringDot --ez memLabel $memLabel --ez showClock $showClock --ez dateBold $dateBold --ez showCity $showCity --ez powerIcon $powerIcon --es weatherCity ${_q(weatherCity)}'
+      '--ei clockFont $clockFont --ez appsBelow $appsBelow --ei icons $icons --ez heroTitle $heroTitle --ez memPill $memPill --ez cleanBar $cleanBar --ei skinAuto $skinAuto --ei ambientSec $ambientSec --ez greeting $greeting --ei barClock $barClock --ez oneLine $oneLine --ei iconShape $iconShape --ez btPill $btPill --ei barStyle $barStyle --ei favAlign $favAlign --ez clockGlass $clockGlass --ei shelf $shelf --ez noLabels $noLabels --ez ringOff $ringOff --ez ringGlow $ringGlow --ez ringDot $ringDot --ez memLabel $memLabel --ez showClock $showClock --ez dateBold $dateBold --ez showCity $showCity --ez powerIcon $powerIcon --ez btBattery $btBattery --ez nowPlaying $nowPlaying --ez weatherFx $weatherFx --ez dockButtons $dockButtons --es weatherCity ${_q(weatherCity)}'
       '${weatherCity.isEmpty ? '' : ' --ef lat ${lat.toStringAsFixed(4)} --ef lon ${lon.toStringAsFixed(4)}'}';
 
   /// Single-quoted for the TV's shell (city names may have spaces or apostrophes).
@@ -210,6 +227,10 @@ class LauncherLook {
         'dateBold': dateBold,
         'showCity': showCity,
         'powerIcon': powerIcon,
+        'btBattery': btBattery,
+        'nowPlaying': nowPlaying,
+        'weatherFx': weatherFx,
+        'dockButtons': dockButtons,
       };
 
   static int _i(Object? v, int def, int lo, int hi) =>
@@ -260,5 +281,9 @@ class LauncherLook {
         dateBold: _b(m['dateBold'], true),
         showCity: _b(m['showCity'], true),
         powerIcon: _b(m['powerIcon'], false),
+        btBattery: _b(m['btBattery'], false),
+        nowPlaying: _b(m['nowPlaying'], false),
+        weatherFx: _b(m['weatherFx'], false),
+        dockButtons: _b(m['dockButtons'], true),
       );
 }

@@ -181,6 +181,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onDestroy() {
         if (aside) { super.onDestroy(); return; }
+        if (nowPlaying != null) nowPlaying.pause();
+        if (weatherFx != null) weatherFx.stop();
         CrashGuard.settled(this); // a normal close is no crash
         main.removeCallbacks(settle);
         prefs.sp.unregisterOnSharedPreferenceChangeListener(this);
@@ -206,6 +208,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         main.postDelayed(settle, 5000);
         armFrame();
         LanRemote.ensure(this); // 1.40: the phone's remote over Wi-Fi
+        if (weatherFx != null) weatherFx.start();
+        if (nowPlaying != null) nowPlaying.resume();
+        showBattery();
         HomeWatch.ensure(this); // 1.39: be311 / com.master.t972 — the box drops the Home-key service
         if (blockDay != null) { main.removeCallbacks(blockDateTick); main.post(blockDateTick); }
         if (prefs.nextSkinIfDue()) dirty = true; // «Автосмена темы»
@@ -671,7 +676,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         List<View> order = new ArrayList<>();
 
         final boolean withInput = !inputs.isEmpty() && prefs.inputsPos() != Prefs.INPUTS_HIDDEN;
-        final int extras = withInput ? 3 : 2;
+        // 1.46 (a chat wish: «как эти иконки убрать»): ⚙ and ⋯ can leave the dock for the corner
+        final boolean dockButtons = prefs.dockButtons();
+        final int extras = (withInput ? 1 : 0) + (dockButtons ? 2 : 0);
         final boolean round = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
         // Like a Mac's dock: few apps — bigger icons (the size setting still scales them).
         int n = Math.min(8, favorites.size());
@@ -680,7 +687,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // ends): shrink the icons, then show fewer favourites, if needed.
         int avail = screenW - 2 * padH - 2 * dp18;
         while (n > 0 && (avail - gap * (n + extras - 1)) / (n + extras) < Ui.dp(this, 44)) n--;
-        icon = Math.min(icon, (avail - gap * (n + extras - 1)) / (n + extras));
+        icon = Math.min(icon, (avail - gap * Math.max(0, n + extras - 1)) / Math.max(1, n + extras));
         if (withInput) {
             AppTile in = dockButton(Glyphs.INPUT, T.t("Источник"), icon, skin, anim, ringColor, round);
             in.setOnClickListener(v -> chooseInput());
@@ -695,8 +702,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         wireGear(gear);
         AppTile all = dockButton(Glyphs.MORE, T.t("Все приложения"), icon, skin, anim, ringColor, round);
         all.setOnClickListener(v -> { showGrid = true; build(); });
-        order.add(gear);
-        order.add(all);
+        if (dockButtons) {
+            order.add(gear);
+            order.add(all);
+        }
 
         for (int i = 0; i < order.size(); i++) {
             View v = order.get(i);
@@ -719,7 +728,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // Wi-Fi / VPN, Bluetooth and the TV's settings up in the corner, like a tablet (the dock
         // has the gear already)
         // the corner whatever «Верхняя панель» says (that choice is hidden in «Часы», 0.98)
-        if (!prefs.cleanBar()) corner(skin, false);
+        if (!dockButtons) corner(skin, true, true); // the gear and «all apps» go up to the corner
+        else if (!prefs.cleanBar()) corner(skin, false);
 
         View target = null;
         for (AppTile t : tiles) if (t.app.pkg.equals(focusPkg)) { target = t; break; }
@@ -1042,6 +1052,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     protected void onPause() {
         if (aside) { super.onPause(); return; }
         resumed = false;
+        if (weatherFx != null) weatherFx.stop();
+        if (nowPlaying != null) nowPlaying.pause();
         main.removeCallbacks(frameTick);
         main.removeCallbacks(blockDateTick);
         main.removeCallbacks(weatherTick);
@@ -1059,6 +1071,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 || key.equals(Prefs.W_ERR)
                 || key.equals(Prefs.AUTOSTART_BOOT))) {
             main.post(this::updateWeatherView);
+            // 1.46: rain turned to snow: «Погода на обоях» follows
+            if (prefs.weatherFx() && fxKindFor() != fxShown) { if (resumed) main.post(this::build); else dirty = true; }
             return;
         }
         if (quietOrder && (Prefs.ORDER.equals(key) || Prefs.FAVORITES.equals(key))) return;
@@ -1504,6 +1518,18 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         vig.setBackground(Ui.vignette());
         root.addView(vig, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        // 1.46 «Погода на обоях»: over the wallpaper, under everything else
+        if (weatherFx != null) weatherFx.stop();
+        weatherFx = null;
+        int fxKind = kids ? WeatherFx.NONE : fxKindFor();
+        fxShown = fxKind;
+        if (fxKind != WeatherFx.NONE) {
+            weatherFx = new WeatherFx(this, fxKind);
+            root.addView(weatherFx, new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            if (resumed) weatherFx.start();
+        }
+        placeNowPlaying();
 
         heroTitle = null;
         heroViews[0] = heroViews[1] = null;
@@ -1953,7 +1979,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
      *  one shared glass panel (0.72, the project's icon pack: Wi-Fi, the VPN plate only while a
      *  VPN is on, Bluetooth, the TV's settings, the gear), memory as a word first. Fixed: stays
      *  when the page scrolls. The dock home has its own gear. */
-    private void corner(Skin skin, boolean withGear) {
+    private void corner(Skin skin, boolean withGear) { corner(skin, withGear, false); }
+
+    /** [withMore]: «Все приложения» in the corner too (the dock without ⚙ and ⋯, 1.46). */
+    private void corner(Skin skin, boolean withGear, boolean withMore) {
         android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -2002,6 +2031,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             btShown = bts;
             bt.setOnClickListener(v -> bluetoothMenu());
             items.add(bt);
+            if (prefs.btBattery()) {
+                // 1.46: the remote's charge beside its icon (shown when a device tells it)
+                TextView bl = Ui.text(this, 13, 0xF2FFFFFF, "sans-serif-medium");
+                bl.setSingleLine(true);
+                bl.setGravity(Gravity.CENTER_VERTICAL);
+                bl.setPadding(0, 0, Ui.dp(this, 4), 0);
+                btBatteryView = bl;
+                showBattery();
+                items.add(bl);
+            }
         }
         if (!clean) {
             TopIcon tv = new TopIcon(this, TopIcon.TV, 0, true);
@@ -2013,6 +2052,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             TopIcon pw = new TopIcon(this, TopIcon.POWER, 0, true);
             pw.setOnClickListener(v -> powerMenu());
             items.add(pw);
+        }
+        if (withMore) {
+            TopIcon more = new TopIcon(this, Glyphs.MORE, 0, true);
+            more.setOnClickListener(v -> { showGrid = true; build(); });
+            items.add(more);
         }
         if (withGear) {
             TopIcon gear = new TopIcon(this, TopIcon.GEAR, 0, true);
@@ -2213,6 +2257,55 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             if (btIcon != null) btIcon.set(st == Bt.OFF ? TopIcon.BT_OFF : TopIcon.BT, btColour(st));
             btShown = st;
         }
+        showBattery();
+    }
+
+    // ── 1.46 «Дополнительно» ──
+    private TextView btBatteryView;
+    private int fxShown;
+
+    /** What «Погода на обоях» draws now (NONE: off, no fresh weather, animations off). */
+    private int fxKindFor() {
+        return prefs.weatherFx() && prefs.anim() != Prefs.ANIM_OFF && Weather.line(prefs) != null
+                ? WeatherFx.kind(prefs.weatherCode()) : WeatherFx.NONE;
+    }
+    private WeatherFx weatherFx;
+    private NowPlaying nowPlaying;
+
+    /** «80%» beside the Bluetooth icon, orange at 20 % and below; hidden when nothing tells. */
+    private void showBattery() {
+        TextView v = btBatteryView;
+        if (v == null) return;
+        int l = Bt.battery(this);
+        v.setVisibility(l < 0 ? View.GONE : View.VISIBLE);
+        if (l >= 0) {
+            v.setText(l + "%");
+            v.setTextColor(l <= 20 ? 0xFFFB923C : 0xF2FFFFFF);
+        }
+    }
+
+    /** The «Сейчас играет» card in the top right corner, under the icons; above every layout. */
+    private void placeNowPlaying() {
+        boolean want = prefs.nowPlaying() && !prefs.kids();
+        if (!want) {
+            if (nowPlaying != null) {
+                nowPlaying.pause();
+                frame.removeView(nowPlaying);
+                nowPlaying = null;
+            }
+            return;
+        }
+        if (nowPlaying == null) {
+            nowPlaying = new NowPlaying(this);
+            android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | Gravity.END);
+            lp.topMargin = Math.max(Ui.dp(this, 12), Math.round(dm.heightPixels * 0.028f)) + Ui.dp(this, 58);
+            lp.rightMargin = Math.max(Ui.dp(this, 16), Math.round(dm.widthPixels * 0.02f));
+            nowPlaying.setTranslationZ(Ui.dp(this, 31));
+            frame.addView(nowPlaying, lp);
+        }
+        if (resumed) nowPlaying.resume();
     }
     private boolean freeing;
 
@@ -2258,7 +2351,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** OK on the pill: switch it, or open the TV's Bluetooth settings (pair a device). */
     private void bluetoothMenu() {
         final boolean on = Bt.state(this) != Bt.OFF;
-        java.util.List<String> names = Bt.connected(this, false);
+        java.util.List<String> names = Bt.withBattery(this); // 1.46: «Пульт · 80%» where it tells
         String title = names.isEmpty() ? "Bluetooth" : "Bluetooth: " + android.text.TextUtils.join(", ", names);
         new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
                 .setTitle(title)

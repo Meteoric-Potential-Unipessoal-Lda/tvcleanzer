@@ -1,6 +1,6 @@
 name: tvcleanzer
 description: TVCleanzer — free app to clean bloatware from Android TV
-version: 1.3.167+188
+version: 1.3.168+189
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -25,6 +25,7 @@ dependencies:
   # Install APK files from the phone on the TV (.apk, .apks, .xapk bundles)
   file_picker: ^13.4.1
   speech_to_text: ^7.0.0         # «Сказать голосом» in the remote: the phone listens, the TV gets text
+  qr_flutter: ^4.1.0             # «Поделиться видом»: the look's code as a QR
   share_plus: ^13.3.1            # the TV screenshot to Telegram / the gallery
   url_launcher: ^6.3.1           # author / donation links
   in_app_purchase: ^3.2.0        # tips in the App Store / Google Play builds

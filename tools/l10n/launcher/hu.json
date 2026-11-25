@@ -239,5 +239,7 @@
 "«Назад» — закрыть": "«Vissza» a bezáráshoz",
 "Сегодня": "Ma",
 "Завтра": "Holnap",
-"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "A bekapcsolási menü akkor nyílik meg, ha be van kapcsolva a «TVCleanzer: кнопка Домой» szolgáltatás (Beállítások → Kisegítő lehetőségek)."
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "A bekapcsolási menü akkor nyílik meg, ha be van kapcsolva a «TVCleanzer: кнопка Домой» szolgáltatás (Beállítások → Kisegítő lehetőségek).",
+"Включена": "Be",
+"Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Kapcsolja be a «Most szól» funkciót a telefonon a TVCleanzerben (Launcher → Extrák): a telefon hozzáférést ad a launchernek a lejátszóhoz."
 }

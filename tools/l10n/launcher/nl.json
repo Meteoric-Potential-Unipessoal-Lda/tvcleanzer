@@ -239,5 +239,7 @@
 "«Назад» — закрыть": "«Terug» om te sluiten",
 "Сегодня": "Vandaag",
 "Завтра": "Morgen",
-"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Het aan/uit-menu opent als de dienst «TVCleanzer: кнопка Домой» aan staat (Instellingen → Toegankelijkheid)."
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Het aan/uit-menu opent als de dienst «TVCleanzer: кнопка Домой» aan staat (Instellingen → Toegankelijkheid).",
+"Включена": "Aan",
+"Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Zet «Speelt nu» aan in TVCleanzer op de telefoon (Launcher → Extra’s): de telefoon geeft de launcher toegang tot de speler."
 }

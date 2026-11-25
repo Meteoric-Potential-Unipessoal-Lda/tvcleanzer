@@ -201,6 +201,10 @@ public class SettingsActivity extends Activity {
         });
 
         addHeader(skin, T.t("Часы и погода"));
+        if (prefs.style() == Prefs.STYLE_CLOCK) {
+            addToggle(skin, T.t("Значки ⚙ и ⋯ в доке"), prefs.dockButtons(), T.t("Показывать"),
+                    T.t("Скрыты — они в правом верхнем углу"), prefs::setDockButtons);
+        }
         addToggle(skin, T.t("Часы, дата и погода"), prefs.showClock(), T.t("Показывать"), T.t("Скрыто"), prefs::setShowClock);
         addToggle(skin, T.t("Часы"), prefs.clock24(), T.t("24 часа"), T.t("12 часов"), prefs::setClock24);
         addChoice(skin, T.t("Часы: шрифт"), Prefs.CLOCK_FONT_NAMES, prefs.clockFont(), prefs::setClockFont);
@@ -273,6 +277,18 @@ public class SettingsActivity extends Activity {
                 Toast.makeText(this, T.t("Музыка убрана"), Toast.LENGTH_SHORT).show();
             });
         }
+
+        // 1.46: extras, all off by default (ideas from couch-tv)
+        addHeader(skin, T.t("Дополнительно"));
+        addToggle(skin, T.t("Заряд пульта у значка Bluetooth"), prefs.btBattery(), T.t("Показывать"), T.t("Скрыто"), prefs::setBtBattery);
+        addToggle(skin, T.t("Сейчас играет"), prefs.nowPlaying(), T.t("Показывать"), T.t("Скрыто"), v -> {
+            prefs.setNowPlaying(v);
+            if (v && !NowPlaying.allowed(this)) {
+                Toast.makeText(this, T.t("Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру."),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+        addToggle(skin, T.t("Погода на обоях"), prefs.weatherFx(), T.t("Включена"), T.t("Выключена"), prefs::setWeatherFx);
 
         addHeader(skin, T.t("Пульт и включение"));
         addRow(skin, T.t("Кнопки пульта"), "›", () -> startActivity(new Intent(this, KeyMapActivity.class)));

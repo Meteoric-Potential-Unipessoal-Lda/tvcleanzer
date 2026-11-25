@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 145;
+  static const bundledLauncherVersion = 146;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   /// 1.3.123: the TV's own settings write it short («…/.HomeKeyService»). Left in the list, our
@@ -2102,7 +2102,11 @@ class AdbPackageManager {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
-      await adb.shell('am broadcast -n $launcherPkg/.ConfigReceiver '
+      // 1.3.168 «Сейчас играет»: the launcher sees the TV's players only through an allowed
+      // notification listener (it reads no notifications); taken back when switched off
+      final listener = '$launcherPkg/$launcherPkg.NowPlayingListener';
+      await adb.shell('cmd notification ${look.nowPlaying ? 'allow_listener' : 'disallow_listener'} $listener >/dev/null 2>&1; '
+          'am broadcast -n $launcherPkg/.ConfigReceiver '
           '-a com.tvcleanzer.launcher.APPLY ${look.extras}');
     } finally {
       adb.close();

@@ -239,5 +239,7 @@
 "«Назад» — закрыть": "«Back» to close",
 "Сегодня": "Today",
 "Завтра": "Tomorrow",
-"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "The power menu opens when the «TVCleanzer: кнопка Домой» service is on (Settings → Accessibility)."
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "The power menu opens when the «TVCleanzer: кнопка Домой» service is on (Settings → Accessibility).",
+"Включена": "On",
+"Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Turn on «Now playing» in TVCleanzer on your phone (Launcher → Extras): the phone gives the launcher access to the player."
 }

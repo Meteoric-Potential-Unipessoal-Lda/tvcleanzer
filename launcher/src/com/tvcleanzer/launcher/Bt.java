@@ -67,6 +67,58 @@ final class Bt {
         return out;
     }
 
+    /** 1.46: the lowest charge, percent, among the connected devices that tell it (a remote first:
+     *  input devices are looked at before the rest); -1 when none tells. BluetoothDevice's
+     *  getBatteryLevel is hidden from the SDK but public on Android 8.1+ (as couch-tv reads it). */
+    @SuppressWarnings("MissingPermission")
+    static int battery(Context c) {
+        BluetoothAdapter a = adapter(c);
+        if (a == null || Build.VERSION.SDK_INT < 27) return -1;
+        try {
+            if (!a.isEnabled()) return -1;
+            Method isConnected = BluetoothDevice.class.getMethod("isConnected");
+            Method level = BluetoothDevice.class.getMethod("getBatteryLevel");
+            int input = -1, any = -1;
+            for (BluetoothDevice d : a.getBondedDevices()) {
+                try {
+                    if (!Boolean.TRUE.equals(isConnected.invoke(d))) continue;
+                    int l = (Integer) level.invoke(d);
+                    if (l < 0 || l > 100) continue;
+                    BluetoothClass bc = d.getBluetoothClass();
+                    boolean in = bc != null && bc.getMajorDeviceClass() == BluetoothClass.Device.Major.PERIPHERAL;
+                    if (in) input = input < 0 ? l : Math.min(input, l);
+                    any = any < 0 ? l : Math.min(any, l);
+                } catch (Throwable ignored) {}
+            }
+            return input >= 0 ? input : any;
+        } catch (Throwable t) {
+            return -1;
+        }
+    }
+
+    /** «Пульт · 80%» for each connected device that tells its charge (the Bluetooth menu). */
+    @SuppressWarnings("MissingPermission")
+    static List<String> withBattery(Context c) {
+        List<String> out = new ArrayList<>();
+        BluetoothAdapter a = adapter(c);
+        if (a == null) return out;
+        try {
+            if (!a.isEnabled()) return out;
+            Method isConnected = BluetoothDevice.class.getMethod("isConnected");
+            Method level = Build.VERSION.SDK_INT >= 27 ? BluetoothDevice.class.getMethod("getBatteryLevel") : null;
+            for (BluetoothDevice d : a.getBondedDevices()) {
+                try {
+                    if (!Boolean.TRUE.equals(isConnected.invoke(d))) continue;
+                    String n = d.getName();
+                    n = n == null || n.trim().isEmpty() ? d.getAddress() : n.trim();
+                    int l = level == null ? -1 : (Integer) level.invoke(d);
+                    out.add(l >= 0 && l <= 100 ? n + " · " + l + "%" : n);
+                } catch (Throwable ignored) {}
+            }
+        } catch (Throwable ignored) {}
+        return out;
+    }
+
     /** Switches Bluetooth where an app still may (Android 12 and older); false = do it in
      *  the TV's settings (Android 13+ gives this only to the system). */
     @SuppressWarnings({"deprecation", "MissingPermission"})
