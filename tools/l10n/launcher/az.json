@@ -231,5 +231,13 @@
 "Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonlar unuduldu: Wi-Fi pultu üçün onları yenidən qoşun",
 "Значок VPN открывает": "VPN nişanı açır",
 "Спрашивать": "Soruşmaq",
-"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} yadda saxlanıldı. Dəyişmək üçün VPN nişanında OK-ni uzun basın və ya launcher ayarlarına keçin"
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} yadda saxlanıldı. Dəyişmək üçün VPN nişanında OK-ni uzun basın və ya launcher ayarlarına keçin",
+"Прогноз погоды": "Hava proqnozu",
+"Загружаем прогноз…": "Proqnoz yüklənir…",
+"Город для погоды не выбран": "Hava üçün şəhər seçilməyib",
+"Не удалось получить прогноз. Проверьте интернет на телевизоре.": "Proqnozu almaq mümkün olmadı. Televizorda internetı yoxlayın.",
+"«Назад» — закрыть": "«Geri» — bağla",
+"Сегодня": "Bu gün",
+"Завтра": "Sabah",
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Qidalanma menyusu «TVCleanzer: кнопка Домой» xidməti açıq olanda açılır (Ayarlar → Əlçatımlılıq)."
 }

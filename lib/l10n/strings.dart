@@ -1046,6 +1046,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Without debugging, the mouse works through TVCleanzer launcher 1.40 or newer.',
     'Название города': 'City name',
     'Рядом с погодой на главном экране': 'Next to the weather on the home screen',
+    'Кнопка питания вверху': 'Power button at the top',
+    'Выключение и перезагрузка с главного экрана': 'Switch off and restart from the home screen',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2092,6 +2094,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Без налагодження миша працює через лаунчер TVCleanzer 1.40 або новіший.',
     'Название города': 'Назва міста',
     'Рядом с погодой на главном экране': 'Поруч із погодою на головному екрані',
+    'Кнопка питания вверху': 'Кнопка живлення вгорі',
+    'Выключение и перезагрузка с главного экрана': 'Вимкнення й перезавантаження з головного екрана',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3138,6 +3142,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Sin depuración, el ratón funciona con el launcher TVCleanzer 1.40 o posterior.',
     'Название города': 'Nombre de la ciudad',
     'Рядом с погодой на главном экране': 'Junto al tiempo en la pantalla de inicio',
+    'Кнопка питания вверху': 'Botón de encendido arriba',
+    'Выключение и перезагрузка с главного экрана': 'Apagar y reiniciar desde la pantalla de inicio',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4184,6 +4190,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Sem depuração, o rato funciona com o launcher TVCleanzer 1.40 ou mais recente.',
     'Название города': 'Nome da cidade',
     'Рядом с погодой на главном экране': 'Junto à meteorologia no ecrã inicial',
+    'Кнопка питания вверху': 'Botão de energia no topo',
+    'Выключение и перезагрузка с главного экрана': 'Desligar e reiniciar a partir do ecrã inicial',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5230,6 +5238,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Ohne Debugging funktioniert die Maus über den TVCleanzer-Launcher 1.40 oder neuer.',
     'Название города': 'Name der Stadt',
     'Рядом с погодой на главном экране': 'Neben dem Wetter auf dem Startbildschirm',
+    'Кнопка питания вверху': 'Ein/Aus-Taste oben',
+    'Выключение и перезагрузка с главного экрана': 'Ausschalten und Neustart vom Startbildschirm',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6276,6 +6286,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Sans débogage, la souris passe par le launcher TVCleanzer 1.40 ou plus récent.',
     'Название города': 'Nom de la ville',
     'Рядом с погодой на главном экране': 'À côté de la météo sur l’écran d’accueil',
+    'Кнопка питания вверху': 'Bouton marche/arrêt en haut',
+    'Выключение и перезагрузка с главного экрана': 'Éteindre et redémarrer depuis l’écran d’accueil',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7322,6 +7334,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Senza debug, il mouse funziona con il launcher TVCleanzer 1.40 o successivo.',
     'Название города': 'Nome della città',
     'Рядом с погодой на главном экране': 'Accanto al meteo nella schermata principale',
+    'Кнопка питания вверху': 'Pulsante di accensione in alto',
+    'Выключение и перезагрузка с главного экрана': 'Spegni e riavvia dalla schermata principale',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8368,6 +8382,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Без адладкі мыш працуе праз лаунчар TVCleanzer 1.40 або навейшы.',
     'Название города': 'Назва горада',
     'Рядом с погодой на главном экране': 'Побач з надвор’ем на галоўным экране',
+    'Кнопка питания вверху': 'Кнопка сілкавання ўверсе',
+    'Выключение и перезагрузка с главного экрана': 'Выключэнне і перазагрузка з галоўнага экрана',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9414,6 +9430,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Түзетусіз тінтуір TVCleanzer 1.40 не жаңарақ лаунчері арқылы жұмыс істейді.',
     'Название города': 'Қала атауы',
     'Рядом с погодой на главном экране': 'Басты экрандағы ауа райының жанында',
+    'Кнопка питания вверху': 'Жоғарыдағы қуат түймесі',
+    'Выключение и перезагрузка с главного экрана': 'Басты экраннан өшіру және қайта жүктеу',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10460,6 +10478,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Tuzatishsiz sichqoncha TVCleanzer 1.40 yoki yangiroq launcher orqali ishlaydi.',
     'Название города': 'Shahar nomi',
     'Рядом с погодой на главном экране': 'Bosh ekrandagi ob-havo yonida',
+    'Кнопка питания вверху': 'Yuqorida quvvat tugmasi',
+    'Выключение и перезагрузка с главного экрана': 'Bosh ekrandan oʻchirish va qayta yuklash',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11506,6 +11526,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Առանց վրիպազերծման մկնիկն աշխատում է TVCleanzer 1.40 կամ ավելի նոր լաունչերով։',
     'Название города': 'Քաղաքի անունը',
     'Рядом с погодой на главном экране': 'Եղանակի կողքին գլխավոր էկրանին',
+    'Кнопка питания вверху': 'Սնուցման կոճակը վերևում',
+    'Выключение и перезагрузка с главного экрана': 'Անջատում և վերագործարկում գլխավոր էկրանից',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12552,6 +12574,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Sazlamasız siçan TVCleanzer 1.40 və ya daha yeni launcher ilə işləyir.',
     'Название города': 'Şəhərin adı',
     'Рядом с погодой на главном экране': 'Ana ekranda havanın yanında',
+    'Кнопка питания вверху': 'Yuxarıda qidalanma düyməsi',
+    'Выключение и перезагрузка с главного экрана': 'Ana ekrandan söndürmə və yenidən başlatma',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13598,6 +13622,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'გამართვის გარეშე მაუსი მუშაობს TVCleanzer 1.40 ან უფრო ახალი ლაუნჩერით.',
     'Название города': 'ქალაქის სახელი',
     'Рядом с погодой на главном экране': 'ამინდის გვერდით მთავარ ეკრანზე',
+    'Кнопка питания вверху': 'კვების ღილაკი ზემოთ',
+    'Выключение и перезагрузка с главного экрана': 'გამორთვა და გადატვირთვა მთავარი ეკრანიდან',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14644,6 +14670,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Оңдоосуз чычкан TVCleanzer 1.40 же жаңыраак лаунчер аркылуу иштейт.',
     'Название города': 'Шаардын аты',
     'Рядом с погодой на главном экране': 'Башкы экранда аба ырайынын жанында',
+    'Кнопка питания вверху': 'Жогоруда кубат баскычы',
+    'Выключение и перезагрузка с главного экрана': 'Башкы экрандан өчүрүү жана өчүрүп-күйгүзүү',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15690,6 +15718,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Hata ayıklama olmadan fare, TVCleanzer 1.40 veya daha yeni başlatıcıyla çalışır.',
     'Название города': 'Şehir adı',
     'Рядом с погодой на главном экране': 'Ana ekranda hava durumunun yanında',
+    'Кнопка питания вверху': 'Üstte güç düğmesi',
+    'Выключение и перезагрузка с главного экрана': 'Ana ekrandan kapatma ve yeniden başlatma',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16736,6 +16766,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Bez debugowania mysz działa przez launcher TVCleanzer 1.40 lub nowszy.',
     'Название города': 'Nazwa miasta',
     'Рядом с погодой на главном экране': 'Obok pogody na ekranie głównym',
+    'Кнопка питания вверху': 'Przycisk zasilania u góry',
+    'Выключение и перезагрузка с главного экрана': 'Wyłączanie i ponowne uruchamianie z ekranu głównego',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17782,6 +17814,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Fără depanare, mouse-ul funcționează prin launcherul TVCleanzer 1.40 sau mai nou.',
     'Название города': 'Numele orașului',
     'Рядом с погодой на главном экране': 'Lângă vreme pe ecranul principal',
+    'Кнопка питания вверху': 'Buton de pornire sus',
+    'Выключение и перезагрузка с главного экрана': 'Oprire și repornire din ecranul principal',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18828,6 +18862,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': '不用调试时，鼠标需要 TVCleanzer 启动器 1.40 或更新版本。',
     'Название города': '城市名称',
     'Рядом с погодой на главном экране': '主屏幕上天气旁边',
+    'Кнопка питания вверху': '顶部电源按钮',
+    'Выключение и перезагрузка с главного экрана': '从主屏幕关机和重启',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19874,6 +19910,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'デバッグなしのマウスは TVCleanzer ランチャー 1.40 以降で使えます。',
     'Название города': '都市名',
     'Рядом с погодой на главном экране': 'ホーム画面の天気の横',
+    'Кнопка питания вверху': '上部に電源ボタン',
+    'Выключение и перезагрузка с главного экрана': 'ホーム画面から電源オフと再起動',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20920,6 +20958,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': '디버깅 없이 마우스는 TVCleanzer 런처 1.40 이상에서 작동합니다.',
     'Название города': '도시 이름',
     'Рядом с погодой на главном экране': '홈 화면의 날씨 옆',
+    'Кнопка питания вверху': '상단 전원 버튼',
+    'Выключение и перезагрузка с главного экрана': '홈 화면에서 끄기 및 다시 시작',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21966,6 +22006,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'डीबगिंग के बिना माउस TVCleanzer लॉन्चर 1.40 या नए से चलता है।',
     'Название города': 'शहर का नाम',
     'Рядом с погодой на главном экране': 'होम स्क्रीन पर मौसम के पास',
+    'Кнопка питания вверху': 'ऊपर पावर बटन',
+    'Выключение и перезагрузка с главного экрана': 'होम स्क्रीन से बंद और रीस्टार्ट करें',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -23012,6 +23054,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Tanpa debugging, mouse berfungsi lewat launcher TVCleanzer 1.40 atau lebih baru.',
     'Название города': 'Nama kota',
     'Рядом с погодой на главном экране': 'Di samping cuaca di layar utama',
+    'Кнопка питания вверху': 'Tombol daya di atas',
+    'Выключение и перезагрузка с главного экрана': 'Matikan dan mulai ulang dari layar utama',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -24058,6 +24102,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Không có gỡ lỗi, chuột hoạt động qua launcher TVCleanzer 1.40 trở lên.',
     'Название города': 'Tên thành phố',
     'Рядом с погодой на главном экране': 'Cạnh thời tiết trên màn hình chính',
+    'Кнопка питания вверху': 'Nút nguồn ở trên',
+    'Выключение и перезагрузка с главного экрана': 'Tắt và khởi động lại từ màn hình chính',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -25104,6 +25150,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'หากไม่ใช้การแก้ไขข้อบกพร่อง เมาส์ใช้ได้ผ่านลอนเชอร์ TVCleanzer 1.40 ขึ้นไป',
     'Название города': 'ชื่อเมือง',
     'Рядом с погодой на главном экране': 'ข้างสภาพอากาศบนหน้าจอหลัก',
+    'Кнопка питания вверху': 'ปุ่มเปิด/ปิดด้านบน',
+    'Выключение и перезагрузка с главного экрана': 'ปิดและรีสตาร์ทจากหน้าจอหลัก',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -26150,6 +26198,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Zonder foutopsporing werkt de muis via de TVCleanzer-launcher 1.40 of nieuwer.',
     'Название города': 'Plaatsnaam',
     'Рядом с погодой на главном экране': 'Naast het weer op het startscherm',
+    'Кнопка питания вверху': 'Aan/uit-knop bovenaan',
+    'Выключение и перезагрузка с главного экрана': 'Uitschakelen en herstarten vanaf het startscherm',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -27196,6 +27246,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Bez ladění funguje myš přes launcher TVCleanzer 1.40 nebo novější.',
     'Название города': 'Název města',
     'Рядом с погодой на главном экране': 'Vedle počasí na hlavní obrazovce',
+    'Кнопка питания вверху': 'Tlačítko napájení nahoře',
+    'Выключение и перезагрузка с главного экрана': 'Vypnutí a restart z hlavní obrazovky',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -28242,6 +28294,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Χωρίς εντοπισμό σφαλμάτων, το ποντίκι λειτουργεί μέσω του launcher TVCleanzer 1.40 ή νεότερου.',
     'Название города': 'Όνομα πόλης',
     'Рядом с погодой на главном экране': 'Δίπλα στον καιρό στην αρχική οθόνη',
+    'Кнопка питания вверху': 'Κουμπί λειτουργίας επάνω',
+    'Выключение и перезагрузка с главного экрана': 'Απενεργοποίηση και επανεκκίνηση από την αρχική οθόνη',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -29288,6 +29342,8 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Hibakeresés nélkül az egér a TVCleanzer 1.40-es vagy újabb launcherrel működik.',
     'Название города': 'Város neve',
     'Рядом с погодой на главном экране': 'Az időjárás mellett a kezdőképernyőn',
+    'Кнопка питания вверху': 'Bekapcsológomb felül',
+    'Выключение и перезагрузка с главного экрана': 'Kikapcsolás és újraindítás a kezdőképernyőről',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -30334,5 +30390,7 @@ const Map<String, Map<String, String>> translations = {
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Utan felsökning fungerar musen via TVCleanzer-startprogrammet 1.40 eller senare.',
     'Название города': 'Stadens namn',
     'Рядом с погодой на главном экране': 'Bredvid vädret på startskärmen',
+    'Кнопка питания вверху': 'Strömknapp upptill',
+    'Выключение и перезагрузка с главного экрана': 'Stäng av och starta om från startskärmen',
   },
 };

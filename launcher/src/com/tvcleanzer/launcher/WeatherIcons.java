@@ -49,7 +49,11 @@ final class WeatherIcons {
     static Drawable icon(Context c, Prefs p, float textPx) {
         String n = name(p);
         if (n == null) return null;
-        int px = Math.max(1, Math.round(textPx * 1.4f));
+        return byName(c, n, Math.max(1, Math.round(textPx * 1.4f)));
+    }
+
+    /** The picture [n] («clear_day») [px] wide (1.42: the forecast's days too). */
+    static Drawable byName(Context c, String n, int px) {
         int src = px <= 64 ? 64 : px <= 128 ? 128 : 256;
         Resources r = c.getResources();
         int id = r.getIdentifier("wx_" + n + "_" + src, "drawable", c.getPackageName());

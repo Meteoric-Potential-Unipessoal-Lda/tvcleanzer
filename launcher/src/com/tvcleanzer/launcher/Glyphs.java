@@ -18,7 +18,7 @@ final class Glyphs {
     private Glyphs() {}
 
     static final int WIFI = 0, ETHERNET = 1, VPN = 2, OFFLINE = 3, TV = 4, BT = 5, BT_OFF = 6,
-            GEAR = 7, MORE = 8, INPUT = 9, VPN_PLATE = 10, MEM = 11;
+            GEAR = 7, MORE = 8, INPUT = 9, VPN_PLATE = 10, MEM = 11, POWER = 12;
 
     private static final android.graphics.Bitmap[] PACK = new android.graphics.Bitmap[12];
     private static boolean loaded;
@@ -111,6 +111,13 @@ final class Glyphs {
                 p.lineTo(l, cy + s * 0.5f);
                 c.drawPath(p, ink);
                 if (glyph == BT_OFF) c.drawLine(cx - s, cy - s, cx + s, cy + s, ink);
+                break;
+            }
+            case POWER: {
+                // 1.42: the power sign — a ring open at the top and a stroke into the gap
+                float r = s * 0.78f;
+                c.drawArc(new RectF(cx - r, cy - r * 0.9f, cx + r, cy + r * 1.1f), -60, 300, false, ink);
+                c.drawLine(cx, cy - s * 0.95f, cx, cy - s * 0.05f, ink);
                 break;
             }
             case GEAR: {

@@ -231,5 +231,13 @@
 "Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Ponsel dilupakan: hubungkan lagi untuk remote Wi-Fi",
 "Значок VPN открывает": "Ikon VPN membuka",
 "Спрашивать": "Tanya",
-"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} diingat. Untuk mengganti: tahan OK pada ikon VPN atau buka setelan launcher"
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} diingat. Untuk mengganti: tahan OK pada ikon VPN atau buka setelan launcher",
+"Прогноз погоды": "Prakiraan cuaca",
+"Загружаем прогноз…": "Memuat prakiraan…",
+"Город для погоды не выбран": "Kota untuk cuaca belum dipilih",
+"Не удалось получить прогноз. Проверьте интернет на телевизоре.": "Gagal mendapatkan prakiraan. Periksa internet di TV.",
+"«Назад» — закрыть": "«Kembali» untuk menutup",
+"Сегодня": "Hari ini",
+"Завтра": "Besok",
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Menu daya terbuka saat layanan «TVCleanzer: кнопка Домой» aktif (Setelan → Aksesibilitas)."
 }

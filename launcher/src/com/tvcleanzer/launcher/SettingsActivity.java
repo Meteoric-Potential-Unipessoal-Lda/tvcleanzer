@@ -132,6 +132,7 @@ public class SettingsActivity extends Activity {
         if (!Vpn.apps(this).isEmpty()) {
             addRow(skin, T.t("Значок VPN открывает"), Vpn.chosenName(this), () -> Vpn.choose(this, this::build));
         }
+        addToggle(skin, T.t("Кнопка питания вверху"), prefs.powerIcon(), T.t("Показывать"), T.t("Скрыто"), prefs::setPowerIcon);
         addToggle(skin, T.t("Приветствие"), prefs.greeting(), T.t("Показывать"), T.t("Скрыто"), prefs::setGreeting);
         addChoice(skin, T.t("Часы вверху"), new String[]{T.t("Крупные"), T.t("Средние"), T.t("Мелкие")},
                 prefs.barClock(), prefs::setBarClock);

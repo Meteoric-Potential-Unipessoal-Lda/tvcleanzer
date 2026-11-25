@@ -231,5 +231,13 @@
 "Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonok elfelejtve: a Wi-Fi-s távirányítóhoz csatlakoztassa őket újra",
 "Значок VPN открывает": "A VPN ikon megnyitja",
 "Спрашивать": "Rákérdezés",
-"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} megjegyezve. Módosítás: tartsa lenyomva az OK-t a VPN ikonon, vagy a launcher beállításaiban"
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} megjegyezve. Módosítás: tartsa lenyomva az OK-t a VPN ikonon, vagy a launcher beállításaiban",
+"Прогноз погоды": "Időjárás-előrejelzés",
+"Загружаем прогноз…": "Előrejelzés betöltése…",
+"Город для погоды не выбран": "Nincs kiválasztva város az időjáráshoz",
+"Не удалось получить прогноз. Проверьте интернет на телевизоре.": "Nem sikerült lekérni az előrejelzést. Ellenőrizze a tévé internetkapcsolatát.",
+"«Назад» — закрыть": "«Vissza» a bezáráshoz",
+"Сегодня": "Ma",
+"Завтра": "Holnap",
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "A bekapcsolási menü akkor nyílik meg, ha be van kapcsolva a «TVCleanzer: кнопка Домой» szolgáltatás (Beállítások → Kisegítő lehetőségek)."
 }

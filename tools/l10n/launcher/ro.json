@@ -231,5 +231,13 @@
 "Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefoane uitate: conectați-le din nou pentru telecomanda prin Wi-Fi",
 "Значок VPN открывает": "Pictograma VPN deschide",
 "Спрашивать": "Întreabă",
-"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} a fost reținut. Pentru schimbare: țineți apăsat OK pe pictograma VPN sau din setările launcherului"
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} a fost reținut. Pentru schimbare: țineți apăsat OK pe pictograma VPN sau din setările launcherului",
+"Прогноз погоды": "Prognoza meteo",
+"Загружаем прогноз…": "Se încarcă prognoza…",
+"Город для погоды не выбран": "Niciun oraș ales pentru vreme",
+"Не удалось получить прогноз. Проверьте интернет на телевизоре.": "Nu s-a putut obține prognoza. Verificați internetul televizorului.",
+"«Назад» — закрыть": "«Înapoi» — închide",
+"Сегодня": "Astăzi",
+"Завтра": "Mâine",
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Meniul de alimentare se deschide când serviciul «TVCleanzer: кнопка Домой» este pornit (Setări → Accesibilitate)."
 }

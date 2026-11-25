@@ -231,5 +231,13 @@
 "Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonerna glömdes: anslut dem igen för fjärrkontrollen via wifi",
 "Значок VPN открывает": "VPN-ikonen öppnar",
 "Спрашивать": "Fråga",
-"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} sparad. Ändra: håll in OK på VPN-ikonen eller i startprogrammets inställningar"
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} sparad. Ändra: håll in OK på VPN-ikonen eller i startprogrammets inställningar",
+"Прогноз погоды": "Väderprognos",
+"Загружаем прогноз…": "Hämtar prognosen…",
+"Город для погоды не выбран": "Ingen stad vald för vädret",
+"Не удалось получить прогноз. Проверьте интернет на телевизоре.": "Kunde inte hämta prognosen. Kontrollera tv:ns internetanslutning.",
+"«Назад» — закрыть": "«Tillbaka» för att stänga",
+"Сегодня": "I dag",
+"Завтра": "I morgon",
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Strömmenyn öppnas när tjänsten «TVCleanzer: кнопка Домой» är på (Inställningar → Tillgänglighet)."
 }

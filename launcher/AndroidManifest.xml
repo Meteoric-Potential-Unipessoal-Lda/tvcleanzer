@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tvcleanzer.launcher"
-    android:versionCode="141"
-    android:versionName="1.41">
+    android:versionCode="142"
+    android:versionName="1.42">
 
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
 
@@ -201,6 +201,13 @@
             android:screenOrientation="landscape" />
 
         <!-- «Запущенные»: our recent-apps row (TVs without a recents screen of their own) -->
+        <activity
+            android:name=".ForecastActivity"
+            android:theme="@style/HomeTheme"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:screenOrientation="landscape" />
+
         <activity
             android:name=".RecentsActivity"
             android:theme="@style/HomeTheme"

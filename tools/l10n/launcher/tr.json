@@ -231,5 +231,13 @@
 "Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonlar unutuldu: Wi-Fi kumandası için yeniden bağlayın",
 "Значок VPN открывает": "VPN simgesi açar",
 "Спрашивать": "Sor",
-"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} hatırlandı. Değiştirmek için VPN simgesinde OK’e basılı tutun veya başlatıcı ayarlarını kullanın"
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} hatırlandı. Değiştirmek için VPN simgesinde OK’e basılı tutun veya başlatıcı ayarlarını kullanın",
+"Прогноз погоды": "Hava tahmini",
+"Загружаем прогноз…": "Tahmin yükleniyor…",
+"Город для погоды не выбран": "Hava durumu için şehir seçilmedi",
+"Не удалось получить прогноз. Проверьте интернет на телевизоре.": "Tahmin alınamadı. TV’nin internet bağlantısını kontrol edin.",
+"«Назад» — закрыть": "Kapatmak için «Geri»",
+"Сегодня": "Bugün",
+"Завтра": "Yarın",
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Güç menüsü, «TVCleanzer: кнопка Домой» hizmeti açıkken açılır (Ayarlar → Erişilebilirlik)."
 }

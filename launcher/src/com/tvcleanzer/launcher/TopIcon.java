@@ -17,7 +17,7 @@ import android.view.View;
 final class TopIcon extends View {
     static final int WIFI = Glyphs.WIFI, ETHERNET = Glyphs.ETHERNET, VPN = Glyphs.VPN, OFFLINE = Glyphs.OFFLINE,
             TV = Glyphs.TV, BT = Glyphs.BT, BT_OFF = Glyphs.BT_OFF, GEAR = Glyphs.GEAR, VPN_PLATE = Glyphs.VPN_PLATE,
-            MEM = Glyphs.MEM;
+            MEM = Glyphs.MEM, POWER = Glyphs.POWER;
 
     /** Told when the icon gets or loses the focus (the memory icon shows its numbers then). */
     interface FocusHook { void focused(boolean has); }

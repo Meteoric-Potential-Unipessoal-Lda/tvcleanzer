@@ -81,6 +81,9 @@ final class Prefs {
     void setLanRemote(boolean v) { sp.edit().putBoolean("lanRemote", v).apply(); }
     /** 1.38: the weather block's day and date bold (UMID) or thin (small TVs blur bold text). */
     boolean dateBold()       { return sp.getBoolean("dateBold", true); }
+    /** 1.42: a power button in the top corner (a chat wish: switch off / restart from home). */
+    boolean powerIcon()      { return sp.getBoolean("powerIcon", false); }
+    void setPowerIcon(boolean v) { sp.edit().putBoolean("powerIcon", v).apply(); }
     /** 1.41: the city's name beside the weather (a chat wish: the weather without it). */
     boolean showCity()       { return sp.getBoolean("showCity", true); }
     void setShowCity(boolean v) { sp.edit().putBoolean("showCity", v).apply(); }

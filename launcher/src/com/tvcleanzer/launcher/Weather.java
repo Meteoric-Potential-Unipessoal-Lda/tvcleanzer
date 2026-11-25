@@ -148,6 +148,81 @@ final class Weather {
         return out;
     }
 
+    /** A day of the forecast (1.42): local midnight, the WMO code, the highest and lowest. */
+    static final class Day {
+        final long dayMs;
+        final int code, max, min;
+        Day(long dayMs, int code, int max, int min) { this.dayMs = dayMs; this.code = code; this.max = max; this.min = min; }
+    }
+
+    /** The week ahead (ForecastActivity): Open-Meteo over HTTPS, then HTTP, then met.no. Network:
+     *  off the UI thread. Null when nothing answered. */
+    static java.util.List<Day> forecast(Prefs p) {
+        String q = String.format(Locale.US,
+                "api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f"
+                        + "&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=7",
+                p.weatherLat(), p.weatherLon());
+        for (String scheme : new String[]{"https://", "http://"}) {
+            try {
+                JSONObject d = new JSONObject(get(scheme + q)).getJSONObject("daily");
+                org.json.JSONArray t = d.getJSONArray("time"), c = d.getJSONArray("weather_code"),
+                        hi = d.getJSONArray("temperature_2m_max"), lo = d.getJSONArray("temperature_2m_min");
+                java.util.List<Day> out = new java.util.ArrayList<>();
+                java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                for (int i = 0; i < t.length(); i++) {
+                    if (c.isNull(i) || hi.isNull(i) || lo.isNull(i)) continue;
+                    out.add(new Day(f.parse(t.getString(i)).getTime(), c.getInt(i),
+                            (int) Math.round(hi.getDouble(i)), (int) Math.round(lo.getDouble(i))));
+                }
+                if (!out.isEmpty()) return out;
+            } catch (Exception ignored) {}
+        }
+        try {
+            return forecastMetNo(p);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /** met.no's hourly / 6-hourly series folded into days (local time): highest and lowest,
+     *  and the sky of the hour nearest midday. */
+    private static java.util.List<Day> forecastMetNo(Prefs p) throws Exception {
+        org.json.JSONArray ts = new JSONObject(get(String.format(Locale.US,
+                "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=%.3f&lon=%.3f",
+                p.weatherLat(), p.weatherLon()))).getJSONObject("properties").getJSONArray("timeseries");
+        java.text.SimpleDateFormat iso = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        iso.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        java.util.LinkedHashMap<Long, int[]> days = new java.util.LinkedHashMap<>(); // max, min, code, distance to noon
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        for (int i = 0; i < ts.length(); i++) {
+            JSONObject e = ts.getJSONObject(i);
+            cal.setTime(iso.parse(e.getString("time")));
+            int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
+            cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+            cal.set(java.util.Calendar.MINUTE, 0);
+            cal.set(java.util.Calendar.SECOND, 0);
+            cal.set(java.util.Calendar.MILLISECOND, 0);
+            long day = cal.getTimeInMillis();
+            JSONObject data = e.getJSONObject("data");
+            int t = (int) Math.round(data.getJSONObject("instant").getJSONObject("details").getDouble("air_temperature"));
+            JSONObject next = data.optJSONObject("next_1_hours");
+            if (next == null) next = data.optJSONObject("next_6_hours");
+            int code = next == null ? -1 : wmo(next.getJSONObject("summary").optString("symbol_code", ""));
+            int[] d = days.get(day);
+            if (d == null) days.put(day, d = new int[]{t, t, -1, 99});
+            d[0] = Math.max(d[0], t);
+            d[1] = Math.min(d[1], t);
+            if (code >= 0 && Math.abs(hour - 13) < d[3]) { d[2] = code; d[3] = Math.abs(hour - 13); }
+        }
+        java.util.List<Day> out = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<Long, int[]> en : days.entrySet()) {
+            int[] d = en.getValue();
+            // a day the series only touches (its last hours past midnight) is left out
+            if (d[2] >= 0 && d[3] <= 4) out.add(new Day(en.getKey(), d[2], d[0], d[1]));
+        }
+        return out;
+    }
+
     private static void fetch(String url, Prefs p) throws Exception {
         JSONObject cur = new JSONObject(get(url)).getJSONObject("current");
         p.setWeatherNow((int) Math.round(cur.getDouble("temperature_2m")), cur.getInt("weather_code"));

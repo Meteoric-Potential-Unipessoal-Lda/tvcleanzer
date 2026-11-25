@@ -231,5 +231,13 @@
 "Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Téléphones oubliés : reconnectez-les pour la télécommande Wi-Fi",
 "Значок VPN открывает": "L’icône VPN ouvre",
 "Спрашивать": "Demander",
-"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} mémorisé. Pour changer : maintenez OK sur l’icône VPN ou passez par les paramètres du launcher"
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} mémorisé. Pour changer : maintenez OK sur l’icône VPN ou passez par les paramètres du launcher",
+"Прогноз погоды": "Prévisions météo",
+"Загружаем прогноз…": "Chargement des prévisions…",
+"Город для погоды не выбран": "Aucune ville choisie pour la météo",
+"Не удалось получить прогноз. Проверьте интернет на телевизоре.": "Impossible d’obtenir les prévisions. Vérifiez la connexion internet de la TV.",
+"«Назад» — закрыть": "«Retour» pour fermer",
+"Сегодня": "Aujourd’hui",
+"Завтра": "Demain",
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Le menu d’alimentation s’ouvre quand le service «TVCleanzer: кнопка Домой» est activé (Paramètres → Accessibilité)."
 }

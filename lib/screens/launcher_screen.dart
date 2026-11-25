@@ -519,6 +519,8 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
         if (look.weatherCity.isNotEmpty)
           _sw(tr('Название города'), tr('Рядом с погодой на главном экране'), look.showCity,
               (v) => _setLook(look.copyWith(showCity: v)), need: 141),
+        _sw(tr('Кнопка питания вверху'), tr('Выключение и перезагрузка с главного экрана'), look.powerIcon,
+            (v) => _setLook(look.copyWith(powerIcon: v)), need: 142),
         ListTile(
           contentPadding: EdgeInsets.zero,
           dense: true,

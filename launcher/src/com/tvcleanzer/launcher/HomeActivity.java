@@ -362,6 +362,45 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (resumed) armFrame(); // a key pressed: the idle time starts again
     }
 
+    /** The system's power menu (switch off, restart — whatever the TV offers), which only an
+     *  accessibility service may open. */
+    private void powerMenu() {
+        HomeKeyService s = HomeKeyService.running;
+        boolean ok = false;
+        try {
+            if (s != null) ok = s.performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
+        } catch (Throwable t) {
+            HomeKeyService.log("power: " + t);
+        }
+        if (!ok) {
+            android.widget.Toast.makeText(this, T.t("Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности)."),
+                    android.widget.Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /** 1.42: OK on the weather opens the week's forecast (a Play review). The weather can take
+     *  the focus then, with a soft plate while it has it; not in kids mode. */
+    private void forecastOnOk(View v) {
+        if (!prefs.hasWeather() || prefs.kids()) return;
+        // the plate reaches a little past the text (negative insets): no padding, so nothing on the
+        // screen moves (the block's place was tuned with UMID)
+        final int ph = Ui.dp(this, 10), pv = Ui.dp(this, 6);
+        final float r = Ui.dp(this, 14);
+        v.setFocusable(true);
+        v.setClickable(true);
+        v.setOnFocusChangeListener((x, has) -> {
+            x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, r), -ph, -pv, -ph, -pv) : null);
+            if (x.getParent() instanceof ViewGroup) ((ViewGroup) x.getParent()).setClipChildren(false);
+        });
+        v.setOnClickListener(x -> {
+            try {
+                startActivity(new Intent(this, ForecastActivity.class));
+            } catch (Exception e) {
+                HomeKeyService.log("forecast: " + e);
+            }
+        });
+    }
+
     /** The top bar's weather block (1.31): picture, «+16°», a line, and «📍 Наманган · ясно» under. */
     private void updateWeatherBlock() {
         boolean any = Weather.line(prefs) != null;
@@ -496,6 +535,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         weatherView.setIncludeFontPadding(false);
         row.addView(weatherView, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        forecastOnOk(weatherView);
         updateWeatherView();
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -563,6 +603,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         wlp.topMargin = Ui.dp(this, 6);
         mid.addView(weatherView, wlp);
+        forecastOnOk(weatherView);
         updateWeatherView();
 
         FrameLayout.LayoutParams mlp = new FrameLayout.LayoutParams(
@@ -1664,6 +1705,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             wl.leftMargin = Ui.dp(this, 18);
             dateCol.addView(weatherView, wl);
+            forecastOnOk(weatherView);
             timeRow.addView(dateCol);
         } else {
             // 1.31 (UMID's picture): the weather's picture and a big «+16°», a line, then the day
@@ -1731,6 +1773,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             wl.topMargin = Ui.dp(this, 8);
             block.addView(weatherView, wl);
+            forecastOnOk(block);
             timeRow.addView(block);
         }
         updateWeatherView();
@@ -1910,6 +1953,12 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             TopIcon tv = new TopIcon(this, TopIcon.TV, 0, true);
             tv.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
             items.add(tv);
+        }
+        if (prefs.powerIcon()) {
+            // 1.42: the TV's own power menu (switch off, restart) through the Home-key service
+            TopIcon pw = new TopIcon(this, TopIcon.POWER, 0, true);
+            pw.setOnClickListener(v -> powerMenu());
+            items.add(pw);
         }
         if (withGear) {
             TopIcon gear = new TopIcon(this, TopIcon.GEAR, 0, true);

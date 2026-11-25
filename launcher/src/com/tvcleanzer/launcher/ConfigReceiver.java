@@ -83,6 +83,7 @@ public class ConfigReceiver extends BroadcastReceiver {
             LanRemote.ensure(context);
         }
         if (intent.hasExtra("dateBold")) p.setDateBold(intent.getBooleanExtra("dateBold", true));
+        if (intent.hasExtra("powerIcon")) p.setPowerIcon(intent.getBooleanExtra("powerIcon", false));
         if (intent.hasExtra("showCity")) p.setShowCity(intent.getBooleanExtra("showCity", true));
         if (intent.hasExtra("tiles")) p.setTileSize(intent.getIntExtra("tiles", Prefs.TILES_NORMAL));
         if (intent.hasExtra("wallDim")) p.setWallDim(intent.getIntExtra("wallDim", 40));

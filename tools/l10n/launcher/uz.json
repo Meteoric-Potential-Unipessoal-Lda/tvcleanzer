@@ -231,5 +231,13 @@
 "Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonlar unutildi: Wi-Fi pult uchun ularni qayta ulang",
 "Значок VPN открывает": "VPN belgisi ochadi",
 "Спрашивать": "Soʻrash",
-"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} eslab qolindi. Oʻzgartirish — VPN belgisida OK’ni uzoq bosing yoki launcher sozlamalari"
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} eslab qolindi. Oʻzgartirish — VPN belgisida OK’ni uzoq bosing yoki launcher sozlamalari",
+"Прогноз погоды": "Ob-havo prognozi",
+"Загружаем прогноз…": "Prognoz yuklanmoqda…",
+"Город для погоды не выбран": "Ob-havo uchun shahar tanlanmagan",
+"Не удалось получить прогноз. Проверьте интернет на телевизоре.": "Prognozni olib boʻlmadi. Televizordagi internetni tekshiring.",
+"«Назад» — закрыть": "«Orqaga» — yopish",
+"Сегодня": "Bugun",
+"Завтра": "Ertaga",
+"Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Quvvat menyusi «TVCleanzer: кнопка Домой» xizmati yoqilganda ochiladi (Sozlamalar → Maxsus imkoniyatlar)."
 }
