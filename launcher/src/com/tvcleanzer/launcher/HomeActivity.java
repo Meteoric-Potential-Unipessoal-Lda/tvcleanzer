@@ -443,8 +443,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // 1.48: around the words, not the whole width (a Xiaomi MSSP1, layout «Планшет»: the
             // line stretched across the screen)
             int[] lr = textSpan(x);
+            // 1.50: an InsetDrawable gives the view its insets as padding: the text moved (negative:
+            // the weather picture cut off on the left, Hyundai) — this one gives none
             x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, r),
-                    lr[0] - ph, -pv, lr[1] - ph, -pv) : null);
+                    lr[0] - ph, -pv, lr[1] - ph, -pv) {
+                @Override public boolean getPadding(android.graphics.Rect p) {
+                    p.set(0, 0, 0, 0);
+                    return false;
+                }
+            } : null);
             if (x.getParent() instanceof ViewGroup) ((ViewGroup) x.getParent()).setClipChildren(false);
         });
         v.setOnClickListener(x -> {
