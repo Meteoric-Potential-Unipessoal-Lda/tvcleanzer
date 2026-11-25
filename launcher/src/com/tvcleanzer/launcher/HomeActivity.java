@@ -292,6 +292,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** The home screen can stay open for hours: re-check the weather every 10 minutes while visible. */
     private final Runnable weatherTick = new Runnable() {
         @Override public void run() {
+            updateWeatherView(); // 1.48: what the forecast screen fetched meanwhile
             refreshWeather();
             // No reading yet (new city, network not up after boot): try again in a minute.
             long next = prefs.hasWeather() && prefs.weatherTs() == 0 ? 60 * 1000L : 10 * 60 * 1000L;
@@ -2277,6 +2278,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         TextView v = btBatteryView;
         if (v == null) return;
         int l = Bt.battery(this);
+        // 1.48: Android 7–8.0 has no getBatteryLevel: the remote's own battery service, now and then
+        if (android.os.Build.VERSION.SDK_INT < 27) Bt.refreshLegacy(this, this::showBattery);
         v.setVisibility(l < 0 ? View.GONE : View.VISIBLE);
         if (l >= 0) {
             v.setText(l + "%");

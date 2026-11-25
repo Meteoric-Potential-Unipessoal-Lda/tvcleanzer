@@ -670,7 +670,7 @@ class AdbPackageManager {
   /// test/launcher_version_test.dart fails when the two differ: 1.3.62–1.3.63 shipped 0.56/0.57 with
   /// 55 here, so phones never auto-updated a 0.55 TV and showed no «new version» — held Volume
   /// stayed one step on Xiaomi for everyone who didn't press «Обновить лаунчер» by hand.
-  static const bundledLauncherVersion = 147;
+  static const bundledLauncherVersion = 148;
   static const _homeKeyService = '$launcherPkg/$launcherPkg.HomeKeyService';
 
   /// 1.3.123: the TV's own settings write it short («…/.HomeKeyService»). Left in the list, our
@@ -1617,10 +1617,12 @@ class AdbPackageManager {
             .contains('TVC_OK');
       }
       if (!ok && sdk < 29) {
-        // 1.3.103: older launchers' content provider may take it on Android 7–9 too
-        ok = (await adb.shell('content write --uri content://$launcherPkg.state/wallvideo < $tmp 2>&1 && echo TVC_OK',
-                timeout: Duration(seconds: max(120, length ~/ (2 * 1024 * 1024)))))
-            .contains('TVC_OK');
+        // 1.3.103: older launchers' content provider may take it on Android 7–9 too.
+        // 1.3.169: Android 7's «content» has no «write»: it prints an error and still exits 0
+        // (a Hyundai, SDK 25: «Файл дошёл, но лаунчер его не видит») — only a clean answer counts
+        final out = await adb.shell('content write --uri content://$launcherPkg.state/wallvideo < $tmp 2>&1 && echo TVC_OK',
+            timeout: Duration(seconds: max(120, length ~/ (2 * 1024 * 1024))));
+        ok = out.contains('TVC_OK') && !RegExp(r'error|unsupported|usage|exception', caseSensitive: false).hasMatch(out);
       }
       if (!ok) {
         // the old video goes first (a Hyundai on Android 7 refused to overwrite it); slow flash
@@ -2162,8 +2164,12 @@ class AdbPackageManager {
           .toList();
       // a firmware that switches the service straight back off (T95 / be311 box): did it crash,
       // or did the system turn it off?
+      // 1.3.169: also why the process went (killed for memory, «not responding») and launcher
+      // 1.48's own note of its last crash
       final crash = (await sh('logcat -d -b crash 2>/dev/null | grep -A3 "Process: com.tvcleanzer.launcher" | tail -4; '
-              'logcat -d 2>/dev/null | grep -iE "tvcleanzer.launcher/.HomeKeyService|accessibilityservice.*tvcleanzer" | tail -3'))
+              'logcat -d 2>/dev/null | grep -iE "tvcleanzer.launcher/.HomeKeyService|accessibilityservice.*tvcleanzer" | tail -3; '
+              'logcat -d 2>/dev/null | grep -iE "(ANR in|Killing|has died|lowmemorykiller|am_kill).*com.tvcleanzer.launcher" | tail -3; '
+              'logcat -d -s TVCleanzerHome:I 2>/dev/null | grep "last crash" | tail -1', 8))
           .split('\n')
           .map((l) => l.trim())
           .where((l) => l.isNotEmpty)

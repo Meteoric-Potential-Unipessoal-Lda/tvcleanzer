@@ -38,6 +38,16 @@ final class CrashGuard {
         } catch (Throwable ignored) {}
         Thread.UncaughtExceptionHandler cur = Thread.getDefaultUncaughtExceptionHandler();
         if (cur instanceof Recorder) return;
+        // 1.48: the last crash's cause, once per process, for the phone's report (a Hyundai on
+        // Android 7 restarted the Home-key service twice and the report could not say why)
+        try {
+            String why = prefs(app).getString("why", null);
+            long at = prefs(app).getLong("whyAt", 0);
+            if (why != null && System.currentTimeMillis() - at < 2 * 24 * 3600_000L) {
+                String when = new java.text.SimpleDateFormat("MM-dd HH:mm:ss", java.util.Locale.ROOT).format(new java.util.Date(at));
+                HomeKeyService.log("last crash " + when + ": " + why);
+            }
+        } catch (Throwable ignored) {}
         Thread.setDefaultUncaughtExceptionHandler(new Recorder(app, cur));
     }
 
@@ -49,9 +59,32 @@ final class CrashGuard {
             if (!recorded) {
                 recorded = true;
                 try { add(app, "crashes"); } catch (Throwable ignored) {}
+                try {
+                    prefs(app).edit().putString("why", cause(t, e)).putLong("whyAt", System.currentTimeMillis()).commit();
+                } catch (Throwable ignored) {}
             }
             if (before != null) before.uncaughtException(t, e);
         }
+    }
+
+    /** «Thread: Exception: message @ Class.method:line < …» — the first lines that are ours. */
+    static String cause(Thread t, Throwable e) {
+        Throwable root = e;
+        for (int i = 0; i < 5 && root.getCause() != null && root.getCause() != root; i++) root = root.getCause();
+        StringBuilder sb = new StringBuilder();
+        sb.append(t == null ? "?" : t.getName()).append(": ").append(root.getClass().getName());
+        String m = root.getMessage();
+        if (m != null) sb.append(": ").append(m.length() > 120 ? m.substring(0, 120) : m);
+        int n = 0;
+        for (StackTraceElement el : root.getStackTrace()) {
+            boolean ours = el.getClassName().startsWith("com.tvcleanzer");
+            if (n == 0 || ours) {
+                sb.append(n == 0 ? " @ " : " < ").append(el.getClassName().replace("com.tvcleanzer.launcher.", ""))
+                        .append('.').append(el.getMethodName()).append(':').append(el.getLineNumber());
+                if (++n >= 4) break;
+            }
+        }
+        return sb.toString().replace('\n', ' ');
     }
 
     /** A fresh try: a new version, or settings sent from the phone. */

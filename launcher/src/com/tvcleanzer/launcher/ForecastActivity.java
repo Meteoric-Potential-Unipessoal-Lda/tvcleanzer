@@ -69,6 +69,8 @@ public class ForecastActivity extends Activity {
             return;
         }
         new Thread(() -> {
+            // 1.48: «now» fresh too, so the home screen says the same as the forecast on return
+            try { Weather.refreshIfStale(prefs, 2 * 60 * 1000L); } catch (Throwable ignored) {}
             final List<Weather.Day> days = Weather.forecast(prefs);
             main.post(() -> show(prefs, days));
         }, "tvc-forecast").start();

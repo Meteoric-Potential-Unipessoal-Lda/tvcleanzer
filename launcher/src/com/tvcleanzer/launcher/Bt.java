@@ -73,7 +73,8 @@ final class Bt {
     @SuppressWarnings("MissingPermission")
     static int battery(Context c) {
         BluetoothAdapter a = adapter(c);
-        if (a == null || Build.VERSION.SDK_INT < 27) return -1;
+        if (a == null) return -1;
+        if (Build.VERSION.SDK_INT < 27) return legacyBattery(c);
         try {
             if (!a.isEnabled()) return -1;
             Method isConnected = BluetoothDevice.class.getMethod("isConnected");
@@ -111,12 +112,163 @@ final class Bt {
                     if (!Boolean.TRUE.equals(isConnected.invoke(d))) continue;
                     String n = d.getName();
                     n = n == null || n.trim().isEmpty() ? d.getAddress() : n.trim();
-                    int l = level == null ? -1 : (Integer) level.invoke(d);
+                    int l = level == null ? legacyLevel(d.getAddress()) : (Integer) level.invoke(d);
                     out.add(l >= 0 && l <= 100 ? n + " · " + l + "%" : n);
                 } catch (Throwable ignored) {}
             }
         } catch (Throwable ignored) {}
         return out;
+    }
+
+    // ── 1.48: the charge before Android 8.1 (a Hyundai on Android 7.1: the TV's settings showed the
+    // remote's percent, the home screen nothing). First the kernel's HID battery
+    // (/sys/class/power_supply/hid-…-battery), then the remote's own Bluetooth LE battery
+    // service (0x180F), read now and then and kept. ──
+
+    private static final java.util.Map<String, Integer> gattLevels = new java.util.HashMap<>();
+    private static volatile long gattAt;
+    private static volatile boolean gattBusy;
+    private static final java.util.UUID BATTERY_SVC = java.util.UUID.fromString("0000180f-0000-1000-8000-00805f9b34fb");
+    private static final java.util.UUID BATTERY_LVL = java.util.UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb");
+
+    private static int legacyLevel(String address) {
+        synchronized (gattLevels) {
+            Integer l = address == null ? null : gattLevels.get(address);
+            if (l != null) return l;
+        }
+        return -1;
+    }
+
+    static int legacyBattery(Context c) {
+        int s = sysfsBattery();
+        if (s >= 0) return s;
+        synchronized (gattLevels) {
+            int low = -1;
+            for (int l : gattLevels.values()) low = low < 0 ? l : Math.min(low, l);
+            return low;
+        }
+    }
+
+    private static int sysfsBattery() {
+        try {
+            java.io.File[] all = new java.io.File("/sys/class/power_supply").listFiles();
+            if (all == null) return -1;
+            int low = -1;
+            for (java.io.File f : all) {
+                String scope = read(new java.io.File(f, "scope"));
+                if (!f.getName().startsWith("hid-") && !"Device".equalsIgnoreCase(scope)) continue;
+                String cap = read(new java.io.File(f, "capacity"));
+                if (cap == null) continue;
+                int l = Integer.parseInt(cap.trim());
+                if (l < 0 || l > 100) continue;
+                low = low < 0 ? l : Math.min(low, l);
+            }
+            return low;
+        } catch (Throwable t) {
+            return -1;
+        }
+    }
+
+    private static String read(java.io.File f) {
+        try (java.io.BufferedReader r = new java.io.BufferedReader(new java.io.FileReader(f))) {
+            return r.readLine();
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /** Reads the battery service of the connected LE remotes (Android 7–8.0), at most every
+     *  10 minutes; [done] on the main thread when a level came. */
+    @SuppressWarnings("MissingPermission")
+    static void refreshLegacy(Context c, final Runnable done) {
+        if (Build.VERSION.SDK_INT >= 27 || gattBusy) return;
+        long now = System.currentTimeMillis();
+        if (now - gattAt < 10 * 60_000L) return;
+        gattAt = now;
+        if (sysfsBattery() >= 0) return;
+        final BluetoothAdapter a = adapter(c);
+        if (a == null) return;
+        final Context app = c.getApplicationContext();
+        final android.os.Handler main = new android.os.Handler(android.os.Looper.getMainLooper());
+        try {
+            if (!a.isEnabled()) return;
+            Method isConnected = BluetoothDevice.class.getMethod("isConnected");
+            final List<BluetoothDevice> todo = new ArrayList<>();
+            for (BluetoothDevice d : a.getBondedDevices()) {
+                try {
+                    if (d.getType() == BluetoothDevice.DEVICE_TYPE_CLASSIC) continue;
+                    if (Boolean.TRUE.equals(isConnected.invoke(d))) todo.add(d);
+                } catch (Throwable ignored) {}
+            }
+            if (todo.isEmpty()) return;
+            gattBusy = true;
+            main.post(() -> readNext(app, main, todo, done, false));
+        } catch (Throwable t) {
+            gattBusy = false;
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private static void readNext(final Context app, final android.os.Handler main, final List<BluetoothDevice> todo,
+                                 final Runnable done, final boolean gotAny) {
+        if (todo.isEmpty()) {
+            gattBusy = false;
+            if (gotAny && done != null) done.run();
+            return;
+        }
+        final BluetoothDevice d = todo.remove(0);
+        final boolean[] over = {false};
+        final android.bluetooth.BluetoothGatt[] held = {null};
+        final Runnable finish = new Runnable() {
+            @Override public void run() {
+                if (over[0]) return;
+                over[0] = true;
+                try { if (held[0] != null) held[0].close(); } catch (Throwable ignored) {}
+                boolean any = gotAny;
+                synchronized (gattLevels) { any |= gattLevels.containsKey(d.getAddress()); }
+                readNext(app, main, todo, done, any);
+            }
+        };
+        try {
+            android.bluetooth.BluetoothGattCallback cb = new android.bluetooth.BluetoothGattCallback() {
+                @Override public void onConnectionStateChange(android.bluetooth.BluetoothGatt g, int status, int state) {
+                    if (state == android.bluetooth.BluetoothProfile.STATE_CONNECTED) {
+                        try { if (!g.discoverServices()) main.post(finish); } catch (Throwable t) { main.post(finish); }
+                    } else {
+                        main.post(finish);
+                    }
+                }
+                @Override public void onServicesDiscovered(android.bluetooth.BluetoothGatt g, int status) {
+                    try {
+                        android.bluetooth.BluetoothGattService s = g.getService(BATTERY_SVC);
+                        android.bluetooth.BluetoothGattCharacteristic ch = s == null ? null : s.getCharacteristic(BATTERY_LVL);
+                        if (ch == null || !g.readCharacteristic(ch)) main.post(finish);
+                    } catch (Throwable t) {
+                        main.post(finish);
+                    }
+                }
+                @Override public void onCharacteristicRead(android.bluetooth.BluetoothGatt g,
+                                                           android.bluetooth.BluetoothGattCharacteristic ch, int status) {
+                    try {
+                        byte[] v = ch.getValue();
+                        if (status == android.bluetooth.BluetoothGatt.GATT_SUCCESS && v != null && v.length > 0) {
+                            int l = v[0] & 0xFF;
+                            if (l <= 100) synchronized (gattLevels) { gattLevels.put(d.getAddress(), l); }
+                        }
+                    } catch (Throwable ignored) {}
+                    main.post(finish);
+                }
+            };
+            // the remote is already connected for its keys: this rides on that link, and close()
+            // only lets go of our part of it
+            held[0] = Build.VERSION.SDK_INT >= 23
+                    ? d.connectGatt(app, false, cb, BluetoothDevice.TRANSPORT_LE)
+                    : d.connectGatt(app, false, cb);
+            if (held[0] == null) { main.post(finish); return; }
+            main.postDelayed(finish, 8000);
+        } catch (Throwable t) {
+            main.post(finish);
+        }
     }
 
     /** Switches Bluetooth where an app still may (Android 12 and older); false = do it in

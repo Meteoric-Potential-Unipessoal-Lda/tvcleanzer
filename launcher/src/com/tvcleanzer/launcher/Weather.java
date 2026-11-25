@@ -16,12 +16,16 @@ import java.util.Locale;
 final class Weather {
     private Weather() {}
 
-    static final long MAX_AGE_MS = 30 * 60 * 1000L;
+    // 1.48: 15 minutes, was 30 (a Hyundai owner: «облачно» on the home screen while the forecast,
+    // fetched just then, already said «морось»)
+    static final long MAX_AGE_MS = 15 * 60 * 1000L;
 
     /** Network call: run off the UI thread. Returns true when fresh data was saved. */
-    static boolean refreshIfStale(Prefs p) {
+    static boolean refreshIfStale(Prefs p) { return refreshIfStale(p, MAX_AGE_MS); }
+
+    static boolean refreshIfStale(Prefs p, long maxAge) {
         if (!p.hasWeather()) return false;
-        if (System.currentTimeMillis() - p.weatherTs() < MAX_AGE_MS) return false;
+        if (System.currentTimeMillis() - p.weatherTs() < maxAge) return false;
         String q = String.format(Locale.US,
                 "api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f"
                         + "&current=temperature_2m,weather_code&timezone=auto",
