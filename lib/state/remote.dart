@@ -160,12 +160,36 @@ class RemoteController extends StateNotifier<RemoteState> {
     _mouseLan = l;
     _mouseLanIp = ip;
     AppLog.error('remote', 'mouse over the launcher beside ${_alt?.kind.name}');
+    l.onBack = (line) => _mouseBack(ip, line, l);
     l.onRefused = (what) {
       if (what == 'mouse') {
         _notices.add(tr('Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).'));
       }
     };
   }
+
+  /// What the launcher's mouse sends back over Wi-Fi (1.3.165): a key to press goes through the
+  /// link without ADB (Google's when it is there, it presses every key on any Android); a touch
+  /// only ADB could make is noted for «?».
+  void _mouseBack(String ip, String line, AltLink lan) {
+    final p = line.split(' ');
+    if (p[0] == 'i') {
+      AppLog.error('mouse TV', line.substring(2));
+      return;
+    }
+    final code = p.length > 1 ? int.tryParse(p[1]) : null;
+    final via = _altFor(ip) ?? lan;
+    if (p[0] == 'k' && code != null) {
+      via.key(code);
+    } else if (p[0] == 'K' && code != null) {
+      via.longKey(code);
+    } else if (!_touchNoted) {
+      _touchNoted = true;
+      AppLog.error('mouse', 'the TV wants a touch only ADB can make: $line');
+    }
+  }
+
+  bool _touchNoted = false;
 
   static String? _lanMessage(LanError e) => switch (e.kind) {
         'tries' => tr('Код не подошёл три раза. Попробуйте ещё раз — телевизор покажет новый.'),
@@ -217,6 +241,7 @@ class RemoteController extends StateNotifier<RemoteState> {
       _alt = null;
       _set(const RemoteState(RemoteStatus.idle));
     };
+    if (a.kind == AltKind.lan) a.onBack = (line) => _mouseBack(ip, line, a);
     a.onRefused = (what) {
       if (what.startsWith('k ') || what == 't' || what == 'mouse') {
         _notices.add(tr('Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).'));

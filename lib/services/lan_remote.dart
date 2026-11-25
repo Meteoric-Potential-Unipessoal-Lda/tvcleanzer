@@ -46,6 +46,10 @@ class LanRemote {
   void Function()? onChange;
   void Function(Object? why)? onClosed;
 
+  /// Lines the launcher's mouse sends back: «k 23» / «K 23» (a key to press), «t x y» … (a touch
+  /// only ADB can make), «i …» (how the taps go, for «?»).
+  void Function(String line)? onBack;
+
   /// «no …» answers (a key the TV can't do without its Home-key service, no text field…).
   void Function(String what)? onRefused;
 
@@ -233,6 +237,8 @@ class LanRemote {
         }
       }
       onChange?.call();
+    } else if (RegExp(r'^[kKtpwi] ').hasMatch(l)) {
+      onBack?.call(l);
     } else if (l.startsWith('no ')) {
       onRefused?.call(l.substring(3));
     } else if (l == 'err mac') {

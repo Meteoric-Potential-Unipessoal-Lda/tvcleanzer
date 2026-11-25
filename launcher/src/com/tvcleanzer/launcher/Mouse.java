@@ -102,6 +102,7 @@ final class Mouse {
             try (Socket s = ss.accept()) {
                 s.setTcpNoDelay(true);
                 client = s.getOutputStream();
+                lanClient = false;
                 BufferedReader r = new BufferedReader(new InputStreamReader(s.getInputStream(), "UTF-8"));
                 main.post(() -> show(true));
                 String line;
@@ -144,6 +145,7 @@ final class Mouse {
     void feed(String line, OutputStream back) {
         if (client != back) {
             client = back;
+            lanClient = true;
             main.post(() -> show(true));
         }
         handle(line.trim());
@@ -442,7 +444,7 @@ final class Mouse {
                 AccessibilityNodeInfo f = under(root, px, py, 4);
                 if (f != null && !inWeb(f) && (f.isFocused() || f.performAction(AccessibilityNodeInfo.ACTION_FOCUS))) {
                     told("focus + OK");
-                    back(longPress ? "K 23" : "k 23");
+                    key(23, longPress);
                     return true;
                 }
                 told("no view here, the phone taps");
@@ -460,7 +462,7 @@ final class Mouse {
             if (n != null && n.performAction(forward
                     ? AccessibilityNodeInfo.ACTION_SCROLL_FORWARD : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)) return true;
             // 1.20: nothing scrolls by itself here (a TV app): the arrows do, as on the remote
-            back("k " + (vertical ? (forward ? 20 : 19) : (forward ? 22 : 21)));
+            key(vertical ? (forward ? 20 : 19) : (forward ? 22 : 21), false);
             return true;
         } catch (Throwable t) {
             return false;
@@ -509,6 +511,26 @@ final class Mouse {
             HomeKeyService.log("mouse: tap " + how);
             if (toldTaps < 12) back("i tap " + how);
         }
+    }
+
+    /** 1.44: the phone came over Wi-Fi (LanRemote), not ADB: it can't press keys or tap for us. */
+    private volatile boolean lanClient;
+
+    /** A key the pointer needs (OK on a focused item, the arrows to scroll). Over ADB the phone
+     *  presses it; over Wi-Fi on Android 13+ the service presses it itself (Haier FF Pro drops our
+     *  gestures: «курсор ок, клик и прокрутка не работают» without ADB). Below 13 the line still
+     *  goes back, and the phone sends it through its link without ADB. */
+    private void key(int code, boolean longPress) {
+        if (lanClient && svc != null && android.os.Build.VERSION.SDK_INT >= 33) {
+            final int a = code == 23 ? 20 : code == 19 ? 16 : code == 20 ? 17 : code == 21 ? 18 : code == 22 ? 19 : -1;
+            if (a > 0) {
+                main.post(() -> {
+                    try { svc.performGlobalAction(a); } catch (Throwable ignored) {}
+                });
+                return;
+            }
+        }
+        back((longPress ? "K " : "k ") + code);
     }
 
     /** A touch the phone makes for us over ADB (`input tap / swipe`). */

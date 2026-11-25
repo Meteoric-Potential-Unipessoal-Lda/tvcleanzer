@@ -37,6 +37,9 @@ class AltLink {
   /// What the TV can do (LAN: its «st» line changed).
   void Function()? onChange;
 
+  /// The launcher's mouse lines back (see LanRemote.onBack).
+  void Function(String line)? onBack;
+
   AltLink.atv(AtvRemote r)
       : kind = AltKind.atv,
         atv = r,
@@ -52,6 +55,7 @@ class AltLink {
     r.onClosed = (_) => onClosed?.call();
     r.onRefused = (w) => onRefused?.call(w);
     r.onChange = () => onChange?.call();
+    r.onBack = (l) => onBack?.call(l);
   }
 
   bool get isOpen => atv?.isOpen ?? lan!.isOpen;
