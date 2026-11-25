@@ -1496,7 +1496,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         gridCols = cols;
         // 1.62: one or two favourites more than fit — all of them in the row, a little smaller,
         // rather than the last one cut at the edge (Alexander, Philips)
-        final int favVisible = favorites.size() > FAV_VISIBLE[size] && favorites.size() <= FAV_VISIBLE[size] + 2
+        // 1.63: two more for «Мелкие», one for the others — so the sizes still differ (Alexander:
+        // «мелкие и обычные не меняются»)
+        final int favExtra = size == Prefs.TILES_COMPACT ? 2 : 1;
+        final int favVisible = favorites.size() > FAV_VISIBLE[size] && favorites.size() <= FAV_VISIBLE[size] + favExtra
                 ? favorites.size() : FAV_VISIBLE[size];
 
         // Own photo as background: decode off the UI thread, then redraw.
@@ -1864,6 +1867,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     private View topBar(Skin skin) {
         LinearLayout bar = new LinearLayout(this);
+        topBarView = bar;
         bar.setOrientation(LinearLayout.HORIZONTAL);
         bar.setGravity(Gravity.CENTER_VERTICAL);
 
@@ -2152,6 +2156,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private int cornerTop = -1;
     /** The clock's glass in «Плитки» (1.57): the corner sits level with its middle. */
     private View clockGlassView;
+    /** The «Плитки» top bar (1.63): kept clear of the corner icons on its right. */
+    private View topBarView;
 
     /** [withMore]: «Все приложения» in the corner too (the dock without ⚙ and ⋯, 1.46). */
     private void corner(Skin skin, boolean withGear, boolean withMore) {
@@ -2255,6 +2261,20 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // (1.57 centred it on the clock's glass; 1.58 back to level with its top — Roman: lower, it
         // covered the favourites on the second screen.) 1.60: centred on a ONE-LINE clock's glass
         // only, a few dp at most (Sergey: «из-за этого она ниже»)
+        // 1.63: the top bar ends where the corner begins (Roman: «ОЗУ 1,2 / 1,7 ГБ» showed over the
+        // one-line weather)
+        final View bar = cornerTop >= 0 ? topBarView : null;
+        if (bar != null) {
+            row.addOnLayoutChangeListener((v, l, t, r2, b, ol, ot, or, ob) -> v.post(() -> {
+                int[] a = new int[2], c = new int[2];
+                v.getLocationOnScreen(a);
+                bar.getLocationOnScreen(c);
+                int need = Math.max(0, c[0] + bar.getWidth() - a[0] + Ui.dp(this, 12));
+                if (Math.abs(bar.getPaddingRight() - need) > 2) {
+                    bar.setPadding(bar.getPaddingLeft(), bar.getPaddingTop(), need, bar.getPaddingBottom());
+                }
+            }));
+        }
         final View align = cornerTop >= 0 && prefs.oneLine() ? clockGlassView : null;
         if (align != null) {
             align.addOnLayoutChangeListener((v, l, t, r2, b, ol, ot, or, ob) ->
