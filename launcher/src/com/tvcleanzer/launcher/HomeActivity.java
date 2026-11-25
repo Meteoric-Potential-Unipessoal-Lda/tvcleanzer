@@ -436,7 +436,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         v.setFocusable(true);
         v.setClickable(true);
         v.setOnFocusChangeListener((x, has) -> {
-            x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, r), -ph, -pv, -ph, -pv) : null);
+            // 1.48: around the words, not the whole width (a Xiaomi MSSP1, layout «Планшет»: the
+            // line stretched across the screen)
+            int[] lr = textSpan(x);
+            x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, r),
+                    lr[0] - ph, -pv, lr[1] - ph, -pv) : null);
             if (x.getParent() instanceof ViewGroup) ((ViewGroup) x.getParent()).setClipChildren(false);
         });
         v.setOnClickListener(x -> {
@@ -446,6 +450,27 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 HomeKeyService.log("forecast: " + e);
             }
         });
+    }
+
+    /** How far the text sits in from the view's left and right edges (0, 0 when unknown). */
+    private static int[] textSpan(View x) {
+        int[] out = {0, 0};
+        if (!(x instanceof TextView)) return out;
+        TextView t = (TextView) x;
+        android.text.Layout l = t.getLayout();
+        if (l == null || t.getWidth() == 0 || l.getLineCount() == 0) return out;
+        float left = Float.MAX_VALUE, right = 0;
+        for (int i = 0; i < l.getLineCount(); i++) {
+            left = Math.min(left, l.getLineLeft(i));
+            right = Math.max(right, l.getLineRight(i));
+        }
+        boolean picture = t.getCompoundDrawables()[0] != null;
+        int a = picture ? t.getPaddingLeft() : t.getTotalPaddingLeft() + Math.round(left);
+        int b = t.getTotalPaddingLeft() + Math.round(right);
+        if (a < 0 || b <= a || b > t.getWidth()) return out;
+        out[0] = a;
+        out[1] = t.getWidth() - b;
+        return out;
     }
 
     /** The top bar's weather block (1.31): picture, «+16°», a line, and «📍 Наманган · ясно» under. */
@@ -2411,6 +2436,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         }
         if (liveWall == null) {
             liveWall = new LiveWall(this);
+            liveWall.retry = () -> main.post(() -> { // 1.48: once more, through a SurfaceView
+                showLiveWall(false, 0);
+                build();
+            });
             liveWall.listener = why -> main.post(() -> {
                 liveFailedRev = prefs.wallpaperRev();
                 wallKey = ""; // load the photo now
