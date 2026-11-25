@@ -81,6 +81,12 @@ final class Prefs {
     void setLanRemote(boolean v) { sp.edit().putBoolean("lanRemote", v).apply(); }
     /** 1.38: the weather block's day and date bold (UMID) or thin (small TVs blur bold text). */
     boolean dateBold()       { return sp.getBoolean("dateBold", true); }
+    /** 1.41: the city's name beside the weather (a chat wish: the weather without it). */
+    boolean showCity()       { return sp.getBoolean("showCity", true); }
+    void setShowCity(boolean v) { sp.edit().putBoolean("showCity", v).apply(); }
+    /** 1.41: the app the corner's VPN icon opens, chosen by the owner ("" = not chosen). */
+    String vpnApp()          { return sp.getString("vpnApp", ""); }
+    void setVpnApp(String p) { sp.edit().putString("vpnApp", p == null ? "" : p).apply(); }
     void setDateBold(boolean v) { sp.edit().putBoolean("dateBold", v).apply(); }
     void setShowClock(boolean v) { sp.edit().putBoolean("showClock", v).apply(); }
     void setRingAccent(boolean v) { sp.edit().putBoolean(RING_ACCENT, v).apply(); }

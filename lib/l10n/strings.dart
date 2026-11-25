@@ -1044,6 +1044,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'The TV didn’t answer. Check that it’s on and on the same Wi-Fi network.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Without debugging, this button needs the «TVCleanzer: кнопка Домой» service on the TV (Settings → Accessibility).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Without debugging, the mouse works through TVCleanzer launcher 1.40 or newer.',
+    'Название города': 'City name',
+    'Рядом с погодой на главном экране': 'Next to the weather on the home screen',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2088,6 +2090,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Телевізор не відповів. Перевірте, що він увімкнений і в тій самій мережі Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Без налагодження ця кнопка працює, коли на ТВ увімкнена служба «TVCleanzer: кнопка Домой» (Налаштування → Спеціальні можливості).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Без налагодження миша працює через лаунчер TVCleanzer 1.40 або новіший.',
+    'Название города': 'Назва міста',
+    'Рядом с погодой на главном экране': 'Поруч із погодою на головному екрані',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3132,6 +3136,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'La TV no respondió. Comprueba que esté encendida y en la misma red Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Sin depuración, este botón necesita el servicio «TVCleanzer: кнопка Домой» activado en la TV (Ajustes → Accesibilidad).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Sin depuración, el ratón funciona con el launcher TVCleanzer 1.40 o posterior.',
+    'Название города': 'Nombre de la ciudad',
+    'Рядом с погодой на главном экране': 'Junto al tiempo en la pantalla de inicio',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4176,6 +4182,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'A TV não respondeu. Verifique se está ligada e na mesma rede Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Sem depuração, este botão precisa do serviço «TVCleanzer: кнопка Домой» ativo na TV (Definições → Acessibilidade).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Sem depuração, o rato funciona com o launcher TVCleanzer 1.40 ou mais recente.',
+    'Название города': 'Nome da cidade',
+    'Рядом с погодой на главном экране': 'Junto à meteorologia no ecrã inicial',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5220,6 +5228,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Der Fernseher hat nicht geantwortet. Prüfe, ob er an und im selben WLAN ist.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Ohne Debugging braucht diese Taste den Dienst «TVCleanzer: кнопка Домой» auf dem Fernseher (Einstellungen → Bedienungshilfen).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Ohne Debugging funktioniert die Maus über den TVCleanzer-Launcher 1.40 oder neuer.',
+    'Название города': 'Name der Stadt',
+    'Рядом с погодой на главном экране': 'Neben dem Wetter auf dem Startbildschirm',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6264,6 +6274,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'La TV n’a pas répondu. Vérifiez qu’elle est allumée et sur le même réseau Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Sans débogage, ce bouton demande le service «TVCleanzer: кнопка Домой» activé sur la TV (Paramètres → Accessibilité).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Sans débogage, la souris passe par le launcher TVCleanzer 1.40 ou plus récent.',
+    'Название города': 'Nom de la ville',
+    'Рядом с погодой на главном экране': 'À côté de la météo sur l’écran d’accueil',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7308,6 +7320,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'La TV non ha risposto. Controlla che sia accesa e sulla stessa rete Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Senza debug, questo tasto richiede il servizio «TVCleanzer: кнопка Домой» attivo sulla TV (Impostazioni → Accessibilità).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Senza debug, il mouse funziona con il launcher TVCleanzer 1.40 o successivo.',
+    'Название города': 'Nome della città',
+    'Рядом с погодой на главном экране': 'Accanto al meteo nella schermata principale',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8352,6 +8366,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Тэлевізар не адказаў. Праверце, што ён уключаны і ў той жа сетцы Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Без адладкі гэтая кнопка працуе, калі на ТБ уключаная служба «TVCleanzer: кнопка Домой» (Налады → Спецыяльныя магчымасці).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Без адладкі мыш працуе праз лаунчар TVCleanzer 1.40 або навейшы.',
+    'Название города': 'Назва горада',
+    'Рядом с погодой на главном экране': 'Побач з надвор’ем на галоўным экране',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9396,6 +9412,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Теледидар жауап бермеді. Оның қосулы әрі сол Wi-Fi желісінде екенін тексеріңіз.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Түзетусіз бұл түйме ТД-да «TVCleanzer: кнопка Домой» қызметі қосулы болса ғана істейді (Баптаулар → Арнайы мүмкіндіктер).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Түзетусіз тінтуір TVCleanzer 1.40 не жаңарақ лаунчері арқылы жұмыс істейді.',
+    'Название города': 'Қала атауы',
+    'Рядом с погодой на главном экране': 'Басты экрандағы ауа райының жанында',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10440,6 +10458,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Televizor javob bermadi. U yoqilgan va oʻsha Wi-Fi tarmogʻida ekanini tekshiring.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Tuzatishsiz bu tugma TV’da «TVCleanzer: кнопка Домой» xizmati yoqilganda ishlaydi (Sozlamalar → Maxsus imkoniyatlar).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Tuzatishsiz sichqoncha TVCleanzer 1.40 yoki yangiroq launcher orqali ishlaydi.',
+    'Название города': 'Shahar nomi',
+    'Рядом с погодой на главном экране': 'Bosh ekrandagi ob-havo yonida',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11484,6 +11504,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Հեռուստացույցը չպատասխանեց։ Ստուգեք, որ այն միացված է և նույն Wi-Fi ցանցում է։',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Առանց վրիպազերծման այս կոճակն աշխատում է, երբ հեռուստացույցում միացված է «TVCleanzer: кнопка Домой» ծառայությունը (Կարգավորումներ → Հատուկ հնարավորություններ)։',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Առանց վրիպազերծման մկնիկն աշխատում է TVCleanzer 1.40 կամ ավելի նոր լաունչերով։',
+    'Название города': 'Քաղաքի անունը',
+    'Рядом с погодой на главном экране': 'Եղանակի կողքին գլխավոր էկրանին',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12528,6 +12550,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Televizor cavab vermədi. Onun açıq və eyni Wi-Fi şəbəkəsində olduğunu yoxlayın.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Sazlamasız bu düymə TV-də «TVCleanzer: кнопка Домой» xidməti açıq olanda işləyir (Ayarlar → Əlçatımlılıq).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Sazlamasız siçan TVCleanzer 1.40 və ya daha yeni launcher ilə işləyir.',
+    'Название города': 'Şəhərin adı',
+    'Рядом с погодой на главном экране': 'Ana ekranda havanın yanında',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13572,6 +13596,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'ტელევიზორმა არ უპასუხა. შეამოწმეთ, რომ ჩართულია და იმავე Wi-Fi ქსელშია.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'გამართვის გარეშე ეს ღილაკი მუშაობს, როცა ტელევიზორზე ჩართულია «TVCleanzer: кнопка Домой» სერვისი (პარამეტრები → მარტივი წვდომა).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'გამართვის გარეშე მაუსი მუშაობს TVCleanzer 1.40 ან უფრო ახალი ლაუნჩერით.',
+    'Название города': 'ქალაქის სახელი',
+    'Рядом с погодой на главном экране': 'ამინდის გვერდით მთავარ ეკრანზე',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14616,6 +14642,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Сыналгы жооп берген жок. Анын күйүк жана ошол эле Wi-Fi тармагында экенин текшериңиз.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Оңдоосуз бул баскыч сыналгыда «TVCleanzer: кнопка Домой» кызматы күйүк болгондо иштейт (Жөндөөлөр → Атайын мүмкүнчүлүктөр).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Оңдоосуз чычкан TVCleanzer 1.40 же жаңыраак лаунчер аркылуу иштейт.',
+    'Название города': 'Шаардын аты',
+    'Рядом с погодой на главном экране': 'Башкы экранда аба ырайынын жанында',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15660,6 +15688,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'TV yanıt vermedi. Açık ve aynı Wi-Fi ağında olduğunu kontrol edin.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Hata ayıklama olmadan bu tuş, TV’de «TVCleanzer: кнопка Домой» hizmeti açıkken çalışır (Ayarlar → Erişilebilirlik).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Hata ayıklama olmadan fare, TVCleanzer 1.40 veya daha yeni başlatıcıyla çalışır.',
+    'Название города': 'Şehir adı',
+    'Рядом с погодой на главном экране': 'Ana ekranda hava durumunun yanında',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16704,6 +16734,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Telewizor nie odpowiedział. Sprawdź, czy jest włączony i w tej samej sieci Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Bez debugowania ten przycisk działa, gdy na TV włączona jest usługa «TVCleanzer: кнопка Домой» (Ustawienia → Ułatwienia dostępu).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Bez debugowania mysz działa przez launcher TVCleanzer 1.40 lub nowszy.',
+    'Название города': 'Nazwa miasta',
+    'Рядом с погодой на главном экране': 'Obok pogody na ekranie głównym',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17748,6 +17780,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Televizorul nu a răspuns. Verificați că e pornit și în aceeași rețea Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Fără depanare, acest buton funcționează când pe TV e pornit serviciul «TVCleanzer: кнопка Домой» (Setări → Accesibilitate).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Fără depanare, mouse-ul funcționează prin launcherul TVCleanzer 1.40 sau mai nou.',
+    'Название города': 'Numele orașului',
+    'Рядом с погодой на главном экране': 'Lângă vreme pe ecranul principal',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18792,6 +18826,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': '电视没有响应。请确认电视已开机，并与手机在同一 Wi-Fi 网络。',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': '不用调试时，此按键需要在电视上开启「TVCleanzer: кнопка Домой」服务（设置 → 无障碍）。',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': '不用调试时，鼠标需要 TVCleanzer 启动器 1.40 或更新版本。',
+    'Название города': '城市名称',
+    'Рядом с погодой на главном экране': '主屏幕上天气旁边',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19836,6 +19872,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'テレビから応答がありません。電源が入っていて、同じ Wi-Fi ネットワークにあるか確認してください。',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'デバッグなしでこのボタンを使うには、テレビで「TVCleanzer: кнопка Домой」サービスをオンにしてください（設定 → ユーザー補助）。',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'デバッグなしのマウスは TVCleanzer ランチャー 1.40 以降で使えます。',
+    'Название города': '都市名',
+    'Рядом с погодой на главном экране': 'ホーム画面の天気の横',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20880,6 +20918,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'TV가 응답하지 않았습니다. TV가 켜져 있고 같은 Wi-Fi 네트워크에 있는지 확인하세요.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': '디버깅 없이 이 버튼을 쓰려면 TV에서 «TVCleanzer: кнопка Домой» 서비스가 켜져 있어야 합니다(설정 → 접근성).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': '디버깅 없이 마우스는 TVCleanzer 런처 1.40 이상에서 작동합니다.',
+    'Название города': '도시 이름',
+    'Рядом с погодой на главном экране': '홈 화면의 날씨 옆',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -21924,6 +21964,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'टीवी ने जवाब नहीं दिया। जाँचें कि वह चालू है और उसी Wi-Fi नेटवर्क पर है।',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'डीबगिंग के बिना यह बटन तब चलता है जब टीवी पर «TVCleanzer: кнопка Домой» सेवा चालू हो (सेटिंग्स → सुलभता)।',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'डीबगिंग के बिना माउस TVCleanzer लॉन्चर 1.40 या नए से चलता है।',
+    'Название города': 'शहर का नाम',
+    'Рядом с погодой на главном экране': 'होम स्क्रीन पर मौसम के पास',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -22968,6 +23010,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'TV tidak merespons. Pastikan TV menyala dan di jaringan Wi-Fi yang sama.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Tanpa debugging, tombol ini perlu layanan «TVCleanzer: кнопка Домой» aktif di TV (Setelan → Aksesibilitas).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Tanpa debugging, mouse berfungsi lewat launcher TVCleanzer 1.40 atau lebih baru.',
+    'Название города': 'Nama kota',
+    'Рядом с погодой на главном экране': 'Di samping cuaca di layar utama',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -24012,6 +24056,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'TV không phản hồi. Hãy kiểm tra TV đang bật và cùng mạng Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Không có gỡ lỗi, nút này cần bật dịch vụ «TVCleanzer: кнопка Домой» trên TV (Cài đặt → Hỗ trợ tiếp cận).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Không có gỡ lỗi, chuột hoạt động qua launcher TVCleanzer 1.40 trở lên.',
+    'Название города': 'Tên thành phố',
+    'Рядом с погодой на главном экране': 'Cạnh thời tiết trên màn hình chính',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -25056,6 +25102,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'ทีวีไม่ตอบสนอง ตรวจสอบว่าทีวีเปิดอยู่และอยู่ใน Wi-Fi เดียวกัน',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'หากไม่ใช้การแก้ไขข้อบกพร่อง ปุ่มนี้ต้องเปิดบริการ «TVCleanzer: кнопка Домой» บนทีวี (การตั้งค่า → การช่วยเหลือพิเศษ)',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'หากไม่ใช้การแก้ไขข้อบกพร่อง เมาส์ใช้ได้ผ่านลอนเชอร์ TVCleanzer 1.40 ขึ้นไป',
+    'Название города': 'ชื่อเมือง',
+    'Рядом с погодой на главном экране': 'ข้างสภาพอากาศบนหน้าจอหลัก',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -26100,6 +26148,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'De tv reageerde niet. Controleer of hij aan staat en op hetzelfde wifinetwerk zit.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Zonder foutopsporing werkt deze knop als de dienst «TVCleanzer: кнопка Домой» op de tv aan staat (Instellingen → Toegankelijkheid).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Zonder foutopsporing werkt de muis via de TVCleanzer-launcher 1.40 of nieuwer.',
+    'Название города': 'Plaatsnaam',
+    'Рядом с погодой на главном экране': 'Naast het weer op het startscherm',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -27144,6 +27194,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Televize neodpověděla. Zkontrolujte, že je zapnutá a ve stejné síti Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Bez ladění funguje toto tlačítko, když je na TV zapnutá služba «TVCleanzer: кнопка Домой» (Nastavení → Přístupnost).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Bez ladění funguje myš přes launcher TVCleanzer 1.40 nebo novější.',
+    'Название города': 'Název města',
+    'Рядом с погодой на главном экране': 'Vedle počasí na hlavní obrazovce',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -28188,6 +28240,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Η TV δεν απάντησε. Ελέγξτε ότι είναι αναμμένη και στο ίδιο δίκτυο Wi-Fi.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Χωρίς εντοπισμό σφαλμάτων, αυτό το κουμπί χρειάζεται την υπηρεσία «TVCleanzer: кнопка Домой» στην TV (Ρυθμίσεις → Προσβασιμότητα).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Χωρίς εντοπισμό σφαλμάτων, το ποντίκι λειτουργεί μέσω του launcher TVCleanzer 1.40 ή νεότερου.',
+    'Название города': 'Όνομα πόλης',
+    'Рядом с погодой на главном экране': 'Δίπλα στον καιρό στην αρχική οθόνη',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -29232,6 +29286,8 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'A tévé nem válaszolt. Ellenőrizze, hogy be van-e kapcsolva és ugyanazon a Wi-Fi-hálózaton van-e.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Hibakeresés nélkül ez a gomb akkor működik, ha a tévén be van kapcsolva a «TVCleanzer: кнопка Домой» szolgáltatás (Beállítások → Kisegítő lehetőségek).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Hibakeresés nélkül az egér a TVCleanzer 1.40-es vagy újabb launcherrel működik.',
+    'Название города': 'Város neve',
+    'Рядом с погодой на главном экране': 'Az időjárás mellett a kezdőképernyőn',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -30276,5 +30332,7 @@ const Map<String, Map<String, String>> translations = {
     'Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.': 'Tv:n svarade inte. Kontrollera att den är på och i samma wifinätverk.',
     'Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).': 'Utan felsökning kräver den här knappen tjänsten «TVCleanzer: кнопка Домой» på tv:n (Inställningar → Tillgänglighet).',
     'Без отладки мышь работает через лаунчер TVCleanzer 1.40 или новее.': 'Utan felsökning fungerar musen via TVCleanzer-startprogrammet 1.40 eller senare.',
+    'Название города': 'Stadens namn',
+    'Рядом с погодой на главном экране': 'Bredvid vädret på startskärmen',
   },
 };

@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Phone remote over Wi-Fi",
 "Подключённые телефоны": "Connected phones",
 "Забыть все": "Forget all",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Phones forgotten: connect them again to use the Wi-Fi remote"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Phones forgotten: connect them again to use the Wi-Fi remote",
+"Значок VPN открывает": "The VPN icon opens",
+"Спрашивать": "Ask",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} remembered. To change: hold OK on the VPN icon or use the launcher settings"
 }

@@ -2,8 +2,6 @@ package com.tvcleanzer.launcher;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,13 +11,15 @@ import android.provider.Settings;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * The corner's VPN icon (0.78, a tester's idea): opens the VPN app itself, not the Wi-Fi
  * settings — the one that runs (always-on, else the one used last), or the only one there is;
  * several and none of them known to run: a list; none at all: the TV's VPN settings.
+ * 1.41: the guess by «used last» opened the wrong app (TCL 50C655 with NetFix and another VPN
+ * app): now the owner's pick comes first, and with several apps and no always-on one the list
+ * is shown once and its pick kept (changed by a long OK on the icon or in the settings).
  */
 final class Vpn {
     private Vpn() {}
@@ -48,33 +48,11 @@ final class Vpn {
         }
     }
 
-    /** The VPN app that most likely runs now: always-on if the TV says so, else used last. */
-    private static String running(Context c, List<String> apps) {
-        try {
-            String on = Settings.Secure.getString(c.getContentResolver(), "always_on_vpn_app");
-            if (on != null && apps.contains(on)) return on;
-        } catch (Throwable ignored) {}
-        if (!HomeKeyService.usageAccess(c)) return null;
-        try {
-            UsageStatsManager usm = (UsageStatsManager) c.getSystemService(Context.USAGE_STATS_SERVICE);
-            long now = System.currentTimeMillis();
-            Map<String, UsageStats> m = usm.queryAndAggregateUsageStats(now - 7L * 24 * 3600_000, now);
-            String best = null;
-            long at = 0;
-            for (String p : apps) {
-                UsageStats s = m.get(p);
-                if (s != null && s.getLastTimeUsed() > at) { at = s.getLastTimeUsed(); best = p; }
-            }
-            return best;
-        } catch (Throwable t) {
-            return null;
-        }
-    }
-
     static void open(Activity a) {
         PackageManager pm = a.getPackageManager();
         List<String> apps = apps(a);
-        String pick = apps.size() == 1 ? apps.get(0) : running(a, apps);
+        String saved = new Prefs(a).vpnApp();
+        String pick = apps.contains(saved) ? saved : apps.size() == 1 ? apps.get(0) : alwaysOn(a, apps);
         if (pick != null) { start(a, launch(pm, pick)); return; }
         if (apps.isEmpty()) { settings(a); return; }
         String[] names = new String[apps.size() + 1];
@@ -87,7 +65,49 @@ final class Vpn {
         new AlertDialog.Builder(a, android.R.style.Theme_Material_Dialog_Alert)
                 .setTitle(T.t("VPN-приложения"))
                 .setItems(names, (d, w) -> {
-                    if (w == apps.size()) settings(a); else start(a, launch(pm, apps.get(w)));
+                    if (w == apps.size()) { settings(a); return; }
+                    new Prefs(a).setVpnApp(apps.get(w));
+                    android.widget.Toast.makeText(a, T.f("Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера",
+                            names[w]), android.widget.Toast.LENGTH_LONG).show();
+                    start(a, launch(pm, apps.get(w)));
+                })
+                .show();
+    }
+
+    private static String alwaysOn(Context c, List<String> apps) {
+        try {
+            String on = Settings.Secure.getString(c.getContentResolver(), "always_on_vpn_app");
+            if (on != null && apps.contains(on)) return on;
+        } catch (Throwable ignored) {}
+        return null;
+    }
+
+    private static String label(PackageManager pm, String p) {
+        try { return pm.getApplicationLabel(pm.getApplicationInfo(p, 0)).toString(); } catch (Throwable t) { return p; }
+    }
+
+    /** What the settings row shows: the chosen app, or «Спрашивать». */
+    static String chosenName(Context c) {
+        List<String> apps = apps(c);
+        String saved = new Prefs(c).vpnApp();
+        if (apps.contains(saved)) return label(c.getPackageManager(), saved);
+        if (apps.size() == 1) return label(c.getPackageManager(), apps.get(0));
+        return T.t("Спрашивать");
+    }
+
+    /** The owner picks the app the icon opens; [done] runs after (the settings redraw). */
+    static void choose(Activity a, Runnable done) {
+        PackageManager pm = a.getPackageManager();
+        List<String> apps = apps(a);
+        if (apps.isEmpty()) { settings(a); return; }
+        String[] names = new String[apps.size() + 1];
+        for (int i = 0; i < apps.size(); i++) names[i] = label(pm, apps.get(i));
+        names[apps.size()] = T.t("Спрашивать");
+        new AlertDialog.Builder(a, android.R.style.Theme_Material_Dialog_Alert)
+                .setTitle(T.t("Значок VPN открывает"))
+                .setItems(names, (d, w) -> {
+                    new Prefs(a).setVpnApp(w == apps.size() ? "" : apps.get(w));
+                    if (done != null) done.run();
                 })
                 .show();
     }

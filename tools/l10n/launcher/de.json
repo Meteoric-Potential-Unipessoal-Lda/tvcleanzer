@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Handy-Fernbedienung über WLAN",
 "Подключённые телефоны": "Verbundene Handys",
 "Забыть все": "Alle vergessen",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Handys vergessen: für die WLAN-Fernbedienung neu verbinden"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Handys vergessen: für die WLAN-Fernbedienung neu verbinden",
+"Значок VPN открывает": "Das VPN-Symbol öffnet",
+"Спрашивать": "Fragen",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} gemerkt. Ändern: OK auf dem VPN-Symbol gedrückt halten oder in den Launcher-Einstellungen"
 }

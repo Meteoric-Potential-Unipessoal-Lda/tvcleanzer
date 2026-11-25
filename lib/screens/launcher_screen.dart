@@ -516,6 +516,9 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
             _pills(tr('Шрифт даты'), [tr('Жирный'), tr('Тонкий')], look.dateBold ? 0 : 1,
                 (v) => _setLook(look.copyWith(dateBold: v == 0)), need: 138),
         ],
+        if (look.weatherCity.isNotEmpty)
+          _sw(tr('Название города'), tr('Рядом с погодой на главном экране'), look.showCity,
+              (v) => _setLook(look.copyWith(showCity: v)), need: 141),
         ListTile(
           contentPadding: EdgeInsets.zero,
           dense: true,

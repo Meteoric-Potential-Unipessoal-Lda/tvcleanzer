@@ -162,10 +162,10 @@ final class Weather {
     /** "6° · облачно · Оренбург", or null when there is nothing (yet) to show. */
     static String line(Prefs p) {
         if (!p.hasWeather()) return null;
-        if (p.weatherTs() == 0) return p.weatherError().isEmpty() ? null : p.weatherCity() + " · " + T.t("погода недоступна");
+        if (p.weatherTs() == 0) return p.weatherError().isEmpty() ? null : city(p) + T.t("погода недоступна");
         if (System.currentTimeMillis() - p.weatherTs() > 6 * 60 * 60 * 1000L) return null; // too old
         int t = p.weatherTemp();
-        return (t > 0 ? "+" : "") + t + "° · " + describe(p.weatherCode()) + " · " + p.weatherCity();
+        return (t > 0 ? "+" : "") + t + "° · " + describe(p.weatherCode()) + (p.showCity() ? " · " + p.weatherCity() : "");
     }
 
     /** «+16°» for the top bar's weather block (1.31), or null with no fresh answer. */
@@ -178,9 +178,12 @@ final class Weather {
     /** «Наманган · переменная облачность» under it (1.31), or «Наманган · погода недоступна». */
     static String detail(Prefs p) {
         if (!p.hasWeather()) return null;
-        if (p.weatherTs() == 0) return p.weatherCity() + " · " + T.t("погода недоступна");
-        return p.weatherCity() + " · " + describe(p.weatherCode());
+        if (p.weatherTs() == 0) return city(p) + T.t("погода недоступна");
+        return city(p) + describe(p.weatherCode());
     }
+
+    /** «Оренбург · », or nothing where the owner hid the city (1.41). */
+    private static String city(Prefs p) { return p.showCity() ? p.weatherCity() + " · " : ""; }
 
     /** WMO weather interpretation codes (Open-Meteo). */
     static String describe(int code) {

@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Távirányító telefonról Wi-Fi-n",
 "Подключённые телефоны": "Csatlakoztatott telefonok",
 "Забыть все": "Összes elfelejtése",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonok elfelejtve: a Wi-Fi-s távirányítóhoz csatlakoztassa őket újra"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonok elfelejtve: a Wi-Fi-s távirányítóhoz csatlakoztassa őket újra",
+"Значок VPN открывает": "A VPN ikon megnyitja",
+"Спрашивать": "Rákérdezés",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} megjegyezve. Módosítás: tartsa lenyomva az OK-t a VPN ikonon, vagy a launcher beállításaiban"
 }

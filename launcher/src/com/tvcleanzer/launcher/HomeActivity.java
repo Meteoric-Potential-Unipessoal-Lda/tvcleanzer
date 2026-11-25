@@ -1894,6 +1894,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             TopIcon vpn = new TopIcon(this, TopIcon.VPN_PLATE, 0, true);
             vpnMini = vpn;
             vpn.setOnClickListener(v -> Vpn.open(this)); // the VPN app itself (0.78)
+            // 1.41: a long OK picks which app it opens (TCL 50C655: it opened another VPN app)
+            vpn.setOnLongClickListener(v -> { Vpn.choose(this, null); return true; });
             items.add(vpn);
         }
         int bts = prefs.btPill() && !clean ? Bt.state(this) : Bt.NONE;

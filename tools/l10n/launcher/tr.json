@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Wi-Fi ile telefondan kumanda",
 "Подключённые телефоны": "Bağlı telefonlar",
 "Забыть все": "Tümünü unut",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonlar unutuldu: Wi-Fi kumandası için yeniden bağlayın"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonlar unutuldu: Wi-Fi kumandası için yeniden bağlayın",
+"Значок VPN открывает": "VPN simgesi açar",
+"Спрашивать": "Sor",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} hatırlandı. Değiştirmek için VPN simgesinde OK’e basılı tutun veya başlatıcı ayarlarını kullanın"
 }

@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Controle pelo telefone via Wi-Fi",
 "Подключённые телефоны": "Telefones conectados",
 "Забыть все": "Esquecer todos",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefones esquecidos: conecte-os de novo para usar o controle via Wi-Fi"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefones esquecidos: conecte-os de novo para usar o controle via Wi-Fi",
+"Значок VPN открывает": "O ícone de VPN abre",
+"Спрашивать": "Perguntar",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} guardado. Para mudar: mantenha OK no ícone de VPN ou use as definições do launcher"
 }

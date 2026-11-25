@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Telefondan Wi-Fi ilə pult",
 "Подключённые телефоны": "Qoşulmuş telefonlar",
 "Забыть все": "Hamısını unut",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonlar unuduldu: Wi-Fi pultu üçün onları yenidən qoşun"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonlar unuduldu: Wi-Fi pultu üçün onları yenidən qoşun",
+"Значок VPN открывает": "VPN nişanı açır",
+"Спрашивать": "Soruşmaq",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} yadda saxlanıldı. Dəyişmək üçün VPN nişanında OK-ni uzun basın və ya launcher ayarlarına keçin"
 }

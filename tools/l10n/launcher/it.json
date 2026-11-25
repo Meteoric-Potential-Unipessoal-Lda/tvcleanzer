@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Telecomando dal telefono via Wi-Fi",
 "Подключённые телефоны": "Telefoni collegati",
 "Забыть все": "Dimentica tutti",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefoni dimenticati: ricollegali per usare il telecomando via Wi-Fi"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefoni dimenticati: ricollegali per usare il telecomando via Wi-Fi",
+"Значок VPN открывает": "L’icona VPN apre",
+"Спрашивать": "Chiedere",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} memorizzato. Per cambiarlo: tieni premuto OK sull’icona VPN o usa le impostazioni del launcher"
 }

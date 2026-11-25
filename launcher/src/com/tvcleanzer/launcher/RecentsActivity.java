@@ -90,6 +90,13 @@ public class RecentsActivity extends Activity {
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        if (new Prefs(this).kids()) {
+            // 1.41: kids mode — recent apps would be a way to every app (the phone's «Запущенные»
+            // starts this screen too): home instead
+            try { startActivity(new android.content.Intent(this, HomeActivity.class).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)); } catch (Throwable ignored) {}
+            finish();
+            return;
+        }
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(0xE6080B12);
         LinearLayout col = new LinearLayout(this);

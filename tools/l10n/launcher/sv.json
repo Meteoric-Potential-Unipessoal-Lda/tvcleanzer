@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Fjärrkontroll från telefonen via wifi",
 "Подключённые телефоны": "Anslutna telefoner",
 "Забыть все": "Glöm alla",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonerna glömdes: anslut dem igen för fjärrkontrollen via wifi"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Telefonerna glömdes: anslut dem igen för fjärrkontrollen via wifi",
+"Значок VPN открывает": "VPN-ikonen öppnar",
+"Спрашивать": "Fråga",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "{0} sparad. Ändra: håll in OK på VPN-ikonen eller i startprogrammets inställningar"
 }

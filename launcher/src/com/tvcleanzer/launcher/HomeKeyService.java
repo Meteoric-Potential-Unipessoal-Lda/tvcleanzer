@@ -241,6 +241,12 @@ public class HomeKeyService extends AccessibilityService {
 
     private long lastKeyAt;
 
+    /** Kids mode is on and [pkg] is not one of the kids' apps. */
+    private boolean kidsLocked(String pkg) {
+        Prefs p = new Prefs(this);
+        return p.kids() && !p.kidsApps().contains(pkg);
+    }
+
     /** The app on screen (LanRemote's state line). */
     String frontPackageNow() { return frontPackage(); }
 
@@ -516,6 +522,8 @@ public class HomeKeyService extends AccessibilityService {
             return true;
         }
         String app = keyMap.get(code);
+        // 1.41: in kids mode a key mapped to an app opens only the kids' apps
+        if (app != null && kidsLocked(app)) app = null;
         if (app != null) {
             if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) {
                 try {
@@ -527,6 +535,8 @@ public class HomeKeyService extends AccessibilityService {
             return true;
         }
         if (volumeKey(e)) return true;
+        // 1.41: kids mode — the Recents key leads to every app (a TCL owner): swallowed
+        if (code == KeyEvent.KEYCODE_APP_SWITCH && new Prefs(this).kids()) return true;
         if (stockKey(e)) return true;
         // 191 = the "Mi" button on Xiaomi remotes (elsewhere it is a gamepad key)
         boolean miKey = code == 191 && android.os.Build.MANUFACTURER.toLowerCase().contains("xiaomi");
@@ -585,6 +595,9 @@ public class HomeKeyService extends AccessibilityService {
     /** Our own «Запущенные» row when the phone gave us usage access (many TVs have no recents
      *  screen at all), else the system's; false where neither exists. */
     private boolean recents() {
+        // 1.41: kids mode — Home twice / held showed recent apps, a way to every app (a TCL
+        // owner's review): home instead
+        if (new Prefs(this).kids()) return false;
         if (usageAccess(this)) {
             try {
                 startActivity(new Intent(this, RecentsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));

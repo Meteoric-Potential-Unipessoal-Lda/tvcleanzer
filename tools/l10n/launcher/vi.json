@@ -228,5 +228,8 @@
 "Пульт с телефона по Wi-Fi": "Điều khiển từ điện thoại qua Wi-Fi",
 "Подключённые телефоны": "Điện thoại đã kết nối",
 "Забыть все": "Quên tất cả",
-"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Đã quên điện thoại: hãy kết nối lại để dùng điều khiển qua Wi-Fi"
+"Телефоны забыты: для пульта по Wi-Fi их нужно подключить заново": "Đã quên điện thoại: hãy kết nối lại để dùng điều khiển qua Wi-Fi",
+"Значок VPN открывает": "Biểu tượng VPN mở",
+"Спрашивать": "Hỏi",
+"Запомнили {0}. Сменить — долгое ОК на значке VPN или в настройках лаунчера": "Đã ghi nhớ {0}. Để đổi: giữ OK trên biểu tượng VPN hoặc vào cài đặt launcher"
 }

@@ -129,10 +129,16 @@ public class SettingsActivity extends Activity {
         if (!prefs.cleanBar() && Bt.adapter(this) != null) {
             addToggle(skin, T.t("Bluetooth на главном экране"), prefs.btPill(), T.t("Показывать"), T.t("Скрыто"), prefs::setBtPill);
         }
+        if (!Vpn.apps(this).isEmpty()) {
+            addRow(skin, T.t("Значок VPN открывает"), Vpn.chosenName(this), () -> Vpn.choose(this, this::build));
+        }
         addToggle(skin, T.t("Приветствие"), prefs.greeting(), T.t("Показывать"), T.t("Скрыто"), prefs::setGreeting);
         addChoice(skin, T.t("Часы вверху"), new String[]{T.t("Крупные"), T.t("Средние"), T.t("Мелкие")},
                 prefs.barClock(), prefs::setBarClock);
         addToggle(skin, T.t("Дата и погода"), prefs.oneLine(), T.t("В одну строку"), T.t("Столбиком"), prefs::setOneLine);
+        if (prefs.hasWeather()) {
+            addToggle(skin, T.t("Название города"), prefs.showCity(), T.t("Показывать"), T.t("Скрыто"), prefs::setShowCity);
+        }
         if (!prefs.oneLine()) {
             addToggle(skin, T.t("Шрифт даты"), prefs.dateBold(), T.t("Жирный"), T.t("Тонкий"), prefs::setDateBold);
         }
