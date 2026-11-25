@@ -334,8 +334,14 @@ class RemoteController extends StateNotifier<RemoteState> {
   Future<int?> brightness(String ip) async {
     if (_altFor(ip) != null) return null; // only over ADB
     int? v;
-    await _enqueue(ip, () => 'settings get system screen_brightness',
-        onOut: (out) => v = int.tryParse(out.trim()));
+    try {
+      await _enqueue(ip, () => 'settings get system screen_brightness',
+          onOut: (out) => v = int.tryParse(out.trim()));
+    } catch (_) {
+      // the remote's first ADB call when it opens: no ADB — the link without it at once
+      unawaited(_fallback(ip));
+      rethrow;
+    }
     return v;
   }
 
@@ -434,7 +440,10 @@ class RemoteController extends StateNotifier<RemoteState> {
           final c = i < 0
               ? AdbClient.open(host: ip)
               : AdbClient.open(host: ip.substring(0, i), port: int.parse(ip.substring(i + 1)));
-          await c.connect();
+          // 1.3.162: the TV asks «Разрешить отладку?» (the phone's key was taken away, Haier FF
+          // Pro): say so on the remote, not a silent «Подключаемся…» and then «Нет связи»
+          await c.connect(onAwaitingApproval: () => _set(RemoteState(RemoteStatus.connecting,
+              tr('На экране телевизора может появиться «Разрешить отладку?» — отметьте «Всегда разрешать» и нажмите «Разрешить».'))));
           _client = c;
           _ip = ip;
           // the TV's network cards, for switching it on later (Wake-on-LAN)
@@ -462,8 +471,15 @@ class RemoteController extends StateNotifier<RemoteState> {
       } catch (e) {
         _drop(); // stale connection (TV slept, Wi-Fi changed) — retry once
         if (attempt == 1) {
-          _set(RemoteState(RemoteStatus.error,
-              tr('Нет связи с телевизором. Проверьте, что он включён и в той же Wi-Fi сети.')));
+          // 1.3.162: the link without ADB is up — the remote works, it is no «Нет связи»
+          // (Haier FF Pro: buttons went, the card said «Нет связи» after the brightness read)
+          final a = _altFor(ip);
+          _set(a != null
+              ? RemoteState(RemoteStatus.ready, null, a.kind)
+              : RemoteState(RemoteStatus.error,
+                  e is AdbAuthException
+                      ? tr('Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».')
+                      : tr('Нет связи с телевизором. Проверьте, что он включён и в той же Wi-Fi сети.')));
           rethrow;
         }
       }

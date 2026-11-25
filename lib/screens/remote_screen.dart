@@ -886,7 +886,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   Widget _status(TvDevice tv, RemoteState rs) {
     final (color, text) = switch (rs.status) {
       RemoteStatus.idle => (AppColors.fgMuted, tr('Нажмите любую кнопку, чтобы подключиться')),
-      RemoteStatus.connecting => (AppColors.warn, tr('Подключаемся…')),
+      RemoteStatus.connecting => (AppColors.warn, rs.message ?? tr('Подключаемся…')),
       RemoteStatus.ready => (AppColors.ok, rs.via != null ? tr('Подключено без отладки') : tr('Подключено')),
       RemoteStatus.error => (AppColors.danger, rs.message ?? tr('Нет связи')),
       RemoteStatus.needsPair => (AppColors.warn, tr('Отладка недоступна — можно подключиться без неё')),

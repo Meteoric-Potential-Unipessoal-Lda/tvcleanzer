@@ -1050,6 +1050,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Switch off and restart from the home screen',
     'Подключить мышь через лаунчер': 'Connect the mouse through the launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'This needs network or USB debugging: without it you have the buttons, text and opening apps.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'The TV didn’t allow debugging. Press any button and choose «Allow» on the TV.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2100,6 +2101,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Вимкнення й перезавантаження з головного екрана',
     'Подключить мышь через лаунчер': 'Підключити мишу через лаунчер',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Це працює лише з налагодженням по мережі або USB: без нього доступні кнопки, текст і запуск застосунків.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Телевізор не дозволив налагодження. Натисніть будь-яку кнопку й на ТВ виберіть «Дозволити».',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3150,6 +3152,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Apagar y reiniciar desde la pantalla de inicio',
     'Подключить мышь через лаунчер': 'Conectar el ratón a través del launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Esto necesita depuración por red o USB: sin ella tienes los botones, el texto y abrir apps.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'La TV no permitió la depuración. Pulsa cualquier botón y elige «Permitir» en la TV.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4200,6 +4203,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Desligar e reiniciar a partir do ecrã inicial',
     'Подключить мышь через лаунчер': 'Ligar o rato através do launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Isto precisa de depuração por rede ou USB: sem ela tem os botões, o texto e abrir apps.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'A TV não permitiu a depuração. Prima qualquer botão e escolha «Permitir» na TV.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5250,6 +5254,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Ausschalten und Neustart vom Startbildschirm',
     'Подключить мышь через лаунчер': 'Maus über den Launcher verbinden',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Das geht nur mit Netzwerk- oder USB-Debugging: ohne es gibt es Tasten, Text und App-Start.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Der Fernseher hat das Debugging nicht erlaubt. Drücke eine Taste und wähle auf dem Fernseher «Zulassen».',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6300,6 +6305,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Éteindre et redémarrer depuis l’écran d’accueil',
     'Подключить мышь через лаунчер': 'Connecter la souris via le launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Cela demande le débogage réseau ou USB : sans lui, vous avez les touches, le texte et l’ouverture des applis.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'La TV n’a pas autorisé le débogage. Appuyez sur un bouton et choisissez «Autoriser» sur la TV.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7350,6 +7356,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Spegni e riavvia dalla schermata principale',
     'Подключить мышь через лаунчер': 'Collega il mouse tramite il launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Serve il debug di rete o USB: senza, restano tasti, testo e apertura delle app.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'La TV non ha consentito il debug. Premi un tasto e scegli «Consenti» sulla TV.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8400,6 +8407,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Выключэнне і перазагрузка з галоўнага экрана',
     'Подключить мышь через лаунчер': 'Падключыць мыш праз лаунчар',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Гэта працуе толькі з адладкай па сетцы або USB: без яе даступныя кнопкі, тэкст і запуск праграм.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Тэлевізар не дазволіў адладку. Націсніце любую кнопку і на ТБ выберыце «Дазволіць».',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9450,6 +9458,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Басты экраннан өшіру және қайта жүктеу',
     'Подключить мышь через лаунчер': 'Тінтуірді лаунчер арқылы қосу',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Бұл тек желі немесе USB арқылы түзетумен жұмыс істейді: онсыз түймелер, мәтін және қолданбаларды ашу қолжетімді.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Теледидар түзетуге рұқсат бермеді. Кез келген түймені басып, ТД-да «Рұқсат ету» таңдаңыз.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10500,6 +10509,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Bosh ekrandan oʻchirish va qayta yuklash',
     'Подключить мышь через лаунчер': 'Sichqonchani launcher orqali ulash',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Bu faqat tarmoq yoki USB orqali tuzatish bilan ishlaydi: usiz tugmalar, matn va ilovalarni ochish mavjud.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Televizor tuzatishga ruxsat bermadi. Istalgan tugmani bosing va TV’da «Ruxsat berish»ni tanlang.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11550,6 +11560,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Անջատում և վերագործարկում գլխավոր էկրանից',
     'Подключить мышь через лаунчер': 'Միացնել մկնիկը լաունչերի միջոցով',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Սա աշխատում է միայն ցանցային կամ USB վրիպազերծմամբ. առանց դրա հասանելի են կոճակները, տեքստը և հավելվածների բացումը։',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Հեռուստացույցը չթույլատրեց վրիպազերծումը։ Սեղմեք ցանկացած կոճակ և հեռուստացույցում ընտրեք «Թույլատրել»։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12600,6 +12611,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Ana ekrandan söndürmə və yenidən başlatma',
     'Подключить мышь через лаунчер': 'Siçanı launcher vasitəsilə qoş',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Bu yalnız şəbəkə və ya USB sazlaması ilə işləyir: onsuz düymələr, mətn və tətbiqləri açmaq mümkündür.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Televizor sazlamaya icazə vermədi. İstənilən düyməni basın və TV-də «İcazə ver» seçin.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13650,6 +13662,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'გამორთვა და გადატვირთვა მთავარი ეკრანიდან',
     'Подключить мышь через лаунчер': 'მაუსის დაკავშირება ლაუნჩერით',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'ეს მუშაობს მხოლოდ ქსელით ან USB-ით გამართვისას: მის გარეშე ხელმისაწვდომია ღილაკები, ტექსტი და აპების გახსნა.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'ტელევიზორმა გამართვის ნება არ დართო. დააჭირეთ ნებისმიერ ღილაკს და ტელევიზორზე აირჩიეთ «დაშვება».',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14700,6 +14713,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Башкы экрандан өчүрүү жана өчүрүп-күйгүзүү',
     'Подключить мышь через лаунчер': 'Чычканды лаунчер аркылуу туташтыруу',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Бул тармак же USB аркылуу оңдоо менен гана иштейт: ансыз баскычтар, текст жана колдонмолорду ачуу жеткиликтүү.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Сыналгы оңдоого уруксат берген жок. Каалаган баскычты басып, сыналгыда «Уруксат берүү» тандаңыз.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15750,6 +15764,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Ana ekrandan kapatma ve yeniden başlatma',
     'Подключить мышь через лаунчер': 'Fareyi başlatıcı üzerinden bağla',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Bu yalnızca ağ veya USB hata ayıklamayla çalışır: onsuz tuşlar, metin ve uygulama açma kullanılabilir.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'TV hata ayıklamaya izin vermedi. Herhangi bir tuşa basın ve TV’de «İzin ver»i seçin.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16800,6 +16815,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Wyłączanie i ponowne uruchamianie z ekranu głównego',
     'Подключить мышь через лаунчер': 'Połącz mysz przez launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'To działa tylko z debugowaniem przez sieć lub USB: bez niego masz przyciski, tekst i uruchamianie aplikacji.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Telewizor nie zezwolił na debugowanie. Naciśnij dowolny przycisk i wybierz na TV «Zezwól».',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17850,6 +17866,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Oprire și repornire din ecranul principal',
     'Подключить мышь через лаунчер': 'Conectează mouse-ul prin launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Asta funcționează doar cu depanare prin rețea sau USB: fără ea ai butoanele, textul și deschiderea aplicațiilor.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Televizorul nu a permis depanarea. Apăsați orice buton și alegeți «Permiteți» pe TV.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18900,6 +18917,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': '从主屏幕关机和重启',
     'Подключить мышь через лаунчер': '通过启动器连接鼠标',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': '此功能需要网络或 USB 调试：没有调试时可用按键、文字和打开应用。',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': '电视未允许调试。请按任意键，并在电视上选择「允许」。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19950,6 +19968,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'ホーム画面から電源オフと再起動',
     'Подключить мышь через лаунчер': 'ランチャー経由でマウスを接続',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'これはネットワークまたは USB デバッグが必要です。デバッグなしでもボタン・文字入力・アプリ起動は使えます。',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'テレビがデバッグを許可しませんでした。いずれかのボタンを押し、テレビで「許可」を選んでください。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -21000,6 +21019,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': '홈 화면에서 끄기 및 다시 시작',
     'Подключить мышь через лаунчер': '런처로 마우스 연결',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': '이 기능은 네트워크 또는 USB 디버깅이 필요합니다. 디버깅 없이도 버튼, 텍스트, 앱 열기는 됩니다.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'TV가 디버깅을 허용하지 않았습니다. 아무 버튼이나 누르고 TV에서 «허용»을 선택하세요.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -22050,6 +22070,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'होम स्क्रीन से बंद और रीस्टार्ट करें',
     'Подключить мышь через лаунчер': 'लॉन्चर से माउस जोड़ें',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'इसके लिए नेटवर्क या USB डीबगिंग चाहिए: इसके बिना बटन, टेक्स्ट और ऐप खोलना उपलब्ध है।',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'टीवी ने डीबगिंग की अनुमति नहीं दी। कोई भी बटन दबाएँ और टीवी पर «अनुमति दें» चुनें।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -23100,6 +23121,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Matikan dan mulai ulang dari layar utama',
     'Подключить мышь через лаунчер': 'Hubungkan mouse lewat launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Ini perlu debugging jaringan atau USB: tanpanya tersedia tombol, teks, dan membuka aplikasi.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'TV tidak mengizinkan debugging. Tekan tombol apa saja dan pilih «Izinkan» di TV.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -24150,6 +24172,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Tắt và khởi động lại từ màn hình chính',
     'Подключить мышь через лаунчер': 'Kết nối chuột qua launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Tính năng này cần gỡ lỗi qua mạng hoặc USB: không có nó vẫn dùng được nút, nhập chữ và mở ứng dụng.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'TV không cho phép gỡ lỗi. Nhấn nút bất kỳ và chọn «Cho phép» trên TV.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -25200,6 +25223,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'ปิดและรีสตาร์ทจากหน้าจอหลัก',
     'Подключить мышь через лаунчер': 'เชื่อมต่อเมาส์ผ่านลอนเชอร์',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'ต้องใช้การแก้ไขข้อบกพร่องผ่านเครือข่ายหรือ USB: หากไม่มีจะใช้ได้แค่ปุ่ม ข้อความ และเปิดแอป',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'ทีวีไม่อนุญาตการแก้ไขข้อบกพร่อง กดปุ่มใดก็ได้แล้วเลือก «อนุญาต» บนทีวี',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -26250,6 +26274,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Uitschakelen en herstarten vanaf het startscherm',
     'Подключить мышь через лаунчер': 'Muis verbinden via de launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Dit werkt alleen met netwerk- of USB-foutopsporing: zonder heb je de knoppen, tekst en apps openen.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'De tv stond foutopsporing niet toe. Druk op een knop en kies «Toestaan» op de tv.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -27300,6 +27325,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Vypnutí a restart z hlavní obrazovky',
     'Подключить мышь через лаунчер': 'Připojit myš přes launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Funguje jen s laděním přes síť nebo USB: bez něj jsou k dispozici tlačítka, text a spouštění aplikací.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Televize nepovolila ladění. Stiskněte libovolné tlačítko a na TV zvolte «Povolit».',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -28350,6 +28376,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Απενεργοποίηση και επανεκκίνηση από την αρχική οθόνη',
     'Подключить мышь через лаунчер': 'Σύνδεση ποντικιού μέσω του launcher',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Αυτό χρειάζεται εντοπισμό σφαλμάτων μέσω δικτύου ή USB: χωρίς αυτόν έχετε τα κουμπιά, το κείμενο και το άνοιγμα εφαρμογών.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Η TV δεν επέτρεψε τον εντοπισμό σφαλμάτων. Πατήστε οποιοδήποτε κουμπί και επιλέξτε «Να επιτρέπεται» στην TV.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -29400,6 +29427,7 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Kikapcsolás és újraindítás a kezdőképernyőről',
     'Подключить мышь через лаунчер': 'Egér csatlakoztatása a launcheren át',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Ehhez hálózati vagy USB-hibakeresés kell: anélkül a gombok, a szöveg és az alkalmazások indítása érhető el.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'A tévé nem engedélyezte a hibakeresést. Nyomjon meg egy gombot, és a tévén válassza az «Engedélyezés» lehetőséget.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -30450,5 +30478,6 @@ const Map<String, Map<String, String>> translations = {
     'Выключение и перезагрузка с главного экрана': 'Stäng av och starta om från startskärmen',
     'Подключить мышь через лаунчер': 'Anslut musen via startprogrammet',
     'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Det här kräver felsökning via nätverk eller USB: utan den finns knapparna, text och att öppna appar.',
+    'Телевизор не разрешил отладку. Нажмите любую кнопку и на ТВ выберите «Разрешить».': 'Tv:n tillät inte felsökning. Tryck på valfri knapp och välj «Tillåt» på tv:n.',
   },
 };
