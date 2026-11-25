@@ -1663,15 +1663,23 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 for (int i = 0; i < favorites.size(); i++) {
                     if (i % fc == 0) {
                         row = row();
-                        row.setPadding(0, Ui.dp(this, 6), 0, Ui.dp(this, 2));
+                        row.setPadding(0, Ui.dp(this, 2), 0, 0); // 1.60: the tiles carry their own room
                         grid.addView(row);
                     }
                     AppTile t = tile(favorites.get(i), fw, fh, skin, labelsAlways, fc >= 6 ? 12 : 13, roundFav ? 1.15f : 1.1f, anim, ringColor);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    if (i % fc > 0) lp.leftMargin = ggap;
+                    // 1.60: the gap the eye sees is between the CARDS: each tile keeps room for its
+                    // zoom on both sides, which the gap used to add to (Sergey: «расстояние не
+                    // изменилось»). 12 dp card to card; the zoom (≈7 % of a card) still fits.
+                    if (i % fc > 0) lp.leftMargin = Ui.dp(this, 12) - 2 * t.getPaddingLeft();
                     row.addView(t, lp);
                     tiles.add(t);
+                }
+                if (!tiles.isEmpty()) {
+                    int room = tiles.get(0).getPaddingLeft();
+                    int side = Math.max(0, Ui.dp(this, 12) - room), up = Math.max(0, Ui.dp(this, 8) - room);
+                    grid.setPadding(side, up, side, Ui.dp(this, 8));
                 }
                 shelf.setClipChildren(false);
                 shelf.addView(grid);
@@ -1681,7 +1689,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             inset = Ui.dp(this, 14);
             // 1.59: 6 dp — each tile already keeps room for its zoom around the card, so the
             // eye saw that room plus the gap (Sergey: «расстояние так и не изменилось»)
-            final int fgap = Ui.dp(this, 6);
+            final int fgap = Ui.dp(this, 12);
             // 1.15: apps keep off the bar's ends, the one cut at an end is cut inside the glass
             HorizontalScrollView hs = new FavScroll(this, inset + Ui.dp(this, 4), Ui.dp(this, 10));
             hs.setClipChildren(true);
@@ -1701,7 +1709,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                         : tile(favorites.get(i), favW, favH, skin, labelsAlways, 15, 1.08f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (i > 0) lp.leftMargin = fgap;
+                if (i > 0) lp.leftMargin = fgap - 2 * t.getPaddingLeft(); // 1.60: card to card, see the grid
                 row.addView(t, lp);
                 tiles.add(t);
             }
@@ -1713,8 +1721,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 // 1.14: a lower bar (UMID: «бар чуть уменьшить по высоте»), 8 dp less above and below
                 int bottom = Ui.dp(this, 3) + zoomPad; // 1.56: 3 dp (was 6)
                 // 1.56: half the name's room above, not all of it (a thinner frame)
-                int top = Math.max(Ui.dp(this, 4) + zoomPad, bottom + t0.roomBelow() / 2 - t0.getPaddingTop());
-                hs.setPadding(inset, top, inset, bottom);
+                int top = Math.max(Ui.dp(this, 2), bottom + t0.roomBelow() / 2 - t0.getPaddingTop());
+                int side = Math.max(0, inset - t0.getPaddingLeft()); // 1.60: the tile's own room counts
+                hs.setPadding(side, top, side, bottom);
             }
             shelf.addView(hs);
             page.addView(shelf, shp);
@@ -1935,7 +1944,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             clockGlassView = left;
             left.setBackground(glass(left, Ui.dp(this, 20)));
             // 1.56: a thinner glass under the clock (Sergey: «рамки стекла огромные везде»)
-            left.setPadding(Ui.dp(this, 16), Ui.dp(this, 8), Ui.dp(this, 18), Ui.dp(this, 10));
+            // 1.60: one line — as thin as the corner's glass (Sergey: «рамка часов толще кнопок»)
+            if (prefs.oneLine()) left.setPadding(Ui.dp(this, 14), Ui.dp(this, 3), Ui.dp(this, 16), Ui.dp(this, 3));
+            else left.setPadding(Ui.dp(this, 16), Ui.dp(this, 8), Ui.dp(this, 18), Ui.dp(this, 10));
             bar.addView(left, new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             bar.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
@@ -2176,7 +2187,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // 1.59: no shadow from that lift — the corner's glass looked unlike the clock's (Sergey)
         row.setOutlineProvider(null);
         // (1.57 centred it on the clock's glass; 1.58 back to level with its top — Roman: lower, it
-        // covered the favourites on the second screen)
+        // covered the favourites on the second screen.) 1.60: centred on a ONE-LINE clock's glass
+        // only, a few dp at most (Sergey: «из-за этого она ниже»)
+        final View align = cornerTop >= 0 && prefs.oneLine() ? clockGlassView : null;
+        if (align != null) {
+            align.addOnLayoutChangeListener((v, l, t, r2, b, ol, ot, or, ob) ->
+                    row.setTranslationY(Math.max(0, Math.min(Ui.dp(this, 10), (v.getHeight() - row.getHeight()) / 2))));
+        }
         root.addView(row, clp);
     }
 
