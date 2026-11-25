@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -33,11 +35,21 @@ Future<void> main() async {
   initLanguage();
   await TvNames.load();
 
+  // 1.3.166: Android 15+ draws the app under the navigation bar (edge to edge, forced for our
+  // target SDK). Without asking for it the app was not told how tall the bar is: with three-button
+  // navigation the bottom tabs and the «?» sheet («Сообщить о проблеме» hidden) went under it
+  // (Samsung S24, Haier tester; Danil: «текст заходит за меню навигации»). Edge to edge on
+  // purpose: the bars are transparent and their height reaches SafeArea.
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   // Keep status bar translucent and use light icons on dark bg
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
     statusBarBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarIconBrightness: Brightness.light,
+    systemNavigationBarContrastEnforced: false,
   ));
 
   SystemChrome.setPreferredOrientations([
@@ -70,7 +82,16 @@ class TvCleanzerApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      builder: (context, child) => _DesktopFrame(child: child!),
+      // 1.3.166: nothing under the phone's navigation bar — screens, sheets and dialogs end above
+      // it (the bar's strip shows the app's background)
+      builder: (context, child) => _DesktopFrame(
+        child: Platform.isAndroid
+            ? ColoredBox(
+                color: AppColors.bg,
+                child: SafeArea(top: false, left: false, right: false, child: child!),
+              )
+            : child!,
+      ),
     );
   }
 }
