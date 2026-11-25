@@ -248,7 +248,11 @@ class DemoAdbClient extends AdbClient {
   Future<String> shell(String command,
       {Duration timeout = const Duration(seconds: 30)}) async {
     await _lag();
-    final c = command.trim();
+    var c = command.trim();
+    // 1.3.168: the look is sent after «cmd notification …;» (the «Сейчас играет» listener)
+    if (c.startsWith('cmd notification ') && c.contains('; am broadcast')) {
+      c = c.substring(c.indexOf('; am broadcast') + 2);
+    }
     final s = _s;
     if (c.startsWith('cmd input ') || c.startsWith('input ')) DemoTv.inputLog.add(c);
 
