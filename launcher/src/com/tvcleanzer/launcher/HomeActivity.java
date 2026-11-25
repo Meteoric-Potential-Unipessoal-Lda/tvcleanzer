@@ -46,7 +46,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     };
     /** Per tile size (Prefs.TILES_*): apps per row and favourites visible at once. */
     private static final int[] GRID_COLUMNS = {7, 6, 5};
-    private static final int[] FAV_VISIBLE = {5, 4, 3};
+    // 1.61: one more per row in every size (Roman: «средние и мелкие всё равно большеваты»)
+    private static final int[] FAV_VISIBLE = {6, 5, 4};
 
     private Prefs prefs;
     private PackageManager pm;
