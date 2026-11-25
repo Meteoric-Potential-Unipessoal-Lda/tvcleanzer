@@ -1511,7 +1511,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         int contentW = screenW - 2 * padH;
         // 1.56: the one-row favourites' own insets and gaps (1.55 made them 14 dp and left a slice
         // of the next tile showing at the end — Alexander, Philips)
-        int favW = (contentW - 2 * Ui.dp(this, 14) - Ui.dp(this, 14) * (favVisible - 1)) / favVisible;
+        int favW = (contentW - 2 * Ui.dp(this, 14) - Ui.dp(this, 6) * (favVisible - 1)) / favVisible;
         int favH = favW * 9 / 16;
         int tileW = (contentW - gap * (cols - 1)) / cols;
         int tileH = tileW * 9 / 16;
@@ -1679,7 +1679,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             } else {
             // 1.55: one row closer together and a thinner frame too (Sergey: «рамка меньше не стала»)
             inset = Ui.dp(this, 14);
-            final int fgap = Ui.dp(this, 14);
+            // 1.59: 6 dp — each tile already keeps room for its zoom around the card, so the
+            // eye saw that room plus the gap (Sergey: «расстояние так и не изменилось»)
+            final int fgap = Ui.dp(this, 6);
             // 1.15: apps keep off the bar's ends, the one cut at an end is cut inside the glass
             HorizontalScrollView hs = new FavScroll(this, inset + Ui.dp(this, 4), Ui.dp(this, 10));
             hs.setClipChildren(true);
@@ -1687,7 +1689,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.setHorizontalScrollBarEnabled(false);
             hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
             // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
-            int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
+            // 1.59: the tile keeps the zoom's room itself; the glass adds only a little
+            int zoomPad = Math.round(favH * 0.04f) + Ui.dp(this, 2);
             // «Свечение»: the halo stays whole (1.56: a third of it — the frame grew huge with it on)
             if (prefs.ringGlow()) zoomPad += Math.round(favH * 0.12f);
             hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
@@ -1930,7 +1933,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         clockGlassView = null;
         if (prefs.clockGlass() && prefs.showClock()) {
             clockGlassView = left;
-            left.setBackground(glass(left, Ui.dp(this, 26)));
+            left.setBackground(glass(left, Ui.dp(this, 20)));
             // 1.56: a thinner glass under the clock (Sergey: «рамки стекла огромные везде»)
             left.setPadding(Ui.dp(this, 16), Ui.dp(this, 8), Ui.dp(this, 18), Ui.dp(this, 10));
             bar.addView(left, new LinearLayout.LayoutParams(
@@ -2082,7 +2085,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         row.setClipChildren(false);
         row.setClipToPadding(false);
         // 1.57: smaller (Sergey: «верхние кнопки сделать меньше»), 32 dp (was 36)
-        final int h = Ui.dp(this, 32), gap = Ui.dp(this, 6), ph = Ui.dp(this, 8), pv = Ui.dp(this, 4);
+        final int h = Ui.dp(this, 28), gap = Ui.dp(this, 4), ph = Ui.dp(this, 7), pv = Ui.dp(this, 4); // 1.59: 28 dp
         // one glass under all of them, the same look as every other glass on the screen («Стекло»)
         row.setBackground(glass(row, (h + 2 * pv) * 0.34f));
         row.setPadding(ph, pv, ph, pv);
@@ -2170,6 +2173,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         clp.topMargin = cornerTop >= 0 ? cornerTop : Math.max(Ui.dp(this, 12), Math.round(dm.heightPixels * 0.028f));
         clp.rightMargin = Math.max(Ui.dp(this, 16), Math.round(dm.widthPixels * 0.02f));
         row.setTranslationZ(Ui.dp(this, 30)); // over the page that scrolls under it
+        // 1.59: no shadow from that lift — the corner's glass looked unlike the clock's (Sergey)
+        row.setOutlineProvider(null);
         // (1.57 centred it on the clock's glass; 1.58 back to level with its top — Roman: lower, it
         // covered the favourites on the second screen)
         root.addView(row, clp);
