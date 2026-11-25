@@ -733,7 +733,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             order.add(in);
         }
         for (int k = 0; k < n; k++) {
-            AppTile t = tile(favorites.get(k), icon, icon, skin, false, 12, 1.12f, anim, ringColor);
+            // 1.52: «Названия под всеми плитками» here too (a Haier owner: only the focused one had it)
+            AppTile t = tile(favorites.get(k), icon, icon, skin, prefs.labelsAlways(), 12, 1.12f, anim, ringColor);
             tiles.add(t);
             order.add(t);
         }
@@ -768,7 +769,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // has the gear already)
         // the corner whatever «Верхняя панель» says (that choice is hidden in «Часы», 0.98)
         if (!dockButtons) corner(skin, true, true); // the gear and «all apps» go up to the corner
-        else if (!prefs.cleanBar()) corner(skin, false);
+        else corner(skin, prefs.cleanBar()); // 1.52: «Только шестерёнка вверху» — the gear up there
 
         View target = null;
         for (AppTile t : tiles) if (t.app.pkg.equals(focusPkg)) { target = t; break; }
@@ -1598,7 +1599,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         page.setPadding(padH, padV, padH, padV * 3);
         scroll.addView(page);
 
+        cornerTop = padV;
         page.addView(kids ? kidsBar() : topBar(skin));
+        cornerTop = -1;
 
         final int inputsPos = prefs.inputsPos();
         if (!kids && inputsPos == Prefs.INPUTS_TOP) addInputs(page);
@@ -1616,7 +1619,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             final int fc = prefs.favCols();
             // «Рамка избранного» (0.68): as wide as its tiles, on the left or in the middle (owners:
             // «зачем она на всю ширину?»), or the whole width; a grid always fills the width
-            final int favAlign = fc > 0 ? Prefs.FAV_FULL : prefs.favAlign();
+            // 1.52: a grid is as wide as its tiles too (Sergey: «рамка очень большая», the tiles
+            // spread over the whole width), in the middle unless «слева» is chosen
+            final int favAlign = fc > 0 ? (prefs.favAlign() == Prefs.FAV_START ? Prefs.FAV_START : Prefs.FAV_CENTER) : prefs.favAlign();
             final boolean roundFav = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
             LinearLayout.LayoutParams shp = new LinearLayout.LayoutParams(
                     favAlign == Prefs.FAV_FULL ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -1634,8 +1639,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 grid.setOrientation(LinearLayout.VERTICAL);
                 grid.setClipChildren(false);
                 grid.setClipToPadding(false);
-                grid.setPadding(inset, Ui.dp(this, 10), inset, Ui.dp(this, 10));
-                int fw = (contentW - 2 * inset - gap * (fc - 1)) / fc;
+                // 1.52: closer together, a thinner frame, and «Размер плиток» counts here too (the
+                // grid's tiles are never bigger than the apps' tiles of that size)
+                final int ggap = Ui.dp(this, 14), ginset = Ui.dp(this, 16);
+                grid.setPadding(ginset, Ui.dp(this, 8), ginset, Ui.dp(this, 8));
+                int fw = Math.min((contentW - 2 * ginset - ggap * (fc - 1)) / fc, tileW);
                 int fh = fw * 9 / 16;
                 if (roundFav) fw = fh = Math.min(fw, Math.round(fh * 1.2f)); // circles, see the one-row case
                 LinearLayout row = null;
@@ -1648,7 +1656,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     AppTile t = tile(favorites.get(i), fw, fh, skin, labelsAlways, fc >= 6 ? 12 : 13, roundFav ? 1.15f : 1.1f, anim, ringColor);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    if (i % fc > 0) lp.leftMargin = gap;
+                    if (i % fc > 0) lp.leftMargin = ggap;
                     row.addView(t, lp);
                     tiles.add(t);
                 }
@@ -2020,6 +2028,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
      *  when the page scrolls. The dock home has its own gear. */
     private void corner(Skin skin, boolean withGear) { corner(skin, withGear, false); }
 
+    /** 1.52: the corner's top in «Плитки» = the page's top, level with the clock's glass (Sergey:
+     *  «погода и часы всегда ниже верхних значков»); -1 elsewhere. */
+    private int cornerTop = -1;
+
     /** [withMore]: «Все приложения» in the corner too (the dock without ⚙ and ⋯, 1.46). */
     private void corner(Skin skin, boolean withGear, boolean withMore) {
         android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -2113,7 +2125,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (netMini != null) miniNet(netMini);
         FrameLayout.LayoutParams clp = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | Gravity.END);
-        clp.topMargin = Math.max(Ui.dp(this, 12), Math.round(dm.heightPixels * 0.028f));
+        clp.topMargin = cornerTop >= 0 ? cornerTop : Math.max(Ui.dp(this, 12), Math.round(dm.heightPixels * 0.028f));
         clp.rightMargin = Math.max(Ui.dp(this, 16), Math.round(dm.widthPixels * 0.02f));
         row.setTranslationZ(Ui.dp(this, 30)); // over the page that scrolls under it
         root.addView(row, clp);
@@ -2317,7 +2329,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (v == null) return;
         int l = Bt.battery(this);
         // 1.48: Android 7–8.0 has no getBatteryLevel: the remote's own battery service, now and then
-        if (android.os.Build.VERSION.SDK_INT < 27) Bt.refreshLegacy(this, this::showBattery);
+        if (android.os.Build.VERSION.SDK_INT < 33 && l < 0) Bt.refreshLegacy(this, this::showBattery);
         v.setVisibility(l < 0 ? View.GONE : View.VISIBLE);
         if (l >= 0) {
             v.setText(l + "%");

@@ -91,7 +91,10 @@ final class Bt {
                     any = any < 0 ? l : Math.min(any, l);
                 } catch (Throwable ignored) {}
             }
-            return input >= 0 ? input : any;
+            int got = input >= 0 ? input : any;
+            // 1.52: Android 8.1–12 knows only headsets' charge (a Xiaomi MSSP1: the TV's settings
+            // said «Батарея 85%», we nothing) — the remote's own battery service then
+            return got >= 0 || Build.VERSION.SDK_INT >= 33 ? got : legacyBattery(c);
         } catch (Throwable t) {
             return -1;
         }
@@ -112,7 +115,8 @@ final class Bt {
                     if (!Boolean.TRUE.equals(isConnected.invoke(d))) continue;
                     String n = d.getName();
                     n = n == null || n.trim().isEmpty() ? d.getAddress() : n.trim();
-                    int l = level == null ? legacyLevel(d.getAddress()) : (Integer) level.invoke(d);
+                    int l = level == null ? -1 : (Integer) level.invoke(d);
+                    if ((l < 0 || l > 100) && Build.VERSION.SDK_INT < 33) l = legacyLevel(d.getAddress());
                     out.add(l >= 0 && l <= 100 ? n + " · " + l + "%" : n);
                 } catch (Throwable ignored) {}
             }
@@ -177,11 +181,11 @@ final class Bt {
         }
     }
 
-    /** Reads the battery service of the connected LE remotes (Android 7–8.0), at most every
+    /** Reads the battery service of the connected LE remotes (Android 7–12), at most every
      *  10 minutes; [done] on the main thread when a level came. */
     @SuppressWarnings("MissingPermission")
     static void refreshLegacy(Context c, final Runnable done) {
-        if (Build.VERSION.SDK_INT >= 27 || gattBusy) return;
+        if (Build.VERSION.SDK_INT >= 33 || gattBusy) return;
         long now = System.currentTimeMillis();
         if (now - gattAt < 10 * 60_000L) return;
         gattAt = now;
