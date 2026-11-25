@@ -141,7 +141,8 @@ final class AppTile extends LinearLayout {
         ringC = ringColor == 1 || ringColor == RING_DOT ? 0 : ringColor;
         ring = Ui.ring(ringC, stroke, radius + stroke);
         if (ringColor == 1) {
-            float gp = Math.max(Ui.dp(c, 16), Math.min(w, h) * 0.22f);
+            // 1.62: a wider halo (Sergey: «немного увеличить свечение»)
+            float gp = Math.max(Ui.dp(c, 20), Math.min(w, h) * 0.3f);
             glow = new Glow(c, gp, radius);
             FrameLayout.LayoutParams glp = new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
@@ -332,6 +333,9 @@ final class AppTile extends LinearLayout {
     /** No name under the card at all (0.83 «Названия приложений: Скрыто»): the row gets lower. */
     /** Room under the card inside this tile: its name (shown or waiting for the focus), or the
      *  zoom room when the names are off. */
+    /** 1.62: the card's height (its top is at getPaddingTop()). */
+    int cardHeight() { return h; }
+
     int roomBelow() {
         if (noLabel || label.getVisibility() == GONE) return getPaddingBottom();
         LayoutParams lp = (LayoutParams) label.getLayoutParams();

@@ -448,10 +448,18 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // 1.48: around the words, not the whole width (a Xiaomi MSSP1, layout «Планшет»: the
             // line stretched across the screen)
             int[] lr = textSpan(x);
+            // 1.62: a one-line weather: the plate as tall as its row, so it sits in the middle of the
+            // clock's glass (Sergey: «выделение погоды выровнять по вертикали блока»)
+            int it = -pv, ib = -pv;
+            if (x instanceof TextView && prefs.oneLine() && x.getParent() instanceof View) {
+                View prow = (View) x.getParent();
+                it = -x.getTop() + Ui.dp(this, 2);
+                ib = -(prow.getHeight() - x.getBottom()) + Ui.dp(this, 2);
+            }
             // 1.50: an InsetDrawable gives the view its insets as padding: the text moved (negative:
             // the weather picture cut off on the left, Hyundai) — this one gives none
             x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, rr),
-                    lr[0] - ph, -pv, lr[1] - ph, -pv) {
+                    lr[0] - ph, it, lr[1] - ph, ib) {
                 @Override public boolean getPadding(android.graphics.Rect p) {
                     p.set(0, 0, 0, 0);
                     return false;
@@ -1486,7 +1494,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 : prefs.ringAccent() ? skin.accent : 0xF2FFFFFF;
         final int cols = kids ? 4 : GRID_COLUMNS[size];
         gridCols = cols;
-        final int favVisible = FAV_VISIBLE[size];
+        // 1.62: one or two favourites more than fit — all of them in the row, a little smaller,
+        // rather than the last one cut at the edge (Alexander, Philips)
+        final int favVisible = favorites.size() > FAV_VISIBLE[size] && favorites.size() <= FAV_VISIBLE[size] + 2
+                ? favorites.size() : FAV_VISIBLE[size];
 
         // Own photo as background: decode off the UI thread, then redraw.
         // With "change the home background" on, the photo-frame photos take turns instead.
@@ -1635,7 +1646,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // 1.52: a grid is as wide as its tiles too (Sergey: «рамка очень большая», the tiles
             // spread over the whole width). 1.53: in the middle — «слева» is the default nobody
             // chose for a grid (Roman: «док панель не по центру»); «на всю ширину» stays as it was
-            final int favAlign = fc > 0 ? (prefs.favAlign() == Prefs.FAV_FULL ? Prefs.FAV_FULL : Prefs.FAV_CENTER) : prefs.favAlign();
+            // 1.62: one row too (Alexander: round icons «влево уходит» — it was narrower than the screen)
+            final int favAlign = prefs.favAlign() == Prefs.FAV_FULL ? Prefs.FAV_FULL : Prefs.FAV_CENTER;
             final boolean roundFav = prefs.icons() != Prefs.ICONS_BANNERS && prefs.iconShape() == Prefs.SHAPE_CIRCLE;
             LinearLayout.LayoutParams shp = new LinearLayout.LayoutParams(
                     favAlign == Prefs.FAV_FULL ? ViewGroup.LayoutParams.MATCH_PARENT : ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -1694,7 +1706,20 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // eye saw that room plus the gap (Sergey: «расстояние так и не изменилось»)
             final int fgap = Ui.dp(this, 12);
             // 1.15: apps keep off the bar's ends, the one cut at an end is cut inside the glass
-            HorizontalScrollView hs = new FavScroll(this, inset + Ui.dp(this, 4), Ui.dp(this, 10));
+            final HorizontalScrollView hs = new FavScroll(this, inset + Ui.dp(this, 4), Ui.dp(this, 10));
+            // 1.62: the cards exactly in the middle of the glass, measured once laid out (Sergey:
+            // «не по центру по вертикали»); the name's room below limits the shift
+            hs.addOnLayoutChangeListener((v, l, t, r2, b, ol, ot, or, ob) -> {
+                AppTile t0 = firstTile(v);
+                if (t0 == null) return;
+                int above = v.getPaddingTop() + t0.getTop() + t0.getPaddingTop();
+                int below = v.getHeight() - above - t0.cardHeight();
+                int d = (below - above) / 2;
+                d = Math.max(-v.getPaddingTop(), Math.min(d, v.getPaddingBottom()));
+                if (Math.abs(d) < 2) return;
+                final int dd = d;
+                v.post(() -> v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + dd, v.getPaddingRight(), v.getPaddingBottom() - dd));
+            });
             hs.setClipChildren(true);
             hs.setClipToPadding(false);
             hs.setHorizontalScrollBarEnabled(false);
@@ -1767,10 +1792,10 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 int bp = Ui.dp(this, 14);
                 appsBox.setPadding(bp, Ui.dp(this, 2), bp, Ui.dp(this, 10));
                 appsBox.setBackground(glass(appsBox, glassR()));
+                // 1.62: as wide as its rows, in the middle (Sergey: «сузить блок»)
                 LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                blp.leftMargin = -bp; // the tiles keep their width; the glass reaches past them
-                blp.rightMargin = -bp;
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                blp.gravity = Gravity.CENTER_HORIZONTAL;
                 blp.topMargin = Ui.dp(this, 8);
                 page.addView(appsBox, blp);
             }
@@ -1782,7 +1807,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             for (int i = 0; i < rest.size(); i++) {
                 if (i % cols == 0) {
                     row = row();
-                    row.setPadding(0, Ui.dp(this, 12) + Math.round(tileH * 0.05f), 0, Ui.dp(this, 4));
+                    if (appsBox != null) row.setPadding(0, Ui.dp(this, 4), 0, Ui.dp(this, 2));
+                    else row.setPadding(0, Ui.dp(this, 12) + Math.round(tileH * 0.05f), 0, Ui.dp(this, 4));
                     (appsBox != null ? appsBox : page).addView(row);
                     if (firstRow == null) { firstRow = row; firstGridRow = row; }
                 }
@@ -1793,7 +1819,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                                 kids ? 16 : (size == Prefs.TILES_COMPACT ? 12 : 13), kids ? 1.08f : 1.12f, anim, ringColor);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         roundRest ? tileW : ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (i % cols > 0) lp.leftMargin = gap;
+                // 1.62: in the matte glass the apps are as close as the favourites (card to card)
+                if (i % cols > 0) lp.leftMargin = appsBox != null ? Ui.dp(this, 12) - 2 * t.getPaddingLeft() : gap;
                 row.addView(t, lp);
                 tiles.add(t);
             }
@@ -2090,6 +2117,14 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
      *  VPN is on, Bluetooth, the TV's settings, the gear), memory as a word first. Fixed: stays
      *  when the page scrolls. The dock home has its own gear. */
     private void corner(Skin skin, boolean withGear) { corner(skin, withGear, false); }
+
+    private static AppTile firstTile(View hs) {
+        if (!(hs instanceof ViewGroup) || ((ViewGroup) hs).getChildCount() == 0) return null;
+        View row = ((ViewGroup) hs).getChildAt(0);
+        if (!(row instanceof ViewGroup) || ((ViewGroup) row).getChildCount() == 0) return null;
+        View t = ((ViewGroup) row).getChildAt(0);
+        return t instanceof AppTile ? (AppTile) t : null;
+    }
 
     /** 1.61: every glass on the screen has the same corners (Sergey: «скругление разное»). */
     private float glassR() { return Ui.dp(this, 16); }
