@@ -452,7 +452,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                     return false;
                 }
             } : null);
-            if (x.getParent() instanceof ViewGroup) ((ViewGroup) x.getParent()).setClipChildren(false);
+            // 1.56: nothing up the line cuts it (Sergey: the pill's right end was cut square by the
+            // glass block's padding)
+            android.view.ViewParent up = x.getParent();
+            for (int k = 0; k < 4 && up instanceof ViewGroup; k++, up = up.getParent()) {
+                ((ViewGroup) up).setClipChildren(false);
+                ((ViewGroup) up).setClipToPadding(false);
+            }
         });
         v.setOnClickListener(x -> {
             try {
@@ -704,7 +710,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         LinearLayout dock = row();
         dock.setGravity(Gravity.CENTER_VERTICAL);
         dock.setBackground(glass(dock, Ui.dp(this, 34)));
-        int dp18 = Ui.dp(this, 14);
+        int dp18 = Ui.dp(this, 10); // 1.56: 10 dp (was 14), a thinner dock glass
         dock.setPadding(dp18, dp18, dp18, prefs.noLabels() ? dp18 : Ui.dp(this, 8));
         // the tile size setting works here too: compact / normal / large dock icons
         // 0.76 smaller (an owner: «нижний блок огромнейший»); «Размер плиток» still scales it
@@ -1501,7 +1507,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         int padV = Math.round(screenW * 0.03f);
         int gap = Ui.dp(this, 22);
         int contentW = screenW - 2 * padH;
-        int favW = (contentW - 2 * Ui.dp(this, 22) - gap * (favVisible - 1)) / favVisible;
+        // 1.56: the one-row favourites' own insets and gaps (1.55 made them 14 dp and left a slice
+        // of the next tile showing at the end — Alexander, Philips)
+        int favW = (contentW - 2 * Ui.dp(this, 14) - Ui.dp(this, 14) * (favVisible - 1)) / favVisible;
         int favH = favW * 9 / 16;
         int tileW = (contentW - gap * (cols - 1)) / cols;
         int tileH = tileW * 9 / 16;
@@ -1678,7 +1686,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             hs.setOverScrollMode(View.OVER_SCROLL_NEVER);
             // room for the focused tile's zoom (≈8 %) so the glass never cuts it or its name
             int zoomPad = Math.round(favH * 0.06f) + Ui.dp(this, 6); // + the ring outside the card
-            if (prefs.ringGlow()) zoomPad += Math.round(favH * 0.3f); // «Свечение»: the halo stays whole
+            // «Свечение»: the halo stays whole (1.56: a third of it — the frame grew huge with it on)
+            if (prefs.ringGlow()) zoomPad += Math.round(favH * 0.12f);
             hs.setPadding(inset, Ui.dp(this, 16) + zoomPad, inset, Ui.dp(this, 12) + zoomPad);
             LinearLayout row = row();
             final int fs = roundFav ? Math.round(favH * 1.2f) : 0;
@@ -1697,8 +1706,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             if (!tiles.isEmpty()) {
                 AppTile t0 = tiles.get(tiles.size() - 1);
                 // 1.14: a lower bar (UMID: «бар чуть уменьшить по высоте»), 8 dp less above and below
-                int bottom = Ui.dp(this, 6) + zoomPad;
-                int top = Math.max(Ui.dp(this, 4) + zoomPad, bottom + t0.roomBelow() - t0.getPaddingTop());
+                int bottom = Ui.dp(this, 3) + zoomPad; // 1.56: 3 dp (was 6)
+                // 1.56: half the name's room above, not all of it (a thinner frame)
+                int top = Math.max(Ui.dp(this, 4) + zoomPad, bottom + t0.roomBelow() / 2 - t0.getPaddingTop());
                 hs.setPadding(inset, top, inset, bottom);
             }
             shelf.addView(hs);
@@ -1917,7 +1927,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (prefs.showClock()) left.addView(timeRow, trp); else weatherView = null;
         if (prefs.clockGlass() && prefs.showClock()) {
             left.setBackground(glass(left, Ui.dp(this, 26)));
-            left.setPadding(Ui.dp(this, 24), Ui.dp(this, 14), Ui.dp(this, 28), Ui.dp(this, 16));
+            // 1.56: a thinner glass under the clock (Sergey: «рамки стекла огромные везде»)
+            left.setPadding(Ui.dp(this, 16), Ui.dp(this, 8), Ui.dp(this, 18), Ui.dp(this, 10));
             bar.addView(left, new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             bar.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));

@@ -19,7 +19,7 @@ import android.view.View;
  * view sits on the screen. Photo wallpapers only; a video or a theme keeps the plain glass.
  */
 final class Frost extends Drawable {
-    private static final int SCALE = 8;
+    private static final int SCALE = 6;
     private static Bitmap cacheSrc, cacheOut;
     private static int cacheW, cacheH;
 
@@ -38,7 +38,8 @@ final class Frost extends Drawable {
             c.drawBitmap(wall, m, new Paint(Paint.FILTER_BITMAP_FLAG));
             int[] px = new int[w * h];
             small.getPixels(px, 0, w, 0, 0, w, h);
-            for (int i = 0; i < 3; i++) box(px, w, h, 3);
+            // 1.56: a light blur — the photo still shows through (testers: «прозрачности почти нет»)
+            for (int i = 0; i < 2; i++) box(px, w, h, 2);
             small.setPixels(px, 0, w, 0, 0, w, h);
             cacheSrc = wall;
             cacheW = screenW;
