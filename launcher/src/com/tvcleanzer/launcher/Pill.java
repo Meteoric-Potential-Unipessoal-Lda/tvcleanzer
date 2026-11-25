@@ -14,8 +14,12 @@ final class Pill extends TextView {
         setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
         setGravity(Gravity.CENTER);
         setSingleLine(true);
+        // 1.57: a long name («Bluetooth · HaierTV-RC») is cut with «…»: the row of pills ran off
+        // the screen beside the clock's glass (Roman)
+        setEllipsize(android.text.TextUtils.TruncateAt.END);
+        setMaxWidth(Math.round(c.getResources().getDisplayMetrics().widthPixels * 0.17f));
         setIncludeFontPadding(false);
-        int ph = Ui.dp(c, 22), pv = Ui.dp(c, 11);
+        int ph = Ui.dp(c, 18), pv = Ui.dp(c, 10);
         setPadding(ph, pv, ph, pv);
         setFocusable(true);
         // Android 8+ paints a grey "default focus highlight" over focusable views without a
