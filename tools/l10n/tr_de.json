@@ -1044,5 +1044,7 @@
 "Name der Stadt",
 "Neben dem Wetter auf dem Startbildschirm",
 "Ein/Aus-Taste oben",
-"Ausschalten und Neustart vom Startbildschirm"
+"Ausschalten und Neustart vom Startbildschirm",
+"Maus über den Launcher verbinden",
+"Das geht nur mit Netzwerk- oder USB-Debugging: ohne es gibt es Tasten, Text und App-Start."
 ]

@@ -107,6 +107,74 @@ class RemoteController extends StateNotifier<RemoteState> {
     return a;
   }
 
+  // 1.3.161: Google's protocol has no pointer (Haier FF Pro: «кнопки, панель работают, мышь
+  // нет»): the launcher's Wi-Fi remote beside it carries the mouse.
+  AltLink? _mouseLan;
+  String? _mouseLanIp;
+
+  /// The link for the mouse without ADB: the Wi-Fi remote (the main link, or one beside
+  /// Google's); null when there is none paired.
+  Future<AltLink?> mouseAlt(String ip) async {
+    final a = _altFor(ip);
+    if (a == null) return null;
+    if (a.kind == AltKind.lan) return a;
+    final m = _mouseLan;
+    if (m != null && m.isOpen && _mouseLanIp == ip) return m;
+    try {
+      final l = await (await _no()).connectLan(_host(ip));
+      if (l != null) _keepMouseLan(ip, l);
+      return l;
+    } catch (e) {
+      AppLog.error('remote', 'mouse lan: $e');
+      return null;
+    }
+  }
+
+  /// Could the launcher's Wi-Fi remote be paired for the mouse (it answers on its port)?
+  Future<bool> lanPairable(String ip) async {
+    try {
+      return await (await _no()).lanOpen(_host(ip));
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Pairs the launcher's Wi-Fi remote for the mouse beside Google's protocol (the 6 digits on the
+  /// TV). Null when paired, else what to tell the owner.
+  Future<String?> pairMouse(String ip, Future<String?> Function(int? triesLeft) askCode) async {
+    try {
+      final l = await (await _no()).pairLan(_host(ip), Platform.isIOS ? 'iPhone' : 'Android', (left) => askCode(left));
+      _keepMouseLan(ip, l);
+      return null;
+    } on LanError catch (e) {
+      AppLog.error('remote', 'mouse lan pairing: $e');
+      return _lanMessage(e);
+    } catch (e) {
+      AppLog.error('remote', 'mouse lan pairing: $e');
+      return tr('Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.');
+    }
+  }
+
+  void _keepMouseLan(String ip, AltLink l) {
+    _mouseLan?.close();
+    _mouseLan = l;
+    _mouseLanIp = ip;
+    AppLog.error('remote', 'mouse over the launcher beside ${_alt?.kind.name}');
+    l.onRefused = (what) {
+      if (what == 'mouse') {
+        _notices.add(tr('Без отладки эта кнопка работает, когда на ТВ включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).'));
+      }
+    };
+  }
+
+  static String? _lanMessage(LanError e) => switch (e.kind) {
+        'tries' => tr('Код не подошёл три раза. Попробуйте ещё раз — телевизор покажет новый.'),
+        'busy' => tr('Телевизор сейчас подключает другой телефон. Попробуйте через минуту.'),
+        'later' => tr('Слишком много неверных кодов. Попробуйте через 10 минут.'),
+        _ when e.message == 'cancelled' => null,
+        _ => tr('Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.'),
+      };
+
   /// The open link without ADB, for the screen (mouse, hints); null over ADB.
   AltLink? altLink(String ip) => _altFor(ip);
 
@@ -180,13 +248,7 @@ class RemoteController extends StateNotifier<RemoteState> {
     } on LanError catch (e) {
       AppLog.error('remote', 'lan pairing: $e');
       _set(RemoteState(RemoteStatus.needsPair, null, kind));
-      return switch (e.kind) {
-        'tries' => tr('Код не подошёл три раза. Попробуйте ещё раз — телевизор покажет новый.'),
-        'busy' => tr('Телевизор сейчас подключает другой телефон. Попробуйте через минуту.'),
-        'later' => tr('Слишком много неверных кодов. Попробуйте через 10 минут.'),
-        _ when e.message == 'cancelled' => null,
-        _ => tr('Телевизор не ответил. Проверьте, что он включён и в той же Wi-Fi сети.'),
-      };
+      return _lanMessage(e);
     } catch (e) {
       AppLog.error('remote', 'pairing: $e');
       _set(RemoteState(RemoteStatus.needsPair, null, kind));
@@ -427,6 +489,9 @@ class RemoteController extends StateNotifier<RemoteState> {
     _alt = null;
     _altIp = null;
     a?.close();
+    _mouseLan?.close();
+    _mouseLan = null;
+    _mouseLanIp = null;
   }
 
   void _drop() {

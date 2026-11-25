@@ -1044,5 +1044,7 @@
 "Nazwa miasta",
 "Obok pogody na ekranie głównym",
 "Przycisk zasilania u góry",
-"Wyłączanie i ponowne uruchamianie z ekranu głównego"
+"Wyłączanie i ponowne uruchamianie z ekranu głównego",
+"Połącz mysz przez launcher",
+"To działa tylko z debugowaniem przez sieć lub USB: bez niego masz przyciski, tekst i uruchamianie aplikacji."
 ]

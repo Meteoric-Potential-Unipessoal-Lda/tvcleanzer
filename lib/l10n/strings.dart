@@ -1048,6 +1048,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Next to the weather on the home screen',
     'Кнопка питания вверху': 'Power button at the top',
     'Выключение и перезагрузка с главного экрана': 'Switch off and restart from the home screen',
+    'Подключить мышь через лаунчер': 'Connect the mouse through the launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'This needs network or USB debugging: without it you have the buttons, text and opening apps.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2096,6 +2098,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Поруч із погодою на головному екрані',
     'Кнопка питания вверху': 'Кнопка живлення вгорі',
     'Выключение и перезагрузка с главного экрана': 'Вимкнення й перезавантаження з головного екрана',
+    'Подключить мышь через лаунчер': 'Підключити мишу через лаунчер',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Це працює лише з налагодженням по мережі або USB: без нього доступні кнопки, текст і запуск застосунків.',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3144,6 +3148,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Junto al tiempo en la pantalla de inicio',
     'Кнопка питания вверху': 'Botón de encendido arriba',
     'Выключение и перезагрузка с главного экрана': 'Apagar y reiniciar desde la pantalla de inicio',
+    'Подключить мышь через лаунчер': 'Conectar el ratón a través del launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Esto necesita depuración por red o USB: sin ella tienes los botones, el texto y abrir apps.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4192,6 +4198,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Junto à meteorologia no ecrã inicial',
     'Кнопка питания вверху': 'Botão de energia no topo',
     'Выключение и перезагрузка с главного экрана': 'Desligar e reiniciar a partir do ecrã inicial',
+    'Подключить мышь через лаунчер': 'Ligar o rato através do launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Isto precisa de depuração por rede ou USB: sem ela tem os botões, o texto e abrir apps.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5240,6 +5248,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Neben dem Wetter auf dem Startbildschirm',
     'Кнопка питания вверху': 'Ein/Aus-Taste oben',
     'Выключение и перезагрузка с главного экрана': 'Ausschalten und Neustart vom Startbildschirm',
+    'Подключить мышь через лаунчер': 'Maus über den Launcher verbinden',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Das geht nur mit Netzwerk- oder USB-Debugging: ohne es gibt es Tasten, Text und App-Start.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6288,6 +6298,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'À côté de la météo sur l’écran d’accueil',
     'Кнопка питания вверху': 'Bouton marche/arrêt en haut',
     'Выключение и перезагрузка с главного экрана': 'Éteindre et redémarrer depuis l’écran d’accueil',
+    'Подключить мышь через лаунчер': 'Connecter la souris via le launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Cela demande le débogage réseau ou USB : sans lui, vous avez les touches, le texte et l’ouverture des applis.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7336,6 +7348,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Accanto al meteo nella schermata principale',
     'Кнопка питания вверху': 'Pulsante di accensione in alto',
     'Выключение и перезагрузка с главного экрана': 'Spegni e riavvia dalla schermata principale',
+    'Подключить мышь через лаунчер': 'Collega il mouse tramite il launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Serve il debug di rete o USB: senza, restano tasti, testo e apertura delle app.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8384,6 +8398,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Побач з надвор’ем на галоўным экране',
     'Кнопка питания вверху': 'Кнопка сілкавання ўверсе',
     'Выключение и перезагрузка с главного экрана': 'Выключэнне і перазагрузка з галоўнага экрана',
+    'Подключить мышь через лаунчер': 'Падключыць мыш праз лаунчар',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Гэта працуе толькі з адладкай па сетцы або USB: без яе даступныя кнопкі, тэкст і запуск праграм.',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9432,6 +9448,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Басты экрандағы ауа райының жанында',
     'Кнопка питания вверху': 'Жоғарыдағы қуат түймесі',
     'Выключение и перезагрузка с главного экрана': 'Басты экраннан өшіру және қайта жүктеу',
+    'Подключить мышь через лаунчер': 'Тінтуірді лаунчер арқылы қосу',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Бұл тек желі немесе USB арқылы түзетумен жұмыс істейді: онсыз түймелер, мәтін және қолданбаларды ашу қолжетімді.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10480,6 +10498,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Bosh ekrandagi ob-havo yonida',
     'Кнопка питания вверху': 'Yuqorida quvvat tugmasi',
     'Выключение и перезагрузка с главного экрана': 'Bosh ekrandan oʻchirish va qayta yuklash',
+    'Подключить мышь через лаунчер': 'Sichqonchani launcher orqali ulash',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Bu faqat tarmoq yoki USB orqali tuzatish bilan ishlaydi: usiz tugmalar, matn va ilovalarni ochish mavjud.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11528,6 +11548,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Եղանակի կողքին գլխավոր էկրանին',
     'Кнопка питания вверху': 'Սնուցման կոճակը վերևում',
     'Выключение и перезагрузка с главного экрана': 'Անջատում և վերագործարկում գլխավոր էկրանից',
+    'Подключить мышь через лаунчер': 'Միացնել մկնիկը լաունչերի միջոցով',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Սա աշխատում է միայն ցանցային կամ USB վրիպազերծմամբ. առանց դրա հասանելի են կոճակները, տեքստը և հավելվածների բացումը։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12576,6 +12598,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Ana ekranda havanın yanında',
     'Кнопка питания вверху': 'Yuxarıda qidalanma düyməsi',
     'Выключение и перезагрузка с главного экрана': 'Ana ekrandan söndürmə və yenidən başlatma',
+    'Подключить мышь через лаунчер': 'Siçanı launcher vasitəsilə qoş',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Bu yalnız şəbəkə və ya USB sazlaması ilə işləyir: onsuz düymələr, mətn və tətbiqləri açmaq mümkündür.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13624,6 +13648,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'ამინდის გვერდით მთავარ ეკრანზე',
     'Кнопка питания вверху': 'კვების ღილაკი ზემოთ',
     'Выключение и перезагрузка с главного экрана': 'გამორთვა და გადატვირთვა მთავარი ეკრანიდან',
+    'Подключить мышь через лаунчер': 'მაუსის დაკავშირება ლაუნჩერით',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'ეს მუშაობს მხოლოდ ქსელით ან USB-ით გამართვისას: მის გარეშე ხელმისაწვდომია ღილაკები, ტექსტი და აპების გახსნა.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -14672,6 +14698,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Башкы экранда аба ырайынын жанында',
     'Кнопка питания вверху': 'Жогоруда кубат баскычы',
     'Выключение и перезагрузка с главного экрана': 'Башкы экрандан өчүрүү жана өчүрүп-күйгүзүү',
+    'Подключить мышь через лаунчер': 'Чычканды лаунчер аркылуу туташтыруу',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Бул тармак же USB аркылуу оңдоо менен гана иштейт: ансыз баскычтар, текст жана колдонмолорду ачуу жеткиликтүү.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -15720,6 +15748,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Ana ekranda hava durumunun yanında',
     'Кнопка питания вверху': 'Üstte güç düğmesi',
     'Выключение и перезагрузка с главного экрана': 'Ana ekrandan kapatma ve yeniden başlatma',
+    'Подключить мышь через лаунчер': 'Fareyi başlatıcı üzerinden bağla',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Bu yalnızca ağ veya USB hata ayıklamayla çalışır: onsuz tuşlar, metin ve uygulama açma kullanılabilir.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -16768,6 +16798,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Obok pogody na ekranie głównym',
     'Кнопка питания вверху': 'Przycisk zasilania u góry',
     'Выключение и перезагрузка с главного экрана': 'Wyłączanie i ponowne uruchamianie z ekranu głównego',
+    'Подключить мышь через лаунчер': 'Połącz mysz przez launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'To działa tylko z debugowaniem przez sieć lub USB: bez niego masz przyciski, tekst i uruchamianie aplikacji.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -17816,6 +17848,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Lângă vreme pe ecranul principal',
     'Кнопка питания вверху': 'Buton de pornire sus',
     'Выключение и перезагрузка с главного экрана': 'Oprire și repornire din ecranul principal',
+    'Подключить мышь через лаунчер': 'Conectează mouse-ul prin launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Asta funcționează doar cu depanare prin rețea sau USB: fără ea ai butoanele, textul și deschiderea aplicațiilor.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -18864,6 +18898,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': '主屏幕上天气旁边',
     'Кнопка питания вверху': '顶部电源按钮',
     'Выключение и перезагрузка с главного экрана': '从主屏幕关机和重启',
+    'Подключить мышь через лаунчер': '通过启动器连接鼠标',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': '此功能需要网络或 USB 调试：没有调试时可用按键、文字和打开应用。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -19912,6 +19948,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'ホーム画面の天気の横',
     'Кнопка питания вверху': '上部に電源ボタン',
     'Выключение и перезагрузка с главного экрана': 'ホーム画面から電源オフと再起動',
+    'Подключить мышь через лаунчер': 'ランチャー経由でマウスを接続',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'これはネットワークまたは USB デバッグが必要です。デバッグなしでもボタン・文字入力・アプリ起動は使えます。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -20960,6 +20998,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': '홈 화면의 날씨 옆',
     'Кнопка питания вверху': '상단 전원 버튼',
     'Выключение и перезагрузка с главного экрана': '홈 화면에서 끄기 및 다시 시작',
+    'Подключить мышь через лаунчер': '런처로 마우스 연결',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': '이 기능은 네트워크 또는 USB 디버깅이 필요합니다. 디버깅 없이도 버튼, 텍스트, 앱 열기는 됩니다.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -22008,6 +22048,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'होम स्क्रीन पर मौसम के पास',
     'Кнопка питания вверху': 'ऊपर पावर बटन',
     'Выключение и перезагрузка с главного экрана': 'होम स्क्रीन से बंद और रीस्टार्ट करें',
+    'Подключить мышь через лаунчер': 'लॉन्चर से माउस जोड़ें',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'इसके लिए नेटवर्क या USB डीबगिंग चाहिए: इसके बिना बटन, टेक्स्ट और ऐप खोलना उपलब्ध है।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -23056,6 +23098,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Di samping cuaca di layar utama',
     'Кнопка питания вверху': 'Tombol daya di atas',
     'Выключение и перезагрузка с главного экрана': 'Matikan dan mulai ulang dari layar utama',
+    'Подключить мышь через лаунчер': 'Hubungkan mouse lewat launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Ini perlu debugging jaringan atau USB: tanpanya tersedia tombol, teks, dan membuka aplikasi.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -24104,6 +24148,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Cạnh thời tiết trên màn hình chính',
     'Кнопка питания вверху': 'Nút nguồn ở trên',
     'Выключение и перезагрузка с главного экрана': 'Tắt và khởi động lại từ màn hình chính',
+    'Подключить мышь через лаунчер': 'Kết nối chuột qua launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Tính năng này cần gỡ lỗi qua mạng hoặc USB: không có nó vẫn dùng được nút, nhập chữ và mở ứng dụng.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -25152,6 +25198,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'ข้างสภาพอากาศบนหน้าจอหลัก',
     'Кнопка питания вверху': 'ปุ่มเปิด/ปิดด้านบน',
     'Выключение и перезагрузка с главного экрана': 'ปิดและรีสตาร์ทจากหน้าจอหลัก',
+    'Подключить мышь через лаунчер': 'เชื่อมต่อเมาส์ผ่านลอนเชอร์',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'ต้องใช้การแก้ไขข้อบกพร่องผ่านเครือข่ายหรือ USB: หากไม่มีจะใช้ได้แค่ปุ่ม ข้อความ และเปิดแอป',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -26200,6 +26248,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Naast het weer op het startscherm',
     'Кнопка питания вверху': 'Aan/uit-knop bovenaan',
     'Выключение и перезагрузка с главного экрана': 'Uitschakelen en herstarten vanaf het startscherm',
+    'Подключить мышь через лаунчер': 'Muis verbinden via de launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Dit werkt alleen met netwerk- of USB-foutopsporing: zonder heb je de knoppen, tekst en apps openen.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -27248,6 +27298,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Vedle počasí na hlavní obrazovce',
     'Кнопка питания вверху': 'Tlačítko napájení nahoře',
     'Выключение и перезагрузка с главного экрана': 'Vypnutí a restart z hlavní obrazovky',
+    'Подключить мышь через лаунчер': 'Připojit myš přes launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Funguje jen s laděním přes síť nebo USB: bez něj jsou k dispozici tlačítka, text a spouštění aplikací.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -28296,6 +28348,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Δίπλα στον καιρό στην αρχική οθόνη',
     'Кнопка питания вверху': 'Κουμπί λειτουργίας επάνω',
     'Выключение и перезагрузка с главного экрана': 'Απενεργοποίηση και επανεκκίνηση από την αρχική οθόνη',
+    'Подключить мышь через лаунчер': 'Σύνδεση ποντικιού μέσω του launcher',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Αυτό χρειάζεται εντοπισμό σφαλμάτων μέσω δικτύου ή USB: χωρίς αυτόν έχετε τα κουμπιά, το κείμενο και το άνοιγμα εφαρμογών.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -29344,6 +29398,8 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Az időjárás mellett a kezdőképernyőn',
     'Кнопка питания вверху': 'Bekapcsológomb felül',
     'Выключение и перезагрузка с главного экрана': 'Kikapcsolás és újraindítás a kezdőképernyőről',
+    'Подключить мышь через лаунчер': 'Egér csatlakoztatása a launcheren át',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Ehhez hálózati vagy USB-hibakeresés kell: anélkül a gombok, a szöveg és az alkalmazások indítása érhető el.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -30392,5 +30448,7 @@ const Map<String, Map<String, String>> translations = {
     'Рядом с погодой на главном экране': 'Bredvid vädret på startskärmen',
     'Кнопка питания вверху': 'Strömknapp upptill',
     'Выключение и перезагрузка с главного экрана': 'Stäng av och starta om från startskärmen',
+    'Подключить мышь через лаунчер': 'Anslut musen via startprogrammet',
+    'Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.': 'Det här kräver felsökning via nätverk eller USB: utan den finns knapparna, text och att öppna appar.',
   },
 };

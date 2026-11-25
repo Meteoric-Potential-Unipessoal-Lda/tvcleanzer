@@ -42,6 +42,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   _MouseLink? _mouse;
   String? _mouseErr;
   bool _mouseOpening = false;
+  bool _mousePair = false; // 1.3.161: «Подключить мышь через лаунчер» under the error
   String? _mouseTv;
   String? _favsFor;
   double? _bright; // 1–255, null until the TV says it has a brightness setting
@@ -84,6 +85,8 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     // 1.3.158: without ADB the pointer goes through the launcher's Wi-Fi remote
     final remote = ref.read(remoteProvider.notifier);
     var alt = remote.altLink(tv.id);
+    // 1.3.161: Google's protocol has no pointer: the launcher's Wi-Fi remote beside it, if paired
+    if (alt != null && alt.kind == AltKind.atv) alt = await remote.mouseAlt(tv.id) ?? alt;
     var link = alt != null
         ? _MouseLink.alt(alt)
         : _MouseLink(ref.read(adbServiceProvider).ensureHomeKeyService, (cmd) => remote.input(tv.id, cmd));
@@ -91,16 +94,20 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     if (err != null && alt == null && mounted && _mode == 2) {
       alt = await remote.ensureAlt(tv.id);
       if (alt != null) {
+        if (alt.kind == AltKind.atv) alt = await remote.mouseAlt(tv.id) ?? alt;
         link = _MouseLink.alt(alt);
         err = await link.open(tv);
       }
     }
+    // still Google's protocol only: pairing the launcher's Wi-Fi remote would give the mouse
+    final pairable = err != null && alt != null && alt.kind == AltKind.atv && await remote.lanPairable(tv.id);
     if (!mounted || _mode != 2) {
       link.close();
       return;
     }
     setState(() {
       _mouseOpening = false;
+      _mousePair = pairable;
       if (err == null) {
         _mouse = link;
         _mouseTv = tv.id;
@@ -152,6 +159,19 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
           ? tr('Готово: пульт работает без отладки.')
           : tr('Готово: пульт работает через лаунчер по Wi-Fi. Стрелки, «Назад» и текст — когда на ТВ включена служба «TVCleanzer: кнопка Домой».'));
     }
+  }
+
+  /// 1.3.161: the launcher's Wi-Fi remote paired beside Google's protocol, for the mouse.
+  Future<void> _pairMouse(TvDevice tv) async {
+    setState(() => _pairing = true);
+    final err = await ref.read(remoteProvider.notifier).pairMouse(tv.id, (left) => _askCode(AltKind.lan, left));
+    if (!mounted) return;
+    setState(() => _pairing = false);
+    if (err != null) {
+      _snack(err);
+      return;
+    }
+    if (_mode == 2) _openMouse(tv);
   }
 
   /// The code from the TV screen: 6 characters 0-9 A-F (Google's protocol, [left] null) or
@@ -311,7 +331,14 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
     try {
       await job();
     } catch (e) {
-      _snack(e is AdbException ? e.message : tr('Нет связи с телевизором. Проверьте, что он включён и в той же Wi-Fi сети.'));
+      final tv = ref.read(currentTvProvider);
+      // 1.3.161: connected without ADB — this one needs it (snapshot, sleep timer…), say so
+      final noAdb = tv != null && ref.read(remoteProvider.notifier).altLink(tv.id) != null;
+      _snack(e is AdbException
+          ? e.message
+          : noAdb
+              ? tr('Это работает только с отладкой по сети или USB: без неё доступны кнопки, текст и запуск приложений.')
+              : tr('Нет связи с телевизором. Проверьте, что он включён и в той же Wi-Fi сети.'));
     }
     if (mounted) setState(() => _busy = null);
   }
@@ -681,9 +708,10 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                 2 => _mouse != null
                     ? _MousePad(link: _mouse!)
                     : _MouseState(
-                        busy: _mouseOpening,
+                        busy: _mouseOpening || _pairing,
                         error: _mouseErr,
                         onRetry: () => _openMouse(tv),
+                        onPair: _mousePair ? () => _pairMouse(tv) : null,
                       ),
                 _ => _DPad(onKey: (c) => _key(tv, c)),
               },
@@ -730,7 +758,8 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
                     onTap: () => _sleep(tv)),
                 _RoundButton(icon: Icons.screenshot_monitor_rounded, label: tr('Снимок'), onTap: () => _screenshot(tv)),
               ]),
-              if (_bright != null) ...[const Gap(14), _brightRow(tv)],
+              // brightness only over ADB (1.3.161: the slider stayed after the link went without it)
+              if (_bright != null && ref.read(remoteProvider.notifier).altLink(tv.id) == null) ...[const Gap(14), _brightRow(tv)],
               if (_favs.isNotEmpty) ...[const Gap(24), _favRow(tv)],
               const Gap(24),
               _textInput(tv),
@@ -1481,7 +1510,8 @@ class _MouseState extends StatelessWidget {
   final bool busy;
   final String? error;
   final VoidCallback onRetry;
-  const _MouseState({required this.busy, required this.error, required this.onRetry});
+  final VoidCallback? onPair;
+  const _MouseState({required this.busy, required this.error, required this.onRetry, this.onPair});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -1503,6 +1533,14 @@ class _MouseState extends StatelessWidget {
               : Column(mainAxisSize: MainAxisSize.min, children: [
                   Text(error!, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13, color: AppColors.fgMid)),
                   const Gap(12),
+                  if (onPair != null) ...[
+                    FilledButton.icon(
+                      onPressed: onPair,
+                      icon: const Icon(Icons.mouse_rounded),
+                      label: Text(tr('Подключить мышь через лаунчер')),
+                    ),
+                    const Gap(4),
+                  ],
                   TextButton(onPressed: onRetry, child: Text(tr('Повторить'))),
                 ]),
         ),

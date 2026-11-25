@@ -31,6 +31,9 @@ class LanState {
   String app = '';
   int api = 0;
   String name = '';
+
+  /// The TV's first «st» line has come (what it can do is known).
+  bool known = false;
 }
 
 class LanRemote {
@@ -205,6 +208,7 @@ class LanRemote {
 
   void _handle(String l) {
     if (l.startsWith('st ')) {
+      state.known = true;
       for (final kv in l.substring(3).split(' ')) {
         final i = kv.indexOf('=');
         if (i < 0) continue;

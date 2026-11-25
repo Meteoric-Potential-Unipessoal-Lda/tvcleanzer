@@ -170,18 +170,34 @@ class NoAdb {
         if (e.kind == 'auth') await store.set('noadb_atv_$host', null); // the TV forgot the phone
       } catch (_) {}
     }
+    return connectLan(host, timeout: timeout);
+  }
+
+  /// The launcher's Wi-Fi remote alone, when it was paired (1.3.161: the mouse beside Google's
+  /// protocol, which has no pointer). Waits for the TV's first state line.
+  Future<AltLink?> connectLan(String host, {Duration timeout = const Duration(seconds: 4)}) async {
     final k = lanKey(host);
-    if (k != null) {
-      final r = LanRemote(host, lanId(), port: lanPort);
-      try {
-        await r.connect(k, timeout: timeout);
-        return AltLink.lan(r);
-      } on LanError catch (e) {
-        if (e.kind == 'unknown') await store.set('noadb_lan_$host', null);
-      } catch (_) {}
-    }
+    if (k == null) return null;
+    final r = LanRemote(host, lanId(), port: lanPort);
+    try {
+      await r.connect(k, timeout: timeout);
+      await _known(r);
+      return AltLink.lan(r);
+    } on LanError catch (e) {
+      if (e.kind == 'unknown') await store.set('noadb_lan_$host', null);
+    } catch (_) {}
     return null;
   }
+
+  static Future<void> _known(LanRemote r) async {
+    for (var i = 0; i < 20 && !r.state.known && r.isOpen; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+  }
+
+  /// Does the launcher's Wi-Fi remote answer at [host] (launcher 1.40+ with it on)?
+  Future<bool> lanOpen(String host, {Duration timeout = const Duration(milliseconds: 1500)}) =>
+      _open(host, lanPort, timeout);
 
   /// What can be paired at [host]: Google's service first (every key, any Android version),
   /// else our launcher's Wi-Fi remote; null when neither answers.
@@ -227,6 +243,7 @@ class NoAdb {
     final r = LanRemote(host, lanId(), port: lanPort);
     final key = await r.pair(phoneName, askCode);
     await store.set('noadb_lan_$host', base64.encode(key));
+    await _known(r);
     return AltLink.lan(r);
   }
 
