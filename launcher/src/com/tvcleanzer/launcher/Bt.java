@@ -94,7 +94,7 @@ final class Bt {
             int got = input >= 0 ? input : any;
             // 1.52: Android 8.1–12 knows only headsets' charge (a Xiaomi MSSP1: the TV's settings
             // said «Батарея 85%», we nothing) — the remote's own battery service then
-            return got >= 0 || Build.VERSION.SDK_INT >= 33 ? got : legacyBattery(c);
+            return got >= 0 ? got : legacyBattery(c); // 1.54: any version (Roman: none on a newer TV)
         } catch (Throwable t) {
             return -1;
         }
@@ -116,7 +116,7 @@ final class Bt {
                     String n = d.getName();
                     n = n == null || n.trim().isEmpty() ? d.getAddress() : n.trim();
                     int l = level == null ? -1 : (Integer) level.invoke(d);
-                    if ((l < 0 || l > 100) && Build.VERSION.SDK_INT < 33) l = legacyLevel(d.getAddress());
+                    if (l < 0 || l > 100) l = legacyLevel(d.getAddress());
                     out.add(l >= 0 && l <= 100 ? n + " · " + l + "%" : n);
                 } catch (Throwable ignored) {}
             }
@@ -185,7 +185,7 @@ final class Bt {
      *  10 minutes; [done] on the main thread when a level came. */
     @SuppressWarnings("MissingPermission")
     static void refreshLegacy(Context c, final Runnable done) {
-        if (Build.VERSION.SDK_INT >= 33 || gattBusy) return;
+        if (gattBusy) return;
         long now = System.currentTimeMillis();
         if (now - gattAt < 10 * 60_000L) return;
         gattAt = now;

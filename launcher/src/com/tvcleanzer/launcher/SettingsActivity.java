@@ -147,7 +147,7 @@ public class SettingsActivity extends Activity {
         addToggle(skin, T.t("Заставка при запуске"), prefs.splash(), T.t("Логотип, пока лаунчер загружается"), T.t("Выключена"),
                 prefs::setSplash);
 
-        addChoice(skin, T.t("Стекло"), new String[]{T.t("Светлое"), T.t("Прозрачное"), T.t("Тёмное")},
+        addChoice(skin, T.t("Стекло"), new String[]{T.t("Светлое"), T.t("Прозрачное"), T.t("Тёмное"), T.t("Матовое")},
                 prefs.shelf(), prefs::setShelf);
 
         addHeader(skin, T.t("Плитки и приложения"));

@@ -316,9 +316,9 @@ final class Prefs {
     void setFavBottom(boolean v) { sp.edit().putBoolean(FAV_BOTTOM, v).apply(); }
     /** Every glass on the home screen (0.72: favourites, the dock, under the clock, the corner
      *  icons; before only the favourites): 0 light glass (default), 1 transparent, 2 dark. */
-    static final int SHELF_GLASS = 0, SHELF_CLEAR = 1, SHELF_DARK = 2;
-    int shelf()              { return clamp(sp.getInt(SHELF, SHELF_GLASS), 0, 2); }
-    void setShelf(int v)     { sp.edit().putInt(SHELF, clamp(v, 0, 2)).apply(); }
+    static final int SHELF_GLASS = 0, SHELF_CLEAR = 1, SHELF_DARK = 2, SHELF_FROST = 3; // 3: 1.54 «Матовое»
+    int shelf()              { return clamp(sp.getInt(SHELF, SHELF_GLASS), 0, 3); }
+    void setShelf(int v)     { sp.edit().putInt(SHELF, clamp(v, 0, 3)).apply(); }
     /** The TV's own home (Google TV) was switched off by TVCleanzer to keep this launcher. */
     boolean stockOff()       { return sp.getBoolean(STOCK_OFF, false); }
     void setStockOff(boolean v) { sp.edit().putBoolean(STOCK_OFF, v).apply(); }

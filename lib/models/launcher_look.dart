@@ -271,7 +271,7 @@ class LauncherLook {
         barStyle: _i(m['barStyle'], 2, 0, 2),
         favAlign: _i(m['favAlign'], 1, 0, 2),
         clockGlass: _b(m['clockGlass'], false),
-        shelf: _i(m['shelf'], 0, 0, 2),
+        shelf: _i(m['shelf'], 0, 0, 3),
         noLabels: _b(m['noLabels'], false),
         ringOff: _b(m['ringOff'], false),
         ringGlow: _b(m['ringGlow'], false),

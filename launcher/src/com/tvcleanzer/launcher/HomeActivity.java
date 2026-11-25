@@ -574,7 +574,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         final int h = Ui.dp(this, 36), pv = Ui.dp(this, 5);
-        row.setBackground(Ui.shelf((h + 2 * pv) * 0.34f, prefs.shelf()));
+        row.setBackground(glass(row, (h + 2 * pv) * 0.34f));
         row.setPadding(Ui.dp(this, 16), pv, Ui.dp(this, 14), pv);
         // 0.85: exactly as tall as the icons' plate on the other side (an owner: the two plates
         // did not look alike), whatever the clock size setting
@@ -703,7 +703,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         favGridCols = 0; // one row in the dock: ▲▼ do not move a favourite here
         LinearLayout dock = row();
         dock.setGravity(Gravity.CENTER_VERTICAL);
-        dock.setBackground(Ui.shelf(Ui.dp(this, 34), prefs.shelf()));
+        dock.setBackground(glass(dock, Ui.dp(this, 34)));
         int dp18 = Ui.dp(this, 14);
         dock.setPadding(dp18, dp18, dp18, prefs.noLabels() ? dp18 : Ui.dp(this, 8));
         // the tile size setting works here too: compact / normal / large dock icons
@@ -1614,7 +1614,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             page.addView(favTitle);
             FrameLayout shelf = new FrameLayout(this);
             favShelf = shelf;
-            shelf.setBackground(Ui.shelf(Ui.dp(this, 30), prefs.shelf()));
+            shelf.setBackground(glass(shelf, Ui.dp(this, 30)));
             shelf.setClipChildren(true);
             final int fc = prefs.favCols();
             // «Рамка избранного» (0.68): as wide as its tiles, on the left or in the middle (owners:
@@ -1642,8 +1642,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 grid.setClipToPadding(false);
                 // 1.52: closer together, a thinner frame, and «Размер плиток» counts here too (the
                 // grid's tiles are never bigger than the apps' tiles of that size)
-                final int ggap = Ui.dp(this, 14), ginset = Ui.dp(this, 16);
-                grid.setPadding(ginset, Ui.dp(this, 8), ginset, Ui.dp(this, 8));
+                // 1.54: closer still (Sergey: «меньше расстояние между плитками»)
+                final int ggap = Ui.dp(this, 10), ginset = Ui.dp(this, 12);
+                grid.setPadding(ginset, Ui.dp(this, 6), ginset, Ui.dp(this, 6));
                 int fw = (contentW - 2 * ginset - ggap * (fc - 1)) / fc;
                 if (favAlign != Prefs.FAV_FULL) fw = Math.min(fw, tileW);
                 int fh = fw * 9 / 16;
@@ -1912,7 +1913,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         // 1.22: «Часы, дата и погода» off: no clock, date or weather up top, only the icons
         if (prefs.showClock()) left.addView(timeRow, trp); else weatherView = null;
         if (prefs.clockGlass() && prefs.showClock()) {
-            left.setBackground(Ui.shelf(Ui.dp(this, 26), prefs.shelf()));
+            left.setBackground(glass(left, Ui.dp(this, 26)));
             left.setPadding(Ui.dp(this, 24), Ui.dp(this, 14), Ui.dp(this, 28), Ui.dp(this, 16));
             bar.addView(left, new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -2030,6 +2031,18 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
      *  when the page scrolls. The dock home has its own gear. */
     private void corner(Skin skin, boolean withGear) { corner(skin, withGear, false); }
 
+    /** The glass under a block: «Матовое» (1.54) over a photo shows that photo blurred; its piece
+     *  of the photo follows the page as it scrolls. */
+    private android.graphics.drawable.Drawable glass(View host, float r) {
+        android.graphics.drawable.Drawable plain = Ui.shelf(r, prefs.shelf());
+        if (prefs.shelf() != Prefs.SHELF_FROST || wallBitmap == null || liveWall != null || prefs.homePhotos()) return plain;
+        android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
+        android.graphics.Bitmap b = Frost.blurred(wallBitmap, dm.widthPixels, dm.heightPixels);
+        if (b == null) return plain;
+        host.getViewTreeObserver().addOnScrollChangedListener(host::invalidate);
+        return new Frost(host, b, r, Math.round(prefs.wallDim() * 2.55f), plain);
+    }
+
     /** 1.52: the corner's top in «Плитки» = the page's top, level with the clock's glass (Sergey:
      *  «погода и часы всегда ниже верхних значков»); -1 elsewhere. */
     private int cornerTop = -1;
@@ -2044,7 +2057,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         row.setClipToPadding(false);
         final int h = Ui.dp(this, 36), gap = Ui.dp(this, 6), ph = Ui.dp(this, 8), pv = Ui.dp(this, 5);
         // one glass under all of them, the same look as every other glass on the screen («Стекло»)
-        row.setBackground(Ui.shelf((h + 2 * pv) * 0.34f, prefs.shelf()));
+        row.setBackground(glass(row, (h + 2 * pv) * 0.34f));
         row.setPadding(ph, pv, ph, pv);
         final boolean clean = prefs.cleanBar();
         List<View> items = new ArrayList<>();
@@ -2179,7 +2192,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** Glass under the big clock, date and weather (clock home): as wide as the longest line. */
     private void glassBehind(final LinearLayout mid, final boolean center, final int padH) {
         final View glass = new View(this);
-        glass.setBackground(Ui.shelf(Ui.dp(this, 30), prefs.shelf()));
+        glass.setBackground(glass(glass, Ui.dp(this, 30)));
         root.addView(glass, new FrameLayout.LayoutParams(0, 0, Gravity.TOP | Gravity.START));
         final int gp = Ui.dp(this, 30);
         mid.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
@@ -2331,7 +2344,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (v == null) return;
         int l = Bt.battery(this);
         // 1.48: Android 7–8.0 has no getBatteryLevel: the remote's own battery service, now and then
-        if (android.os.Build.VERSION.SDK_INT < 33 && l < 0) Bt.refreshLegacy(this, this::showBattery);
+        if (l < 0) Bt.refreshLegacy(this, this::showBattery); // 1.54: every Android version
         v.setVisibility(l < 0 ? View.GONE : View.VISIBLE);
         if (l >= 0) {
             v.setText(l + "%");

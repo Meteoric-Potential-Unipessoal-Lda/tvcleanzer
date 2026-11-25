@@ -1072,6 +1072,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Look applied',
     'Значки ⚙ и ⋯ в доке': '⚙ and ⋯ in the dock',
     'Скрыты — они в правом верхнем углу': 'Hidden — they are in the top right corner',
+    'Матовое': 'Frosted',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2144,6 +2145,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Вигляд застосовано',
     'Значки ⚙ и ⋯ в доке': 'Значки ⚙ і ⋯ у доку',
     'Скрыты — они в правом верхнем углу': 'Приховані — вони в правому верхньому куті',
+    'Матовое': 'Матове',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3216,6 +3218,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Aspecto aplicado',
     'Значки ⚙ и ⋯ в доке': '⚙ y ⋯ en el dock',
     'Скрыты — они в правом верхнем углу': 'Ocultos: están en la esquina superior derecha',
+    'Матовое': 'Esmerilado',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4288,6 +4291,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Aspeto aplicado',
     'Значки ⚙ и ⋯ в доке': '⚙ e ⋯ na dock',
     'Скрыты — они в правом верхнем углу': 'Ocultos — estão no canto superior direito',
+    'Матовое': 'Fosco',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5360,6 +5364,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Look übernommen',
     'Значки ⚙ и ⋯ в доке': '⚙ und ⋯ im Dock',
     'Скрыты — они в правом верхнем углу': 'Ausgeblendet – sie sind oben rechts',
+    'Матовое': 'Milchglas',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6432,6 +6437,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Apparence appliquée',
     'Значки ⚙ и ⋯ в доке': '⚙ et ⋯ dans le dock',
     'Скрыты — они в правом верхнем углу': 'Masqués — ils sont en haut à droite',
+    'Матовое': 'Dépoli',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7504,6 +7510,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Aspetto applicato',
     'Значки ⚙ и ⋯ в доке': '⚙ e ⋯ nel dock',
     'Скрыты — они в правом верхнем углу': 'Nascosti: sono in alto a destra',
+    'Матовое': 'Satinato',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8576,6 +8583,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Выгляд ужыты',
     'Значки ⚙ и ⋯ в доке': 'Значкі ⚙ і ⋯ у доку',
     'Скрыты — они в правом верхнем углу': 'Схаваныя — яны ў правым верхнім куце',
+    'Матовое': 'Матавае',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9648,6 +9656,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Көрініс қолданылды',
     'Значки ⚙ и ⋯ в доке': 'Доктағы ⚙ және ⋯',
     'Скрыты — они в правом верхнем углу': 'Жасырылған — олар оң жақ жоғарғы бұрышта',
+    'Матовое': 'Күңгірт',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10720,6 +10729,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Koʻrinish qoʻllandi',
     'Значки ⚙ и ⋯ в доке': 'Dokdagi ⚙ va ⋯',
     'Скрыты — они в правом верхнем углу': 'Yashirilgan — ular oʻng yuqori burchakda',
+    'Матовое': 'Xira',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11792,6 +11802,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Տեսքը կիրառվեց',
     'Значки ⚙ и ⋯ в доке': '⚙ և ⋯ դոկում',
     'Скрыты — они в правом верхнем углу': 'Թաքցված են — դրանք վերին աջ անկյունում են',
+    'Матовое': 'Փայլատ',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12864,6 +12875,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Görünüş tətbiq edildi',
     'Значки ⚙ и ⋯ в доке': 'Dokda ⚙ və ⋯',
     'Скрыты — они в правом верхнем углу': 'Gizlədilib — yuxarı sağ küncdədir',
+    'Матовое': 'Mat',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13936,6 +13948,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'იერი გამოყენებულია',
     'Значки ⚙ и ⋯ в доке': '⚙ და ⋯ დოკში',
     'Скрыты — они в правом верхнем углу': 'დამალულია — ისინი ზედა მარჯვენა კუთხეშია',
+    'Матовое': 'მქრქალი',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -15008,6 +15021,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Көрүнүш колдонулду',
     'Значки ⚙ и ⋯ в доке': 'Доктогу ⚙ жана ⋯',
     'Скрыты — они в правом верхнем углу': 'Жашырылган — алар жогорку оң бурчта',
+    'Матовое': 'Күңүрт',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -16080,6 +16094,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Görünüm uygulandı',
     'Значки ⚙ и ⋯ в доке': 'Dock’ta ⚙ ve ⋯',
     'Скрыты — они в правом верхнем углу': 'Gizli — sağ üst köşedeler',
+    'Матовое': 'Buzlu',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -17152,6 +17167,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Wygląd zastosowany',
     'Значки ⚙ и ⋯ в доке': '⚙ i ⋯ w doku',
     'Скрыты — они в правом верхнем углу': 'Ukryte — są w prawym górnym rogu',
+    'Матовое': 'Matowe',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -18224,6 +18240,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Aspect aplicat',
     'Значки ⚙ и ⋯ в доке': '⚙ și ⋯ în dock',
     'Скрыты — они в правом верхнем углу': 'Ascunse — sunt în colțul din dreapta sus',
+    'Матовое': 'Mat',
   },
   'zh': {
     'Полночь': '午夜',
@@ -19296,6 +19313,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': '外观已应用',
     'Значки ⚙ и ⋯ в доке': '程序坞中的 ⚙ 和 ⋯',
     'Скрыты — они в правом верхнем углу': '已隐藏——在右上角',
+    'Матовое': '磨砂',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -20368,6 +20386,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': '見た目を適用しました',
     'Значки ⚙ и ⋯ в доке': 'ドックの ⚙ と ⋯',
     'Скрыты — они в правом верхнем углу': '非表示（右上の角にあります）',
+    'Матовое': 'すりガラス',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -21440,6 +21459,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': '모양을 적용했습니다',
     'Значки ⚙ и ⋯ в доке': '독의 ⚙ 및 ⋯',
     'Скрыты — они в правом верхнем углу': '숨김 — 오른쪽 위 모서리에 있음',
+    'Матовое': '젖빛',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -22512,6 +22532,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'रूप लागू हुआ',
     'Значки ⚙ и ⋯ в доке': 'डॉक में ⚙ और ⋯',
     'Скрыты — они в правом верхнем углу': 'छिपे — ये ऊपर दाएँ कोने में हैं',
+    'Матовое': 'फ्रॉस्टेड',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -23584,6 +23605,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Tampilan diterapkan',
     'Значки ⚙ и ⋯ в доке': '⚙ dan ⋯ di dock',
     'Скрыты — они в правом верхнем углу': 'Disembunyikan — ada di pojok kanan atas',
+    'Матовое': 'Buram',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -24656,6 +24678,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Đã áp dụng giao diện',
     'Значки ⚙ и ⋯ в доке': '⚙ và ⋯ trên dock',
     'Скрыты — они в правом верхнем углу': 'Đã ẩn — chúng ở góc trên bên phải',
+    'Матовое': 'Mờ',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -25728,6 +25751,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'ใช้หน้าตาแล้ว',
     'Значки ⚙ и ⋯ в доке': '⚙ และ ⋯ ในด็อก',
     'Скрыты — они в правом верхнем углу': 'ซ่อนอยู่ — อยู่ที่มุมขวาบน',
+    'Матовое': 'ฝ้า',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -26800,6 +26824,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Uiterlijk toegepast',
     'Значки ⚙ и ⋯ в доке': '⚙ en ⋯ in het dock',
     'Скрыты — они в правом верхнем углу': 'Verborgen — ze staan rechtsboven',
+    'Матовое': 'Mat',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -27872,6 +27897,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Vzhled použit',
     'Значки ⚙ и ⋯ в доке': '⚙ a ⋯ v doku',
     'Скрыты — они в правом верхнем углу': 'Skryté — jsou v pravém horním rohu',
+    'Матовое': 'Matné',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -28944,6 +28970,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Η εμφάνιση εφαρμόστηκε',
     'Значки ⚙ и ⋯ в доке': '⚙ και ⋯ στη γραμμή',
     'Скрыты — они в правом верхнем углу': 'Κρυμμένα — βρίσκονται πάνω δεξιά',
+    'Матовое': 'Ματ',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -30016,6 +30043,7 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Megjelenés alkalmazva',
     'Значки ⚙ и ⋯ в доке': '⚙ és ⋯ a dokkban',
     'Скрыты — они в правом верхнем углу': 'Elrejtve — a jobb felső sarokban vannak',
+    'Матовое': 'Matt',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -31088,5 +31116,6 @@ const Map<String, Map<String, String>> translations = {
     'Вид применён': 'Utseendet tillämpat',
     'Значки ⚙ и ⋯ в доке': '⚙ och ⋯ i dockan',
     'Скрыты — они в правом верхнем углу': 'Dolda — de finns uppe till höger',
+    'Матовое': 'Frostat',
   },
 };
