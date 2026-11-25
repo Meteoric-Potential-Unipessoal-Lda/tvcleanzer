@@ -71,11 +71,7 @@ public class HomeKeyService extends AccessibilityService {
             boolean want = !keyMap.isEmpty() || learn != null || volumeFiltered(this, p);
             log("key filter " + want);
             int nf = want ? info.flags | flag : info.flags & ~flag;
-            // 1.45: every window's content, not only the active one's — the mouse finds the item
-            // under the pointer even where the active window gives none (Haier FF Pro without ADB)
-            if (android.os.Build.VERSION.SDK_INT >= 21) {
-                nf |= android.accessibilityservice.AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
-            }
+
             if (nf != info.flags) {
                 info.flags = nf;
                 setServiceInfo(info);
@@ -252,6 +248,25 @@ public class HomeKeyService extends AccessibilityService {
     private boolean kidsLocked(String pkg) {
         Prefs p = new Prefs(this);
         return p.kids() && !p.kidsApps().contains(pkg);
+    }
+
+    /** 1.47: every window's content (the mouse finds the item under the pointer where the active
+     *  window gives none — Haier FF Pro without ADB) only while the phone's mouse is in use over
+     *  Wi-Fi. 1.45 asked for it always; kept narrow so Home handling stays as it was. */
+    void allWindows(final boolean on) {
+        handler.post(() -> {
+            try {
+                android.accessibilityservice.AccessibilityServiceInfo info = getServiceInfo();
+                if (info == null || android.os.Build.VERSION.SDK_INT < 21) return;
+                int f = android.accessibilityservice.AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
+                int nf = on ? info.flags | f : info.flags & ~f;
+                if (nf != info.flags) {
+                    info.flags = nf;
+                    setServiceInfo(info);
+                    log("mouse: all windows " + on);
+                }
+            } catch (Throwable ignored) {}
+        });
     }
 
     /** The app on screen (LanRemote's state line). */

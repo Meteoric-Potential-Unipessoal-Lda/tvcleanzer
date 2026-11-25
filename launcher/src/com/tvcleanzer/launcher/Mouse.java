@@ -147,6 +147,7 @@ final class Mouse {
             client = back;
             lanClient = true;
             toldTaps = 0; // a new phone: the first taps' story goes to its «?» again
+            if (svc instanceof HomeKeyService) ((HomeKeyService) svc).allWindows(true);
             main.post(() -> show(true));
         }
         handle(line.trim());
@@ -156,6 +157,7 @@ final class Mouse {
     void release(OutputStream back) {
         if (client != back) return;
         client = null;
+        if (svc instanceof HomeKeyService) ((HomeKeyService) svc).allWindows(false);
         main.post(() -> show(false));
     }
 
