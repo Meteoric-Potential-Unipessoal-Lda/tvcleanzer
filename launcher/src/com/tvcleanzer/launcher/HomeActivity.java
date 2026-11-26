@@ -338,6 +338,22 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private android.widget.ImageView weatherLinePic;
     private LinearLayout weatherChip;
 
+    /** 1.71: the letters drawn a little up so they sit in the middle of their line: TV fonts keep
+     *  room above the letters for accents, and the words sat below the glass's middle (Sergey:
+     *  «весь текст ниже центра рамки»). Digits are the yardstick; after layout, as the clock's size
+     *  may still change. */
+    private static void liftGlyphs(final TextView t) {
+        t.post(() -> {
+            android.graphics.Paint p = t.getPaint();
+            android.graphics.Paint.FontMetrics fm = p.getFontMetrics();
+            android.graphics.Rect b = new android.graphics.Rect();
+            p.getTextBounds("0123456789", 0, 10, b);
+            float box = t.getIncludeFontPadding() ? (fm.top + fm.bottom) / 2f : (fm.ascent + fm.descent) / 2f;
+            float off = (b.top + b.bottom) / 2f - box;
+            t.setTranslationY(off > 0 ? -off : 0);
+        });
+    }
+
     private LinearLayout weatherChip(TextView tv) {
         LinearLayout chip = new LinearLayout(this);
         chip.setOrientation(LinearLayout.HORIZONTAL);
@@ -688,6 +704,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         big.setLetterSpacing(0f);
         big.setTypeface(android.graphics.Typeface.create("sans-serif-medium", android.graphics.Typeface.NORMAL));
         fitClock(big, Math.round(screenW * 0.12f), Ui.dp(this, 28));
+        liftGlyphs(big);
         row.addView(big, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -710,6 +727,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             cal.add(java.util.Calendar.DAY_OF_YEAR, 1);
         }
         date.setMinWidth(Math.round(w) + Ui.dp(this, 4));
+        liftGlyphs(date);
         row.addView(date, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -719,6 +737,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         weatherView = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif-medium");
         weatherView.setSingleLine(true);
         weatherView.setIncludeFontPadding(false);
+        liftGlyphs(weatherView);
         row.addView(weatherChip(weatherView), new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         forecastOnOk(weatherChip);
@@ -2006,7 +2025,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         TextClock dayLine = dateLine(oneLine ? "EEEE, d MMMM" : "EEEE");
         // 1.69: one line: no room kept for the week's longest date — the TV shows it in small
         // letters, the room was measured in capitals (Sergey: «много пустого места»)
-        if (oneLine) dayLine.setMinWidth(0);
+        if (oneLine) {
+            dayLine.setMinWidth(0);
+            liftGlyphs(dayLine);
+            liftGlyphs(tc);
+        }
         dateCol.addView(dayLine);
         if (!oneLine) {
             TextClock dayMonth = dateLine("d MMMM");
@@ -2020,6 +2043,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             wl.leftMargin = Ui.dp(this, 18);
+            liftGlyphs(weatherView);
             dateCol.addView(weatherChip(weatherView), wl);
             forecastOnOk(weatherChip);
             timeRow.addView(dateCol);
