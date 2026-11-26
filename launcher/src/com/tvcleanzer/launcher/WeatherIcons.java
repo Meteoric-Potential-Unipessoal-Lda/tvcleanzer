@@ -131,6 +131,17 @@ final class WeatherIcons {
         v.setText(sb);
     }
 
+    /** 1.70: the line's picture in one colour (dark on the picked weather's white plate), 0 = as drawn. */
+    static void tint(android.widget.TextView v, int colour) {
+        CharSequence t = v.getText();
+        if (!(t instanceof android.text.Spanned)) return;
+        for (IconSpan s : ((android.text.Spanned) t).getSpans(0, t.length(), IconSpan.class)) {
+            if (colour == 0) s.d.clearColorFilter();
+            else s.d.setColorFilter(colour, android.graphics.PorterDuff.Mode.SRC_ATOP);
+        }
+        v.invalidate();
+    }
+
     /** The icon in the line, centred on the text's height (the line grows to fit it), drawn as
      *  it is: the text's colour and shadow do not touch it. */
     static final class IconSpan extends android.text.style.ReplacementSpan {

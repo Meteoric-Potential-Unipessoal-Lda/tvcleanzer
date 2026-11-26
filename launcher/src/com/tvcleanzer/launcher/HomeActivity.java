@@ -450,7 +450,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             int[] lr = textSpan(x);
             // 1.62: a one-line weather: the plate as tall as its row, so it sits in the middle of the
             // clock's glass (Sergey: «выделение погоды выровнять по вертикали блока»)
-            int it = -pv, ib = -pv;
+            // 1.70: the two-line block's plate closer around it (Alexander: «слишком близко к краю»)
+            int it = x instanceof TextView ? -pv : -Ui.dp(this, 4), ib = it;
+            final int hp = x instanceof TextView ? ph : Ui.dp(this, 8);
             if (x instanceof TextView && prefs.oneLine() && x.getParent() instanceof View) {
                 View prow = (View) x.getParent();
                 it = -x.getTop() - Ui.dp(this, 2);
@@ -461,7 +463,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // 1.67: the picked weather grows a little, like a tile (Karaganda: «лучше сделать
             // увеличение текста при выборе»); the one-line one less, it sits in the clock's glass
             // 1.69: not in the one-line glass — it pushed past the glass into the corner (Sergey: «косяк»)
-            float grow = !has || (x instanceof TextView && prefs.oneLine()) ? 1f : x instanceof TextView ? 1.15f : 1.05f;
+            float grow = !has || !(x instanceof TextView) || prefs.oneLine() ? 1f : 1.15f;
             if (prefs.anim() == Prefs.ANIM_OFF) {
                 x.setScaleX(grow);
                 x.setScaleY(grow);
@@ -470,11 +472,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             }
             // 1.69: the plate with the tiles' white outline (Sergey: «единого стиля нет»)
             android.graphics.drawable.GradientDrawable plate = new android.graphics.drawable.GradientDrawable();
-            plate.setColor(0x26FFFFFF);
-            plate.setStroke(Ui.dp(this, 2), 0xF2FFFFFF);
+            // 1.70: white with dark letters, as every picked pill and chip (Alexander: «просто белым,
+            // как у всего остального»)
+            plate.setColor(0xF2FFFFFF);
             plate.setCornerRadius(rr);
+            focusInk(x, has);
             x.setBackground(has ? new android.graphics.drawable.InsetDrawable(plate,
-                    lr[0] - ph, it, lr[1] - ph, ib) {
+                    lr[0] - hp, it, lr[1] - hp, ib) {
                 @Override public boolean getPadding(android.graphics.Rect p) {
                     p.set(0, 0, 0, 0);
                     return false;
@@ -495,6 +499,38 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 HomeKeyService.log("forecast: " + e);
             }
         });
+    }
+
+    /** 1.70: the picked weather dark on its white plate — text, picture, divider; back when left. */
+    private static final int INK = 0xFF1C2028;
+    private final java.util.Map<TextView, Object[]> inkWas = new java.util.WeakHashMap<>();
+
+    private void focusInk(View v, boolean on) {
+        if (v instanceof TextView) {
+            TextView t = (TextView) v;
+            if (on) {
+                // colour, shadow radius, dx, dy, shadow colour — as they were
+                if (!inkWas.containsKey(t)) inkWas.put(t, new Object[]{t.getCurrentTextColor(),
+                        t.getShadowRadius(), t.getShadowDx(), t.getShadowDy(), t.getShadowColor()});
+                t.setTextColor(INK);
+                t.setShadowLayer(0, 0, 0, 0);
+            } else {
+                Object[] s = inkWas.remove(t);
+                if (s != null) {
+                    t.setTextColor((Integer) s[0]);
+                    t.setShadowLayer((Float) s[1], (Float) s[2], (Float) s[3], (Integer) s[4]);
+                }
+            }
+            WeatherIcons.tint(t, on ? INK : 0);
+        } else if (v instanceof android.widget.ImageView) {
+            if (on) ((android.widget.ImageView) v).setColorFilter(INK, android.graphics.PorterDuff.Mode.SRC_ATOP);
+            else ((android.widget.ImageView) v).clearColorFilter();
+        } else if (v instanceof ViewGroup) {
+            ViewGroup g = (ViewGroup) v;
+            for (int i = 0; i < g.getChildCount(); i++) focusInk(g.getChildAt(i), on);
+        } else if (v == weatherDiv) {
+            v.setBackgroundColor(on ? 0x40000000 : 0x40FFFFFF);
+        }
     }
 
     /** How far the text sits in from the view's left and right edges (0, 0 when unknown). */
@@ -2269,6 +2305,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (!clean) {
             TopIcon tv = new TopIcon(this, TopIcon.TV, 0, true);
             tv.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+            tv.setOnLongClickListener(v -> { startActivity(new Intent(this, SettingsActivity.class)); return true; });
             items.add(tv);
         }
         if (prefs.powerIcon()) {
@@ -2282,7 +2319,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             more.setOnClickListener(v -> { showGrid = true; build(); });
             items.add(more);
         }
-        if (withGear) {
+        // 1.70: «Шестерёнка лаунчера вверху» off — in «Мини в углу» too (Alexander)
+        if (withGear && (clean || prefs.gearTop())) {
             TopIcon gear = new TopIcon(this, TopIcon.GEAR, 0, true);
             wireGear(gear);
             items.add(gear);
