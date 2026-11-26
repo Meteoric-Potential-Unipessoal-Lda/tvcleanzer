@@ -1072,5 +1072,7 @@
 "Frosted",
 "TVCleanzer {0} is out",
 "Later",
-"Your phone will download it in the browser: open the file and tap “Install”."
+"Your phone will download it in the browser: open the file and tap “Install”.",
+"The remote doesn’t report its charge",
+"The remote doesn’t report its charge over Bluetooth, so it can’t be shown. This is common for IR remotes and many set-top box remotes."
 ]

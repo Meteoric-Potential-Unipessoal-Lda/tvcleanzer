@@ -1,9 +1,11 @@
 package com.tvcleanzer.launcher;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.SystemClock;
 import android.view.View;
@@ -37,6 +39,23 @@ final class WeatherFx extends View {
     private long last;
     private long flashAt, nextFlash;
     private boolean running;
+    /** 1.67: fog as a soft picture drawn scaled, not a gradient per frame: on a TV (BlatikShin)
+     *  the gradients burnt the screen white in one place and left a dark patch in another. */
+    private Bitmap fogBlob;
+    private final Paint blob = new Paint(Paint.FILTER_BITMAP_FLAG);
+    private final RectF dst = new RectF();
+
+    private Bitmap fogBlob() {
+        if (fogBlob == null) {
+            int s = 64;
+            fogBlob = Bitmap.createBitmap(s, s, Bitmap.Config.ARGB_8888);
+            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+            p.setShader(new RadialGradient(s / 2f, s / 2f, s / 2f, new int[]{0xFFFFFFFF, 0x66FFFFFF, 0x00FFFFFF},
+                    new float[]{0f, 0.45f, 1f}, Shader.TileMode.CLAMP));
+            new Canvas(fogBlob).drawCircle(s / 2f, s / 2f, s / 2f, p);
+        }
+        return fogBlob;
+    }
 
     WeatherFx(Context c, int kind) {
         super(c);
@@ -58,7 +77,7 @@ final class WeatherFx extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int ow, int oh) {
-        int n = kind == SNOW ? 45 : kind == RAIN || kind == STORM ? 70 : kind == DRIZZLE ? 35 : kind == FOG ? 5 : 0;
+        int n = kind == SNOW ? 45 : kind == RAIN || kind == STORM ? 70 : kind == DRIZZLE ? 35 : kind == FOG ? 6 : 0;
         px = new float[n]; py = new float[n]; sp = new float[n]; sz = new float[n];
         for (int i = 0; i < n; i++) seed(i, w, h, true);
         nextFlash = SystemClock.uptimeMillis() + 4000 + rnd.nextInt(8000);
@@ -70,8 +89,8 @@ final class WeatherFx extends View {
         py[i] = anywhere ? rnd.nextFloat() * h : -rnd.nextFloat() * h * 0.2f;
         switch (kind) {
             case SNOW: sp[i] = (25 + rnd.nextFloat() * 45) * d; sz[i] = (1.5f + rnd.nextFloat() * 2.5f) * d; break;
-            case FOG: sp[i] = (6 + rnd.nextFloat() * 10) * d; sz[i] = h * (0.25f + rnd.nextFloat() * 0.25f);
-                py[i] = h * (0.35f + rnd.nextFloat() * 0.6f); break;
+            case FOG: sp[i] = (6 + rnd.nextFloat() * 10) * d; sz[i] = h * (0.2f + rnd.nextFloat() * 0.15f);
+                py[i] = h * (0.45f + rnd.nextFloat() * 0.5f); break; // 1.67: lower, smaller
             case DRIZZLE: sp[i] = (300 + rnd.nextFloat() * 150) * d; sz[i] = (8 + rnd.nextFloat() * 8) * d; break;
             default: sp[i] = (520 + rnd.nextFloat() * 260) * d; sz[i] = (14 + rnd.nextFloat() * 16) * d;
         }
@@ -95,10 +114,12 @@ final class WeatherFx extends View {
                     break;
                 case FOG: {
                     px[i] += sp[i] * dt;
-                    if (px[i] - sz[i] * 2 > w) px[i] = -sz[i] * 2;
-                    fill.setShader(new RadialGradient(px[i], py[i], sz[i] * 2, 0x2EFFFFFF, 0x00FFFFFF, Shader.TileMode.CLAMP));
-                    c.drawCircle(px[i], py[i], sz[i] * 2, fill);
-                    fill.setShader(null);
+                    float r = sz[i] * 1.6f;
+                    if (px[i] - r > w) px[i] = -r;
+                    // a flat wisp, about a tenth white at its heart (was a fifth, in a circle)
+                    dst.set(px[i] - r, py[i] - r * 0.45f, px[i] + r, py[i] + r * 0.45f);
+                    blob.setAlpha(28);
+                    c.drawBitmap(fogBlob(), null, dst, blob);
                     continue;
                 }
                 default:

@@ -1072,5 +1072,7 @@
 "Matt",
 "Megjelent a TVCleanzer {0}",
 "Később",
-"A telefon a böngészővel tölti le: nyissa meg a fájlt, és koppintson a „Telepítés” gombra."
+"A telefon a böngészővel tölti le: nyissa meg a fájlt, és koppintson a „Telepítés” gombra.",
+"A távirányító nem jelzi a töltöttséget",
+"A távirányító nem jelzi a töltöttségét Bluetooth-on, ezért nem jeleníthető meg. Így van ez az IR és sok set-top box távirányítónál."
 ]

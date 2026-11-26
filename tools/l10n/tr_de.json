@@ -1072,5 +1072,7 @@
 "Milchglas",
 "TVCleanzer {0} ist da",
 "Später",
-"Das Telefon lädt sie im Browser herunter: Datei öffnen und „Installieren“ tippen."
+"Das Telefon lädt sie im Browser herunter: Datei öffnen und „Installieren“ tippen.",
+"Die Fernbedienung meldet keinen Akkustand",
+"Die Fernbedienung meldet ihren Akkustand nicht über Bluetooth, daher kann er nicht angezeigt werden. Das ist bei IR- und vielen Box-Fernbedienungen so."
 ]

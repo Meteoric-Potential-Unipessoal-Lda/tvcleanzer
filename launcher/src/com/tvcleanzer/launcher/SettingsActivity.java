@@ -280,7 +280,21 @@ public class SettingsActivity extends Activity {
 
         // 1.46: extras, all off by default (ideas from couch-tv)
         addHeader(skin, T.t("Дополнительно"));
-        addToggle(skin, T.t("Заряд пульта у значка Bluetooth"), prefs.btBattery(), T.t("Показывать"), T.t("Скрыто"), prefs::setBtBattery);
+        // 1.67: a remote that never tells its charge (IR, most boxes' remotes): said so, not silence
+        // (BlatikShin: «функция включается, но ничего не происходит»)
+        boolean noLevel = prefs.btBattery() && Bt.battery(this) < 0;
+        addToggle(skin, T.t("Заряд пульта у значка Bluetooth"), prefs.btBattery(),
+                noLevel ? T.t("Пульт не сообщает заряд") : T.t("Показывать"), T.t("Скрыто"), v -> {
+            prefs.setBtBattery(v);
+            if (v && Bt.battery(this) < 0) {
+                Bt.refreshLegacy(this, null);
+                getWindow().getDecorView().postDelayed(() -> {
+                    if (isFinishing()) return;
+                    if (Bt.battery(this) < 0) Toast.makeText(this, T.t("Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок."), Toast.LENGTH_LONG).show();
+                    build();
+                }, 6000);
+            }
+        });
         addToggle(skin, T.t("Сейчас играет"), prefs.nowPlaying(), T.t("Показывать"), T.t("Скрыто"), v -> {
             prefs.setNowPlaying(v);
             if (v && !NowPlaying.allowed(this)) {

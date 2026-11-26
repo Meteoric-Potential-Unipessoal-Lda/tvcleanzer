@@ -1072,5 +1072,7 @@
 "Matowe",
 "Wyszedł TVCleanzer {0}",
 "Później",
-"Telefon pobierze nową wersję przez przeglądarkę: otwórz plik i dotknij „Zainstaluj”."
+"Telefon pobierze nową wersję przez przeglądarkę: otwórz plik i dotknij „Zainstaluj”.",
+"Pilot nie podaje stanu baterii",
+"Pilot nie podaje stanu baterii przez Bluetooth, więc nie da się go pokazać. Tak jest w pilotach IR i w wielu pilotach przystawek."
 ]

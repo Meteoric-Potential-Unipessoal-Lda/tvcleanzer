@@ -1076,6 +1076,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} is out',
     'Позже': 'Later',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Your phone will download it in the browser: open the file and tap “Install”.',
+    'Пульт не сообщает заряд': 'The remote doesn’t report its charge',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'The remote doesn’t report its charge over Bluetooth, so it can’t be shown. This is common for IR remotes and many set-top box remotes.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2152,6 +2154,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Вийшла TVCleanzer {0}',
     'Позже': 'Пізніше',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Телефон завантажить нову версію браузером: відкрийте файл і натисніть «Встановити».',
+    'Пульт не сообщает заряд': 'Пульт не повідомляє заряд',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Пульт не повідомляє заряд через Bluetooth — показати його не вийде. Так буває в ІЧ-пультів і в багатьох пультів приставок.',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3228,6 +3232,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Ya está TVCleanzer {0}',
     'Позже': 'Más tarde',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'El teléfono la descargará con el navegador: abre el archivo y toca «Instalar».',
+    'Пульт не сообщает заряд': 'El mando no informa de la carga',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'El mando no informa de su carga por Bluetooth, así que no se puede mostrar. Pasa con los mandos IR y con muchos mandos de TV box.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4304,6 +4310,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Saiu o TVCleanzer {0}',
     'Позже': 'Mais tarde',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'O telefone vai baixá-la pelo navegador: abra o arquivo e toque em «Instalar».',
+    'Пульт не сообщает заряд': 'O controle não informa a carga',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'O controle não informa a carga por Bluetooth, então não dá para mostrá-la. Isso acontece com controles IR e muitos controles de TV box.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5380,6 +5388,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} ist da',
     'Позже': 'Später',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Das Telefon lädt sie im Browser herunter: Datei öffnen und „Installieren“ tippen.',
+    'Пульт не сообщает заряд': 'Die Fernbedienung meldet keinen Akkustand',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Die Fernbedienung meldet ihren Akkustand nicht über Bluetooth, daher kann er nicht angezeigt werden. Das ist bei IR- und vielen Box-Fernbedienungen so.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6456,6 +6466,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} est disponible',
     'Позже': 'Plus tard',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Le téléphone la télécharge dans le navigateur : ouvrez le fichier et touchez « Installer ».',
+    'Пульт не сообщает заряд': 'La télécommande n’indique pas sa charge',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'La télécommande n’indique pas sa charge en Bluetooth : impossible de l’afficher. C’est le cas des télécommandes IR et de beaucoup de box.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7532,6 +7544,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'È uscito TVCleanzer {0}',
     'Позже': 'Più tardi',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Il telefono la scaricherà con il browser: apri il file e tocca «Installa».',
+    'Пульт не сообщает заряд': 'Il telecomando non comunica la carica',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Il telecomando non comunica la carica via Bluetooth, quindi non si può mostrare. Succede con i telecomandi IR e con molti telecomandi dei box.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8608,6 +8622,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Выйшла TVCleanzer {0}',
     'Позже': 'Пазней',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Тэлефон спампуе новую версію браўзерам: адкрыйце файл і націсніце «Усталяваць».',
+    'Пульт не сообщает заряд': 'Пульт не паведамляе зарад',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Пульт не паведамляе зарад праз Bluetooth — паказаць яго не атрымаецца. Так бывае ў ІЧ-пультаў і ў многіх пультаў прыставак.',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9684,6 +9700,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} шықты',
     'Позже': 'Кейінірек',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Телефон жаңа нұсқаны браузермен жүктейді: файлды ашып, «Орнату» түймесін басыңыз.',
+    'Пульт не сообщает заряд': 'Пульт зарядын хабарламайды',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Пульт зарядын Bluetooth арқылы хабарламайды — оны көрсету мүмкін емес. Бұл ИҚ-пульттерде және көптеген приставка пульттерінде болады.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10760,6 +10778,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} chiqdi',
     'Позже': 'Keyinroq',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon yangi versiyani brauzer orqali yuklab oladi: faylni oching va «O‘rnatish»ni bosing.',
+    'Пульт не сообщает заряд': 'Pult zaryadni bildirmaydi',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Pult zaryadini Bluetooth orqali bildirmaydi — uni ko‘rsatib bo‘lmaydi. Bu IQ-pultlarda va ko‘plab pristavka pultlarida uchraydi.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11836,6 +11856,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Թողարկվել է TVCleanzer {0}',
     'Позже': 'Ավելի ուշ',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Հեռախոսը նոր տարբերակը կներբեռնի դիտարկիչով․ բացեք ֆայլը և սեղմեք «Տեղադրել»։',
+    'Пульт не сообщает заряд': 'Հեռակառավարիչը լիցքը չի հաղորդում',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Հեռակառավարիչը լիցքը Bluetooth-ով չի հաղորդում, ուստի այն ցույց տալ հնարավոր չէ։ Այդպես է լինում ԻԿ և շատ սեթ-թոփ բոքսերի հեռակառավարիչների դեպքում։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12912,6 +12934,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} çıxdı',
     'Позже': 'Sonra',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon yeni versiyanı brauzerlə yükləyəcək: faylı açın və «Quraşdır» düyməsinə toxunun.',
+    'Пульт не сообщает заряд': 'Pult şarjı bildirmir',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Pult şarjını Bluetooth ilə bildirmir — onu göstərmək mümkün deyil. Bu, İQ pultlarda və bir çox pristavka pultlarında olur.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13988,6 +14012,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'გამოვიდა TVCleanzer {0}',
     'Позже': 'მოგვიანებით',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'ტელეფონი ახალ ვერსიას ბრაუზერით ჩამოტვირთავს: გახსენით ფაილი და დააჭირეთ „ინსტალაციას“.',
+    'Пульт не сообщает заряд': 'პულტი დამუხტვას არ აცნობებს',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'პულტი დამუხტვას Bluetooth-ით არ აცნობებს, ამიტომ მისი ჩვენება შეუძლებელია. ასეა IR პულტებზე და ბევრი სეტ-ტოპ ბოქსის პულტზე.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -15064,6 +15090,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} чыкты',
     'Позже': 'Кийинчерээк',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Телефон жаңы версияны браузер аркылуу жүктөйт: файлды ачып, «Орнотуу» баскычын басыңыз.',
+    'Пульт не сообщает заряд': 'Пульт зарядын билдирбейт',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Пульт зарядын Bluetooth аркылуу билдирбейт — аны көрсөтүү мүмкүн эмес. Бул ИК-пульттарда жана көп приставка пульттарында болот.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -16140,6 +16168,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} çıktı',
     'Позже': 'Sonra',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon yeni sürümü tarayıcıyla indirecek: dosyayı açın ve «Yükle»ye dokunun.',
+    'Пульт не сообщает заряд': 'Kumanda şarj bilgisini vermiyor',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Kumanda şarj durumunu Bluetooth ile bildirmiyor, bu yüzden gösterilemiyor. IR kumandalarda ve birçok TV kutusu kumandasında böyledir.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -17216,6 +17246,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Wyszedł TVCleanzer {0}',
     'Позже': 'Później',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon pobierze nową wersję przez przeglądarkę: otwórz plik i dotknij „Zainstaluj”.',
+    'Пульт не сообщает заряд': 'Pilot nie podaje stanu baterii',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Pilot nie podaje stanu baterii przez Bluetooth, więc nie da się go pokazać. Tak jest w pilotach IR i w wielu pilotach przystawek.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -18292,6 +18324,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'A apărut TVCleanzer {0}',
     'Позже': 'Mai târziu',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefonul o va descărca în browser: deschideți fișierul și atingeți „Instalează”.',
+    'Пульт не сообщает заряд': 'Telecomanda nu raportează încărcarea',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Telecomanda nu raportează încărcarea prin Bluetooth, deci nu poate fi afișată. Așa e la telecomenzile IR și la multe telecomenzi de box-uri.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -19368,6 +19402,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} 已发布',
     'Позже': '稍后',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': '手机会用浏览器下载新版本：打开文件并点击“安装”。',
+    'Пульт не сообщает заряд': '遥控器不报告电量',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': '遥控器不通过蓝牙报告电量，因此无法显示。红外遥控器和许多机顶盒遥控器都是这样。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -20444,6 +20480,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} が出ました',
     'Позже': '後で',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'ブラウザで新しいバージョンをダウンロードします。ファイルを開いて「インストール」をタップしてください。',
+    'Пульт не сообщает заряд': 'リモコンが残量を通知しません',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'リモコンがBluetoothで電池残量を通知しないため表示できません。赤外線リモコンや多くのセットトップボックスのリモコンでよくあります。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -21520,6 +21558,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} 출시',
     'Позже': '나중에',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': '휴대폰 브라우저로 새 버전을 내려받습니다. 파일을 열고 ‘설치’를 누르세요.',
+    'Пульт не сообщает заряд': '리모컨이 배터리 정보를 보내지 않음',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': '리모컨이 블루투스로 배터리 잔량을 보내지 않아 표시할 수 없습니다. 적외선 리모컨과 많은 셋톱박스 리모컨이 그렇습니다.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -22596,6 +22636,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} आ गया है',
     'Позже': 'बाद में',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'फ़ोन ब्राउज़र से नया संस्करण डाउनलोड करेगा: फ़ाइल खोलें और «इंस्टॉल करें» दबाएँ।',
+    'Пульт не сообщает заряд': 'रिमोट चार्ज नहीं बताता',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'रिमोट ब्लूटूथ से अपना चार्ज नहीं बताता, इसलिए इसे दिखाया नहीं जा सकता। ऐसा IR रिमोट और कई सेट-टॉप बॉक्स रिमोट में होता है।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -23672,6 +23714,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} sudah rilis',
     'Позже': 'Nanti',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Ponsel akan mengunduhnya lewat browser: buka file lalu ketuk «Instal».',
+    'Пульт не сообщает заряд': 'Remote tidak melaporkan daya',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Remote tidak melaporkan dayanya lewat Bluetooth, jadi tidak bisa ditampilkan. Ini biasa pada remote IR dan banyak remote set-top box.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -24748,6 +24792,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Đã có TVCleanzer {0}',
     'Позже': 'Để sau',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Điện thoại sẽ tải bản mới bằng trình duyệt: mở tệp và nhấn «Cài đặt».',
+    'Пульт не сообщает заряд': 'Điều khiển không báo mức pin',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Điều khiển không báo mức pin qua Bluetooth nên không thể hiển thị. Điều này thường gặp ở điều khiển hồng ngoại và nhiều điều khiển của đầu thu.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -25824,6 +25870,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} ออกแล้ว',
     'Позже': 'ภายหลัง',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'โทรศัพท์จะดาวน์โหลดเวอร์ชันใหม่ด้วยเบราว์เซอร์: เปิดไฟล์แล้วแตะ «ติดตั้ง»',
+    'Пульт не сообщает заряд': 'รีโมตไม่รายงานระดับแบตเตอรี่',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'รีโมตไม่รายงานแบตเตอรี่ผ่านบลูทูธ จึงแสดงไม่ได้ มักเป็นกับรีโมตอินฟราเรดและรีโมตกล่องรับสัญญาณหลายรุ่น',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -26900,6 +26948,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} is uit',
     'Позже': 'Later',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'De telefoon downloadt hem in de browser: open het bestand en tik op ‘Installeren’.',
+    'Пульт не сообщает заряд': 'De afstandsbediening meldt geen batterijniveau',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'De afstandsbediening meldt haar batterijniveau niet via Bluetooth, dus het kan niet worden getoond. Dat is zo bij IR- en veel box-afstandsbedieningen.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -27976,6 +28026,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Vyšel TVCleanzer {0}',
     'Позже': 'Později',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon ji stáhne v prohlížeči: otevřete soubor a klepněte na „Instalovat“.',
+    'Пульт не сообщает заряд': 'Ovladač nehlásí stav baterie',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Ovladač nehlásí stav baterie přes Bluetooth, takže ho nelze zobrazit. Tak je to u IR ovladačů a u mnoha ovladačů set-top boxů.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -29052,6 +29104,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Κυκλοφόρησε το TVCleanzer {0}',
     'Позже': 'Αργότερα',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Το τηλέφωνο θα το κατεβάσει με τον περιηγητή: ανοίξτε το αρχείο και πατήστε «Εγκατάσταση».',
+    'Пульт не сообщает заряд': 'Το τηλεχειριστήριο δεν αναφέρει τη φόρτιση',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Το τηλεχειριστήριο δεν αναφέρει τη φόρτισή του μέσω Bluetooth, οπότε δεν μπορεί να εμφανιστεί. Συμβαίνει με τα υπέρυθρα και πολλά τηλεχειριστήρια αποκωδικοποιητών.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -30128,6 +30182,8 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'Megjelent a TVCleanzer {0}',
     'Позже': 'Később',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'A telefon a böngészővel tölti le: nyissa meg a fájlt, és koppintson a „Telepítés” gombra.',
+    'Пульт не сообщает заряд': 'A távirányító nem jelzi a töltöttséget',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'A távirányító nem jelzi a töltöttségét Bluetooth-on, ezért nem jeleníthető meg. Így van ez az IR és sok set-top box távirányítónál.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -31204,5 +31260,7 @@ const Map<String, Map<String, String>> translations = {
     'Вышла TVCleanzer {0}': 'TVCleanzer {0} är ute',
     'Позже': 'Senare',
     'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefonen laddar ner den i webbläsaren: öppna filen och tryck på ”Installera”.',
+    'Пульт не сообщает заряд': 'Fjärrkontrollen rapporterar inte laddningen',
+    'Пульт не сообщает заряд по Bluetooth — показать его не получится. Так бывает у ИК-пультов и у многих пультов приставок.': 'Fjärrkontrollen rapporterar inte sin laddning via Bluetooth, så den kan inte visas. Så är det med IR-kontroller och många boxkontroller.',
   },
 };

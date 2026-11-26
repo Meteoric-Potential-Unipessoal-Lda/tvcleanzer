@@ -1072,5 +1072,7 @@
 "Mat",
 "TVCleanzer {0} is uit",
 "Later",
-"De telefoon downloadt hem in de browser: open het bestand en tik op ‘Installeren’."
+"De telefoon downloadt hem in de browser: open het bestand en tik op ‘Installeren’.",
+"De afstandsbediening meldt geen batterijniveau",
+"De afstandsbediening meldt haar batterijniveau niet via Bluetooth, dus het kan niet worden getoond. Dat is zo bij IR- en veel box-afstandsbedieningen."
 ]
