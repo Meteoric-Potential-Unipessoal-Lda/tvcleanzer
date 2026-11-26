@@ -483,7 +483,9 @@ public class HomeKeyService extends AccessibilityService {
         volRepeat = new Runnable() {
             int steps;
             @Override public void run() {
-                if (++steps > 100) { stopVolRepeat(); return; } // the UP got lost: don't run away
+                // the UP got lost: don't run away. 1.66: 25 steps (~3 s), not 100 — Ilnur's volume
+                // kept rising long after the key was let go (#118)
+                if (++steps > 25) { stopVolRepeat(); return; }
                 if (steps == 1) android.util.Log.i("TVCleanzerVol", "no repeats from the remote: stepping");
                 volumeStep(dir);
                 handler.postDelayed(this, 110);
@@ -538,6 +540,8 @@ public class HomeKeyService extends AccessibilityService {
         int code = e.getKeyCode();
         lastKeyAt = SystemClock.uptimeMillis();
         lastKeyCode = code;
+        // 1.66: any other key ends our own Volume stepping (its UP may never have come)
+        if (code != KeyEvent.KEYCODE_VOLUME_UP && code != KeyEvent.KEYCODE_VOLUME_DOWN) stopVolRepeat();
         KeyLearn l = learn;
         if (l != null && remappable(code)) {
             if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) l.key(code);

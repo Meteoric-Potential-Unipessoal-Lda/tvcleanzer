@@ -184,6 +184,12 @@ final class LiveWall extends FrameLayout {
                     if (!useSurface) postDelayed(noPicture, 8000);
                 }
             });
+            // 1.66: some MediaTek players ignore setLooping and stop on the last frame (Xiaomi A2,
+            // #129: the clip played once and froze): start it over by hand
+            m.setOnCompletionListener(mp -> {
+                if (player != mp || !wanted) return;
+                try { mp.seekTo(0); mp.start(); } catch (Exception ignored) {}
+            });
             m.setOnErrorListener((mp, what, extra) -> {
                 if (player == mp) fail("error " + what + "/" + extra);
                 return true;

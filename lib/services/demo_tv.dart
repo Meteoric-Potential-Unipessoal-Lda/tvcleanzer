@@ -270,7 +270,7 @@ class DemoAdbClient extends AdbClient {
       return 'Filesystem 1K-blocks Used Available Use% Mounted on\n'
           '/dev/block/dm-5 12058624 ${12058624 - s.dataFreeKb} ${s.dataFreeKb} 58% /data\n';
     }
-    if (c == 'pm list packages') {
+    if (c == 'pm list packages' || c.startsWith('pm list packages --user 0')) {
       return s.installed.map((p) => 'package:$p').join('\n');
     }
     if (c.startsWith('cmd package query-activities') && c.contains('category.HOME')) {

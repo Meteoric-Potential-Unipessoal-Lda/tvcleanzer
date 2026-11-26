@@ -132,7 +132,10 @@ class AdbPackageManager {
     final adb = AdbClient.open(host: device.ipAddress, port: device.port);
     try {
       await adb.connect();
-      final raw = await adb.shell('pm list packages');
+      // Only the owner's user: a copy installed for another user (a sleeping profile) is not on
+      // this TV's screen — Xiaomi's shop demo «floatingframe» stayed «to remove» for ever (MZTU0).
+      var raw = await adb.shell('pm list packages --user 0 2>/dev/null');
+      if (_parsePackageList(raw).isEmpty) raw = await adb.shell('pm list packages');
       // Disabled packages are already hidden (by TVCleanzer on Sber/Yandex, or by the owner).
       final disabled = _parsePackageList(await adb.shell('pm list packages -d 2>/dev/null')).toSet();
       final pkgs = _parsePackageList(raw).where((p) => !disabled.contains(p)).toList();
@@ -2271,7 +2274,9 @@ class AdbPackageManager {
       }
       final pkgs = {...user, ...launchable.where(all.contains)}
         ..removeAll(disabled)
-        ..remove(launcherPkg);
+        ..remove(launcherPkg)
+        // the TV's factory tools are not apps to open (Haier «Factory Mode», see isServiceTool)
+        ..removeWhere((p) => !user.contains(p) && Protection.isServiceTool(p));
       final apps = [
         for (final p in pkgs)
           TvApp(pkg: p, label: _appName(p, labels, db), user: user.contains(p), launchable: launchable.contains(p)),

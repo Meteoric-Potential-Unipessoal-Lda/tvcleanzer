@@ -77,6 +77,15 @@ class Protection {
       r'launcher\.(recommendations|partnerwidget|customizer)$',
       caseSensitive: false);
 
+  /// Factory menus and test tools of the TV (CVTE/MStar/Haier). Never offered to open:
+  /// started by mistake, a Haier H55P751UG / Haier Android TV DVB went into «Factory Mode»
+  /// (Source Test on a black screen, volume 79–81) that even a factory reset kept.
+  static final _serviceTool = RegExp(
+      r'^com\.cvte\.tv\.(fac|hkcfac)|^com\.at\.factory\.|factorymenu|factorytest|factorymode|\.aging(\.|$)|hkcfac|autotest',
+      caseSensitive: false);
+
+  static bool isServiceTool(String pkg) => _serviceTool.hasMatch(pkg);
+
   static bool isProtected(String pkg) {
     if (_launcher.hasMatch(pkg) && !_launcherOk.hasMatch(pkg)) return true;
     for (final r in _rules) {
