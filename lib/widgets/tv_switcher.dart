@@ -7,6 +7,7 @@ import '../services/tv_names.dart';
 import '../screens/home_screen.dart';
 import '../state/current_tv.dart';
 import '../theme/app_theme.dart';
+import 'sheet_scroll.dart';
 
 /// Card at the top of the tabs that work with one TV (Launcher, Apps; Remote has its own):
 /// which TV they act on, and with several TVs found a tap switches to another.
@@ -67,10 +68,11 @@ class TvBanner extends ConsumerWidget {
     final current = ref.read(currentTvProvider);
     final devices = ref.read(discoveryProvider).devices;
     final chosen = await showModalBottomSheet<TvDevice>(
+      isScrollControlled: true,
       context: context,
       backgroundColor: AppColors.bgCard,
       showDragHandle: true,
-      builder: (c) => SafeArea(
+      builder: (c) => SheetScroll(child: SafeArea(
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
@@ -88,7 +90,7 @@ class TvBanner extends ConsumerWidget {
             ),
           const SizedBox(height: 8),
         ]),
-      ),
+      )),
     );
     if (chosen != null && chosen.id != current?.id) {
       await ref.read(currentTvProvider.notifier).select(chosen);

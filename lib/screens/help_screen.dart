@@ -17,6 +17,7 @@ import '../l10n/l10n.dart';
 import '../widgets/support_card.dart';
 import 'faq_screen.dart';
 import '../data/tv_guides.dart';
+import '../widgets/sheet_scroll.dart';
 /// "How do I turn on debugging?" — step by step for each kind of TV.
 class HelpScreen extends StatefulWidget {
   const HelpScreen({super.key});
@@ -141,11 +142,12 @@ class _HelpScreenState extends State<HelpScreen> {
 /// Bottom sheet behind the "?" button: guide + problem report.
 Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
   return showModalBottomSheet(
+    isScrollControlled: true,
     context: context,
     backgroundColor: AppColors.bgCard,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-    builder: (ctx) => SafeArea(
+    builder: (ctx) => SheetScroll(child: SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -239,6 +241,6 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
               style: const TextStyle(color: AppColors.fgMuted, fontSize: 11)),
         ]),
       ),
-    ),
+    )),
   );
 }

@@ -28,6 +28,7 @@ import '../widgets/pressable.dart';
 
 import '../l10n/l10n.dart';
 import '../widgets/tv_switcher.dart';
+import '../widgets/sheet_scroll.dart';
 class RemoteScreen extends ConsumerStatefulWidget {
   const RemoteScreen({super.key});
   @override
@@ -463,7 +464,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
       backgroundColor: AppColors.bgCard,
       isScrollControlled: true,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, set) => SafeArea(
+        builder: (ctx, set) => SheetScroll(child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -501,7 +502,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
               ),
             ]),
           ),
-        ),
+        )),
       ),
     );
     if (go != true || !mounted) return;
@@ -591,9 +592,10 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
   Future<void> _sleep(TvDevice tv) async {
     final options = [15, 30, 60, 90, 120];
     final pick = await showModalBottomSheet<int>(
+      isScrollControlled: true,
       context: context,
       backgroundColor: AppColors.bgCard,
-      builder: (ctx) => SafeArea(
+      builder: (ctx) => SheetScroll(child: SafeArea(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Padding(
             padding: const EdgeInsets.all(16),
@@ -614,7 +616,7 @@ class _RemoteScreenState extends ConsumerState<RemoteScreen> {
             ),
           const Gap(8),
         ]),
-      ),
+      )),
     );
     if (pick == null) return;
     await _run(tr('Ставим таймер…'), () async {

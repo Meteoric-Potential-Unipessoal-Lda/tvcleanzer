@@ -8,6 +8,7 @@ import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
 import '../theme/app_theme.dart';
+import 'sheet_scroll.dart';
 
 /// «Экран и сон»: after how long without the remote the TV's screen goes dark. With no
 /// screensaver Android puts the TV to sleep then — owners saw it switch itself off during a
@@ -78,7 +79,7 @@ class _ScreenSleepSheetState extends ConsumerState<_ScreenSleepSheet> {
   @override
   Widget build(BuildContext context) {
     final m = _minutes;
-    return SafeArea(
+    return SheetScroll(child: SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -127,6 +128,6 @@ class _ScreenSleepSheetState extends ConsumerState<_ScreenSleepSheet> {
           ],
         ]),
       ),
-    );
+    ));
   }
 }

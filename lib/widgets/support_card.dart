@@ -6,6 +6,7 @@ import '../l10n/l10n.dart';
 import '../services/support.dart';
 import '../services/tip_jar.dart';
 import '../theme/app_theme.dart';
+import 'sheet_scroll.dart';
 
 /// A quiet line about the author (Telegram), and «Поддержать автора» where donations are allowed.
 class SupportCard extends StatelessWidget {
@@ -87,9 +88,10 @@ class SupportCard extends StatelessWidget {
     final jar = TipJar.instance;
     final seen = jar.thanks;
     showModalBottomSheet<void>(
+      isScrollControlled: true,
       context: context,
       backgroundColor: AppColors.bgCard,
-      builder: (c) => SafeArea(
+      builder: (c) => SheetScroll(child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: ListenableBuilder(
@@ -119,15 +121,16 @@ class SupportCard extends StatelessWidget {
             ]),
           ),
         ),
-      ),
+      )),
     );
   }
 
   static void _donate(BuildContext context) {
     showModalBottomSheet<void>(
+      isScrollControlled: true,
       context: context,
       backgroundColor: AppColors.bgCard,
-      builder: (c) => SafeArea(
+      builder: (c) => SheetScroll(child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -150,7 +153,7 @@ class SupportCard extends StatelessWidget {
               ),
           ]),
         ),
-      ),
+      )),
     );
   }
 }

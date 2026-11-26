@@ -5,6 +5,7 @@ import '../models/tv_device.dart';
 import '../theme/app_theme.dart';
 
 import '../l10n/l10n.dart';
+import 'sheet_scroll.dart';
 class PackageTile extends StatelessWidget {
   final TvPackage pkg;
   final bool dimmed;
@@ -125,9 +126,10 @@ void showPackageInfo(BuildContext context, TvPackage pkg) {
   };
   final lines = (pkg.reason ?? '').split('\n');
   showModalBottomSheet<void>(
+    isScrollControlled: true,
     context: context,
     backgroundColor: AppColors.bgCard,
-    builder: (c) => SafeArea(
+    builder: (c) => SheetScroll(child: SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -170,6 +172,6 @@ void showPackageInfo(BuildContext context, TvPackage pkg) {
           ),
         ]),
       ),
-    ),
+    )),
   );
 }

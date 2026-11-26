@@ -15,6 +15,7 @@ import 'clean_screen.dart';
 import 'home_screen.dart';
 
 import '../l10n/l10n.dart';
+import '../widgets/sheet_scroll.dart';
 // ─── Providers ───────────────────────────────────────────────────────────────
 
 final scanProvider = StateNotifierProvider.autoDispose.family<ScanNotifier, ScanState, TvDevice>(
@@ -319,6 +320,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
       HapticFeedback.mediumImpact();
       showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         backgroundColor: AppColors.bgCard,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
@@ -389,7 +391,7 @@ class _BoostSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final r = result;
-    return SafeArea(
+    return SheetScroll(child: SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -428,7 +430,7 @@ class _BoostSheet extends StatelessWidget {
           )),
         ]),
       ),
-    );
+    ));
   }
 
   Widget _metric(String label, int mb, Color color, {bool animate = false}) => Expanded(
