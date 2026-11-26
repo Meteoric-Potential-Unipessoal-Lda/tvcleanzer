@@ -629,8 +629,10 @@ class _LauncherScreenState extends ConsumerState<LauncherScreen> {
           _sw(tr('Цифры памяти при наведении'), null, look.memLabel, (v) => _setLook(look.copyWith(memLabel: v)), need: 99),
         // «Часы» has only the corner icons (launcher 0.98)
         if (!look.cleanBar && look.style != 1)
-          _pills(tr('Значки вверху'), [tr('Надписи'), tr('Значки'), tr('Мини в углу')], look.barStyle,
-              (v) => _setLook(look.copyWith(barStyle: v)), need: 68),
+          // 1.3.192: «Надписи» gone — the words ran off the screen on smaller TVs (Alexander, Sergey);
+          // a saved «Надписи» counts as «Значки»
+          _pills(tr('Значки вверху'), [tr('Значки'), tr('Мини в углу')], look.barStyle == 0 ? 0 : look.barStyle - 1,
+              (v) => _setLook(look.copyWith(barStyle: v + 1)), need: 68),
         if (!look.cleanBar)
           _sw(tr('Bluetooth на главном экране'),
               tr('Включён ли и что подключено; нажатие — включить, выключить или открыть настройки'), look.btPill,

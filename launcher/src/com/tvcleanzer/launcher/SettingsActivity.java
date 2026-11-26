@@ -124,8 +124,9 @@ public class SettingsActivity extends Activity {
         });
         // «Часы» has no top bar, only the corner (0.98, an owner: «нажимаю — ничего не меняется»)
         if (!prefs.cleanBar() && prefs.style() != Prefs.STYLE_CLOCK) {
-            addChoice(skin, T.t("Верхняя панель"), new String[]{T.t("Надписи"), T.t("Значки"), T.t("Мини в углу")},
-                    prefs.barStyle(), prefs::setBarStyle);
+            // 1.71: «Надписи» gone (they ran off the screen on smaller TVs)
+            addChoice(skin, T.t("Верхняя панель"), new String[]{T.t("Значки"), T.t("Мини в углу")},
+                    prefs.barStyle() - 1, i -> prefs.setBarStyle(i + 1));
         }
         addToggle(skin, T.t("Названия разделов"), prefs.sectionTitles(), T.t("Показывать"), T.t("Скрыто"), prefs::setSectionTitles);
         addToggle(skin, T.t("Память на главном экране"), prefs.memPill(), T.t("Показывать"), T.t("Скрыто"), prefs::setMemPill);

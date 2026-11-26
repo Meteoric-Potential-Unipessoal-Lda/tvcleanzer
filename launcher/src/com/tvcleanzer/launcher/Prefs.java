@@ -270,7 +270,9 @@ final class Prefs {
     static final int BAR_WORDS = 0, BAR_ICONS = 1, BAR_MINI = 2;
     /** Top bar: words, round icons (0.55) or small icons in the screen's corner like a tablet's
      *  status bar (0.68, the default for everyone — owners asked for it «срочно»). */
-    int barStyle()           { return clamp(sp.getInt("barStyle", BAR_MINI), 0, 2); }
+    /** 1.71: «Надписи» gone — the words ran off the screen on smaller TVs (Alexander, Sergey):
+     *  a saved «Надписи» shows the round icons. */
+    int barStyle()           { int v = clamp(sp.getInt("barStyle", BAR_MINI), 0, 2); return v == BAR_WORDS ? BAR_ICONS : v; }
     void setBarStyle(int v)  { sp.edit().putInt("barStyle", clamp(v, 0, 2)).apply(); }
     static final int FAV_FULL = 0, FAV_START = 1, FAV_CENTER = 2;
     /** «Рамка избранного» (one row of favourites, tiles home): as wide as its tiles on the left
