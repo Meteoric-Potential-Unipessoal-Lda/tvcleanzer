@@ -2119,7 +2119,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         updateWeatherView();
         LinearLayout.LayoutParams trp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        trp.topMargin = Ui.dp(this, 4);
+        // 1.71: none in one line — the 4 dp pushed the whole line below the glass's middle (Sergey: «криво»)
+        trp.topMargin = oneLine && !prefs.greeting() ? 0 : Ui.dp(this, 4);
         // 1.22: «Часы, дата и погода» off: no clock, date or weather up top, only the icons
         if (prefs.showClock()) left.addView(timeRow, trp); else weatherView = null;
         clockGlassView = null;
