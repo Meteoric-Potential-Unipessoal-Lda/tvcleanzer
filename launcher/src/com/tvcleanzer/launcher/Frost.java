@@ -19,7 +19,44 @@ import android.view.View;
  * view sits on the screen. Photo wallpapers only; a video or a theme keeps the plain glass.
  */
 final class Frost extends Drawable {
-    private static final int SCALE = 6;
+    static final int SCALE = 6;
+
+    /** 1.67: «Матовое» over a video wallpaper (Sergey: «на видео фоне матовые блоки нужно
+     *  сделать»): LiveWall puts a small blurred copy of the current frame here every ~0.6 s. */
+    private static Bitmap liveBlur;
+    private static final java.util.Set<Frost> onVideo =
+            java.util.Collections.newSetFromMap(new java.util.WeakHashMap<Frost, Boolean>());
+
+    /** A glass over the video wants frames (LiveWall makes none otherwise). */
+    static boolean liveWanted() { return !onVideo.isEmpty(); }
+
+    /** UI thread: a new blurred frame for every glass over the video. */
+    static void liveFrame(Bitmap b) {
+        liveBlur = b;
+        for (Frost f : new java.util.ArrayList<>(onVideo)) f.invalidateSelf();
+    }
+
+    /** The video went away (stopped, another wallpaper): the glasses forget it. */
+    static void liveGone() {
+        liveBlur = null;
+        onVideo.clear();
+    }
+
+    /** A glass over the video wallpaper: its picture comes from [liveFrame]. */
+    static Frost overVideo(View host, float radius, int dim, Drawable over) {
+        Frost f = new Frost(host, null, radius, dim, over);
+        onVideo.add(f);
+        return f;
+    }
+
+    /** [b] (a frame at screen/SCALE) blurred in place, as light as the photo's. */
+    static void blurInPlace(Bitmap b) {
+        int w = b.getWidth(), h = b.getHeight();
+        int[] px = new int[w * h];
+        b.getPixels(px, 0, w, 0, 0, w, h);
+        for (int i = 0; i < 2; i++) box(px, w, h, 1);
+        b.setPixels(px, 0, w, 0, 0, w, h);
+    }
     private static Bitmap cacheSrc, cacheOut;
     private static int cacheW, cacheH;
 
@@ -110,13 +147,14 @@ final class Frost extends Drawable {
             int x = loc[0], y = loc[1];
             src.set((x + b.left) / SCALE, (y + b.top) / SCALE,
                     (x + Math.round(b.right * sx)) / SCALE, (y + Math.round(b.bottom * sy)) / SCALE);
-            src.intersect(0, 0, blur.getWidth(), blur.getHeight());
+            Bitmap pic = blur != null ? blur : liveBlur;
+            if (pic != null) src.intersect(0, 0, pic.getWidth(), pic.getHeight());
             dst.set(b);
             clip.reset();
             clip.addRoundRect(dst, radius, radius, Path.Direction.CW);
             int save = c.save();
             c.clipPath(clip);
-            if (!src.isEmpty()) c.drawBitmap(blur, src, dst, paint);
+            if (pic != null && !src.isEmpty()) c.drawBitmap(pic, src, dst, paint);
             if (dim > 0) c.drawRect(dst, dimPaint);
             c.restoreToCount(save);
         } catch (Throwable ignored) {}

@@ -8,6 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/tv_device.dart';
 import '../services/adb_package_manager.dart';
+import '../services/app_update.dart';
+import '../services/support.dart';
 import '../services/demo_tv.dart';
 import '../services/manual_tvs.dart';
 import '../services/tv_discovery.dart';
@@ -160,9 +162,15 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  /// A newer APK on GitHub (Telegram builds for Android): (version, url).
+  (String, String)? _update;
+
   @override
   void initState() {
     super.initState();
+    AppUpdate.check().then((u) {
+      if (u != null && mounted) setState(() => _update = u);
+    });
     // Auto-start discovery on first load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(discoveryProvider.notifier).startScan();
@@ -181,6 +189,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverList(delegate: SliverChildListDelegate([
               const Gap(8),
+              if (_update != null) ...[_buildUpdate(_update!), const Gap(12)],
               _buildSearchStatus(state),
               const Gap(24),
               if (state.devices.isNotEmpty) ...[
@@ -269,6 +278,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       const Gap(8),
     ],
   );
+
+  /// «Вышла TVCleanzer 1.3.X»: the browser downloads the APK, Android installs it over this one.
+  Widget _buildUpdate((String, String) u) => Container(
+    padding: const EdgeInsets.fromLTRB(16, 14, 8, 10),
+    decoration: BoxDecoration(
+      color: AppColors.accentDim,
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: AppColors.accent.withValues(alpha: .35)),
+    ),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        const Icon(Icons.system_update_rounded, color: AppColors.accent, size: 20),
+        const Gap(10),
+        Expanded(child: Text(tr('Вышла TVCleanzer {0}', [u.$1]),
+          style: const TextStyle(color: AppColors.fg, fontWeight: FontWeight.w600, fontSize: 15))),
+      ]),
+      const Gap(6),
+      Text(tr('Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».'),
+        style: const TextStyle(color: AppColors.fgMid, fontSize: 12, height: 1.4)),
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        TextButton(onPressed: () => setState(() => _update = null), child: Text(tr('Позже'))),
+        FilledButton(onPressed: () => Support.open(u.$2), child: Text(tr('Обновить'))),
+      ]),
+    ]),
+  ).animate().fadeIn(duration: 300.ms);
 
   Widget _buildSearchStatus(DiscoveryState state) {
     if (!state.scanning) return const SizedBox.shrink();

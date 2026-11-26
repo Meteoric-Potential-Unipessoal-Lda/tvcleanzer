@@ -1073,6 +1073,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ and ⋯ in the dock',
     'Скрыты — они в правом верхнем углу': 'Hidden — they are in the top right corner',
     'Матовое': 'Frosted',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} is out',
+    'Позже': 'Later',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Your phone will download it in the browser: open the file and tap “Install”.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2146,6 +2149,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'Значки ⚙ і ⋯ у доку',
     'Скрыты — они в правом верхнем углу': 'Приховані — вони в правому верхньому куті',
     'Матовое': 'Матове',
+    'Вышла TVCleanzer {0}': 'Вийшла TVCleanzer {0}',
+    'Позже': 'Пізніше',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Телефон завантажить нову версію браузером: відкрийте файл і натисніть «Встановити».',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3219,6 +3225,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ y ⋯ en el dock',
     'Скрыты — они в правом верхнем углу': 'Ocultos: están en la esquina superior derecha',
     'Матовое': 'Esmerilado',
+    'Вышла TVCleanzer {0}': 'Ya está TVCleanzer {0}',
+    'Позже': 'Más tarde',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'El teléfono la descargará con el navegador: abre el archivo y toca «Instalar».',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4292,6 +4301,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ e ⋯ na dock',
     'Скрыты — они в правом верхнем углу': 'Ocultos — estão no canto superior direito',
     'Матовое': 'Fosco',
+    'Вышла TVCleanzer {0}': 'Saiu o TVCleanzer {0}',
+    'Позже': 'Mais tarde',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'O telefone vai baixá-la pelo navegador: abra o arquivo e toque em «Instalar».',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5365,6 +5377,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ und ⋯ im Dock',
     'Скрыты — они в правом верхнем углу': 'Ausgeblendet – sie sind oben rechts',
     'Матовое': 'Milchglas',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} ist da',
+    'Позже': 'Später',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Das Telefon lädt sie im Browser herunter: Datei öffnen und „Installieren“ tippen.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6438,6 +6453,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ et ⋯ dans le dock',
     'Скрыты — они в правом верхнем углу': 'Masqués — ils sont en haut à droite',
     'Матовое': 'Dépoli',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} est disponible',
+    'Позже': 'Plus tard',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Le téléphone la télécharge dans le navigateur : ouvrez le fichier et touchez « Installer ».',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7511,6 +7529,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ e ⋯ nel dock',
     'Скрыты — они в правом верхнем углу': 'Nascosti: sono in alto a destra',
     'Матовое': 'Satinato',
+    'Вышла TVCleanzer {0}': 'È uscito TVCleanzer {0}',
+    'Позже': 'Più tardi',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Il telefono la scaricherà con il browser: apri il file e tocca «Installa».',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8584,6 +8605,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'Значкі ⚙ і ⋯ у доку',
     'Скрыты — они в правом верхнем углу': 'Схаваныя — яны ў правым верхнім куце',
     'Матовое': 'Матавае',
+    'Вышла TVCleanzer {0}': 'Выйшла TVCleanzer {0}',
+    'Позже': 'Пазней',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Тэлефон спампуе новую версію браўзерам: адкрыйце файл і націсніце «Усталяваць».',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9657,6 +9681,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'Доктағы ⚙ және ⋯',
     'Скрыты — они в правом верхнем углу': 'Жасырылған — олар оң жақ жоғарғы бұрышта',
     'Матовое': 'Күңгірт',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} шықты',
+    'Позже': 'Кейінірек',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Телефон жаңа нұсқаны браузермен жүктейді: файлды ашып, «Орнату» түймесін басыңыз.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10730,6 +10757,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'Dokdagi ⚙ va ⋯',
     'Скрыты — они в правом верхнем углу': 'Yashirilgan — ular oʻng yuqori burchakda',
     'Матовое': 'Xira',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} chiqdi',
+    'Позже': 'Keyinroq',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon yangi versiyani brauzer orqali yuklab oladi: faylni oching va «O‘rnatish»ni bosing.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11803,6 +11833,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ և ⋯ դոկում',
     'Скрыты — они в правом верхнем углу': 'Թաքցված են — դրանք վերին աջ անկյունում են',
     'Матовое': 'Փայլատ',
+    'Вышла TVCleanzer {0}': 'Թողարկվել է TVCleanzer {0}',
+    'Позже': 'Ավելի ուշ',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Հեռախոսը նոր տարբերակը կներբեռնի դիտարկիչով․ բացեք ֆայլը և սեղմեք «Տեղադրել»։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12876,6 +12909,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'Dokda ⚙ və ⋯',
     'Скрыты — они в правом верхнем углу': 'Gizlədilib — yuxarı sağ küncdədir',
     'Матовое': 'Mat',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} çıxdı',
+    'Позже': 'Sonra',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon yeni versiyanı brauzerlə yükləyəcək: faylı açın və «Quraşdır» düyməsinə toxunun.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -13949,6 +13985,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ და ⋯ დოკში',
     'Скрыты — они в правом верхнем углу': 'დამალულია — ისინი ზედა მარჯვენა კუთხეშია',
     'Матовое': 'მქრქალი',
+    'Вышла TVCleanzer {0}': 'გამოვიდა TVCleanzer {0}',
+    'Позже': 'მოგვიანებით',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'ტელეფონი ახალ ვერსიას ბრაუზერით ჩამოტვირთავს: გახსენით ფაილი და დააჭირეთ „ინსტალაციას“.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -15022,6 +15061,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'Доктогу ⚙ жана ⋯',
     'Скрыты — они в правом верхнем углу': 'Жашырылган — алар жогорку оң бурчта',
     'Матовое': 'Күңүрт',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} чыкты',
+    'Позже': 'Кийинчерээк',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Телефон жаңы версияны браузер аркылуу жүктөйт: файлды ачып, «Орнотуу» баскычын басыңыз.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -16095,6 +16137,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'Dock’ta ⚙ ve ⋯',
     'Скрыты — они в правом верхнем углу': 'Gizli — sağ üst köşedeler',
     'Матовое': 'Buzlu',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} çıktı',
+    'Позже': 'Sonra',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon yeni sürümü tarayıcıyla indirecek: dosyayı açın ve «Yükle»ye dokunun.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -17168,6 +17213,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ i ⋯ w doku',
     'Скрыты — они в правом верхнем углу': 'Ukryte — są w prawym górnym rogu',
     'Матовое': 'Matowe',
+    'Вышла TVCleanzer {0}': 'Wyszedł TVCleanzer {0}',
+    'Позже': 'Później',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon pobierze nową wersję przez przeglądarkę: otwórz plik i dotknij „Zainstaluj”.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -18241,6 +18289,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ și ⋯ în dock',
     'Скрыты — они в правом верхнем углу': 'Ascunse — sunt în colțul din dreapta sus',
     'Матовое': 'Mat',
+    'Вышла TVCleanzer {0}': 'A apărut TVCleanzer {0}',
+    'Позже': 'Mai târziu',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefonul o va descărca în browser: deschideți fișierul și atingeți „Instalează”.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -19314,6 +19365,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '程序坞中的 ⚙ 和 ⋯',
     'Скрыты — они в правом верхнем углу': '已隐藏——在右上角',
     'Матовое': '磨砂',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} 已发布',
+    'Позже': '稍后',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': '手机会用浏览器下载新版本：打开文件并点击“安装”。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -20387,6 +20441,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'ドックの ⚙ と ⋯',
     'Скрыты — они в правом верхнем углу': '非表示（右上の角にあります）',
     'Матовое': 'すりガラス',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} が出ました',
+    'Позже': '後で',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'ブラウザで新しいバージョンをダウンロードします。ファイルを開いて「インストール」をタップしてください。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -21460,6 +21517,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '독의 ⚙ 및 ⋯',
     'Скрыты — они в правом верхнем углу': '숨김 — 오른쪽 위 모서리에 있음',
     'Матовое': '젖빛',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} 출시',
+    'Позже': '나중에',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': '휴대폰 브라우저로 새 버전을 내려받습니다. 파일을 열고 ‘설치’를 누르세요.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -22533,6 +22593,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': 'डॉक में ⚙ और ⋯',
     'Скрыты — они в правом верхнем углу': 'छिपे — ये ऊपर दाएँ कोने में हैं',
     'Матовое': 'फ्रॉस्टेड',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} आ गया है',
+    'Позже': 'बाद में',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'फ़ोन ब्राउज़र से नया संस्करण डाउनलोड करेगा: फ़ाइल खोलें और «इंस्टॉल करें» दबाएँ।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -23606,6 +23669,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ dan ⋯ di dock',
     'Скрыты — они в правом верхнем углу': 'Disembunyikan — ada di pojok kanan atas',
     'Матовое': 'Buram',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} sudah rilis',
+    'Позже': 'Nanti',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Ponsel akan mengunduhnya lewat browser: buka file lalu ketuk «Instal».',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -24679,6 +24745,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ và ⋯ trên dock',
     'Скрыты — они в правом верхнем углу': 'Đã ẩn — chúng ở góc trên bên phải',
     'Матовое': 'Mờ',
+    'Вышла TVCleanzer {0}': 'Đã có TVCleanzer {0}',
+    'Позже': 'Để sau',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Điện thoại sẽ tải bản mới bằng trình duyệt: mở tệp và nhấn «Cài đặt».',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -25752,6 +25821,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ และ ⋯ ในด็อก',
     'Скрыты — они в правом верхнем углу': 'ซ่อนอยู่ — อยู่ที่มุมขวาบน',
     'Матовое': 'ฝ้า',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} ออกแล้ว',
+    'Позже': 'ภายหลัง',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'โทรศัพท์จะดาวน์โหลดเวอร์ชันใหม่ด้วยเบราว์เซอร์: เปิดไฟล์แล้วแตะ «ติดตั้ง»',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -26825,6 +26897,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ en ⋯ in het dock',
     'Скрыты — они в правом верхнем углу': 'Verborgen — ze staan rechtsboven',
     'Матовое': 'Mat',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} is uit',
+    'Позже': 'Later',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'De telefoon downloadt hem in de browser: open het bestand en tik op ‘Installeren’.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -27898,6 +27973,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ a ⋯ v doku',
     'Скрыты — они в правом верхнем углу': 'Skryté — jsou v pravém horním rohu',
     'Матовое': 'Matné',
+    'Вышла TVCleanzer {0}': 'Vyšel TVCleanzer {0}',
+    'Позже': 'Později',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefon ji stáhne v prohlížeči: otevřete soubor a klepněte na „Instalovat“.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -28971,6 +29049,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ και ⋯ στη γραμμή',
     'Скрыты — они в правом верхнем углу': 'Κρυμμένα — βρίσκονται πάνω δεξιά',
     'Матовое': 'Ματ',
+    'Вышла TVCleanzer {0}': 'Κυκλοφόρησε το TVCleanzer {0}',
+    'Позже': 'Αργότερα',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Το τηλέφωνο θα το κατεβάσει με τον περιηγητή: ανοίξτε το αρχείο και πατήστε «Εγκατάσταση».',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -30044,6 +30125,9 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ és ⋯ a dokkban',
     'Скрыты — они в правом верхнем углу': 'Elrejtve — a jobb felső sarokban vannak',
     'Матовое': 'Matt',
+    'Вышла TVCleanzer {0}': 'Megjelent a TVCleanzer {0}',
+    'Позже': 'Később',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'A telefon a böngészővel tölti le: nyissa meg a fájlt, és koppintson a „Telepítés” gombra.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -31117,5 +31201,8 @@ const Map<String, Map<String, String>> translations = {
     'Значки ⚙ и ⋯ в доке': '⚙ och ⋯ i dockan',
     'Скрыты — они в правом верхнем углу': 'Dolda — de finns uppe till höger',
     'Матовое': 'Frostat',
+    'Вышла TVCleanzer {0}': 'TVCleanzer {0} är ute',
+    'Позже': 'Senare',
+    'Телефон скачает новую версию браузером: откройте файл и нажмите «Установить».': 'Telefonen laddar ner den i webbläsaren: öppna filen och tryck på ”Installera”.',
   },
 };

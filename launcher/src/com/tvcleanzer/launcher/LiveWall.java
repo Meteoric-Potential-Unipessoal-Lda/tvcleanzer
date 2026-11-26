@@ -1,6 +1,7 @@
 package com.tvcleanzer.launcher;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -116,6 +117,8 @@ final class LiveWall extends FrameLayout {
                     if (!gotFrame) {
                         gotFrame = true;
                         removeCallbacks(noPicture);
+                        removeCallbacks(frostTick);
+                        post(frostTick);
                     }
                 }
             });
@@ -124,6 +127,34 @@ final class LiveWall extends FrameLayout {
     }
 
     private boolean gotFrame;
+
+    /** 1.67: drawn through a TextureView, so a frame can be read back for «Матовое». */
+    boolean frames() { return !useSurface; }
+
+    private Bitmap frostA, frostB;
+    private boolean frostFlip;
+    /** Every ~0.6 s while the video plays: a small blurred frame for the glasses over it. Two
+     *  bitmaps take turns, so a glass never draws one that is being written. */
+    private final Runnable frostTick = new Runnable() {
+        @Override public void run() {
+            if (texture == null || player == null || !prepared || !wanted || !Frost.liveWanted()) return;
+            try {
+                int w = Math.max(1, getWidth() / Frost.SCALE), h = Math.max(1, getHeight() / Frost.SCALE);
+                Bitmap b = frostFlip ? frostA : frostB;
+                if (b == null || b.getWidth() != w || b.getHeight() != h) {
+                    b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+                    if (frostFlip) frostA = b; else frostB = b;
+                }
+                texture.getBitmap(b);
+                Frost.blurInPlace(b);
+                frostFlip = !frostFlip;
+                Frost.liveFrame(b);
+            } catch (Throwable t) {
+                return; // this TV can't read frames back: the glass stays plain
+            }
+            postDelayed(this, 600);
+        }
+    };
     private final Runnable noPicture = () -> {
         if (!gotFrame && this.player != null && this.prepared) fail("no picture in 8 s");
     };
@@ -149,6 +180,7 @@ final class LiveWall extends FrameLayout {
         wanted = false;
         removeCallbacks(stuck);
         removeCallbacks(noPicture);
+        removeCallbacks(frostTick);
         release();
     }
 

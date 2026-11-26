@@ -458,6 +458,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             }
             // 1.50: an InsetDrawable gives the view its insets as padding: the text moved (negative:
             // the weather picture cut off on the left, Hyundai) — this one gives none
+            // 1.67: the picked weather grows a little, like a tile (Karaganda: «лучше сделать
+            // увеличение текста при выборе»); the one-line one less, it sits in the clock's glass
+            float grow = !has ? 1f : x instanceof TextView ? (prefs.oneLine() ? 1.08f : 1.15f) : 1.05f;
+            if (prefs.anim() == Prefs.ANIM_OFF) {
+                x.setScaleX(grow);
+                x.setScaleY(grow);
+            } else {
+                x.animate().scaleX(grow).scaleY(grow).setDuration(160).start();
+            }
             x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, rr),
                     lr[0] - ph, it, lr[1] - ph, ib) {
                 @Override public boolean getPadding(android.graphics.Rect p) {
@@ -701,7 +710,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         fitClock(big, screenW - 2 * padH, Math.round(screenH * 0.34f));
         mid.addView(big, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        weatherView = Ui.text(this, 20, 0xD9FFFFFF, "sans-serif-medium");
+        weatherView = Ui.text(this, 26, 0xD9FFFFFF, "sans-serif-medium"); // 1.67: 26 sp (was 20)
         weatherView.setShadowLayer(Ui.dp(this, 8), 0, 0, 0x66000000);
         weatherView.setGravity(textGravity);
         // 1.51: as wide as its words (centred by «mid» when the clock is in the middle): the focus
@@ -2146,7 +2155,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
      *  of the photo follows the page as it scrolls. */
     private android.graphics.drawable.Drawable glass(View host, float r) {
         android.graphics.drawable.Drawable plain = Ui.shelf(r, prefs.shelf());
-        if (prefs.shelf() != Prefs.SHELF_FROST || wallBitmap == null || liveWall != null || prefs.homePhotos()) return plain;
+        if (prefs.shelf() != Prefs.SHELF_FROST || prefs.homePhotos()) return plain;
+        if (liveWall != null) {
+            // 1.67: over a video too (Sergey): its frames, read back now and then (TextureView only)
+            if (!liveWall.frames()) return plain;
+            final Frost v = Frost.overVideo(host, r, Math.round(prefs.wallDim() * 2.55f), plain);
+            host.getViewTreeObserver().addOnScrollChangedListener(v::invalidateSelf);
+            return v;
+        }
+        if (wallBitmap == null) return plain;
         android.util.DisplayMetrics dm = getResources().getDisplayMetrics();
         android.graphics.Bitmap b = Frost.blurred(wallBitmap, dm.widthPixels, dm.heightPixels);
         if (b == null) return plain;
@@ -2612,6 +2629,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private long liveRev;
 
     private void showLiveWall(boolean on, long rev) {
+        Frost.liveGone(); // the glasses of the last build are gone with it
         if (!on) {
             if (liveWall != null) {
                 liveWall.stop();
