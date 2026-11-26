@@ -6,6 +6,16 @@ import android.widget.TextView;
 
 /** Capsule button for the top bar (tvOS style): glassy at rest, white when focused. */
 final class Pill extends TextView {
+    /** 1.71: the pill's look at rest = the home's glass («Стекло», «Матовое»…), not always the white
+     *  one (Alexander: «не меняется стекло на значках "надписи", всё время белое»). */
+    interface Rest { android.graphics.drawable.Drawable get(); }
+    private Rest rest;
+
+    void rest(Rest r) {
+        rest = r;
+        if (!hasFocus()) setBackground(r.get());
+    }
+
     Pill(Context c, CharSequence text) {
         super(c);
         setText(text);
@@ -29,7 +39,7 @@ final class Pill extends TextView {
         final float r = Ui.dp(c, 30);
         setBackground(Ui.glass(r));
         setOnFocusChangeListener((v, has) -> {
-            setBackground(has ? Ui.round(0xFFFFFFFF, r) : Ui.glass(r));
+            setBackground(has ? Ui.round(0xFFFFFFFF, r) : rest != null ? rest.get() : Ui.glass(r));
             setTextColor(has ? 0xFF111111 : 0xF2FFFFFF);
             animate().scaleX(has ? 1.08f : 1f).scaleY(has ? 1.08f : 1f)
                     .translationZ(has ? Ui.dp(c, 8) : 0).setDuration(160).start();

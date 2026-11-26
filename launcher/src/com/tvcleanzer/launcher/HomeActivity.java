@@ -333,6 +333,27 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         });
     }
 
+    /** 1.71: the one-line weather — its picture and its words side by side, each centred on its own
+     *  (Sergey: the line was built round the picture and the words sat below the plate's middle). */
+    private android.widget.ImageView weatherLinePic;
+    private LinearLayout weatherChip;
+
+    private LinearLayout weatherChip(TextView tv) {
+        LinearLayout chip = new LinearLayout(this);
+        chip.setOrientation(LinearLayout.HORIZONTAL);
+        chip.setGravity(Gravity.CENTER_VERTICAL);
+        weatherLinePic = new android.widget.ImageView(this);
+        weatherLinePic.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+        int s = Math.round(tv.getTextSize() * 1.3f);
+        LinearLayout.LayoutParams ip = new LinearLayout.LayoutParams(s, s);
+        ip.rightMargin = Math.round(tv.getTextSize() * 0.4f);
+        chip.addView(weatherLinePic, ip);
+        chip.addView(tv, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        weatherChip = chip;
+        return chip;
+    }
+
     private void updateWeatherView() {
         if (weatherView == null) return;
         if (weatherTemp != null) {
@@ -342,7 +363,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         String w = Weather.line(prefs);
         weatherView.setText(w == null ? "" : w);
         weatherView.setVisibility(w == null ? View.GONE : View.VISIBLE);
-        WeatherIcons.apply(this, prefs, weatherView); // 1.30: the pack's picture before the text
+        if (weatherLinePic != null && weatherChip != null && weatherView.getParent() == weatherChip) {
+            android.graphics.drawable.Drawable d = w == null ? null : WeatherIcons.icon(this, prefs, weatherView.getTextSize());
+            weatherLinePic.setImageDrawable(d);
+            weatherLinePic.setVisibility(d == null ? View.GONE : View.VISIBLE);
+            weatherChip.setVisibility(w == null ? View.GONE : View.VISIBLE);
+            if (d != null && weatherChip.hasFocus() || weatherChip.isFocused()) focusInk(weatherChip, true);
+        } else {
+            WeatherIcons.apply(this, prefs, weatherView); // 1.30: the pack's picture before the text
+        }
         if (weatherSep != null) weatherSep.setVisibility(w == null ? View.GONE : View.VISIBLE);
     }
 
@@ -438,7 +467,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         final int ph = Ui.dp(this, 12), pv = v instanceof TextView && prefs.oneLine() ? Ui.dp(this, 2) : Ui.dp(this, 6);
         final float r = Ui.dp(this, 200); // 1.55: a full pill (an owner: «нет полного закругления»)
         // 1.57: the two-line block a rounded card, not a capsule (Karaganda: «здесь менее закруглённые»)
-        final float rr = v instanceof TextView ? r : Ui.dp(this, 18);
+        final boolean line = v instanceof TextView || v == weatherChip;
+        final float rr = line ? r : Ui.dp(this, 18);
         v.setFocusable(true);
         v.setClickable(true);
         // 1.50: Android 8+ also drew its own grey focus band over the whole view (the full-width
@@ -451,9 +481,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // 1.62: a one-line weather: the plate as tall as its row, so it sits in the middle of the
             // clock's glass (Sergey: «выделение погоды выровнять по вертикали блока»)
             // 1.70: the two-line block's plate closer around it (Alexander: «слишком близко к краю»)
-            int it = x instanceof TextView ? -pv : -Ui.dp(this, 4), ib = it;
-            final int hp = x instanceof TextView ? ph : Ui.dp(this, 8);
-            if (x instanceof TextView && prefs.oneLine() && x.getParent() instanceof View) {
+            int it = line ? -pv : -Ui.dp(this, 4), ib = it;
+            final int hp = line ? ph : Ui.dp(this, 8);
+            if (line && prefs.oneLine() && x.getParent() instanceof View) {
                 View prow = (View) x.getParent();
                 it = -x.getTop() - Ui.dp(this, 2);
                 ib = -(prow.getHeight() - x.getBottom()) - Ui.dp(this, 2);
@@ -463,7 +493,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             // 1.67: the picked weather grows a little, like a tile (Karaganda: «лучше сделать
             // увеличение текста при выборе»); the one-line one less, it sits in the clock's glass
             // 1.69: not in the one-line glass — it pushed past the glass into the corner (Sergey: «косяк»)
-            float grow = !has || !(x instanceof TextView) || prefs.oneLine() ? 1f : 1.15f;
+            float grow = !has || !line || prefs.oneLine() ? 1f : 1.15f;
             if (prefs.anim() == Prefs.ANIM_OFF) {
                 x.setScaleX(grow);
                 x.setScaleY(grow);
@@ -689,9 +719,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         weatherView = Ui.text(this, 16, 0xE6FFFFFF, "sans-serif-medium");
         weatherView.setSingleLine(true);
         weatherView.setIncludeFontPadding(false);
-        row.addView(weatherView, new LinearLayout.LayoutParams(
+        row.addView(weatherChip(weatherView), new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        forecastOnOk(weatherView);
+        forecastOnOk(weatherChip);
         updateWeatherView();
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -1533,6 +1563,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         blockDate = null;
         main.removeCallbacks(blockDateTick);
         weatherPic = null;
+        weatherLinePic = null;
+        weatherChip = null;
         weatherTemp = null;
         weatherDiv = null;
         String focusPkg = null;
@@ -1988,8 +2020,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             LinearLayout.LayoutParams wl = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             wl.leftMargin = Ui.dp(this, 18);
-            dateCol.addView(weatherView, wl);
-            forecastOnOk(weatherView);
+            dateCol.addView(weatherChip(weatherView), wl);
+            forecastOnOk(weatherChip);
             timeRow.addView(dateCol);
         } else {
             // 1.31 (UMID's picture): the weather's picture and a big «+16°», a line, then the day
@@ -2116,6 +2148,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             bar.addView(mem, mp);
         } else if (prefs.memPill()) {
             Pill mem = new Pill(this, Memory.label(this));
+            mem.rest(() -> glass(mem, Ui.dp(this, 30)));
             memPill = mem;
             mem.setOnClickListener(v -> freeMemory());
             LinearLayout.LayoutParams mp = pillLp();
@@ -2139,6 +2172,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 bar.addView(bt, bp);
             } else {
                 Pill bt = new Pill(this, btLabel(bts));
+                bt.rest(() -> glass(bt, Ui.dp(this, 30)));
                 btPill = bt;
                 bt.setOnClickListener(v -> bluetoothMenu());
                 bar.addView(bt, bp);
@@ -2164,11 +2198,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             bar.addView(tv, tp);
         } else if (!prefs.cleanBar()) {
             Pill net = new Pill(this, networkLabel());
+            net.rest(() -> glass(net, Ui.dp(this, 30)));
             netPill = net;
             net.setOnClickListener(v -> openSettings(Settings.ACTION_WIFI_SETTINGS));
             bar.addView(net, pillLp());
 
             Pill tvSettings = new Pill(this, T.t("Настройки ТВ"));
+            tvSettings.rest(() -> glass(tvSettings, Ui.dp(this, 30)));
             tvSettings.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
             tvSettings.setOnLongClickListener(v -> { startActivity(new Intent(this, SettingsActivity.class)); return true; });
             LinearLayout.LayoutParams pp = pillLp();
