@@ -453,21 +453,27 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             int it = -pv, ib = -pv;
             if (x instanceof TextView && prefs.oneLine() && x.getParent() instanceof View) {
                 View prow = (View) x.getParent();
-                it = -x.getTop() + Ui.dp(this, 2);
-                ib = -(prow.getHeight() - x.getBottom()) + Ui.dp(this, 2);
+                it = -x.getTop() - Ui.dp(this, 2);
+                ib = -(prow.getHeight() - x.getBottom()) - Ui.dp(this, 2);
             }
             // 1.50: an InsetDrawable gives the view its insets as padding: the text moved (negative:
             // the weather picture cut off on the left, Hyundai) — this one gives none
             // 1.67: the picked weather grows a little, like a tile (Karaganda: «лучше сделать
             // увеличение текста при выборе»); the one-line one less, it sits in the clock's glass
-            float grow = !has ? 1f : x instanceof TextView ? (prefs.oneLine() ? 1.08f : 1.15f) : 1.05f;
+            // 1.69: not in the one-line glass — it pushed past the glass into the corner (Sergey: «косяк»)
+            float grow = !has || (x instanceof TextView && prefs.oneLine()) ? 1f : x instanceof TextView ? 1.15f : 1.05f;
             if (prefs.anim() == Prefs.ANIM_OFF) {
                 x.setScaleX(grow);
                 x.setScaleY(grow);
             } else {
                 x.animate().scaleX(grow).scaleY(grow).setDuration(160).start();
             }
-            x.setBackground(has ? new android.graphics.drawable.InsetDrawable(Ui.round(0x33FFFFFF, rr),
+            // 1.69: the plate with the tiles' white outline (Sergey: «единого стиля нет»)
+            android.graphics.drawable.GradientDrawable plate = new android.graphics.drawable.GradientDrawable();
+            plate.setColor(0x26FFFFFF);
+            plate.setStroke(Ui.dp(this, 2), 0xF2FFFFFF);
+            plate.setCornerRadius(rr);
+            x.setBackground(has ? new android.graphics.drawable.InsetDrawable(plate,
                     lr[0] - ph, it, lr[1] - ph, ib) {
                 @Override public boolean getPadding(android.graphics.Rect p) {
                     p.set(0, 0, 0, 0);
@@ -1172,7 +1178,9 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         if (aside) return super.dispatchKeyEvent(e);
         // 1.43: the remote's Search key (TCL, Android 11: it reached the home and nothing happened)
         // opens the TV's assistant, as the stock home does (the idea from couch-tv, VoiceKeys)
-        if (e.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
+        // 1.69: the voice keys too (igor i, Mi Box S 2nd gen: the mic opened a tile's menu)
+        if (e.getKeyCode() == KeyEvent.KEYCODE_SEARCH || e.getKeyCode() == KeyEvent.KEYCODE_VOICE_ASSIST
+                || e.getKeyCode() == KeyEvent.KEYCODE_ASSIST) {
             if (e.getAction() == KeyEvent.ACTION_UP && e.getRepeatCount() == 0 && !e.isCanceled()) {
                 if (prefs.kids() || openAssistant(e.getDeviceId())) return true;
                 return super.dispatchKeyEvent(e);
@@ -1396,6 +1404,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     public boolean onKeyDown(int keyCode, KeyEvent e) {
         if (aside) return super.onKeyDown(keyCode, e);
         if (keyCode == KeyEvent.KEYCODE_MENU) {
+            // which remote key the TV calls Menu (a mic key on some boxes): in the report
+            HomeKeyService.log("menu key: scan " + e.getScanCode() + ", device " + e.getDeviceId());
             if (prefs.kids()) return true;
             View f = getCurrentFocus();
             if (f instanceof AppTile) { showOptions((AppTile) f); return true; }
@@ -1925,7 +1935,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
         LinearLayout dateCol = new LinearLayout(this);
         dateCol.setOrientation(oneLine ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
         dateCol.setGravity(Gravity.CENTER_VERTICAL);
-        dateCol.addView(dateLine(oneLine ? "EEEE, d MMMM" : "EEEE"));
+        TextClock dayLine = dateLine(oneLine ? "EEEE, d MMMM" : "EEEE");
+        // 1.69: one line: no room kept for the week's longest date — the TV shows it in small
+        // letters, the room was measured in capitals (Sergey: «много пустого места»)
+        if (oneLine) dayLine.setMinWidth(0);
+        dateCol.addView(dayLine);
         if (!oneLine) {
             TextClock dayMonth = dateLine("d MMMM");
             LinearLayout.LayoutParams dml = new LinearLayout.LayoutParams(
@@ -2022,7 +2036,8 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             left.setBackground(glass(left, glassR()));
             // 1.56: a thinner glass under the clock (Sergey: «рамки стекла огромные везде»)
             // 1.60: one line — as thin as the corner's glass (Sergey: «рамка часов толще кнопок»)
-            if (prefs.oneLine()) left.setPadding(Ui.dp(this, 14), Ui.dp(this, 3), Ui.dp(this, 16), Ui.dp(this, 3));
+            // 1.69: 5 dp, the picked weather's plate sits inside the glass (Alexander: «выезжает за границы»)
+            if (prefs.oneLine()) left.setPadding(Ui.dp(this, 14), Ui.dp(this, 5), Ui.dp(this, 20), Ui.dp(this, 5));
             else left.setPadding(Ui.dp(this, 16), Ui.dp(this, 8), Ui.dp(this, 18), Ui.dp(this, 10));
             bar.addView(left, new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -2107,6 +2122,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             bar.addView(net, new LinearLayout.LayoutParams(is, is));
             TopIcon tv = new TopIcon(this, TopIcon.TV, 0);
             tv.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+            tv.setOnLongClickListener(v -> { startActivity(new Intent(this, SettingsActivity.class)); return true; });
             LinearLayout.LayoutParams tp = new LinearLayout.LayoutParams(is, is);
             tp.leftMargin = Ui.dp(this, 14);
             bar.addView(tv, tp);
@@ -2118,17 +2134,20 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
             Pill tvSettings = new Pill(this, T.t("Настройки ТВ"));
             tvSettings.setOnClickListener(v -> openSettings(Settings.ACTION_SETTINGS));
+            tvSettings.setOnLongClickListener(v -> { startActivity(new Intent(this, SettingsActivity.class)); return true; });
             LinearLayout.LayoutParams pp = pillLp();
             pp.leftMargin = Ui.dp(this, 14);
             bar.addView(tvSettings, pp);
         }
 
-        GearButton gear = new GearButton(this, skin.accent);
-        int gs = Ui.dp(this, 46);
-        LinearLayout.LayoutParams gp = new LinearLayout.LayoutParams(gs, gs);
-        gp.leftMargin = Ui.dp(this, 14);
-        wireGear(gear);
-        bar.addView(gear, gp);
+        if (prefs.cleanBar() || prefs.gearTop()) {
+            GearButton gear = new GearButton(this, skin.accent);
+            int gs = Ui.dp(this, 46);
+            LinearLayout.LayoutParams gp = new LinearLayout.LayoutParams(gs, gs);
+            gp.leftMargin = Ui.dp(this, 14);
+            wireGear(gear);
+            bar.addView(gear, gp);
+        }
         return bar;
     }
 

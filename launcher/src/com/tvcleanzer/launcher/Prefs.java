@@ -255,6 +255,9 @@ final class Prefs {
     /** Only the gear up top, and it opens the TV's own settings (hold: the launcher's). A review
      *  asked for the cleanest look: no network pill, no «Настройки ТВ» pill. */
     boolean cleanBar()       { return sp.getBoolean("cleanBar", false); }
+    /** 1.69: the launcher's gear in the «Плитки» top bar (Alexander: «только настройки ТВ»). */
+    boolean gearTop()        { return sp.getBoolean("gearTop", true); }
+    void setGearTop(boolean v) { sp.edit().putBoolean("gearTop", v).apply(); }
     void setCleanBar(boolean v) { sp.edit().putBoolean("cleanBar", v).apply(); }
     void setMemPill(boolean v) { sp.edit().putBoolean(MEM_PILL, v).apply(); }
     /** Bluetooth pill in the top bar (0.63). */

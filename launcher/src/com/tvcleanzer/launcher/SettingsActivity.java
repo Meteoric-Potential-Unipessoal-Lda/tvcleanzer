@@ -116,6 +116,12 @@ public class SettingsActivity extends Activity {
                     if (v < 2) prefs.setRingAccent(v == 1);
                 });
         addToggle(skin, T.t("Только шестерёнка вверху"), prefs.cleanBar(), T.t("Включено"), T.t("Выключено"), prefs::setCleanBar);
+        // 1.69: the gear can go (Alexander: «только настройки ТВ»); the launcher's settings are
+        // then a hold of OK on «Настройки ТВ»
+        if (!prefs.cleanBar()) addToggle(skin, T.t("Шестерёнка лаунчера вверху"), prefs.gearTop(), T.t("Показывать"), T.t("Скрыто"), v -> {
+            prefs.setGearTop(v);
+            if (!v) Toast.makeText(this, T.t("Настройки лаунчера: удерживайте ОК на «Настройки ТВ»"), Toast.LENGTH_LONG).show();
+        });
         // «Часы» has no top bar, only the corner (0.98, an owner: «нажимаю — ничего не меняется»)
         if (!prefs.cleanBar() && prefs.style() != Prefs.STYLE_CLOCK) {
             addChoice(skin, T.t("Верхняя панель"), new String[]{T.t("Надписи"), T.t("Значки"), T.t("Мини в углу")},

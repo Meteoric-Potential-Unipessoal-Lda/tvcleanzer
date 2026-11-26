@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../services/adb_package_manager.dart';
 import '../services/app_log.dart';
+import '../services/app_update.dart';
 import '../services/package_db.dart';
 import '../services/support.dart';
 import '../state/current_tv.dart';
@@ -187,6 +188,24 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
               SupportCard.openLink(context, Support.siteUrl());
             },
           ),
+          // 1.3.190: Sergey «не нашёл кнопки проверки и обновления версии» (Telegram build, Android)
+          if (AppUpdate.supported)
+            ListTile(
+              leading: const Icon(Icons.system_update_rounded, color: AppColors.accent),
+              title: Text(tr('Проверить обновления')),
+              subtitle: Text('TVCleanzer $appVersion'),
+              onTap: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                Navigator.pop(ctx);
+                final u = await AppUpdate.check();
+                if (u == null) {
+                  messenger.showSnackBar(SnackBar(content: Text(tr('У вас последняя версия'))));
+                } else {
+                  messenger.showSnackBar(SnackBar(content: Text(tr('Вышла TVCleanzer {0}', [u.$1]))));
+                  await Support.open(u.$2);
+                }
+              },
+            ),
           ListTile(
             leading: const Icon(Icons.bug_report_rounded, color: AppColors.warn),
             title: Text(tr('Сообщить о проблеме')),
