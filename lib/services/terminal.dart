@@ -128,6 +128,16 @@ class _DemoSession implements TerminalSession {
   Future<void> close() async => _out.close();
 }
 
+/// A command copied from a chat on an iPhone: Telegram / iOS turn quotes into “ ” « » ‘ ’
+/// and `--` into a long dash, and the TV's shell then fails with «inaccessible or not found»
+/// or «Unknown package: —user» (a TCL owner, 1.3.186). Put the plain characters back.
+String terminalPlain(String cmd) => cmd
+    .replaceAll(RegExp('[\u201C\u201D\u201E\u00AB\u00BB]'), '"')
+    .replaceAll(RegExp('[\u2018\u2019\u201A]'), "'")
+    .replaceAll('\u2014', '--')
+    .replaceAll('\u2013', '-')
+    .replaceAll('\u00A0', ' ');
+
 /// Why a command deserves a second look before it runs (null = nothing special).
 /// Not a ban: the owner can still run it, just not by accident.
 String? terminalDanger(String cmd) {

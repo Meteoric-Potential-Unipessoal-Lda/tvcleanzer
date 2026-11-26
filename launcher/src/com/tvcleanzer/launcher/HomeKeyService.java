@@ -781,7 +781,22 @@ public class HomeKeyService extends AccessibilityService {
             return;
         }
         if (FEATURE_HOMES.contains(pkg) || wasSame) { log(pkg + ": the owner is in it, left"); return; }
-        if (SystemClock.uptimeMillis() - lastRedirect < 1500) { log(pkg + ": loop guard"); return; }
+        if (SystemClock.uptimeMillis() - lastRedirect < 1500) {
+            // 1.66: Home pressed on our own home (TCL Smart TV Pro, key filter off for the volume):
+            // launcherx came up twice within a second — the second one was dropped by this guard
+            // and Google TV stayed. Look again once the guard is over instead.
+            final String guardCls = lastCls;
+            long wait = 1600 - (SystemClock.uptimeMillis() - lastRedirect);
+            log(pkg + ": loop guard, checking again");
+            handler.postDelayed(() -> {
+                if (pkg.equals(lastPkg) && guardCls.equals(lastCls) && pkg.equals(frontPackage())
+                        && !pkg.equals(allowedStockPkg) && !fighting(pkg)) {
+                    log(pkg + ": still on its home screen, replacing");
+                    openHome();
+                }
+            }, Math.max(100, wait));
+            return;
+        }
         if (fighting(pkg)) return;
         log(pkg + ": replacing");
         openHome();

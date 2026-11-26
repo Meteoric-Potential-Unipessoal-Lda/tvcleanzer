@@ -151,7 +151,7 @@ class _TerminalScreenState extends State<TerminalScreen> with WidgetsBindingObse
   }
 
   Future<void> _send([String? preset]) async {
-    final line = (preset ?? _input.text).trimRight();
+    final line = terminalPlain(preset ?? _input.text).trimRight();
     final s = _session;
     if (s == null || _st != _St.ready) return;
     if (line.trim().isNotEmpty) {

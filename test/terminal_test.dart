@@ -7,6 +7,16 @@ void main() {
     expect(cleanTerminal('\x1B]0;title\x07\x1B[32mok\x1B[0m\r\nnext\r'), 'ok\nnext');
   });
 
+  test('terminal: quotes and dashes from an iPhone chat become plain', () {
+    expect(terminalPlain('dumpsys window | grep -E \u00ABmCurrentFocus|mFocusedApp\u00BB'),
+        'dumpsys window | grep -E "mCurrentFocus|mFocusedApp"');
+    expect(terminalPlain('pm list packages -d | grep -E \u201Clauncherx|setupwraith\u201D'),
+        'pm list packages -d | grep -E "launcherx|setupwraith"');
+    expect(terminalPlain('pm disable-user \u2014user 0 com.example'), 'pm disable-user --user 0 com.example');
+    expect(terminalPlain("echo \u2018hi\u2019"), "echo 'hi'");
+    expect(terminalPlain('pm list packages -3'), 'pm list packages -3');
+  });
+
   test('terminal: risky commands ask first, ordinary ones do not', () {
     expect(terminalDanger('ls -l /sdcard'), isNull);
     expect(terminalDanger('pm list packages -3'), isNull);
