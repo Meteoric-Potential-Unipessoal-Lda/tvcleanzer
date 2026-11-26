@@ -193,7 +193,7 @@ Future<void> showHelpSheet(BuildContext context, WidgetRef ref) {
             ListTile(
               leading: const Icon(Icons.system_update_rounded, color: AppColors.accent),
               title: Text(tr('Проверить обновления')),
-              subtitle: Text('TVCleanzer $appVersion'),
+              subtitle: const Text('TVCleanzer $appVersion'),
               onTap: () async {
                 final messenger = ScaffoldMessenger.of(context);
                 Navigator.pop(ctx);
