@@ -69,14 +69,21 @@ public class HomeKeyService extends AccessibilityService {
             Prefs p = new Prefs(this);
             keyMap = p.keyMap();
             boolean want = !keyMap.isEmpty() || learn != null || volumeFiltered(this, p);
-            log("key filter " + want);
             int nf = want ? info.flags | flag : info.flags & ~flag;
 
             if (nf != info.flags) {
                 info.flags = nf;
                 setServiceInfo(info);
             }
-        } catch (Throwable ignored) {}
+            // 1.77: what the system really holds (Ilez, TCL Android 12: «key filter true», yet no
+            // key ever reached the filter)
+            android.accessibilityservice.AccessibilityServiceInfo back = getServiceInfo();
+            boolean on = back != null && (back.flags & flag) != 0;
+            log("key filter " + want + (on == want ? "" : " — the TV holds " + on)
+                    + ", can filter: " + (back != null && (back.getCapabilities() & 8) != 0));
+        } catch (Throwable t) {
+            log("key filter: " + t);
+        }
     }
 
     /** Would the filter be on for Home / ⚙ / Source alone (remote-key mapping aside)? Then held
