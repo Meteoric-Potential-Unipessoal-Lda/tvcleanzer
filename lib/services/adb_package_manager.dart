@@ -2027,7 +2027,12 @@ class AdbPackageManager {
   /// a TCL Google TV report showed it "Enabled" but not "Bound" after a quick off/on.
   Future<bool> _homeKeyBound(AdbClient adb) async {
     final out = await adb.shell('dumpsys accessibility 2>/dev/null | grep -i "bound services"');
-    return out.toLowerCase().contains('tvcleanzer');
+    if (out.toLowerCase().contains('tvcleanzer')) return true;
+    // 1.3.195: a Sony BRAVIA 4K GB (Android 9, with Buttons Remapper's service too) — the
+    // launcher logged «connected» each time, yet the line above never named it, and every
+    // check toggled the service off and on again. Ask the activity manager as well.
+    final svc = await adb.shell('dumpsys activity services $launcherPkg/.HomeKeyService 2>/dev/null');
+    return svc.contains('HomeKeyService') && svc.contains('app=ProcessRecord');
   }
 
   /// Turns the Home-key service on and makes sure Android has started it. Off/on only when it
@@ -2057,10 +2062,12 @@ class AdbPackageManager {
     final back = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
     final declared = (await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -c HomeKeyService')).trim();
     final onNow = (await adb.shell('settings get secure accessibility_enabled')).trim();
+    final boundLine = (await adb.shell('dumpsys accessibility 2>/dev/null | grep -i "bound services"')).trim();
     // 1.3.195: the facts first — the report line is cut (a Chinese MiTV-ASTP0's list of Xiaomi
     // services hid whether ours was still in it)
     AppLog.error('home key service',
-        'not running; ours listed=${back.split(':').any(_isHomeKeyService)}; enabled=$onNow; declared=$declared; setting=$back');
+        'not running; ours listed=${back.split(':').any(_isHomeKeyService)}; enabled=$onNow; declared=$declared; '
+        'bound=${boundLine.length > 200 ? boundLine.substring(0, 200) : boundLine}; setting=$back');
   }
 
   /// Launcher 0.29+: whether its service catches remote keys (older ones ignore it).
