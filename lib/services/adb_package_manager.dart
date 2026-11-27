@@ -960,6 +960,7 @@ class AdbPackageManager {
     onStep?.call(tr('Делаем главным экраном…'));
     await _keepGuardLog(adb);
     await _healUnsafePins(adb);
+    await _finishSetup(adb);
     if (sdk >= 29) {
       final r = await adb.shell('cmd role add-role-holder android.app.role.HOME $launcherPkg 2>&1');
       if (r.trim().isNotEmpty) AppLog.error('home role', r.trim());
@@ -1243,6 +1244,23 @@ class AdbPackageManager {
       AppLog.error('pin', 'kept $p: $e');
     }
     return false;
+  }
+
+  /// A TV whose first setup never «finished» (device_provisioned / user_setup_complete not 1)
+  /// keeps its setup app as the home, and the system ignores Home while «provisioning»: an
+  /// Allwinner projector («google LT», 1.3.195) had Home on com.softwinner.provision and
+  /// «Сделать главным ещё раз» changed nothing. The TV is in use, so its setup is done.
+  Future<void> _finishSetup(AdbClient adb) async {
+    try {
+      final g = (await adb.shell('settings get global device_provisioned')).trim();
+      final u = (await adb.shell('settings get secure user_setup_complete')).trim();
+      if (g == '1' && u == '1') return;
+      AppLog.error('setup', 'not finished (device_provisioned=$g, user_setup_complete=$u): marking it done');
+      await adb.shell('settings put global device_provisioned 1');
+      await adb.shell('settings put secure user_setup_complete 1');
+    } catch (e) {
+      AppLog.error('setup', e);
+    }
   }
 
   /// Firmware homes older versions switched off that the pinning would never touch now
