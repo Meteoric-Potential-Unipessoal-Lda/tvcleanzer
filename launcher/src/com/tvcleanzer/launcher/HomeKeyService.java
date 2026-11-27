@@ -150,6 +150,11 @@ public class HomeKeyService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected() {
+        try {
+            if (volTwice == -2) volTwice = new Prefs(this).volTwice();
+            AudioManager am0 = (AudioManager) getSystemService(AUDIO_SERVICE);
+            if (am0 != null) volIdle = am0.getStreamVolume(AudioManager.STREAM_MUSIC);
+        } catch (Throwable ignored) {}
         running = this;
         connectedAt = SystemClock.elapsedRealtime();
         log("connected, " + SystemClock.elapsedRealtime() / 1000 + " s after boot");
@@ -470,10 +475,14 @@ public class HomeKeyService extends AccessibilityService {
                     + volSteps + " steps by us");
             // 1.74: how long this remote keeps a plain tap down (no repeats of its own)
             if (volRepeats == 0 && held > 0 && held < 1500) tapMs = tapMs == 0 ? held : Math.min(tapMs, held);
-            return false;
+            final boolean tap = volRepeats == 0 && volSteps == 0;
+            handler.removeCallbacks(volSettle);
+            volSettle = () -> volSettled(tap);
+            handler.postDelayed(volSettle, 700);
+            return volTwice == 1;
         }
         if (e.getAction() != KeyEvent.ACTION_DOWN) return false;
-        if (e.getRepeatCount() == 0) { volRepeats = 0; volSteps = 0; }
+        if (e.getRepeatCount() == 0) { volRepeats = 0; volSteps = 0; handler.removeCallbacks(volSettle); }
         if (e.getRepeatCount() > 0) {
             volRepeats++;
             stopVolRepeat(); // the remote repeats by itself: one step per repeat
@@ -500,7 +509,41 @@ public class HomeKeyService extends AccessibilityService {
         // 1.74: longer for a remote whose taps last longer — a TCL 55C745's quick press is held
         // 630–660 ms, so every tap got one step of ours after the TV's own (Serg: «два деления»)
         handler.postDelayed(volRepeat, tapMs == 0 ? 600 : Math.max(600, Math.min(1200, tapMs + 200)));
-        return false;
+        // 1.75: a TV that already took this press before the filter: passing it on would step twice
+        return volTwice == 1;
+    }
+
+    /** 1.75: some firmwares change the volume as the key comes in — before an accessibility
+     *  filter sees it — and again when the filter passes it on (TCL 55C745, Android 11: every tap
+     *  moved two steps with our filter on, one with it off). Measured on plain taps: the level
+     *  700 ms after the tap against the level after the last one. Two steps or more → keep
+     *  Volume for ourselves (the TV's own pass still makes the one step); nothing at all while
+     *  kept → give it back. */
+    private static int volTwice = -2; // -2: not read from the settings yet
+    private int volIdle = -1;
+    private Runnable volSettle = () -> {};
+
+    private void volSettled(boolean tap) {
+        try {
+            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+            if (am == null) return;
+            int max = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), now = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+            int was = volIdle;
+            volIdle = now;
+            if (!tap || was < 0 || now <= 0 || now >= max || was <= 0 || was >= max) return;
+            int d = Math.abs(now - was);
+            if (volTwice != 1 && d >= 2) {
+                volTwice = 1;
+                new Prefs(this).setVolTwice(1);
+                log("volume: a tap moved " + was + "→" + now + " — the TV takes Volume before the filter too; kept by us now");
+            } else if (volTwice == 1 && d == 0) {
+                volTwice = 0;
+                new Prefs(this).setVolTwice(0);
+                log("volume: a kept tap changed nothing — passed on to the TV again");
+            }
+        } catch (Throwable t) {
+            android.util.Log.w("TVCleanzerVol", "settle: " + t);
+        }
     }
 
     private boolean volLogged;

@@ -341,6 +341,10 @@ final class Prefs {
     boolean serviceWanted()  { return sp.getBoolean("serviceWanted", false); }
     void setServiceWanted(boolean v) { sp.edit().putBoolean("serviceWanted", v).apply(); }
     boolean volSmooth()      { return sp.getBoolean(VOL_SMOOTH, false); }
+    /** 1.75: the TV changes the volume itself before our key filter sees the key, and again
+     *  when the filter passes it on (TCL 55C745: «два деления»): -1 not known, 0 no, 1 yes. */
+    int volTwice()           { return sp.getInt("volTwice", -1); }
+    void setVolTwice(int v)  { sp.edit().putInt("volTwice", v).apply(); }
     void setVolSmooth(boolean v) { sp.edit().putBoolean(VOL_SMOOTH, v).apply(); }
     static boolean xiaomi() {
         String m = android.os.Build.MANUFACTURER;
