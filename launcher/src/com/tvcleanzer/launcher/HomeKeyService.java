@@ -584,7 +584,10 @@ public class HomeKeyService extends AccessibilityService {
         // 1.41: in kids mode a key mapped to an app opens only the kids' apps
         if (app != null && kidsLocked(app)) app = null;
         if (app != null) {
-            if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) {
+            if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0 && app.startsWith("input:")) {
+                // 1.73: a key mapped to a TV input (HDMI 1, «ТВ»…), opened as autostart does
+                try { HomeActivity.openAutostart(this, app); } catch (Throwable ignored) {}
+            } else if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) {
                 try {
                     android.content.Intent i = getPackageManager().getLeanbackLaunchIntentForPackage(app);
                     if (i == null) i = getPackageManager().getLaunchIntentForPackage(app);

@@ -115,6 +115,18 @@ public class KeyMapActivity extends Activity {
         HomeKeyService.learn = null;
         status.setText(T.f("Кнопка {0}: какое приложение открывать?", keyName(code)));
         list.removeAllViews();
+        // 1.73: a TV input too — «ТВ», HDMI 1, HDMI 2… (Ivan Ivanovich: an intercom on HDMI,
+        // switched to by one button)
+        try {
+            for (final Inputs.Item in : Inputs.load(this)) {
+                row(in.label, T.t("Источник"), () -> {
+                    prefs.putKey(code, "input:" + in.id);
+                    HomeKeyService s = HomeKeyService.running;
+                    if (s != null) s.updateKeyFilter();
+                    showMappings();
+                });
+            }
+        } catch (Throwable ignored) {}
         List<AppEntry> apps = AppEntry.loadAll(this);
         Collections.sort(apps, (a, b) -> a.label.compareToIgnoreCase(b.label));
         for (final AppEntry a : apps) {
@@ -139,6 +151,13 @@ public class KeyMapActivity extends Activity {
     }
 
     private String appName(String pkg) {
+        if (pkg.startsWith("input:")) {
+            String id = pkg.substring(6);
+            try {
+                for (Inputs.Item it : Inputs.load(this)) if (it.id.equals(id)) return it.label;
+            } catch (Throwable ignored) {}
+            return T.t("Источник");
+        }
         try {
             return getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg, 0)).toString();
         } catch (Throwable t) {
