@@ -468,6 +468,8 @@ public class HomeKeyService extends AccessibilityService {
             long held = e.getEventTime() - e.getDownTime();
             if (held > 500) log("volume key held " + held + " ms: " + volRepeats + " repeats from the remote, "
                     + volSteps + " steps by us");
+            // 1.74: how long this remote keeps a plain tap down (no repeats of its own)
+            if (volRepeats == 0 && held > 0 && held < 1500) tapMs = tapMs == 0 ? held : Math.min(tapMs, held);
             return false;
         }
         if (e.getAction() != KeyEvent.ACTION_DOWN) return false;
@@ -494,8 +496,10 @@ public class HomeKeyService extends AccessibilityService {
                 handler.postDelayed(this, VOL_GAP);
             }
         };
-        // 600 ms, not 450: a slow remote's UP came after the first step (Dmitry: 2–3 steps a press)
-        handler.postDelayed(volRepeat, 600);
+        // 600 ms, not 450: a slow remote's UP came after the first step (Dmitry: 2–3 steps a press).
+        // 1.74: longer for a remote whose taps last longer — a TCL 55C745's quick press is held
+        // 630–660 ms, so every tap got one step of ours after the TV's own (Serg: «два деления»)
+        handler.postDelayed(volRepeat, tapMs == 0 ? 600 : Math.max(600, Math.min(1200, tapMs + 200)));
         return false;
     }
 
@@ -503,6 +507,8 @@ public class HomeKeyService extends AccessibilityService {
     private int volRepeats, volSteps;
     /** 1.73: the shortest time between two of our volume steps. */
     private static final long VOL_GAP = 140;
+    /** 1.74: the shortest plain tap of the Volume key seen (ms; 0 = none yet). */
+    private static long tapMs;
     private long lastVolStep;
     /** 1.73: which way of stepping this TV answers to, found once: 0 not yet, 1 suggested,
      *  2 music stream, 3 set. Before, the level was read right after the suggested step; on a
