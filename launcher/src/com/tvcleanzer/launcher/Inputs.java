@@ -92,8 +92,10 @@ final class Inputs {
                         new String[]{TvContract.Channels._ID}, null, null, null);
             }
             if (cur == null || !cur.moveToFirst()) return null;
+            // 1.73: started afresh — a player left on HDMI took the channel only in onNewIntent
+            // and stayed on HDMI (Rustem: «после HDMI обратно на эфир не выходит»)
             Intent i = new Intent(Intent.ACTION_VIEW, TvContract.buildChannelUri(cur.getLong(0)))
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             if (pkg != null) i.setPackage(pkg);
             return i;
         } catch (Throwable t) {
@@ -224,7 +226,7 @@ final class Inputs {
                     if (tunerId != null) {
                         // the tuner as an input: MediaTek / AOSP Live TV switch the source to it
                         Intent src = new Intent(Intent.ACTION_VIEW, TvContract.buildChannelUriForPassthroughInput(tunerId))
-                                .setPackage(p).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                .setPackage(p).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         if (!pm.queryIntentActivities(src, 0).isEmpty()) item.first.add(src);
                     }
                     return item;
