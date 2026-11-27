@@ -476,7 +476,10 @@ public class HomeKeyService extends AccessibilityService {
             volRepeats++;
             stopVolRepeat(); // the remote repeats by itself: one step per repeat
             if (e.getRepeatCount() == 1) android.util.Log.i("TVCleanzerVol", "remote repeats");
-            volumeStep(dir);
+            // 1.73: no faster than one step per VOL_GAP ms (Serg, TCL 55C745: «сильно быстрая»,
+            // its remote repeats every ~50 ms)
+            long now = android.os.SystemClock.uptimeMillis();
+            if (now - lastVolStep >= VOL_GAP) volumeStep(dir);
             return true;
         }
         stopVolRepeat();
@@ -488,7 +491,7 @@ public class HomeKeyService extends AccessibilityService {
                 if (++steps > 25) { stopVolRepeat(); return; }
                 if (steps == 1) android.util.Log.i("TVCleanzerVol", "no repeats from the remote: stepping");
                 volumeStep(dir);
-                handler.postDelayed(this, 110);
+                handler.postDelayed(this, VOL_GAP);
             }
         };
         // 600 ms, not 450: a slow remote's UP came after the first step (Dmitry: 2–3 steps a press)
@@ -498,6 +501,14 @@ public class HomeKeyService extends AccessibilityService {
 
     private boolean volLogged;
     private int volRepeats, volSteps;
+    /** 1.73: the shortest time between two of our volume steps. */
+    private static final long VOL_GAP = 140;
+    private long lastVolStep;
+    /** 1.73: which way of stepping this TV answers to, found once: 0 not yet, 1 suggested,
+     *  2 music stream, 3 set. Before, the level was read right after the suggested step; on a
+     *  TCL 55C745 it changes a moment later, so the fallback stepped again — two steps a repeat
+     *  (Serg: «через 2 идёт»). Now one way per step, and the first one is checked after a pause. */
+    private static int volWay;
 
     /** 0.100: a Haier (Android 11, Google TV home on) — held Volume moved one step only: the first
      *  press is the system's own, the repeats are ours, and our «suggested» step changed nothing
@@ -505,33 +516,55 @@ public class HomeKeyService extends AccessibilityService {
      *  hold says in the report (TVCleanzerHome) what happened. */
     private void volumeStep(int dir) {
         try {
-            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+            final AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
             if (am == null) return;
             volSteps++;
+            lastVolStep = android.os.SystemClock.uptimeMillis();
             final int s = AudioManager.STREAM_MUSIC;
             final int max = am.getStreamMaxVolume(s), before = am.getStreamVolume(s);
-            am.adjustSuggestedStreamVolume(dir, AudioManager.USE_DEFAULT_STREAM_TYPE, AudioManager.FLAG_SHOW_UI);
-            int after = am.getStreamVolume(s);
-            boolean edge = dir == AudioManager.ADJUST_RAISE ? before >= max : before <= 0;
-            String how = "suggested";
-            if (after == before && !edge) {
-                am.adjustStreamVolume(s, dir, AudioManager.FLAG_SHOW_UI);
-                after = am.getStreamVolume(s);
-                how = "music";
-                if (after == before) {
-                    am.setStreamVolume(s, Math.max(0, Math.min(max, before + (dir == AudioManager.ADJUST_RAISE ? 1 : -1))),
-                            AudioManager.FLAG_SHOW_UI);
-                    after = am.getStreamVolume(s);
-                    how = after == before ? "nothing worked" : "set";
+            final boolean edge = dir == AudioManager.ADJUST_RAISE ? before >= max : before <= 0;
+            final int way = volWay == 0 ? 1 : volWay;
+            stepOnce(am, way, dir, before, max);
+            if (volWay != 0 || edge) return;
+            // the first step: did that way move the level? (asked a moment later, see volWay)
+            handler.postDelayed(() -> {
+                try {
+                    if (volWay != 0) return;
+                    int after = am.getStreamVolume(s);
+                    if (after != before) {
+                        volWay = way;
+                    } else {
+                        // try the next ways now, keep the first one that moves it
+                        for (int w = way + 1; w <= 3 && volWay == 0; w++) {
+                            stepOnce(am, w, dir, before, max);
+                            if (am.getStreamVolume(s) != before) volWay = w;
+                        }
+                    }
+                    if (!volLogged) {
+                        volLogged = true;
+                        log("volume held: " + before + "→" + am.getStreamVolume(s) + " of " + max + " (way "
+                                + (volWay == 0 ? "none worked" : volWay == 1 ? "suggested" : volWay == 2 ? "music" : "set") + ")");
+                    }
+                } catch (Throwable t) {
+                    android.util.Log.w("TVCleanzerVol", "check failed: " + t);
                 }
-            }
-            if (!volLogged) {
-                volLogged = true;
-                log("volume held: " + before + "→" + after + " of " + max + " (" + how + ")");
-            }
+            }, 250);
         } catch (Throwable t) {
             android.util.Log.w("TVCleanzerVol", "step failed: " + t);
             if (!volLogged) { volLogged = true; log("volume held: " + t); }
+        }
+    }
+
+    private static void stepOnce(AudioManager am, int way, int dir, int before, int max) {
+        final int s = AudioManager.STREAM_MUSIC;
+        if (way == 1) {
+            am.adjustSuggestedStreamVolume(dir, AudioManager.USE_DEFAULT_STREAM_TYPE, AudioManager.FLAG_SHOW_UI);
+        } else if (way == 2) {
+            am.adjustStreamVolume(s, dir, AudioManager.FLAG_SHOW_UI);
+        } else {
+            int now = am.getStreamVolume(s);
+            am.setStreamVolume(s, Math.max(0, Math.min(max, now + (dir == AudioManager.ADJUST_RAISE ? 1 : -1))),
+                    AudioManager.FLAG_SHOW_UI);
         }
     }
 

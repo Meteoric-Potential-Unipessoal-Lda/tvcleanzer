@@ -437,6 +437,11 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     /** The system's power menu (switch off, restart — whatever the TV offers), which only an
      *  accessibility service may open. */
     private void powerMenu() {
+        // 1.73: a TCL 55C745 shows the menu ~10 s after the call; presses meanwhile each opened
+        // one more (Serg: «5 раз вылетает то самое меню»). One call, then wait for it.
+        long now = android.os.SystemClock.uptimeMillis();
+        if (now - powerAsked < 12000) return;
+        powerAsked = now;
         HomeKeyService s = HomeKeyService.running;
         boolean ok = false;
         try {
@@ -445,9 +450,21 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             HomeKeyService.log("power: " + t);
         }
         if (!ok) {
+            powerAsked = 0;
             android.widget.Toast.makeText(this, T.t("Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности)."),
                     android.widget.Toast.LENGTH_LONG).show();
+        } else {
+            android.widget.Toast.makeText(this, T.t("Открываю меню питания…"), android.widget.Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /** When the power menu was last asked for (uptime ms); cleared once it shows. */
+    private long powerAsked;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (!hasFocus) powerAsked = 0; // a menu (the power one too) took the focus
     }
 
     /** 1.43: standing aside after crashes (CrashGuard): nothing else runs in this instance. */
@@ -2235,6 +2252,16 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             LinearLayout.LayoutParams pp = pillLp();
             pp.leftMargin = Ui.dp(this, 14);
             bar.addView(tvSettings, pp);
+        }
+
+        if (prefs.powerIcon() && prefs.barStyle() == Prefs.BAR_ICONS) {
+            // 1.73: in «Значки» too (Serg, TCL 55C745: the power button went away with them)
+            TopIcon pw = new TopIcon(this, TopIcon.POWER, 0);
+            pw.setOnClickListener(v -> powerMenu());
+            int is = Ui.dp(this, 46);
+            LinearLayout.LayoutParams wp = new LinearLayout.LayoutParams(is, is);
+            wp.leftMargin = Ui.dp(this, 14);
+            bar.addView(pw, wp);
         }
 
         if (prefs.cleanBar() || prefs.gearTop()) {
