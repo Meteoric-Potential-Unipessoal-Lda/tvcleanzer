@@ -2056,7 +2056,11 @@ class AdbPackageManager {
     // For «?» reports: did the setting stick at all (a be311 box: it read back null)?
     final back = (await adb.shell('settings get secure enabled_accessibility_services')).trim();
     final declared = (await adb.shell('dumpsys package $launcherPkg 2>/dev/null | grep -c HomeKeyService')).trim();
-    AppLog.error('home key service', 'not running; setting=$back; declared=$declared');
+    final onNow = (await adb.shell('settings get secure accessibility_enabled')).trim();
+    // 1.3.195: the facts first — the report line is cut (a Chinese MiTV-ASTP0's list of Xiaomi
+    // services hid whether ours was still in it)
+    AppLog.error('home key service',
+        'not running; ours listed=${back.split(':').any(_isHomeKeyService)}; enabled=$onNow; declared=$declared; setting=$back');
   }
 
   /// Launcher 0.29+: whether its service catches remote keys (older ones ignore it).
