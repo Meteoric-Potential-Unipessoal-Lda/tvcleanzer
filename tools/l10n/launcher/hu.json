@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "A bekapcsolási menü akkor nyílik meg, ha be van kapcsolva a «TVCleanzer: кнопка Домой» szolgáltatás (Beállítások → Kisegítő lehetőségek).",
 "Включена": "Be",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Kapcsolja be a «Most szól» funkciót a telefonon a TVCleanzerben (Launcher → Extrák): a telefon hozzáférést ad a launchernek a lejátszóhoz.",
-"Открываю меню питания…": "Bekapcsológomb-menü megnyitása…"
+"Открываю меню питания…": "Bekapcsológomb-menü megnyitása…",
+"Как у телевизора": "A tévé szerint",
+"Ведёт лаунчер": "A launcher kezeli",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Ha a Kezdőlap nem nyitja meg a launchert, állítsd vissza «A launcher kezeli»-re"
 }

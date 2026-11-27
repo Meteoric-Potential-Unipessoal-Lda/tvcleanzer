@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Das Ein/Aus-Menü öffnet sich, wenn der Dienst «TVCleanzer: кнопка Домой» an ist (Einstellungen → Bedienungshilfen).",
 "Включена": "Ein",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Schalte «Läuft gerade» in TVCleanzer auf dem Handy ein (Launcher → Extras): das Handy gibt dem Launcher Zugriff auf den Player.",
-"Открываю меню питания…": "Ein/Aus-Menü wird geöffnet…"
+"Открываю меню питания…": "Ein/Aus-Menü wird geöffnet…",
+"Как у телевизора": "Wie beim Fernseher",
+"Ведёт лаунчер": "Launcher steuert",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Öffnet Home den Launcher nicht mehr, stelle wieder «Launcher steuert» ein"
 }

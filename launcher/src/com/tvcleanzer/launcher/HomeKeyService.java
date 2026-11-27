@@ -499,7 +499,8 @@ public class HomeKeyService extends AccessibilityService {
             @Override public void run() {
                 // the UP got lost: don't run away. 1.66: 25 steps (~3 s), not 100 — Ilnur's volume
                 // kept rising long after the key was let go (#118)
-                if (++steps > 25) { stopVolRepeat(); return; }
+                // 1.76: half the scale at least — a TCL (0–100) stopped at 26 while still held (Serg)
+                if (++steps > volCap()) { stopVolRepeat(); return; }
                 if (steps == 1) android.util.Log.i("TVCleanzerVol", "no repeats from the remote: stepping");
                 volumeStep(dir);
                 handler.postDelayed(this, VOL_GAP);
@@ -523,6 +524,18 @@ public class HomeKeyService extends AccessibilityService {
     private int volIdle = -1;
     private Runnable volSettle = () -> {};
 
+    private int volCap() {
+        try {
+            AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+            if (am != null) return Math.max(25, am.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 2);
+        } catch (Throwable ignored) {}
+        return 25;
+    }
+
+    /** 1.76: the first taps say in the report what they did (Serg: still two steps a tap, and
+     *  the 1.75 check never fired). */
+    private int tapsLogged;
+
     private void volSettled(boolean tap) {
         try {
             AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -530,6 +543,10 @@ public class HomeKeyService extends AccessibilityService {
             int max = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), now = am.getStreamVolume(AudioManager.STREAM_MUSIC);
             int was = volIdle;
             volIdle = now;
+            if (tap && tapsLogged < 8) {
+                tapsLogged++;
+                log("volume tap: " + was + "→" + now + " of " + max + " (kept by us: " + (volTwice == 1) + ")");
+            }
             if (!tap || was < 0 || now <= 0 || now >= max || was <= 0 || was >= max) return;
             int d = Math.abs(now - was);
             if (volTwice != 1 && d >= 2) {

@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Menu nguồn mở khi dịch vụ «TVCleanzer: кнопка Домой» được bật (Cài đặt → Hỗ trợ tiếp cận).",
 "Включена": "Bật",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Bật «Đang phát» trong TVCleanzer trên điện thoại (Launcher → Bổ sung): điện thoại sẽ cho launcher quyền truy cập trình phát.",
-"Открываю меню питания…": "Đang mở menu nguồn…"
+"Открываю меню питания…": "Đang mở menu nguồn…",
+"Как у телевизора": "Như TV",
+"Ведёт лаунчер": "Launcher điều khiển",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Nếu nút Home không còn mở launcher, hãy đổi lại «Launcher điều khiển»"
 }

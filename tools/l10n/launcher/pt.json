@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "O menu de energia abre quando o serviço «TVCleanzer: кнопка Домой» está ativo (Definições → Acessibilidade).",
 "Включена": "Ativada",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Ative «A reproduzir» no TVCleanzer no telefone (Launcher → Extras): o telefone dá ao launcher acesso ao leitor.",
-"Открываю меню питания…": "A abrir o menu de energia…"
+"Открываю меню питания…": "A abrir o menu de energia…",
+"Как у телевизора": "Como o televisor",
+"Ведёт лаунчер": "Controlado pelo launcher",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Se Início deixar de abrir o launcher, volte a «Controlado pelo launcher»"
 }

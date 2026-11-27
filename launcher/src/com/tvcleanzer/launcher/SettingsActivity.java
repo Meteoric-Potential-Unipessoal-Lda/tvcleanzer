@@ -317,13 +317,13 @@ public class SettingsActivity extends Activity {
         // Xiaomi owners). Off = smooth volume; Home then relies on the HOME setting.
         // The owner's choice is kept apart from the phone's keyFilter (volSmooth): Google TV models
         // with their home switched off kept the filter whatever was chosen here (Xiaomi MSSP owners).
-        addToggle(skin, T.t("Громкость при зажатии"), !HomeKeyService.volumeFiltered(this, prefs), T.t("Меняется плавно"), T.t("По одному шагу"), v -> {
+        addToggle(skin, T.t("Громкость при зажатии"), !HomeKeyService.volumeFiltered(this, prefs), T.t("Как у телевизора"), T.t("Ведёт лаунчер"), v -> {
             prefs.setVolSmooth(v);
             if (!v) prefs.setKeyFilter(true);
             else prefs.setKeyFilter(false);
             HomeKeyService s = HomeKeyService.running;
             if (s != null) s.updateKeyFilter();
-            if (v) Toast.makeText(this, T.t("Если «Домой» перестанет открывать лаунчер, верните «По одному шагу»"),
+            if (v) Toast.makeText(this, T.t("Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»"),
                     Toast.LENGTH_LONG).show();
         });
         addToggle(skin, T.t("Пульт с телефона по Wi-Fi"), prefs.lanRemote(), T.t("Включён"), T.t("Выключен"), v -> {

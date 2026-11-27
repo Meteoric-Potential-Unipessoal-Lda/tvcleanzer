@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Strömmenyn öppnas när tjänsten «TVCleanzer: кнопка Домой» är på (Inställningar → Tillgänglighet).",
 "Включена": "På",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Slå på «Spelas nu» i TVCleanzer på telefonen (Startprogram → Extra): telefonen ger startprogrammet åtkomst till spelaren.",
-"Открываю меню питания…": "Öppnar strömmenyn…"
+"Открываю меню питания…": "Öppnar strömmenyn…",
+"Как у телевизора": "Som tv:n",
+"Ведёт лаунчер": "Startprogrammet styr",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Om Hem slutar öppna launchern, ställ tillbaka till «Startprogrammet styr»"
 }

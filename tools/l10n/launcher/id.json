@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Menu daya terbuka saat layanan «TVCleanzer: кнопка Домой» aktif (Setelan → Aksesibilitas).",
 "Включена": "Aktif",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Aktifkan «Sedang diputar» di TVCleanzer pada ponsel (Launcher → Tambahan): ponsel memberi launcher akses ke pemutar.",
-"Открываю меню питания…": "Membuka menu daya…"
+"Открываю меню питания…": "Membuka menu daya…",
+"Как у телевизора": "Seperti TV",
+"Ведёт лаунчер": "Diatur launcher",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Jika Home tidak lagi membuka launcher, kembalikan ke «Diatur launcher»"
 }

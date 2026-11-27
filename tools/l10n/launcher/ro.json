@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Meniul de alimentare se deschide când serviciul «TVCleanzer: кнопка Домой» este pornit (Setări → Accesibilitate).",
 "Включена": "Activată",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Activează «Se redă acum» în TVCleanzer pe telefon (Launcher → Extra): telefonul îi dă launcherului acces la player.",
-"Открываю меню питания…": "Se deschide meniul de alimentare…"
+"Открываю меню питания…": "Se deschide meniul de alimentare…",
+"Как у телевизора": "Ca la televizor",
+"Ведёт лаунчер": "Controlat de launcher",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Dacă Acasă nu mai deschide launcherul, revino la «Controlat de launcher»"
 }

@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Nabídka napájení se otevře, když je zapnutá služba «TVCleanzer: кнопка Домой» (Nastavení → Přístupnost).",
 "Включена": "Zapnuto",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Zapněte «Právě hraje» v TVCleanzer v telefonu (Launcher → Doplňky): telefon dá launcheru přístup k přehrávači.",
-"Открываю меню питания…": "Otevírám nabídku napájení…"
+"Открываю меню питания…": "Otevírám nabídku napájení…",
+"Как у телевизора": "Jako u televize",
+"Ведёт лаунчер": "Řídí launcher",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Pokud Domů přestane otevírat launcher, vraťte «Řídí launcher»"
 }

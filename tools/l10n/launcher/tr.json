@@ -242,5 +242,8 @@
 "Меню питания открывается, когда включена служба «TVCleanzer: кнопка Домой» (Настройки → Специальные возможности).": "Güç menüsü, «TVCleanzer: кнопка Домой» hizmeti açıkken açılır (Ayarlar → Erişilebilirlik).",
 "Включена": "Açık",
 "Включите «Сейчас играет» в TVCleanzer на телефоне (Лаунчер → Дополнительно): телефон даст лаунчеру доступ к плееру.": "Telefondaki TVCleanzer’da «Şimdi çalıyor»u açın (Başlatıcı → Ekstralar): telefon başlatıcıya oynatıcı erişimi verir.",
-"Открываю меню питания…": "Güç menüsü açılıyor…"
+"Открываю меню питания…": "Güç menüsü açılıyor…",
+"Как у телевизора": "Televizyondaki gibi",
+"Ведёт лаунчер": "Başlatıcı yönetir",
+"Если «Домой» перестанет открывать лаунчер, верните «Ведёт лаунчер»": "Ana Sayfa başlatıcıyı açmazsa «Başlatıcı yönetir» ayarına geri dönün"
 }
