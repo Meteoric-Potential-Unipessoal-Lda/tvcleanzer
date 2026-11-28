@@ -53,9 +53,7 @@ public class BootReceiver extends BroadcastReceiver {
     static void ownHomeAfterBoot(Context c) {
         try {
             if (HomeKeyService.running != null) return; // the service does it, and better
-            Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
-            android.content.pm.ResolveInfo ri = c.getPackageManager().resolveActivity(home, PackageManager.MATCH_DEFAULT_ONLY);
-            boolean ours = ri != null && ri.activityInfo != null && c.getPackageName().equals(ri.activityInfo.packageName);
+            boolean ours = HomeWatch.isHomeApp(c); // 1.77: the HOME role counts too (Yandex TV)
             if (!ours) { HomeKeyService.log("boot: not the HOME app, own home left"); return; }
             if (android.os.Build.VERSION.SDK_INT >= 29 && !Mouse.canOverlay(c)) {
                 HomeKeyService.log("boot: service down, no overlay permission to open our home");
