@@ -201,6 +201,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onResume() {
         super.onResume();
+        HomeWatch.coverOff(); // 1.79: the picture of us over the stock home has done its job
         if (aside) return;
         resumed = true;
         // a start that reached the screen and lived a few seconds is a good one (short: a box that
@@ -1233,6 +1234,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     @Override
     protected void onPause() {
         if (aside) { super.onPause(); return; }
+        HomeWatch.snapshot(this); // 1.79: what to show at once when the stock home pushes in
         resumed = false;
         if (weatherFx != null) weatherFx.stop();
         if (nowPlaying != null) nowPlaying.pause();

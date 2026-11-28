@@ -31,7 +31,8 @@ import java.util.Set;
  * that fights back (its home again and again) gets a minute's pause, so the two never flicker.
  */
 public class HomeWatch extends Service {
-    private static final long TICK_MS = 700;
+    // 1.79: 400 (was 700) — the stock home is seen sooner, the picture of ours goes up sooner
+    private static final long TICK_MS = 400;
     private final Handler h = new Handler(Looper.getMainLooper());
     private final Set<String> homeClasses = new HashSet<>();
     private final Set<String> homePkgs = new HashSet<>();
@@ -41,6 +42,7 @@ public class HomeWatch extends Service {
     private final long[] recent = new long[4];
     private int ri;
     static volatile boolean on;
+    private static volatile HomeWatch self;
 
     /** Starts the watch where it is needed and can work; safe to call often. */
     static void ensure(Context c) {
@@ -137,6 +139,7 @@ public class HomeWatch extends Service {
             HomeKeyService.log("watch: no foreground: " + t);
         }
         stockHomes(this, homePkgs, homeClasses);
+        self = this;
         since = System.currentTimeMillis() - 2000;
         HomeKeyService.log("watch: on, homes " + homeClasses);
         h.post(tick);
@@ -195,15 +198,90 @@ public class HomeWatch extends Service {
             return;
         }
         HomeKeyService.log("watch: " + lastPkg + " came up, opening ours");
+        showCover();
         openOurs();
         // 1.78: after the remote's Home key Android holds back starts from the background for a
         // few seconds (app-switch protection) and ours was lost — Yandex TV: power-on and the
         // voice «Домой» came back to us, the Home key never did («opening ours», Yandex stayed).
-        // Looked at again a little later and once the hold is over.
+        // Looked at again once the hold is over. 1.79: counted from the moment the stock home
+        // came up (5 s), not from when we noticed it (Jalal: «более 5 сек даже»).
         openedAt = SystemClock.elapsedRealtime();
+        long first = Math.max(300, lastTs + 5100 - System.currentTimeMillis());
         h.removeCallbacks(again);
-        h.postDelayed(again, 2500);
-        h.postDelayed(again, 5600);
+        h.postDelayed(again, first);
+        h.postDelayed(again, first + 1500);
+    }
+
+    // ── 1.79: a picture of our home over the stock one while Android holds our start back ──
+
+    static final String SNAP = "home_snap.jpg";
+    private android.view.View cover;
+
+    /** The launcher's last frame, kept where the watch works: shown at once over the stock home. */
+    static void snapshot(android.app.Activity a) {
+        if (!on || android.os.Build.VERSION.SDK_INT < 26) return;
+        try {
+            final android.view.View d = a.getWindow().getDecorView();
+            int w = d.getWidth() / 2, ht = d.getHeight() / 2;
+            if (w <= 0 || ht <= 0) return;
+            final android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(w, ht, android.graphics.Bitmap.Config.ARGB_8888);
+            final java.io.File f = new java.io.File(a.getCacheDir(), SNAP);
+            android.view.PixelCopy.request(a.getWindow(), b, r -> {
+                if (r != android.view.PixelCopy.SUCCESS) { b.recycle(); return; }
+                new Thread(() -> {
+                    try (java.io.FileOutputStream o = new java.io.FileOutputStream(f)) {
+                        b.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, o);
+                    } catch (Throwable ignored) {
+                    } finally {
+                        b.recycle();
+                    }
+                }).start();
+            }, new Handler(Looper.getMainLooper()));
+        } catch (Throwable t) {
+            HomeKeyService.log("watch: snapshot " + t);
+        }
+    }
+
+    /** Takes the keys too (nothing reaches the stock home under it); gone when ours resumes or
+     *  after 9 s at the latest. */
+    private void showCover() {
+        if (cover != null) return;
+        try {
+            java.io.File f = new java.io.File(getCacheDir(), SNAP);
+            if (!f.exists() || !Mouse.canOverlay(this)) return;
+            android.graphics.Bitmap b = android.graphics.BitmapFactory.decodeFile(f.getPath());
+            if (b == null) return;
+            android.widget.ImageView iv = new android.widget.ImageView(this);
+            iv.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
+            iv.setImageBitmap(b);
+            iv.setFocusable(true);
+            iv.setOnKeyListener((v, k, e) -> true);
+            android.view.WindowManager.LayoutParams lp = new android.view.WindowManager.LayoutParams(
+                    android.view.WindowManager.LayoutParams.MATCH_PARENT, android.view.WindowManager.LayoutParams.MATCH_PARENT,
+                    android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    android.view.WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN | android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    android.graphics.PixelFormat.OPAQUE);
+            ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).addView(iv, lp);
+            iv.requestFocus();
+            cover = iv;
+            h.removeCallbacks(hideCover);
+            h.postDelayed(hideCover, 9000);
+        } catch (Throwable t) {
+            HomeKeyService.log("watch: cover " + t);
+        }
+    }
+
+    private final Runnable hideCover = () -> {
+        android.view.View c = cover;
+        cover = null;
+        if (c == null) return;
+        try { ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).removeView(c); } catch (Throwable ignored) {}
+    };
+
+    /** Our home is up: the picture goes. */
+    static void coverOff() {
+        HomeWatch s = self;
+        if (s != null) s.h.post(s.hideCover);
     }
 
     private String frontPkg;
@@ -212,7 +290,7 @@ public class HomeWatch extends Service {
     private final Runnable again = new Runnable() {
         @Override public void run() {
             try {
-                if (SystemClock.elapsedRealtime() - openedAt > 8000) return;
+                if (SystemClock.elapsedRealtime() - openedAt > 10_000) return;
                 check(); // fresh events first (and the usual reaction if the home came up anew)
                 if (frontPkg == null || !homePkgs.contains(frontPkg)) return; // ours or another app is in front
                 if (SystemClock.elapsedRealtime() < pausedUntil) return;
@@ -241,6 +319,8 @@ public class HomeWatch extends Service {
     @Override
     public void onDestroy() {
         on = false;
+        self = null;
+        hideCover.run();
         h.removeCallbacksAndMessages(null);
         super.onDestroy();
     }
