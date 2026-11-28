@@ -92,11 +92,14 @@ public class HomeKeyService extends AccessibilityService {
      *   · Yandex / Sber homes (Alice, Salute): only a seen Home press lets us replace them;
      *   · Google TV with its home switched off: nobody else answers ⚙, TV and Source;
      *   · Google TV with its home on: Home itself (see googleTvHomeOn).
-     *  Xiaomi is smooth in any case (0.56: most complaints; Google TV models included).
+     *  Xiaomi is smooth (0.56: most complaints; Google TV models included) unless its stock
+     *  home is off (1.77).
      *  Owners on Haier MatrixTV, Sony Bravia, DEXP, Xiaomi asked for it in the chat. */
     static boolean volumeFiltered(Context c, Prefs p) {
         if (p.volSmoothSet()) return !p.volSmooth() && (p.keyFilter() || stockHomeOff(c));
-        if (Prefs.xiaomi()) return false;
+        // 1.77: Xiaomi too once its stock home is off (MiTV-MOOQ0 pinned hard: the remote's Source
+        // key worked on the stock home, dead on ours — nobody else answers it then)
+        if (Prefs.xiaomi()) return stockHomeOff(c);
         return featureHomeOn(c) || stockHomeOff(c) || googleTvHomeOn(c);
     }
 
