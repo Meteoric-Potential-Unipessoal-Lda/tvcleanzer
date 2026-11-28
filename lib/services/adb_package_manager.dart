@@ -1343,10 +1343,18 @@ class AdbPackageManager {
     try {
       await adb.shell("printf '%s' '${guardScript(pkgs, seconds, token)}' > $_guardDir/tvcleanzer_guard_$token.sh; "
           '( nohup sh $_guardDir/tvcleanzer_guard_$token.sh 2>/dev/null || sh $_guardDir/tvcleanzer_guard_$token.sh ) '
-          '</dev/null >/dev/null 2>&1 &');
+          '</dev/null >/dev/null 2>&1 &',
+          timeout: const Duration(seconds: 10));
       return token;
     } catch (e) {
+      // 1.3.201: MECOOL KM6 (Android 10): the shell held the call until the script ended, the
+      // call «timed out», the token was dropped — and the guard, running all the same, put the
+      // stock home back 2.5 minutes later (nobody marked the check as passed). Running: keep it.
       AppLog.error('guard', e);
+      try {
+        final f = '$_guardDir/tvcleanzer_guard_$token.sh';
+        if ((await adb.shell('[ -f $f ] && echo yes')).contains('yes')) return token;
+      } catch (_) {}
       return null;
     }
   }
