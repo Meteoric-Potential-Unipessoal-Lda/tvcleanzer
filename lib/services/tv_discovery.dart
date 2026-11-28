@@ -38,10 +38,7 @@ class TvDiscovery {
     if (cands.isEmpty) return;
 
     // ── Phase 1: parallel port check ────────────────────────────────────────
-    final open = <(String, int)>[];
-    await _inBatches(cands, _concurrency, (c) async {
-      if (await _isPortOpen(c.$1, c.$2)) open.add(c);
-    });
+    final open = await openPorts(cands);
 
     // ── Phase 2: ADB connect to each responding host ─────────────────────────
     for (final (ip, port) in open) {
@@ -73,12 +70,22 @@ class TvDiscovery {
 
   /// Hosts among [cands] with the ADB port open (one quick pass).
   static Future<List<(String, int)>> openPorts(List<(String, int)> cands) async {
+    // Addresses typed in by hand get a longer look, and first: a VPN on the phone and on the TV
+    // (Boom Indonesia, iPhone): the search never found the TV while «Ввести IP» connected at
+    // once — and after a restart the saved TV was gone again, its 0.5 s probe too short.
+    final manual = (await ManualTvs.load()).toSet();
     final open = <(String, int)>[];
-    await _inBatches(cands, _concurrency, (c) async {
+    await Future.wait([
+      for (final c in cands.where(manual.contains))
+        isPortOpen(c.$1, c.$2, timeout: _manualTimeout).then((ok) { if (ok) open.add(c); }),
+    ]);
+    await _inBatches(cands.where((c) => !manual.contains(c)).toList(), _concurrency, (c) async {
       if (await isPortOpen(c.$1, c.$2)) open.add(c);
     });
     return open;
   }
+
+  static const Duration _manualTimeout = Duration(seconds: 3);
 
   /// A VPN is up on the phone (its traffic may not reach the home network).
   static Future<bool> vpnActive() async {
@@ -96,11 +103,9 @@ class TvDiscovery {
     }
   }
 
-  Future<bool> _isPortOpen(String ip, int port) => isPortOpen(ip, port);
-
-  static Future<bool> isPortOpen(String ip, int port) async {
+  static Future<bool> isPortOpen(String ip, int port, {Duration? timeout}) async {
     try {
-      final sock = await Socket.connect(ip, port, timeout: _portTimeout);
+      final sock = await Socket.connect(ip, port, timeout: timeout ?? _portTimeout);
       sock.destroy();
       return true;
     } catch (_) {
