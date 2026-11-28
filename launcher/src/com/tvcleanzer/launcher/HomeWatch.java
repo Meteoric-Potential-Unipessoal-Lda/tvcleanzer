@@ -177,6 +177,7 @@ public class HomeWatch extends Service {
         }
         if (lastPkg == null) return;
         since = lastTs + 1;
+        frontPkg = lastPkg;
         if (!homePkgs.contains(lastPkg)) return;
         if (lastCls != null && !homeClasses.isEmpty() && !homeClasses.contains(lastCls)) {
             // its settings, search etc.: left alone; named once, to learn the home's other screens
@@ -194,6 +195,36 @@ public class HomeWatch extends Service {
             return;
         }
         HomeKeyService.log("watch: " + lastPkg + " came up, opening ours");
+        openOurs();
+        // 1.78: after the remote's Home key Android holds back starts from the background for a
+        // few seconds (app-switch protection) and ours was lost — Yandex TV: power-on and the
+        // voice «Домой» came back to us, the Home key never did («opening ours», Yandex stayed).
+        // Looked at again a little later and once the hold is over.
+        openedAt = SystemClock.elapsedRealtime();
+        h.removeCallbacks(again);
+        h.postDelayed(again, 2500);
+        h.postDelayed(again, 5600);
+    }
+
+    private String frontPkg;
+    private long openedAt;
+
+    private final Runnable again = new Runnable() {
+        @Override public void run() {
+            try {
+                if (SystemClock.elapsedRealtime() - openedAt > 8000) return;
+                check(); // fresh events first (and the usual reaction if the home came up anew)
+                if (frontPkg == null || !homePkgs.contains(frontPkg)) return; // ours or another app is in front
+                if (SystemClock.elapsedRealtime() < pausedUntil) return;
+                HomeKeyService.log("watch: " + frontPkg + " still in front, opening ours again");
+                openOurs();
+            } catch (Throwable t) {
+                HomeKeyService.log("watch: " + t);
+            }
+        }
+    };
+
+    private void openOurs() {
         try {
             startActivity(new Intent(this, HomeActivity.class)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
