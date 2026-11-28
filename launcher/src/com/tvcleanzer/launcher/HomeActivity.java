@@ -1304,6 +1304,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 okHeld = true;
             } else if (e.getAction() == KeyEvent.ACTION_UP) {
                 okHeld = false;
+                okSwallow = false; // the release reached us, not the menu
                 if (afterOk != null) {
                     final Runnable r = afterOk;
                     afterOk = null;
@@ -1373,9 +1374,13 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
 
     // ── Long OK: the menu opens when OK is let go (#15: on THOMSON the menu that opened under
     // a still-held OK froze, Back did nothing). Held too long — it opens anyway. ──
+    // 1.79: «too long» is 0.45 s now, not 1.5 (Sergey, MECOOL KM6: «очень долго, надо зажал
+    // чуток и оно само появилось»); the still-held OK's repeats and its release are swallowed by
+    // the menu, so nothing in it is pressed or flooded (the THOMSON freeze).
 
     private boolean okHeld;
     private Runnable afterOk;
+    private boolean okSwallow;
 
     private void whenOkReleased(final Runnable r) {
         if (!okHeld) { r.run(); return; }
@@ -1384,9 +1389,15 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
             if (afterOk == r) {
                 afterOk = null;
                 okHeld = false;
+                okSwallow = true;
                 r.run();
             }
-        }, 1500);
+        }, 450);
+    }
+
+    private static boolean okKey(int code) {
+        return code == KeyEvent.KEYCODE_DPAD_CENTER || code == KeyEvent.KEYCODE_ENTER
+                || code == KeyEvent.KEYCODE_NUMPAD_ENTER;
     }
 
     // ── Move mode: ◀ ▶ (and ▲ ▼ in the grid) carry the tile, OK / Back put it down ──
@@ -3305,6 +3316,12 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 .setCancelable(true)
                 // Back always closes it, whatever the firmware's dialog does with the key (#15)
                 .setOnKeyListener((d, code, ev) -> {
+                    // 1.79: the OK that opened the menu is still down — its repeats and release are not presses
+                    if (okSwallow && okKey(code)) {
+                        if (ev.getAction() == KeyEvent.ACTION_UP) okSwallow = false;
+                        return true;
+                    }
+                    okSwallow = false;
                     if (code == KeyEvent.KEYCODE_BACK && ev.getAction() == KeyEvent.ACTION_UP) {
                         d.dismiss();
                         return true;
