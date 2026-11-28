@@ -182,6 +182,14 @@ class _TerminalScreenState extends State<TerminalScreen> with WidgetsBindingObse
     final parts = v.replaceAll('\r', '').split('\n');
     final rest = parts.removeLast();
     _input.value = TextEditingValue(text: rest, selection: TextSelection.collapsed(offset: rest.length));
+    // 1.3.199: a whole «?» report pasted in (a Yandex TV owner did it twice): every line ran as a
+    // command, and the screen filled with errors. Not sent; one command is asked for instead.
+    if (parts.length > 2 && _looksLikeReport(parts)) {
+      _input.clear();
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(content: Text(tr('Это текст отчёта, а не команда. Вставьте одну команду.'))));
+      return;
+    }
     _sending = true;
     try {
       for (final line in parts) {
@@ -190,6 +198,13 @@ class _TerminalScreenState extends State<TerminalScreen> with WidgetsBindingObse
     } finally {
       _sending = false;
     }
+  }
+
+  static bool _looksLikeReport(List<String> lines) {
+    final text = lines.join('\n');
+    if (text.contains('TVCleanzer') && (text.contains('---') || text.contains('Android'))) return true;
+    final stamped = RegExp(r'^\d\d:\d\d:\d\d ');
+    return lines.where(stamped.hasMatch).length >= 2;
   }
 
   Future<bool> _confirm(String line, String why) async {

@@ -1082,6 +1082,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Launcher settings: hold OK on “TV settings”',
     'Проверить обновления': 'Check for updates',
     'У вас последняя версия': 'You have the latest version',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'This is report text, not a command. Paste a single command.',
   },
   'uk': {
     'Полночь': 'Північ',
@@ -2164,6 +2165,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Налаштування лаунчера: утримуйте ОК на «Налаштування ТВ»',
     'Проверить обновления': 'Перевірити оновлення',
     'У вас последняя версия': 'У вас остання версія',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Це текст звіту, а не команда. Вставте одну команду.',
   },
   'es': {
     'Полночь': 'Medianoche',
@@ -3246,6 +3248,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Ajustes del launcher: mantén OK en «Ajustes de la TV»',
     'Проверить обновления': 'Buscar actualizaciones',
     'У вас последняя версия': 'Tienes la última versión',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Esto es el texto de un informe, no un comando. Pega un solo comando.',
   },
   'pt': {
     'Полночь': 'Meia-noite',
@@ -4328,6 +4331,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Configurações do launcher: segure OK em «Configurações da TV»',
     'Проверить обновления': 'Verificar atualizações',
     'У вас последняя версия': 'Você tem a versão mais recente',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Isto é o texto de um relatório, não um comando. Cole um único comando.',
   },
   'de': {
     'Полночь': 'Mitternacht',
@@ -5410,6 +5414,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Launcher-Einstellungen: OK auf „TV-Einstellungen“ gedrückt halten',
     'Проверить обновления': 'Nach Updates suchen',
     'У вас последняя версия': 'Sie haben die neueste Version',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Das ist der Text eines Berichts, kein Befehl. Fügen Sie einen einzelnen Befehl ein.',
   },
   'fr': {
     'Полночь': 'Minuit',
@@ -6492,6 +6497,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Réglages du launcher : maintenez OK sur « Réglages TV »',
     'Проверить обновления': 'Rechercher des mises à jour',
     'У вас последняя версия': 'Vous avez la dernière version',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Ceci est le texte d\'un rapport, pas une commande. Collez une seule commande.',
   },
   'it': {
     'Полночь': 'Mezzanotte',
@@ -7574,6 +7580,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Impostazioni del launcher: tieni premuto OK su «Impostazioni TV»',
     'Проверить обновления': 'Cerca aggiornamenti',
     'У вас последняя версия': 'Hai l’ultima versione',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Questo è il testo di un rapporto, non un comando. Incolla un solo comando.',
   },
   'be': {
     'Полночь': 'Поўнач',
@@ -8656,6 +8663,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Налады лаўнчара: утрымлівайце ОК на «Налады ТВ»',
     'Проверить обновления': 'Праверыць абнаўленні',
     'У вас последняя версия': 'У вас апошняя версія',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Гэта тэкст справаздачы, а не каманда. Устаўце адну каманду.',
   },
   'kk': {
     'Полночь': 'Түн ортасы',
@@ -9738,6 +9746,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Лаунчер баптаулары: «ТД баптаулары» батырмасында OK-ты басып тұрыңыз',
     'Проверить обновления': 'Жаңартуларды тексеру',
     'У вас последняя версия': 'Сізде соңғы нұсқа',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Бұл есеп мәтіні, команда емес. Бір команданы қойыңыз.',
   },
   'uz': {
     'Полночь': 'Yarim tun',
@@ -10820,6 +10829,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Launcher sozlamalari: «TV sozlamalari»da OK ni bosib turing',
     'Проверить обновления': 'Yangilanishlarni tekshirish',
     'У вас последняя версия': 'Sizda eng so‘nggi versiya',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Bu hisobot matni, buyruq emas. Bitta buyruqni qo‘ying.',
   },
   'hy': {
     'Полночь': 'Կեսգիշեր',
@@ -11902,6 +11912,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Լաունչերի կարգավորումներ՝ պահեք OK-ը «Հեռուստացույցի կարգավորումներ»-ի վրա',
     'Проверить обновления': 'Ստուգել թարմացումները',
     'У вас последняя версия': 'Ձեզ մոտ վերջին տարբերակն է',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Սա հաշվետվության տեքստ է, ոչ թե հրաման։ Տեղադրեք մեկ հրաման։',
   },
   'az': {
     'Полночь': 'Gecəyarısı',
@@ -12984,6 +12995,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Launcher ayarları: «TV ayarları» üzərində OK düyməsini basılı saxlayın',
     'Проверить обновления': 'Yeniləmələri yoxla',
     'У вас последняя версия': 'Sizdə ən son versiyadır',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Bu hesabat mətnidir, əmr deyil. Bir əmr daxil edin.',
   },
   'ka': {
     'Полночь': 'შუაღამე',
@@ -14066,6 +14078,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'ლაუნჩერის პარამეტრები: დააჭირეთ და გეჭიროთ OK „ტელევიზორის პარამეტრებზე“',
     'Проверить обновления': 'განახლებების შემოწმება',
     'У вас последняя версия': 'თქვენ გაქვთ უახლესი ვერსია',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'ეს ანგარიშის ტექსტია და არა ბრძანება. ჩასვით ერთი ბრძანება.',
   },
   'ky': {
     'Полночь': 'Түн ортосу',
@@ -15148,6 +15161,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Лаунчердин жөндөөлөрү: «ТВ жөндөөлөрү» үстүндө OK баскычын басып туруңуз',
     'Проверить обновления': 'Жаңыртууларды текшерүү',
     'У вас последняя версия': 'Сизде акыркы версия',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Бул отчеттун тексти, буйрук эмес. Бир буйрукту кыстарыңыз.',
   },
   'tr': {
     'Полночь': 'Gece yarısı',
@@ -16230,6 +16244,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Başlatıcı ayarları: «TV ayarları» üzerinde OK’yi basılı tutun',
     'Проверить обновления': 'Güncellemeleri denetle',
     'У вас последняя версия': 'En son sürüme sahipsiniz',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Bu bir rapor metni, komut değil. Tek bir komut yapıştırın.',
   },
   'pl': {
     'Полночь': 'Północ',
@@ -17312,6 +17327,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Ustawienia launchera: przytrzymaj OK na „Ustawienia TV”',
     'Проверить обновления': 'Sprawdź aktualizacje',
     'У вас последняя версия': 'Masz najnowszą wersję',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'To tekst raportu, a nie polecenie. Wklej jedno polecenie.',
   },
   'ro': {
     'Полночь': 'Miezul nopții',
@@ -18394,6 +18410,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Setările launcherului: țineți apăsat OK pe „Setări TV”',
     'Проверить обновления': 'Caută actualizări',
     'У вас последняя версия': 'Aveți cea mai nouă versiune',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Acesta este textul unui raport, nu o comandă. Lipiți o singură comandă.',
   },
   'zh': {
     'Полночь': '午夜',
@@ -19476,6 +19493,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': '启动器设置：在“电视设置”上长按 OK',
     'Проверить обновления': '检查更新',
     'У вас последняя версия': '已是最新版本',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': '这是报告文本，不是命令。请只粘贴一条命令。',
   },
   'ja': {
     'Полночь': 'ミッドナイト',
@@ -20558,6 +20576,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'ランチャー設定：「テレビの設定」でOKを長押し',
     'Проверить обновления': 'アップデートを確認',
     'У вас последняя версия': '最新バージョンです',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'これはレポートの文章で、コマンドではありません。コマンドを1つだけ貼り付けてください。',
   },
   'ko': {
     'Полночь': '미드나잇',
@@ -21640,6 +21659,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': '런처 설정: ‘TV 설정’에서 OK를 길게 누르세요',
     'Проверить обновления': '업데이트 확인',
     'У вас последняя версия': '최신 버전입니다',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': '이것은 보고서 텍스트이며 명령어가 아닙니다. 명령어 하나만 붙여넣으세요.',
   },
   'hi': {
     'Полночь': 'मिडनाइट',
@@ -22722,6 +22742,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'लॉन्चर सेटिंग: «TV सेटिंग» पर OK दबाए रखें',
     'Проверить обновления': 'अपडेट जाँचें',
     'У вас последняя версия': 'आपके पास नवीनतम संस्करण है',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'यह रिपोर्ट का टेक्स्ट है, कमांड नहीं। एक कमांड पेस्ट करें।',
   },
   'id': {
     'Полночь': 'Tengah Malam',
@@ -23804,6 +23825,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Pengaturan launcher: tahan OK pada «Pengaturan TV»',
     'Проверить обновления': 'Periksa pembaruan',
     'У вас последняя версия': 'Anda memakai versi terbaru',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Ini teks laporan, bukan perintah. Tempel satu perintah saja.',
   },
   'vi': {
     'Полночь': 'Nửa đêm',
@@ -24886,6 +24908,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Cài đặt launcher: giữ OK trên «Cài đặt TV»',
     'Проверить обновления': 'Kiểm tra cập nhật',
     'У вас последняя версия': 'Bạn đang dùng bản mới nhất',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Đây là nội dung báo cáo, không phải lệnh. Hãy dán một lệnh duy nhất.',
   },
   'th': {
     'Полночь': 'เที่ยงคืน',
@@ -25968,6 +25991,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'การตั้งค่าลอนเชอร์: กด OK ค้างที่ «การตั้งค่าทีวี»',
     'Проверить обновления': 'ตรวจหาอัปเดต',
     'У вас последняя версия': 'คุณใช้เวอร์ชันล่าสุดแล้ว',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'นี่คือข้อความรายงาน ไม่ใช่คำสั่ง วางคำสั่งเพียงคำสั่งเดียว',
   },
   'nl': {
     'Полночь': 'Middernacht',
@@ -27050,6 +27074,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Launcher-instellingen: houd OK ingedrukt op ‘Tv-instellingen’',
     'Проверить обновления': 'Controleren op updates',
     'У вас последняя версия': 'U hebt de nieuwste versie',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Dit is de tekst van een rapport, geen opdracht. Plak één opdracht.',
   },
   'cs': {
     'Полночь': 'Půlnoc',
@@ -28132,6 +28157,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Nastavení launcheru: podržte OK na „Nastavení TV“',
     'Проверить обновления': 'Zkontrolovat aktualizace',
     'У вас последняя версия': 'Máte nejnovější verzi',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Toto je text hlášení, ne příkaz. Vložte jeden příkaz.',
   },
   'el': {
     'Полночь': 'Μεσάνυχτα',
@@ -29214,6 +29240,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Ρυθμίσεις launcher: κρατήστε πατημένο το OK στις «Ρυθμίσεις TV»',
     'Проверить обновления': 'Έλεγχος για ενημερώσεις',
     'У вас последняя версия': 'Έχετε την τελευταία έκδοση',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Αυτό είναι κείμενο αναφοράς, όχι εντολή. Επικολλήστε μία εντολή.',
   },
   'hu': {
     'Полночь': 'Éjfél',
@@ -30296,6 +30323,7 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Launcher-beállítások: tartsa lenyomva az OK-t a „TV-beállítások” gombon',
     'Проверить обновления': 'Frissítések keresése',
     'У вас последняя версия': 'A legújabb verzió van telepítve',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Ez egy jelentés szövege, nem parancs. Illesszen be egyetlen parancsot.',
   },
   'sv': {
     'Полночь': 'Midnatt',
@@ -31378,5 +31406,6 @@ const Map<String, Map<String, String>> translations = {
     'Настройки лаунчера: удерживайте ОК на «Настройки ТВ»': 'Launcherinställningar: håll in OK på ”TV-inställningar”',
     'Проверить обновления': 'Sök efter uppdateringar',
     'У вас последняя версия': 'Du har den senaste versionen',
+    'Это текст отчёта, а не команда. Вставьте одну команду.': 'Det här är rapporttext, inte ett kommando. Klistra in ett enda kommando.',
   },
 };

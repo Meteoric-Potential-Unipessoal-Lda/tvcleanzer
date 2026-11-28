@@ -3047,6 +3047,7 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
     private void pushBelow(final View favTop, final View favShelf, final View appsTop, final boolean favBottom) {
         if (appsTop == null) return;
         final int[] extra = {0, 0}; // added to favTop / appsTop top margins
+        final int[] told = {0}; // 1.77: «избранное внизу» lines in the report (TCL owner: it stayed up)
         appsTop.getViewTreeObserver().addOnGlobalLayoutListener(
                 new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
             @Override public void onGlobalLayout() {
@@ -3061,6 +3062,12 @@ public class HomeActivity extends Activity implements SharedPreferences.OnShared
                 if (favBottom && favTop != null && favShelf != null && favShelf.getHeight() > 0) {
                     int baseBottom = favShelf.getBottom() - extra[0];
                     fe = Math.max(0, screenH - Ui.dp(HomeActivity.this, 40) - baseBottom);
+                }
+                if (favBottom && told[0] < 4) {
+                    told[0]++;
+                    HomeKeyService.log("fav bottom: screen " + screenH + ", shelf " + (favShelf == null ? "none"
+                            : favShelf.getTop() + "-" + favShelf.getBottom() + " in " + favShelf.getParent().getClass().getSimpleName())
+                            + ", top " + (favTop == favShelf ? "shelf" : "title") + ", lift " + fe + " (had " + extra[0] + ")");
                 }
                 int baseTop = appsTop.getTop() - extra[0] - extra[1];
                 int ae = Math.max(0, screenH + Ui.dp(HomeActivity.this, 26) - (baseTop + fe));
